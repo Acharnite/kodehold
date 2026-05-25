@@ -31,8 +31,11 @@ jobs:
           python-version: '3.12'
       - name: Setup ICM
         run: |
-          curl -fsSL https://github.com/rtk-ai/icm/releases/latest/download/icm-x86_64-linux.tar.gz | tar xz
-          sudo mv icm /usr/local/bin/
+          ICM_VERSION="icm-v0.10.50"
+          curl -fsSL \
+            "https://github.com/rtk-ai/icm/releases/download/$ICM_VERSION/icm-x86_64-unknown-linux-gnu.tar.gz" \
+            | tar xz -C /tmp
+          sudo mv /tmp/icm /usr/local/bin/
       - name: Bootstrap ICM database
         run: |
           mkdir -p .icm
