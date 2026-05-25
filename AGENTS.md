@@ -46,6 +46,38 @@ Before any state transition, the Director must verify:
 - CLOSED → REOPEN: Impact analysis complete. Design doc updated with new requirements.
 - REOPEN → ACTIVE: Updated design doc approved. New ADRs reviewed.
 
+## Shipping Gate
+
+Before every push, PR, or release, the Director must run the complete shipping process:
+
+1. **Version check** — Read VERSION.md. Determine if MAJOR/MINOR/PATCH bump is needed.
+2. **CHANGES.md** — Add entry with version, date, and structured changes (Added/Changed/Fixed/Removed).
+3. **TODO.md** — Mark completed items as `[x]`, add new follow-up items.
+4. **Test suite** — Run `bash tests/run.sh`. All 10+ tests must pass. If any fail, block shipping and assign to Reviewers + Engineers.
+5. **ICM store** — Store release summary: `icm store -t kodehold-<project>-release -i critical`
+6. **Git commit** — Use structured commit message: `<type>(<scope>): <description>` with blank line + bullet body.
+7. **Git push** — Push to origin. If on feature branch, first create PR via `gh pr create`.
+8. **Tag (releases only)** — `git tag v<version> && git push origin v<version>`
+
+### Commit Message Format
+
+```
+<type>(<scope>): <short summary>
+
+<optional body with bullet points>
+```
+
+Types: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`
+Scope: `core`, `agents`, `docs`, `tests`, `config`, `release`
+
+### Gate Blockers
+
+The ship is BLOCKED if:
+- Tests fail (any smoke/init/integration)
+- VERSION.md or CHANGES.md not updated
+- Design doc differs from implementation without ADR
+- ICM memory not stored for the release
+
 ## Token Budget Management
 
 Track tokens per phase. If budget exceeded, activate light mode:

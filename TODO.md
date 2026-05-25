@@ -1,5 +1,17 @@
 # TODO
 
+## Completed
+
+- [x] Design document with architecture, team structure, lifecycle
+- [x] 8 ADRs covering all design constraints
+- [x] Director orchestrator with lifecycle states, quality gates, ICM protocol
+- [x] 5 team subagents (Architects, Engineers, Reviewers, Testers, Scribes)
+- [x] opencode.json with Ollama provider and permissions
+- [x] AGENTS.md, README.md, VERSION.md, TODO.md, CHANGES.md
+- [x] ICM memories, memoirs, concepts, links for full knowledge graph
+- [x] Test suite: 10 tests (smoke/init/integration) with CI workflow
+- [x] Shipping gate protocol with scripts/ship.sh
+
 ## High Priority
 
 - [ ] Implement Director — the top-level orchestrator (init, assign, review, close, reopen)

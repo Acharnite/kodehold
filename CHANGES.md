@@ -18,3 +18,11 @@
 - Top-level README, VERSION, TODO, CHANGES
 - GitHub repository initialized at `github.com/Acharnite/kodehold`
 - ICM persistent memory store initialized
+- Director orchestrator (`AGENTS.md`) with lifecycle states, quality gates, token budgets, ICM protocol, second opinion triggers
+- `opencode.json`: Ollama provider (qwen3:8b-opencode), project permissions
+- 5 team subagents (`.opencode/agents/`): Architects, Engineers, Reviewers, Testers, Scribes
+  - Each with YAML frontmatter, responsibilities, workflow, constraints
+- Shared protocol reference (`.opencode/references/kodehold-protocol.md`)
+- Test suite: 10 tests across smoke, init, and integration
+- CI workflow (`.github/workflows/kodehold-ci.yml`)
+- Shipping gate protocol (8-step process in AGENTS.md + `scripts/ship.sh`)

@@ -67,3 +67,23 @@ Before transitioning between lifecycle states, verify:
 - [ ] Tests exist and pass
 - [ ] Token budget is within limits
 - [ ] ICM memory is stored
+
+## Shipping Gate Checklist
+
+Before every push, PR, or release, verify:
+- [ ] VERSION.md updated with bump rationale
+- [ ] CHANGES.md entry added (version + date + structured changes)
+- [ ] TODO.md: completed items marked `[x]`, follow-ups added
+- [ ] Test suite green: `bash tests/run.sh` — all pass
+- [ ] Release summary stored: `icm store -t kodehold-<project>-release -i critical`
+- [ ] Commit message follows `<type>(<scope>): <description>` format
+- [ ] PR created if on feature branch (`gh pr create`)
+- [ ] Tag applied for releases (`git tag v<version> && git push origin v<version>`)
+
+### Blockers
+
+Ship is BLOCKED if:
+- Any test fails (smoke / init / integration)
+- VERSION.md or CHANGES.md not updated
+- Design doc differs from implementation without an ADR
+- ICM memory not stored for the release

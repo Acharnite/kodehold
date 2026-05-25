@@ -310,6 +310,15 @@ kodehold/
 │   │   ├── ADR-0001-*.md
 │   │   └── ...
 │   └── decisions/                 # Working notes, options analysis
+├── .github/workflows/
+│   └── kodehold-ci.yml            # CI pipeline (smoke, init, integration)
+├── scripts/
+│   └── ship.sh                    # Shipping gate checklist automation
+├── tests/
+│   ├── run.sh                     # Test suite runner
+│   ├── smoke/                     # Structure validation
+│   ├── init/                      # Configuration validation
+│   └── integration/               # Orchestrator flow validation
 ├── opencode.json                  # OpenCode project configuration (Ollama provider, permissions)
 ├── AGENTS.md                      # Director — orchestrator, lifecycle, quality gates
 ├── README.md                      # Project overview
