@@ -166,7 +166,20 @@ Decision: What was decided
 Consequences: Trade-offs and follow-ups
 ```
 
-See `docs/adr/README.md` for the ADR index.
+### ADR Index
+
+| ADR | Title | Status |
+|-----|-------|--------|
+| ADR-0001 | KodeHold Foundation and Principles | Accepted |
+| ADR-0002 | Organizational Structure — Director + Teams | Accepted |
+| ADR-0003 | Design Document Lifecycle | Accepted |
+| ADR-0004 | ICM and RTK Integration Strategy | Accepted |
+| ADR-0005 | LLM Support and Light Mode | Accepted |
+| ADR-0006 | Second Opinion Protocol | Accepted |
+| ADR-0007 | Token Optimization Strategy | Accepted |
+| ADR-0008 | Project Lifecycle and Reopening | Accepted |
+
+See `docs/adr/README.md` for full details.
 
 ---
 

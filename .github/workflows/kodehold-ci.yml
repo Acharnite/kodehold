@@ -1,0 +1,55 @@
+name: KodeHold CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  smoke:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run smoke tests
+        run: |
+          for t in tests/smoke/*.sh; do
+            echo "--- Running $t ---"
+            bash "$t"
+            echo ""
+          done
+
+  init:
+    name: Init Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Setup ICM
+        run: |
+          curl -fsSL https://github.com/rtk-ai/icm/releases/latest/download/icm-x86_64-linux.tar.gz | tar xz
+          sudo mv icm /usr/local/bin/
+      - name: Run init tests
+        run: |
+          for t in tests/init/*.sh; do
+            echo "--- Running $t ---"
+            bash "$t"
+            echo ""
+          done
+
+  integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run integration tests
+        run: |
+          for t in tests/integration/*.sh; do
+            echo "--- Running $t ---"
+            bash "$t"
+            echo ""
+          done
