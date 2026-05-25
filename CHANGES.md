@@ -4,20 +4,27 @@
 
 ### Added
 - Director orchestrator (`AGENTS.md`) with lifecycle states, quality gates, token budgets, ICM protocol, second opinion triggers
-- `opencode.json`: Ollama provider (qwen3:8b-opencode), project permissions
+- `opencode.json`: Ollama provider, project permissions (no hardcoded default model)
 - 5 team subagents (`.opencode/agents/`): Architects, Engineers, Reviewers, Testers, Scribes
-  - Each with YAML frontmatter, responsibilities, workflow, constraints
+  - Each with YAML frontmatter, responsibilities, workflow, constraints (no model overrides)
 - Shared protocol reference (`.opencode/references/kodehold-protocol.md`)
 - Test suite: 10 tests across smoke, init, and integration
 - CI workflow (`.github/workflows/kodehold-ci.yml`) with 3 parallel jobs
 - Shipping gate protocol (8-step process in AGENTS.md + `scripts/ship.sh`)
-- ICM knowledge graph: 5 memoirs, 33 concepts, 21 links, 54 memories
+- ICM knowledge graph: 5 memoirs, 33 concepts, 21 links, 65 memories
+
+### Changed
+- ADR-0005 rewritten: bring-your-own-model, light mode optional (KODEHOLD_LIGHT=1), no per-team model config, Ollama as option not default
+- Design doc LLM Support section updated to match ADR-0005
+- All agent files: model overrides removed — teams inherit user's default OpenCode model
+- Protocol reference: light mode marked as optional
 
 ### Fixed
-- CI: ICM download URL corrected to use specific release tag and asset name
 - CI: actions/checkout upgraded to v6, setup-python to v6, Node24 opt-in
+- CI: ICM download URL corrected to use specific release tag and asset name
 - CI: ICM database bootstrap step added before init tests
 - Test: ICM init test now auto-creates DB if missing, graceful warn instead of hard-fail
+- Test: removed assertion for hardcoded model field in opencode.json
 - ADR index: design doc now lists all 8 ADRs with proper references
 
 ## 0.1.0 — 2026-05-25
