@@ -25,9 +25,9 @@ rtk git log      # git log
 | Documentation | 4k |
 | Second opinion | 6k |
 
-## Light Mode (32k context)
+## Light Mode (32k context) — optional
 
-When `KODEHOLD_LIGHT=1` or model context <= 32k:
+When `KODEHOLD_LIGHT=1` is set (user explicitly opts in):
 - Collapse Reviewers + Testers into single Quality team
 - Use ICM summaries, never full memories
 - Chunk files > 100 lines

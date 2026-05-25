@@ -238,21 +238,21 @@ RTK is used for all CLI interaction to reduce token consumption:
 
 ## 8. LLM Support
 
-### 8.1 Primary: Ollama
+### 8.1 Bring Your Own Model
 
-Ollama is the default LLM provider. Configuration supports:
-- Model selection per team/role
-- Context window sizing
-- Temperature and other generation parameters
+KodeHold does not mandate a specific LLM model. The user's global OpenCode model configuration is used as the default for all operations. No per-team model overrides are set in agent definitions — all teams inherit the same default model.
+
+Ollama is available as an optional local provider for users who want private inference. The provider configuration in `opencode.json` enables Ollama as an option without forcing its use.
 
 ### 8.2 Light Mode (32k Context)
 
-A "light" execution mode designed for models with 32k context windows:
+An optional execution mode for users who want to run KodeHold on a local LLM with at least 32k context. Activated by `KODEHOLD_LIGHT=1`:
 - Aggressive RTK usage for all tool output
 - ICM summaries instead of full context loading
 - Chunked processing for large files
 - Minimal prompt templates
-- Token budget tracking
+- 28k token budget per operation
+- Collapsed Reviewers + Testers into single Quality team
 
 ### 8.3 Second Opinion
 

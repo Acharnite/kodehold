@@ -5,7 +5,6 @@ description: >
   Run regression suites. Performance testing. Edge case analysis.
   Report coverage gaps to Engineers. Independent from implementation.
   Triggers: test, verify, regression, coverage, QA, quality
-model: ollama/qwen3:8b-opencode
 mode: subagent
 permission:
   read: allow

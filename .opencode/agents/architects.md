@@ -5,7 +5,6 @@ description: >
   write Architecture Decision Records (ADRs), evaluate technology choices,
   review all design changes before implementation.
   Triggers: design, ADR, architecture, technology choice, design review
-model: ollama/qwen3:8b-opencode
 mode: subagent
 permission:
   read: allow

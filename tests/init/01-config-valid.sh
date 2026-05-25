@@ -11,14 +11,13 @@ echo "--- Init: Configuration Validation ---"
 python3 -c "import json; json.load(open('opencode.json'))" 2>/dev/null \
   && pass "opencode.json: valid JSON" || fail "opencode.json: invalid JSON"
 
-# opencode.json must have provider
+# opencode.json must have Ollama provider available
 python3 -c "
 import json
 c = json.load(open('opencode.json'))
 assert 'provider' in c and 'ollama' in c['provider'], 'missing Ollama provider'
-assert 'model' in c, 'missing default model'
-" && pass "opencode.json: has Ollama provider + model" \
-  || fail "opencode.json: missing required fields"
+" && pass "opencode.json: has Ollama provider configured" \
+  || fail "opencode.json: missing Ollama provider"
 
 # .gitignore must exist and contain .icm/
 grep -q "^\.icm/$" .gitignore && pass ".gitignore: ignores .icm/" || fail ".gitignore: missing .icm/"

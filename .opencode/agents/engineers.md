@@ -5,7 +5,6 @@ description: >
   refactor existing code, fix bugs. Always work with reference to specific
   design document section. Do not review own code.
   Triggers: implement, code, feature, bugfix, refactor, build
-model: ollama/qwen3:8b-opencode
 mode: subagent
 permission:
   read: allow

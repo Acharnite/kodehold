@@ -5,7 +5,6 @@ description: >
   Design review and feedback. Verify ADR compliance. Coordinate second opinion
   requests with Director. Do not write implementation code.
   Triggers: review, code review, design review, second opinion, standards
-model: ollama/qwen3:8b-opencode
 mode: subagent
 permission:
   read: allow

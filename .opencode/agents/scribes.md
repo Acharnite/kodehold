@@ -5,7 +5,6 @@ description: >
   project context, extract concepts for cross-project knowledge. Generate
   documentation, CHANGELOGs, summaries. Free other teams from context management.
   Triggers: memory, icm, context, save, recall, document, changelog, summary
-model: ollama/qwen3:8b-opencode
 mode: subagent
 permission:
   read: allow
