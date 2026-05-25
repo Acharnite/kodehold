@@ -33,6 +33,14 @@ jobs:
         run: |
           curl -fsSL https://github.com/rtk-ai/icm/releases/latest/download/icm-x86_64-linux.tar.gz | tar xz
           sudo mv icm /usr/local/bin/
+      - name: Bootstrap ICM database
+        run: |
+          mkdir -p .icm
+          icm store --db .icm/memories.db \
+            -t kodehold-ci-bootstrap \
+            -i low \
+            -k "ci,bootstrap" \
+            -c "CI bootstrap memory — KodeHold test suite $(date -u '+%Y-%m-%d')"
       - name: Run init tests
         run: |
           for t in tests/init/*.sh; do
