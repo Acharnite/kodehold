@@ -14,29 +14,31 @@
 - [x] ADR-0005 corrected: bring-your-own-model, light mode optional (KODEHOLD_LIGHT=1)
 - [x] CI fixes: Node24 upgrade (actions/checkout@v6, setup-python@v6), ICM bootstrap
 - [x] All model overrides removed from agent files — teams inherit default from OpenCode
+- [x] Director as working agent (.opencode/agents/director.md) with task: allow
+- [x] Lifecycle state tracking (.kodehold-state) with gate automation (scripts/gate.sh)
+- [x] Workspace system (scripts/workspace.sh) with project registry (.catalog)
+- [x] State awareness in all 5 subagents — check state before work, refuse in wrong phase
+- [x] Second opinion protocol — implemented and tested on ADR-0001
+- [x] Scribes documentation workflow — README, CHANGES, TODO, VERSION per project
+- [x] Centralized ICM — no per-project databases
+- [x] Proof-of-concept: lib-validate through full INIT→ACTIVE→REVIEW→CLOSED lifecycle
+- [x] Agent refusal/escalation protocol with state guidance
 
 ## High Priority
 
-- [ ] Implement Director as working orchestrator — delegate tasks to teams via Task tool
-- [ ] Implement Architects agent workflow — design doc init, ADR creation via subagent
-- [ ] Implement Engineers agent workflow — code from design spec
-- [ ] Implement Reviewers agent workflow — review gate coordination
-- [ ] Implement Testers agent workflow — test authoring and execution
-- [ ] Implement Scribes agent workflow — ICM store/recall on session boundaries
 - [ ] Create `docs/decisions/` directory for working notes
 - [ ] Create `.opencode/skills/` directory for future skills
 
 ## Medium Priority
 
 - [ ] Implement light mode (KODEHOLD_LIGHT=1) with collapsed Quality team
-- [ ] Implement second opinion protocol with cross-model validation
 - [ ] Add token budget tracking per team/phase
 - [ ] Implement reopen protocol with ICM context restoration
-- [ ] Run KodeHold against a real test project to validate the full flow
+- [ ] Architects: research inspiration via web search before designing (webfetch/websearch)
+- [ ] Run KodeHold against another real project to validate reopen flow
 
 ## Low Priority
 
-- [ ] Add example project to demonstrate the workflow
 - [ ] Expand test suite beyond 10 tests
 - [ ] Performance benchmarks comparing token usage with/without RTK
 - [ ] CI pipeline for ADR format validation

@@ -1,9 +1,10 @@
-# Version 0.2.0 — Foundation Build
+# Version 0.3.0 — Orchestrator Build
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.3.0 | 2026-05-26 | Director agent, lifecycle gates, workspace system, state-aware agents, proof-of-concept project |
 | 0.2.0 | 2026-05-25 | Director orchestrator, 5 team subagents, test suite, CI, shipping gate |
 | 0.1.0 | 2026-05-25 | Initial design documents and ADRs |
 
@@ -17,4 +18,4 @@
 
 ## Current
 
-**0.2.0** — Foundation build. Director orchestrator with lifecycle gates, 5 team subagents with YAML frontmatter, 10-test suite (smoke/init/integration), GitHub Actions CI, shipping gate protocol, ICM knowledge graph with 5 memoirs and 54 memories.
+**0.3.0** — Orchestrator build. Director as working agent with `task: allow`, lifecycle state tracking (`.kodehold-state`), automated gates (`scripts/gate.sh`) with 5 transitions, workspace management (`scripts/workspace.sh`) with project registry, second opinion protocol, centralized ICM, state-aware subagents with refusal/escalation protocol, Scribes documentation workflow. All validated against lib-validate project through full INIT→CLOSED lifecycle.

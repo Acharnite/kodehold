@@ -17,11 +17,13 @@ for state in "INIT" "ACTIVE" "REVIEW" "CLOSED" "REOPEN"; do
     || fail "AGENTS.md: missing lifecycle state $state"
 done
 
-# Check quality gates for each transition
+# Check quality gates for each transition (check both AGENTS.md and director.md)
 for transition in "INIT → ACTIVE" "ACTIVE → REVIEW" "REVIEW → CLOSED" "CLOSED → REOPEN"; do
-  grep -q "$transition" AGENTS.md \
-    && pass "AGENTS.md: transition $transition" \
-    || fail "AGENTS.md: missing transition $transition"
+  if grep -q "$transition" AGENTS.md 2>/dev/null || grep -q "$transition" .opencode/agents/director.md 2>/dev/null; then
+    pass "transition $transition documented"
+  else
+    fail "transition $transition not found in AGENTS.md or director.md"
+  fi
 done
 
 # Verify lifecycle ADR (ADR-0008)

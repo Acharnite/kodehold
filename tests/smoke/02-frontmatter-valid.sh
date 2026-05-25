@@ -20,7 +20,11 @@ for f in .opencode/agents/*.md; do
   grep -q "^name: " "$f" || fail "$name: missing 'name' field"
   grep -q "^description: >" "$f" || fail "$name: missing 'description' field"
   grep -q "^mode: subagent" "$f" || fail "$name: missing 'mode: subagent'"
-  grep -q "^  task: deny" "$f" || fail "$name: missing 'task: deny'"
+  if [ "$name" = "director" ]; then
+    grep -q "^  task: allow" "$f" || fail "$name: should have 'task: allow'"
+  else
+    grep -q "^  task: deny" "$f" || fail "$name: missing 'task: deny'"
+  fi
 
   pass "$name: valid frontmatter"
 done

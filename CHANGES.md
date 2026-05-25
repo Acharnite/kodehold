@@ -1,5 +1,47 @@
 # Changelog
 
+## 0.3.0 — 2026-05-26
+
+### Added
+- Director as working agent (`.opencode/agents/director.md`) with `task: allow` permission
+- Lifecycle state tracking (`.kodehold-state`) — persistent state per project
+- Automated quality gates (`scripts/gate.sh`) — 5 transitions with structural checks
+- Workspace system (`scripts/workspace.sh`) — init, list, state, gate, deploy-ready
+- Project catalog (`workspaces/.catalog`) — JSON registry of all managed projects
+- Second opinion protocol — triggers on new ADRs, security-critical, complex decisions
+- State awareness in all 5 subagents — check `.kodehold-state` before work, refuse in wrong phase
+- Agent refusal/escalation protocol — agents report current vs required state + suggested gate
+- Scribes documentation workflow — README, CHANGES, TODO, VERSION creation
+- Centralized ICM — all project memory in kodehold `.icm/`, no per-project databases
+- Gate support for pytest workspaces (venv detection, PYTHONPATH, `python3` compatibility)
+- Architectural decision to remove per-workspace ICM in favour of central store
+
+### Changed
+- AGENTS.md simplified to quick reference — full definition in `.opencode/agents/director.md`
+- `opencode.json` — director agent registered with `task: allow`
+- All 5 subagent files — state awareness sections with allowed phases and escalation paths
+- Reviewers — second opinion triggers documented, structured report format
+- Architects — design doc status workflow, ADR triggers second opinion
+- Scribes — pre-transition storage requirement, documentation file responsibilities
+- Testers — state awareness for ACTIVE/REVIEW phases
+- `.gitignore` — added `.kodehold-state` and `workspaces/`
+- Test suite — adapted for director (frontmatter `task: allow`, transition checks in both AGENTS.md and director.md)
+
+### Fixed
+- Gate `scripts/gate.sh` — removed kodehold-infrastructure checks from INIT→ACTIVE (`.opencode/agents`)
+- Gate `scripts/gate.sh` — added pytest support for workspace projects (venv, PYTHONPATH, python3)
+- Gate `scripts/gate.sh` — made TODO.md optional, made .icm/ optional for workspaces
+- Gate `scripts/gate.sh` — dual test runner support (tests/run.sh or pytest)
+
+### Validated
+- Full lifecycle run with `lib-validate` workspace: INIT → ACTIVE → REVIEW → CLOSED
+- 3 gates passed (INIT_TO_ACTIVE, ACTIVE_TO_REVIEW, REVIEW_TO_CLOSED)
+- 3 team delegation rounds (Architects, Reviewers, Engineers, Testers, Reviewers)
+- 2 fix rounds (5 design issues + 4 implementation issues)
+- Second opinion on ADR-0001 (minor concerns, all addressed)
+- 254 tests passing in workspace
+- Scribes documented 5 memories in central ICM
+
 ## 0.2.0 — 2026-05-25
 
 ### Added
