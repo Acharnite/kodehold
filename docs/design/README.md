@@ -275,19 +275,33 @@ Protocol:
 
 ```
 kodehold/
-├── .icm/                    # ICM persistent memory store
+├── .icm/                          # ICM persistent memory store
 │   ├── config.toml
 │   └── memories.db
-├── .opencode/               # OpenCode agent/subagent configs
+├── .opencode/                     # OpenCode agent/subagent configs
+│   ├── opencode.json              # Local overrides
+│   ├── agents/
+│   │   ├── architects.md          # Design authority
+│   │   ├── engineers.md           # Implementation team
+│   │   ├── reviewers.md           # Code/design review
+│   │   ├── testers.md             # Verification team
+│   │   └── scribes.md             # Memory and documentation
+│   ├── references/
+│   │   └── kodehold-protocol.md   # Shared protocol reference
+│   └── skills/                    # Optional skills (future)
 ├── docs/
 │   ├── design/
-│   │   └── README.md        # This file — main design document
+│   │   └── README.md              # This file — main design document
 │   ├── adr/
-│   │   ├── README.md        # ADR index
+│   │   ├── README.md              # ADR index
 │   │   ├── ADR-0001-*.md
 │   │   └── ...
-│   └── decisions/           # Working notes, options analysis
-├── opencode.json            # OpenCode project configuration
-├── opencode.jsonc           # OpenCode project config (comments)
-└── AGENTS.md                # Agent definitions and conventions
+│   └── decisions/                 # Working notes, options analysis
+├── opencode.json                  # OpenCode project configuration (Ollama provider, permissions)
+├── AGENTS.md                      # Director — orchestrator, lifecycle, quality gates
+├── README.md                      # Project overview
+├── VERSION.md                     # Version history
+├── TODO.md                        # Task list
+├── CHANGES.md                     # Changelog
+└── .gitignore                     # Git ignore rules
 ```
