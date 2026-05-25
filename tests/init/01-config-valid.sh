@@ -24,10 +24,10 @@ assert 'model' in c, 'missing default model'
 grep -q "^\.icm/$" .gitignore && pass ".gitignore: ignores .icm/" || fail ".gitignore: missing .icm/"
 
 # VERSION.md must have current version
-grep -q "^| 0\.1\.0 " VERSION.md && pass "VERSION.md: version 0.1.0 found" || fail "VERSION.md: version 0.1.0 not found"
+grep -q "^| 0\.2\.0 " VERSION.md && pass "VERSION.md: version 0.2.0 found" || fail "VERSION.md: version 0.2.0 not found"
 
 # CHANGES.md must have latest entry
-grep -q "^## 0\.1\.0 " CHANGES.md && pass "CHANGES.md: changelog entry for 0.1.0" || fail "CHANGES.md: missing 0.1.0"
+grep -q "^## 0\.2\.0 " CHANGES.md && pass "CHANGES.md: changelog entry for 0.2.0" || fail "CHANGES.md: missing 0.2.0"
 
 # AGENTS.md must reference all 5 teams
 for team in architects engineers reviewers testers scribes; do

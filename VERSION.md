@@ -1,9 +1,10 @@
-# Version 0.1.0 — Initial Design
+# Version 0.2.0 — Foundation Build
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.2.0 | 2026-05-25 | Director orchestrator, 5 team subagents, test suite, CI, shipping gate |
 | 0.1.0 | 2026-05-25 | Initial design documents and ADRs |
 
 ## Version Scheme
@@ -16,4 +17,4 @@
 
 ## Current
 
-**0.1.0** — Design phase. Foundation documents, architecture decisions, team structure defined. No executable code yet.
+**0.2.0** — Foundation build. Director orchestrator with lifecycle gates, 5 team subagents with YAML frontmatter, 10-test suite (smoke/init/integration), GitHub Actions CI, shipping gate protocol, ICM knowledge graph with 5 memoirs and 54 memories.
