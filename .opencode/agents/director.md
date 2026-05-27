@@ -139,7 +139,23 @@ The Director MUST trigger a second opinion (via Reviewers) for:
 - Complex architectural decisions
 - Any decision where the primary model's confidence is low
 - Manual user request
+
 Second opinions happen IN PARALLEL with the primary work — they don't block the primary flow but their results must be recorded in ICM before the next state transition.
+
+### Second Opinion Model Selection
+The second opinion MUST use a **different provider** than the primary model to avoid architectural bias. See ADR-0006 for full specification.
+
+Selection order:
+1. **Preferred**: `anthropic/claude-*` (Claude Sonnet/Haiku/Opus)
+2. **Alternative**: `openai/codex-*` or `openai/gpt-*`
+3. **Fallback**: If neither is available, ask the user:
+   ```
+   Second opinion requires a different provider.
+   Current: <primary model>
+   Please run `/models` in OpenCode and switch to Claude or Codex,
+   or run `/connect` to add a new provider.
+   ```
+   Block the transition until a secondary provider is confirmed available.
 
 ### Scribes Requirement
 Before EVERY state transition, Scribes MUST:

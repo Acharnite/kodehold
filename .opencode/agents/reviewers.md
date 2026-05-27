@@ -68,7 +68,9 @@ The Director will request second opinions for:
 
 When performing a second opinion:
 1. Package context: design excerpt (max 2k) + code diff (max 4k) + question (max 500t) + primary solution (max 2k)
-2. The secondary model must differ from primary (different architecture/training)
+2. **The secondary model MUST be from a different provider** — not just a different local model. Same-provider models share bias.
+   - Preferred: `anthropic/claude-*` or `openai/codex-*`
+   - If unavailable: report to Director so user can switch models via `/models`
 3. Compare responses — agreement vs minor vs major disagreement
 4. Report structured results: what the decision got right, disagreements, missed considerations, verdict
 5. Record in ICM via Scribes
