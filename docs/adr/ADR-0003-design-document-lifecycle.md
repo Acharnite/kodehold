@@ -41,7 +41,7 @@ CREATE → REVIEW → APPROVE → [ACTIVE] → UPDATE → REVIEW → APPROVE →
 1. **Initial Review** — Before any implementation starts. Architects present, Reviewers approve.
 2. **Change Review** — Any modification to an Active document. Reviewers verify consistency.
 3. **Impact Review** — When a closed project is reopened. Reviewers + Architects assess scope.
-4. **Final Review** — Before project close. Director confirms document matches implementation.
+4. **Final Review** — Before project close. Team Meeting (see ADR-0011) replaces solo Director approval. All six teams review collectively.
 
 ### Design Document Template
 

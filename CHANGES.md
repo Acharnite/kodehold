@@ -3,6 +3,18 @@
 ## 0.4.0 — 2026-05-27
 
 ### Added
+- ADR-0011 — Team Meeting (collective project review, replaces solo Director approval)
+- Team Meeting as step 0 in shipping gate (9 steps total)
+- Director agent: Shipping Gate updated with Team Meeting protocol
+- AGENTS.md: shipping gate updated to 9 steps with team-meeting first
+
+### Changed
+- ADR-0003 — Final Review updated to Team Meeting (ADR-0011)
+- ADR-0008 — Close Protocol updated with Team Meeting as first step
+- Design doc — Review Cadence and REVIEW state updated to reference Team Meeting
+- TODO.md — Team Meeting marked completed, removed from High Priority
+
+### Added
 - FLS (Front Line Support) team — 6th team with triage, hotfix, and escalation protocol
 - ADR-0010 — FLS Front Line Support Team (Accepted)
 - `.opencode/agents/fls.md` — FLS agent definition with triage criteria and workflow

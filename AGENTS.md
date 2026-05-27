@@ -42,4 +42,4 @@ Managed projects live in `workspaces/<name>/`.
 
 ### Shipping Gate
 
-8 steps: version → changelog → todo → tests → icm → commit → push → tag
+9 steps: team-meeting → version → changelog → todo → tests → icm → commit → push → tag

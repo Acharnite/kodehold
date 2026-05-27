@@ -159,7 +159,7 @@ Each design document follows this structure:
 |-------|------------|-----|
 | Draft | Design Review | Reviewers + Architects |
 | During Implementation | Incremental Review | Reviewers |
-| Before Close | Final Review | Director + Reviewers |
+| Before Close | Team Meeting (ADR-0011) | All 6 teams — collective review |
 | On Reopen | Impact Review | Architects + Reviewers |
 
 ---
@@ -190,6 +190,7 @@ Consequences: Trade-offs and follow-ups
 | ADR-0008 | Project Lifecycle and Reopening | Accepted |
 | ADR-0009 | ICM MCP Integration | Accepted |
 | ADR-0010 | FLS — Front Line Support Team | Accepted |
+| ADR-0011 | Team Meeting — Collective Project Review | Accepted |
 
 See `docs/adr/README.md` for full details.
 
@@ -207,7 +208,7 @@ INIT → ACTIVE → REVIEW → CLOSED → (REOPEN → ACTIVE)
 |-------|-------------|
 | INIT | Design doc created, ADRs drafted, project scoped |
 | ACTIVE | Implementation in progress, teams working |
-| REVIEW | All work completed, final review, testing |
+| REVIEW | All work completed, Team Meeting review, testing |
 | CLOSED | Project complete, context stored in ICM |
 | REOPEN | Project resurrected for new feature or bugfix |
 

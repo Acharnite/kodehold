@@ -70,8 +70,9 @@ Without a defined lifecycle and reopening protocol:
 
 When a project is closed, the Director orchestrates:
 
-1. **FLS**: Onboard FLS with project context — design doc, ADRs, key code areas, test patterns. FLS must be ready to triage future issues.
-2. **Testers**: Run complete test suite. All tests must pass.
+1. **Team Meeting** (see ADR-0011): All six teams present — Architects, Engineers, Reviewers, Testers, Scribes, FLS. Each team approves or blocks the transition. Replaces solo Director approval.
+2. **FLS**: Onboard FLS with project context — design doc, ADRs, key code areas, test patterns. FLS must be ready to triage future issues.
+3. **Testers**: Run complete test suite. All tests must pass.
 3. **Reviewers**: Final code review. Verify design doc matches implementation.
 4. **Architects**: Final ADR review. Any decisions made during implementation that lack ADRs must be documented.
 5. **Scribes**:

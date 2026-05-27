@@ -157,8 +157,9 @@ sed -i "s/^LAST_UPDATED=.*/LAST_UPDATED=$(date +%Y-%m-%d)/" .kodehold-state
 
 **To check current state:** `bash scripts/gate.sh --status`
 
-## Shipping Gate (8 Steps)
+## Shipping Gate (9 Steps)
 
+0. **Team Meeting** — delegate to all 6 teams (Architects, Engineers, Reviewers, Testers, Scribes, FLS) for collective project review. Each team approves or blocks. See ADR-0011.
 1. Read VERSION.md — determine MAJOR/MINOR/PATCH bump
 2. Update CHANGES.md — version + date + structured changes
 3. Update TODO.md — mark [x] completed, add follow-ups
@@ -171,6 +172,7 @@ sed -i "s/^LAST_UPDATED=.*/LAST_UPDATED=$(date +%Y-%m-%d)/" .kodehold-state
 ### Gate Blockers
 
 Ship is BLOCKED if:
+- Any team blocks during the Team Meeting
 - Any test fails (smoke / init / integration)
 - VERSION.md or CHANGES.md not updated
 - Design doc differs from implementation without ADR

@@ -18,3 +18,4 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0008](ADR-0008-project-lifecycle.md) | Project Lifecycle and Reopening | Accepted | 2026-05-25 |
 | [ADR-0009](ADR-0009-icm-mcp-integration.md) | ICM MCP Integration | Accepted | 2026-05-26 |
 | [ADR-0010](ADR-0010-fls-front-line-support.md) | FLS — Front Line Support Team | Accepted | 2026-05-27 |
+| [ADR-0011](ADR-0011-team-meeting.md) | Team Meeting — Collective Project Review | Accepted | 2026-05-27 |

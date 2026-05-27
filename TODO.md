@@ -2,6 +2,8 @@
 
 ## Completed
 
+- [x] ADR-0011: Team Meeting — Collective Project Review
+- [x] **Team meeting feature** — replaces solo Director final approval
 - [x] Design document with architecture, team structure, lifecycle
 - [x] 10 ADRs covering all design constraints (0001–0010), all Accepted
 - [x] Director orchestrator (AGENTS.md + `.opencode/agents/director.md`) with lifecycle states, quality gates, ICM protocol, second opinion, shipping gate
@@ -35,7 +37,6 @@
 
 - [ ] **Exercise FLS flow** — run FLS triage + hotfix against lib-validate or another project
 - [ ] **Exercise reopen flow** — run FLS escalation → CLOSED→REOPEN gate → full lifecycle on a real project
-- [ ] **Team meeting feature** — all teams + Director meet to review projects together, replacing solo Director final approval
 - [ ] **Study ICM docs** (https://github.com/rtk-ai/icm/tree/main/docs) to improve KodeHold ICM integration
 - [ ] **ADR-0009 follow-up items:**
   - [ ] Update Scribes agent file to reference MCP tools as primary ICM interface
