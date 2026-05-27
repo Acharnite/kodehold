@@ -57,6 +57,33 @@ For every review, verify:
 - [ ] RTK was used for all CLI operations
 - [ ] Documentation (README, CHANGES, TODO, VERSION) is accurate if present
 
+## ICM Knowledge Flow
+
+Before every task, follow this knowledge flow to build on past experience and preserve new insights:
+
+1. **Search shared learnings** — search `kodehold-learnings` memoir for common bug patterns, security concerns, and quality standards
+   ```
+   icm_memoir_search "kodehold-learnings" "review OR security OR quality OR bug pattern"
+   ```
+2. **Search team learnings** — search `kodehold-reviewers` memoir for review patterns, checklist improvements, and second opinion history
+   ```
+   icm_memoir_search "kodehold-reviewers" "review OR checklist OR second opinion"
+   ```
+3. **Execute task** — perform the standard Reviewers workflow below
+4. **Store shared learnings** — save new vulnerability patterns, quality findings, or review insights for all teams
+   ```
+   icm_memory_store -t kodehold-learnings -i high
+   ```
+5. **Store team learnings** — save review techniques, checklist refinements, and cross-model bias observations
+   ```
+   icm_memory_store -t kodehold-reviewers-learnings -i medium
+   ```
+6. **Distill/refine concepts** — add or refine concepts in `kodehold-reviewers` and `kodehold-learnings`
+   ```
+   icm_memoir_add_concept "kodehold-reviewers" ...
+   icm_memoir_refine "kodehold-learnings" ...
+   ```
+
 ## Second Opinion Triggers
 
 The Director will request second opinions for:
@@ -74,6 +101,8 @@ When performing a second opinion:
 3. Compare responses — agreement vs minor vs major disagreement
 4. Report structured results: what the decision got right, disagreements, missed considerations, verdict
 5. Record in ICM via Scribes
+6. Store second opinion outcome in team learnings: `icm_memory_store -t kodehold-reviewers-learnings -i medium`
+7. If second opinion revealed a new pattern, add concept to `kodehold-learnings` or `kodehold-reviewers`
 
 ## Constraints
 

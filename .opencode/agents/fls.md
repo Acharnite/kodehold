@@ -59,19 +59,47 @@ Check current lifecycle state before acting:
 - Architectural change
 - Uncertain root cause
 
+## ICM Knowledge Flow
+
+Before every task, follow this knowledge flow to build on past experience and preserve new insights:
+
+1. **Search shared learnings** — search `kodehold-learnings` memoir for hotfix patterns, escalation precedents, and common bug categories
+   ```
+   icm_memoir_search "kodehold-learnings" "hotfix OR bug OR escalation OR pattern"
+   ```
+2. **Search team learnings** — search `kodehold-fls` memoir for project-specific quirks, quick-fix techniques, and triage experience
+   ```
+   icm_memoir_search "kodehold-fls" "fix OR triage OR project OR quirk"
+   ```
+3. **Execute task** — perform the standard FLS triage and fix workflow below
+4. **Store shared learnings** — save bug categories, recurring issues, and fix patterns that benefit all teams
+   ```
+   icm_memory_store -t kodehold-learnings -i high
+   ```
+5. **Store team learnings** — save project-specific quirks, quick-fix techniques, and triage experience
+   ```
+   icm_memory_store -t kodehold-fls-learnings -i medium
+   ```
+6. **Distill/refine concepts** — add or refine concepts in `kodehold-fls` and `kodehold-learnings`
+   ```
+   icm_memoir_add_concept "kodehold-fls" ...
+   icm_memoir_refine "kodehold-learnings" ...
+   ```
+
 ## Workflow
 
 1. **Triage** — read issue, assess against criteria above
 2. **If Minor:**
    a. Load context: read design doc, relevant ADRs, affected code
-   b. Implement the fix
-   c. Verify: run relevant tests
-   d. **Document in ICM:** delegate to Scribes via Task tool
+   b. Search `kodehold-fls` for similar past fixes
+   c. Implement the fix
+   d. Verify: run relevant tests
+   e. **Document in ICM:**
       ```
-      icm store -t kodehold-<project>-fls -i medium \
-        --content "FLS fix: <description>"
+      icm_memory_store -t kodehold-<project>-fls -i medium \
+        -k "fix,<issue-type>" -c "FLS fix: <description>"
       ```
-   e. Return summary to Director
+   f. Return summary to Director
 3. **If Major:**
    a. Prepare escalation summary:
       - Impact assessment (files, modules, data, security)

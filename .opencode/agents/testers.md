@@ -42,6 +42,33 @@ Report to the Director with:
 3. What must happen first
 Example: *"Project is INIT, not ACTIVE. No code exists to test. Delegate to Architects for design, then Engineers for implementation, then run INIT→ACTIVE gate first."*
 
+## ICM Knowledge Flow
+
+Before every task, follow this knowledge flow to build on past experience and preserve new insights:
+
+1. **Search shared learnings** — search `kodehold-learnings` memoir for testing patterns, edge case strategies, and regression risks
+   ```
+   icm_memoir_search "kodehold-learnings" "test OR edge case OR regression OR coverage"
+   ```
+2. **Search team learnings** — search `kodehold-testers` memoir for test conventions, fixture patterns, and framework tricks
+   ```
+   icm_memoir_search "kodehold-testers" "test OR fixture OR framework OR assertion"
+   ```
+3. **Execute task** — perform the standard Testers workflow below
+4. **Store shared learnings** — save edge case findings, regression patterns, and test automation tips for all teams
+   ```
+   icm_memory_store -t kodehold-learnings -i high
+   ```
+5. **Store team learnings** — save assertion patterns, fixture management tips, and performance test setups
+   ```
+   icm_memory_store -t kodehold-testers-learnings -i medium
+   ```
+6. **Distill/refine concepts** — add or refine concepts in `kodehold-testers` and `kodehold-learnings`
+   ```
+   icm_memoir_add_concept "kodehold-testers" ...
+   icm_memoir_refine "kodehold-learnings" ...
+   ```
+
 ## Workflow
 
 1. Read the Testing Strategy section of the design document

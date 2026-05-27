@@ -50,22 +50,54 @@ For every workspace project, ensure these files exist and are up to date:
 | `TODO.md` | Completed checklist + future roadmap | Before CLOSED state |
 | `VERSION.md` | Current version declaration | Before CLOSED state |
 
+## ICM Knowledge Flow
+
+Before every task, follow this knowledge flow to build on past experience and preserve new insights:
+
+1. **Search shared learnings** — search `kodehold-learnings` memoir for documentation patterns and knowledge management best practices
+   ```
+   icm_memoir_search "kodehold-learnings" "documentation OR knowledge OR memory"
+   ```
+2. **Search team learnings** — search `kodehold-scribes` memoir for ICM query patterns, memoir distillation techniques, and MCP tool usage
+   ```
+   icm_memoir_search "kodehold-scribes" "ICM OR memoir OR distill OR MCP"
+   ```
+3. **Execute task** — perform the standard Scribes workflow below
+4. **Store shared learnings** — save documentation standards, knowledge management patterns, and cross-project insights for all teams
+   ```
+   icm_memory_store -t kodehold-learnings -i high
+   ```
+5. **Store team learnings** — save MCP tool experiences, query optimizations, and distillation workflow improvements
+   ```
+   icm_memory_store -t kodehold-scribes-learnings -i medium
+   ```
+6. **Distill/refine concepts** — add or refine concepts in `kodehold-scribes` and `kodehold-learnings`
+   ```
+   icm_memoir_add_concept "kodehold-scribes" ...
+   icm_memoir_refine "kodehold-learnings" ...
+   ```
+
 ## ICM Database
 
 All memory is stored in the **central** KodeHold ICM database. Never create a per-project ICM.
 
-```bash
-# Store a memory
-icm store -t kodehold-<project>-<topic> -i <critical|high|medium|low> -k "keywords" -c "content" --db /path/to/kodehold/.icm/memories.db
+Use **MCP tools** (not CLI) for all ICM operations. The MCP server provides auto-dedup, hybrid search, and auto-embedding:
 
-# Recall memories
-icm recall -t kodehold-<project> --db /path/to/kodehold/.icm/memories.db
+```
+# Store a memory (MCP)
+icm_memory_store -t kodehold-<project>-<topic> -i <critical|high|medium|low> -k "keywords" -c "content"
 
-# Search knowledge graph
-icm memoir search-all "<query>" --db /path/to/kodehold/.icm/memories.db
+# Recall memories (MCP) — hybrid search: 70% vector + 30% BM25
+icm_memory_recall -t kodehold-<project> -i critical high
 
-# Store session checkpoint
-icm store -t kodehold-<project>-session-checkpoint -i critical --db /path/to/kodehold/.icm/memories.db
+# Search knowledge graph (MCP)
+icm_memoir_search "kodehold-<namespace>" "<query>"
+
+# Search across all memoirs (MCP)
+icm_memoir_search_all "<query>"
+
+# Store session checkpoint (MCP)
+icm_memory_store -t kodehold-<project>-session-checkpoint -i critical
 ```
 
 ## Pre-Transition Workflow
@@ -73,23 +105,25 @@ icm store -t kodehold-<project>-session-checkpoint -i critical --db /path/to/kod
 When the Director requests context storage before a state transition:
 1. Read the current design doc, ADRs, and TODO to understand what was completed
 2. Store memories for: project overview, architecture decisions, review results, test results
-3. Extract knowledge concepts from what was learned
+3. Extract knowledge concepts from what was learned — add/refine in relevant team memoirs
 4. Update documentation files (README, CHANGES, TODO, VERSION) if needed
 5. Store a session checkpoint
 
 ## Context Reconstruction (for REOPEN)
 
 When a project is reopened:
-1. Query ICM: `icm recall -t kodehold-<project> -i critical high --db /path/to/kodehold/.icm/memories.db`
+1. Query ICM: `icm_memory_recall -t kodehold-<project> -i critical high`
 2. Load memories with high importance first
 3. Read the design doc, all ADRs, and project files
-4. Summarize context for the Director
-5. Store reopen event in ICM
+4. Search relevant team memoirs for patterns: `icm_memoir_search "kodehold-<team>" "<project context>"`
+5. Summarize context for the Director
+6. Store reopen event in ICM
 
 ## Constraints
 
 - Never implement code — you handle memory and documentation only
 - Never review code — that is Reviewers' role
 - Always use RTK for file operations
+- Always use MCP tools for ICM operations (not CLI)
 - Store at minimum importance level, use higher for critical decisions
 - Keep summaries concise — token-conscious at all times

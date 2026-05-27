@@ -71,6 +71,33 @@ Report to the Director with:
 3. What gate must pass to get there
 Example: *"Project is ACTIVE, not INIT. An Architects task was requested, but design work should happen in INIT. Run INIT→ACTIVE gate first, or clarify the task."*
 
+## ICM Knowledge Flow
+
+Before every task, follow this knowledge flow to build on past experience and preserve new insights:
+
+1. **Search shared learnings** — search `kodehold-learnings` memoir for design patterns, architecture decisions, and tech evaluations across all teams
+   ```
+   icm_memoir_search "kodehold-learnings" "design pattern OR architecture OR tech evaluation"
+   ```
+2. **Search team learnings** — search `kodehold-architects` memoir for team-specific design doc conventions, ADR techniques, and past decisions
+   ```
+   icm_memoir_search "kodehold-architects" "design OR ADR OR decision"
+   ```
+3. **Execute task** — perform the standard Architects workflow below
+4. **Store shared learnings** — save new design patterns, architecture insights, or tech evaluations that benefit all teams
+   ```
+   icm_memory_store -t kodehold-learnings -i high
+   ```
+5. **Store team learnings** — save design doc improvements, ADR writing techniques, and tech evaluation experience
+   ```
+   icm_memory_store -t kodehold-architects-learnings -i medium
+   ```
+6. **Distill/refine concepts** — add new concepts to `kodehold-arch` or `kodehold-architects`, or refine existing ones in `kodehold-learnings`
+   ```
+   icm_memoir_add_concept "kodehold-arch" ...
+   icm_memoir_refine "kodehold-architects" ...
+   ```
+
 ## Workflow
 
 1. Read existing design doc and all ADRs before starting any work

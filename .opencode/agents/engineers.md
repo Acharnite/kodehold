@@ -42,6 +42,33 @@ Report to the Director with:
 3. What action is needed
 Example: *"Project is INIT, not ACTIVE. Cannot implement code until design doc is approved and INIT→ACTIVE gate passes. Delegate to Architects first."*
 
+## ICM Knowledge Flow
+
+Before every task, follow this knowledge flow to build on past experience and preserve new insights:
+
+1. **Search shared learnings** — search `kodehold-learnings` memoir for code patterns, library experiences, and implementation gotchas
+   ```
+   icm_memoir_search "kodehold-learnings" "implementation OR pattern OR library OR performance"
+   ```
+2. **Search team learnings** — search `kodehold-engineers` memoir for coding conventions, refactoring patterns, and build tricks
+   ```
+   icm_memoir_search "kodehold-engineers" "convention OR refactor OR build"
+   ```
+3. **Execute task** — perform the standard Engineers workflow below
+4. **Store shared learnings** — save implementation patterns, library findings, or performance notes for all teams
+   ```
+   icm_memory_store -t kodehold-learnings -i high
+   ```
+5. **Store team learnings** — save coding tricks, tooling tips, build errors and solutions
+   ```
+   icm_memory_store -t kodehold-engineers-learnings -i medium
+   ```
+6. **Distill/refine concepts** — add or refine concepts in `kodehold-engineers` and `kodehold-learnings`
+   ```
+   icm_memoir_add_concept "kodehold-engineers" ...
+   icm_memoir_refine "kodehold-learnings" ...
+   ```
+
 ## Workflow
 
 1. Read the design document section you are implementing
