@@ -59,35 +59,13 @@ For every review, verify:
 
 ## ICM Knowledge Flow
 
-Before every task, follow this knowledge flow to build on past experience and preserve new insights:
+Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute each step with these team-specific parameters:
 
-1. **Search shared learnings** — search `kodehold-learnings` memoir for common bug patterns, security concerns, and quality standards
-   ```
-   icm_memoir_search "kodehold-learnings" "review OR security OR quality OR bug pattern"
-   ```
-2. **Search team learnings** — search `kodehold-reviewers` memoir for review patterns, checklist improvements, and second opinion history
-   ```
-   icm_memoir_search "kodehold-reviewers" "review OR checklist OR second opinion"
-   ```
- 3. **Execute task** — perform the standard Reviewers workflow below
- 4. **Pre-store consolidation check** — if the target topic has >5 entries, consolidate first (ICM warns at >7)
-    ```
-    icm_memory_health -t kodehold-learnings
-    icm_memory_health -t kodehold-reviewers-learnings
-    ```
- 5. **Store shared learnings** — save new vulnerability patterns, quality findings, or review insights for all teams
-   ```
-   icm_memory_store -t kodehold-learnings -i high
-   ```
- 6. **Store team learnings** — save review techniques, checklist refinements, and cross-model bias observations
-    ```
-    icm_memory_store -t kodehold-reviewers-learnings -i medium
-    ```
- 7. **Distill/refine concepts** — add or refine concepts in `kodehold-reviewers` and `kodehold-learnings`
-    ```
-    icm_memoir_add_concept "kodehold-reviewers" ...
-    icm_memoir_refine "kodehold-learnings" ...
-    ```
+- Team: `reviewers`
+- Shared learnings query: `"review OR security OR quality OR bug pattern"`
+- Team memoir: `kodehold-reviewers`, query: `"review OR checklist OR second opinion"`
+- Team learnings topic: `kodehold-reviewers-learnings`
+- Concept memoirs: `kodehold-reviewers`, `kodehold-learnings`
  8. **Update the design doc** — after review, update the design doc's review status, note any corrections made, and bump Last Reviewed date.
 
 ## Second Opinion Triggers
@@ -112,6 +90,7 @@ When performing a second opinion:
 
 ## Constraints
 
+- When KODEHOLD_LIGHT=1, respond in English only (token optimization)
 - Never write implementation code — you are a reviewer only
 - Never approve your own work
 - Be specific in feedback — reference exact file + line numbers

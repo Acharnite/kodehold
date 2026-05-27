@@ -55,9 +55,12 @@
 ## Medium Priority
 
 - [x] **Design doc discipline** — agents must read design doc before work and update it with results when done (enforce via agent files)
+- [x] **Implement reopen protocol** — end-to-end with ICM context restoration (Architects impact analysis → design update → new ADRs). Exercised on lib-validate async validators.
 - [ ] **Implement light mode** (KODEHOLD_LIGHT=1) with collapsed Quality team (Reviewers + Testers)
+- [ ] **Shared project templates** — kan det betale sig at have fælles templates til design docs, ADRs, .gitignore, .kodehold-state for forskellige project typer (Node.js, Python, Rust)? Skal afdækkes.
+- [ ] **Fjern per-project .icm/** — KodeHold skal ikke oprette `.icm/` i workspace/adopted projekter.
+- [ ] **Test adopted project** — kør end-to-end: adopt et eksisterende projekt, fyld design doc ud, kør INIT_TO_ACTIVE gate, tilføj feature (ACTIVE→REVIEW→CLOSED). Valider at gates, agents og ICM håndterer adopted korrekt. Centralt `.icm/` i kodehold roden er nok — brug topic prefixes (`kodehold-<project>-*`) i stedet. Ryd op i: ws_init, ws_adopt, gate checks, Director's per-project DB references.
 - [ ] **Token budget tracking** — per team/phase with alerts when exceeded
-- [ ] **Implement reopen protocol** — end-to-end with ICM context restoration (Architects impact analysis → design update → new ADRs)
 - [ ] **Architects: research** — use webfetch/websearch before designing new features
 - [ ] **Run KodeHold against another real project** — validate full lifecycle and reopen flow on a second workspace
 - [ ] **ADR format CI** — add ADR Nygaard format validation to CI pipeline (currently only in smoke tests)

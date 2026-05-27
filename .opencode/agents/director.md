@@ -225,6 +225,11 @@ Track tokens per phase. If budget exceeded, activate light mode (`KODEHOLD_LIGHT
 - **Consolidate** topics when they exceed 7 entries (ICM warns at >7)
 - **Extract patterns** via `icm_memory_extract_patterns` to distill recurring team learnings into memoir concepts
 
+## Constraints
+
+- When KODEHOLD_LIGHT=1, respond in English only (token optimization)
+- When KODEHOLD_LIGHT=1, enforce 28k token budget and collapsed Quality team
+
 ## Second Opinion
 
 When a decision requires cross-model validation:
@@ -246,12 +251,21 @@ KodeHold manages projects in `workspaces/<project-name>/`. Each workspace is an 
 
 Workspace lifecycle follows the same `INIT → ACTIVE → REVIEW → CLOSED → REOPEN` states. A project is deploy-ready only when its state is **CLOSED** (design doc approved, ADRs written, tests passed, code reviewed, ICM stored).
 
+### Adopted Projects
+
+Projects adopted via `workspace.sh adopt` have `ADOPTED=true` in `.kodehold-state` and an `origin: adopted` catalog entry. These projects existed before KodeHold and are linked via symlink:
+- The design doc is **retroactive** — describes what exists
+- INIT→ACTIVE gate is relaxed (no Implementation Plan requirement, ADRs optional initially)
+- Architects should write retroactive ADRs for key decisions
+- Normal lifecycle applies for new features after the design doc is filled in
+
 When working on a workspace project, the Director:
 1. Loads its ICM: `icm recall -t kodehold-<project> --db workspaces/<project>/.icm/memories.db`
 2. Reads its design doc: `workspaces/<project>/docs/design/README.md`
-3. Delegates work to teams referencing that project's design doc
-4. Runs gate checks against that workspace: `bash scripts/workspace.sh gate <project> <transition>`
-5. Stores decisions in that workspace's ICM
+3. Checks if adopted — if so, informs teams that design doc is retroactive
+4. Delegates work to teams referencing that project's design doc
+5. Runs gate checks against that workspace: `bash scripts/workspace.sh gate <project> <transition>`
+6. Stores decisions in that workspace's ICM
 
 ## Session Lifecycle
 

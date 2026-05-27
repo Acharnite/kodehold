@@ -2,10 +2,11 @@
 # KodeHold Lifecycle Gate — run automated quality checks before state transitions
 set -euo pipefail
 
-RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; NC='\033[0m'
+RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
 pass() { echo -e "  ${GREEN}✓${NC} $1"; }
 fail() { echo -e "  ${RED}✗${NC} $1"; }
 warn() { echo -e "  ${YELLOW}⚠${NC} $1"; }
+info() { echo -e "  ${CYAN}i${NC} $1"; }
 
 STATE_FILE=".kodehold-state"
 DESIGN_DOC="docs/design/README.md"
@@ -44,9 +45,16 @@ init_to_active() {
   echo "━━━ Gate: INIT → ACTIVE ━━━"
   echo ""
 
+  # Check if this is an adopted project (already has code, relaxed requirements)
+  local adopted=false
+  if [ -f "$STATE_FILE" ] && grep -q "ADOPTED=true" "$STATE_FILE" 2>/dev/null; then
+    adopted=true
+    info "Adopted project detected — relaxing INIT→ACTIVE checks"
+  fi
+
   # Design doc exists and has all 11 sections
   assert_file "$DESIGN_DOC"
-  for section in "Purpose & Scope" "Requirements" "Architecture Overview" "Component Design" "Data Model" "API Design" "Implementation Plan" "Testing Strategy" "ADR Index" "Open Questions" "Changelog"; do
+  for section in "Purpose & Scope" "Requirements" "Architecture Overview" "Component Design" "Data Model" "API Design" "Testing Strategy" "ADR Index" "Open Questions" "Changelog"; do
     if grep -q "$section" "$DESIGN_DOC" 2>/dev/null; then
       pass "Design doc section: $section"
     else
@@ -55,11 +63,29 @@ init_to_active() {
     fi
   done
 
+  # Implementation Plan — optional for adopted projects (they're already built)
+  if [ "$adopted" = true ]; then
+    if grep -q "Implementation Plan" "$DESIGN_DOC" 2>/dev/null; then
+      pass "Design doc section: Implementation Plan (optional for adopted)"
+    else
+      warn "No Implementation Plan — adopted project already exists"
+    fi
+  else
+    if grep -q "Implementation Plan" "$DESIGN_DOC" 2>/dev/null; then
+      pass "Design doc section: Implementation Plan"
+    else
+      fail "Design doc missing section: Implementation Plan"
+      gate_failed=1
+    fi
+  fi
+
   # ADR directory exists with files
   assert_dir "$ADR_DIR"
-  adr_count=$(ls "$ADR_DIR"/ADR-*.md 2>/dev/null | wc -l)
+  adr_count=$(find "$ADR_DIR" -maxdepth 1 -name 'ADR-*.md' 2>/dev/null | wc -l)
   if [ "$adr_count" -ge 1 ]; then
     pass "$adr_count ADR(s) found"
+  elif [ "$adopted" = true ]; then
+    warn "No ADRs yet — write retroactive ADRs for key architectural decisions"
   else
     fail "No ADRs found in $ADR_DIR"
     gate_failed=1

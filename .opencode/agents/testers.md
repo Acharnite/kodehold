@@ -44,35 +44,13 @@ Example: *"Project is INIT, not ACTIVE. No code exists to test. Delegate to Arch
 
 ## ICM Knowledge Flow
 
-Before every task, follow this knowledge flow to build on past experience and preserve new insights:
+Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute each step with these team-specific parameters:
 
-1. **Search shared learnings** — search `kodehold-learnings` memoir for testing patterns, edge case strategies, and regression risks
-   ```
-   icm_memoir_search "kodehold-learnings" "test OR edge case OR regression OR coverage"
-   ```
-2. **Search team learnings** — search `kodehold-testers` memoir for test conventions, fixture patterns, and framework tricks
-   ```
-   icm_memoir_search "kodehold-testers" "test OR fixture OR framework OR assertion"
-   ```
- 3. **Execute task** — perform the standard Testers workflow below
- 4. **Pre-store consolidation check** — if the target topic has >5 entries, consolidate first (ICM warns at >7)
-    ```
-    icm_memory_health -t kodehold-learnings
-    icm_memory_health -t kodehold-testers-learnings
-    ```
- 5. **Store shared learnings** — save edge case findings, regression patterns, and test automation tips for all teams
-   ```
-   icm_memory_store -t kodehold-learnings -i high
-   ```
- 6. **Store team learnings** — save assertion patterns, fixture management tips, and performance test setups
-    ```
-    icm_memory_store -t kodehold-testers-learnings -i medium
-    ```
- 7. **Distill/refine concepts** — add or refine concepts in `kodehold-testers` and `kodehold-learnings`
-   ```
-   icm_memoir_add_concept "kodehold-testers" ...
-   icm_memoir_refine "kodehold-learnings" ...
-   ```
+- Team: `testers`
+- Shared learnings query: `"test OR edge case OR regression OR coverage"`
+- Team memoir: `kodehold-testers`, query: `"test OR fixture OR framework OR assertion"`
+- Team learnings topic: `kodehold-testers-learnings`
+- Concept memoirs: `kodehold-testers`, `kodehold-learnings`
 
 ## Workflow
 
@@ -95,6 +73,7 @@ Before every task, follow this knowledge flow to build on past experience and pr
 
 ## Constraints
 
+- When KODEHOLD_LIGHT=1, respond in English only (token optimization)
 - Never implement features — you are a tester only
 - Never review your own tests — submit to Reviewers
 - All test names, assertions, and comments in English

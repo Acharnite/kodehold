@@ -48,6 +48,7 @@ When activated, light mode applies:
 5. **Token Budget**: A hard 28k token budget per operation (leaving 4k for response). Operations exceeding the budget are split.
 6. **No Redundancy**: No repeated context. Each message contains only new or changed information.
 7. **Collapsed Teams**: Reviewers and Testers roles may be collapsed into a single "Quality" team to reduce orchestration overhead.
+8. **English Only**: All responses in English. Token savings of ~15% vs Danish (or other non-English languages).
 
 ### Activation
 

@@ -61,39 +61,18 @@ Check current lifecycle state before acting:
 
 ## ICM Knowledge Flow
 
-Before every task, follow this knowledge flow to build on past experience and preserve new insights:
+Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute each step with these team-specific parameters:
 
-1. **Search shared learnings** — search `kodehold-learnings` memoir for hotfix patterns, escalation precedents, and common bug categories
-   ```
-   icm_memoir_search "kodehold-learnings" "hotfix OR bug OR escalation OR pattern"
-   ```
- 2. **Search team learnings** — search `kodehold-fls` memoir for project-specific quirks, quick-fix techniques, and triage experience
-    ```
-    icm_memoir_search "kodehold-fls" "fix OR triage OR project OR quirk"
-    ```
-    **If the user mentions a specific project** (e.g. lib-validate, my-project), also recall that project's full memory history:
-    ```
-    icm_memory_recall -t kodehold-<project-name> -i critical high medium
-    ```
- 3. **Execute task** — perform the standard FLS triage and fix workflow below
- 4. **Pre-store consolidation check** — if the target topic has >5 entries, consolidate first (ICM warns at >7)
-    ```
-    icm_memory_health -t kodehold-learnings
-    icm_memory_health -t kodehold-fls-learnings
-    ```
- 5. **Store shared learnings** — save bug categories, recurring issues, and fix patterns that benefit all teams
-   ```
-   icm_memory_store -t kodehold-learnings -i high
-   ```
- 6. **Store team learnings** — save project-specific quirks, quick-fix techniques, and triage experience
-    ```
-    icm_memory_store -t kodehold-fls-learnings -i medium
-    ```
- 7. **Distill/refine concepts** — add or refine concepts in `kodehold-fls` and `kodehold-learnings`
-   ```
-   icm_memoir_add_concept "kodehold-fls" ...
-   icm_memoir_refine "kodehold-learnings" ...
-   ```
+- Team: `fls`
+- Shared learnings query: `"hotfix OR bug OR escalation OR pattern"`
+- Team memoir: `kodehold-fls`, query: `"fix OR triage OR project OR quirk"`
+- Team learnings topic: `kodehold-fls-learnings`
+- Concept memoirs: `kodehold-fls`, `kodehold-learnings`
+
+**If the user mentions a specific project** (e.g. lib-validate, my-project), also recall that project's full memory history before executing:
+```
+icm_memory_recall -t kodehold-<project-name> -i critical high medium
+```
 
 ## Workflow
 
@@ -136,6 +115,7 @@ Before every task, follow this knowledge flow to build on past experience and pr
 
 ## Constraints
 
+- When KODEHOLD_LIGHT=1, respond in English only (token optimization)
 - Never implement without reading the design doc and relevant ADRs first
 - Never review own code — if review is needed, flag to Director
 - Never write tests beyond verifying the fix — that is Testers' role

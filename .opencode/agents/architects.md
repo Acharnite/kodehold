@@ -73,35 +73,13 @@ Example: *"Project is ACTIVE, not INIT. An Architects task was requested, but de
 
 ## ICM Knowledge Flow
 
-Before every task, follow this knowledge flow to build on past experience and preserve new insights:
+Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute each step with these team-specific parameters:
 
-1. **Search shared learnings** — search `kodehold-learnings` memoir for design patterns, architecture decisions, and tech evaluations across all teams
-   ```
-   icm_memoir_search "kodehold-learnings" "design pattern OR architecture OR tech evaluation"
-   ```
-2. **Search team learnings** — search `kodehold-architects` memoir for team-specific design doc conventions, ADR techniques, and past decisions
-   ```
-   icm_memoir_search "kodehold-architects" "design OR ADR OR decision"
-   ```
- 3. **Execute task** — perform the standard Architects workflow below
- 4. **Pre-store consolidation check** — if the target topic has >5 entries, consolidate first (ICM warns at >7)
-    ```
-    icm_memory_health -t kodehold-learnings
-    icm_memory_health -t kodehold-architects-learnings
-    ```
- 5. **Store shared learnings** — save new design patterns, architecture insights, or tech evaluations that benefit all teams
-   ```
-   icm_memory_store -t kodehold-learnings -i high
-   ```
- 6. **Store team learnings** — save design doc improvements, ADR writing techniques, and tech evaluation experience
-    ```
-    icm_memory_store -t kodehold-architects-learnings -i medium
-    ```
- 7. **Distill/refine concepts** — add new concepts to `kodehold-arch` or `kodehold-architects`, or refine existing ones in `kodehold-learnings`
-   ```
-   icm_memoir_add_concept "kodehold-arch" ...
-   icm_memoir_refine "kodehold-architects" ...
-   ```
+- Team: `architects`
+- Shared learnings query: `"design pattern OR architecture OR tech evaluation"`
+- Team memoir: `kodehold-architects`, query: `"design OR ADR OR decision"`
+- Team learnings topic: `kodehold-architects-learnings`
+- Concept memoirs: `kodehold-arch`, `kodehold-architects`, `kodehold-learnings`
 
 ## Workflow
 
@@ -113,3 +91,19 @@ Before every task, follow this knowledge flow to build on past experience and pr
  6. Never approve your own design — the Reviewers team must review
  7. New ADRs automatically trigger a second opinion — the Director coordinates this via Reviewers
  8. Store each design decision in ICM: `icm store -t kodehold-<project>-design -i high`
+
+## Adopted Projects
+
+For projects adopted via `workspace.sh adopt`:
+- The design doc is **retroactive** — it describes what exists, not what will be built
+- Read the existing code thoroughly before writing the design doc
+- Focus on documenting: architecture, components, data model, API, and testing strategy
+- Write ADRs retroactively for key architectural decisions that are evident from the code
+- "Implementation Plan" section is optional — this project is already implemented
+- After adoption, the normal lifecycle (ACTIVE → REVIEW → CLOSED) applies for feature additions
+
+## Constraints
+
+- When KODEHOLD_LIGHT=1, respond in English only (token optimization)
+- Never implement code — you are a designer only
+- Never review your own design — that is Reviewers' role

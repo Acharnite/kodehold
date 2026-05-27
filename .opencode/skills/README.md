@@ -8,11 +8,16 @@ Each skill lives in its own subdirectory with a `SKILL.md` entry point:
 
 ```
 skills/
-└── <skill-name>/
-    ├── SKILL.md        # Entry point — what this skill does and how to invoke it
-    └── ...             # Supporting files (templates, scripts, etc.)
+├── README.md               # This file — skill index
+├── icm-knowledge-flow/
+│   └── SKILL.md            # 7-step ICM knowledge flow
+└── state-awareness/
+    └── SKILL.md            # Lifecycle state checking + mismatch protocol
 ```
 
 ## Available Skills
 
-_(None yet)_
+| Skill | Description |
+|-------|-------------|
+| [icm-knowledge-flow](icm-knowledge-flow/SKILL.md) | Shared 7-step ICM Knowledge Flow used by all 6 team subagents. Replaces ~50 lines of duplication per agent. |
+| [state-awareness](state-awareness/SKILL.md) | Lifecycle state check preamble and mismatch reporting protocol. Used by all team subagents. |

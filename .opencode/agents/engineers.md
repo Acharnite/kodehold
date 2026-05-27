@@ -44,35 +44,13 @@ Example: *"Project is INIT, not ACTIVE. Cannot implement code until design doc i
 
 ## ICM Knowledge Flow
 
-Before every task, follow this knowledge flow to build on past experience and preserve new insights:
+Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute each step with these team-specific parameters:
 
-1. **Search shared learnings** — search `kodehold-learnings` memoir for code patterns, library experiences, and implementation gotchas
-   ```
-   icm_memoir_search "kodehold-learnings" "implementation OR pattern OR library OR performance"
-   ```
-2. **Search team learnings** — search `kodehold-engineers` memoir for coding conventions, refactoring patterns, and build tricks
-   ```
-   icm_memoir_search "kodehold-engineers" "convention OR refactor OR build"
-   ```
- 3. **Execute task** — perform the standard Engineers workflow below
- 4. **Pre-store consolidation check** — if the target topic has >5 entries, consolidate first (ICM warns at >7)
-    ```
-    icm_memory_health -t kodehold-learnings
-    icm_memory_health -t kodehold-engineers-learnings
-    ```
- 5. **Store shared learnings** — save implementation patterns, library findings, or performance notes for all teams
-   ```
-   icm_memory_store -t kodehold-learnings -i high
-   ```
- 6. **Store team learnings** — save coding tricks, tooling tips, build errors and solutions
-    ```
-    icm_memory_store -t kodehold-engineers-learnings -i medium
-    ```
- 7. **Distill/refine concepts** — add or refine concepts in `kodehold-engineers` and `kodehold-learnings`
-   ```
-   icm_memoir_add_concept "kodehold-engineers" ...
-   icm_memoir_refine "kodehold-learnings" ...
-   ```
+- Team: `engineers`
+- Shared learnings query: `"implementation OR pattern OR library OR performance"`
+- Team memoir: `kodehold-engineers`, query: `"convention OR refactor OR build"`
+- Team learnings topic: `kodehold-engineers-learnings`
+- Concept memoirs: `kodehold-engineers`, `kodehold-learnings`
 
 ## Workflow
 
@@ -87,6 +65,7 @@ Before every task, follow this knowledge flow to build on past experience and pr
 
 ## Constraints
 
+- When KODEHOLD_LIGHT=1, respond in English only (token optimization)
 - Never implement without an approved design document section reference
 - Chunk files > 150 lines — process one section at a time
 - Use minimal prompts — no explanatory text, no chain-of-thought examples

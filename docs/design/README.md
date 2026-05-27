@@ -191,6 +191,7 @@ Consequences: Trade-offs and follow-ups
 | ADR-0009 | ICM MCP Integration | Accepted |
 | ADR-0010 | FLS — Front Line Support Team | Accepted |
 | ADR-0011 | Team Meeting — Collective Project Review | Accepted |
+| ADR-0012 | Adopted Projects — Existing Codebases in KodeHold | Accepted |
 
 See `docs/adr/README.md` for full details.
 
@@ -266,6 +267,7 @@ An optional execution mode for users who want to run KodeHold on a local LLM wit
 - Minimal prompt templates
 - 28k token budget per operation
 - Collapsed Reviewers + Testers into single Quality team
+- English-only responses (~15% token savings)
 
 ### 8.3 Second Opinion
 

@@ -95,6 +95,174 @@ __pycache__/
   pass "Workspace '$name' created at $ws_dir"
 }
 
+ws_adopt() {
+  local name="$1"
+  local target_path="$2"
+  local ws_dir="$WORKSPACE_ROOT/$name"
+
+  if [ -z "$name" ] || [ -z "$target_path" ]; then
+    fail "Usage: bash scripts/workspace.sh adopt <name> <path-to-existing-project>"
+  fi
+
+  if [ -e "$ws_dir" ]; then
+    fail "Workspace '$name' already exists at $ws_dir"
+  fi
+
+  if [ ! -d "$target_path" ]; then
+    fail "Target path does not exist: $target_path"
+  fi
+
+  # Resolve to absolute path
+  target_path="$(cd "$target_path" && pwd 2>/dev/null)" || fail "Cannot resolve path: $target_path"
+
+  info "Adopting existing project: $target_path → $ws_dir"
+  ln -s "$target_path" "$ws_dir"
+
+  # Create KodeHold artifacts inside the adopted project
+  mkdir -p "$ws_dir/docs/design" "$ws_dir/docs/adr" "$ws_dir/.icm"
+  touch "$ws_dir/.icm/config.toml"
+
+  # .kodehold-state with ADOPTED flag
+  cat > "$ws_dir/.kodehold-state" << EOF
+# KodeHold Lifecycle State — Adopted Project
+# Valid states: INIT, ACTIVE, REVIEW, CLOSED, REOPEN
+STATE=INIT
+ADOPTED=true
+LAST_UPDATED=$(date +%Y-%m-%d)
+DESIGN_DOC_APPROVED=false
+ADRS_COMPLETE=false
+TESTS_PASSING=false
+CODE_REVIEWED=false
+EOF
+
+  # .gitignore addition for .icm/ if not present
+  local gitignore="$ws_dir/.gitignore"
+  if [ -f "$gitignore" ]; then
+    if ! grep -q "^\.icm/" "$gitignore" 2>/dev/null; then
+      echo -e "\n# KodeHold\n.icm/" >> "$gitignore"
+    fi
+  else
+    echo "# KodeHold" > "$gitignore"
+    echo ".icm/" >> "$gitignore"
+  fi
+
+  # Quick project scan for design doc
+  local lang=""
+  local test_framework=""
+  local build_system=""
+  if [ -f "$ws_dir/package.json" ]; then
+    lang="JavaScript/TypeScript"
+    test_framework=$(grep -oP '"(jest|vitest|mocha|playwright)"' "$ws_dir/package.json" 2>/dev/null | head -1 | tr -d '"' || echo "")
+    build_system=$(grep -oP '"build":\s*"[^"]+"' "$ws_dir/package.json" 2>/dev/null | head -1 || echo "")
+  elif [ -f "$ws_dir/Cargo.toml" ]; then
+    lang="Rust"
+    test_framework="cargo test (built-in)"
+    build_system="cargo"
+  elif [ -f "$ws_dir/pyproject.toml" ]; then
+    lang="Python"
+    test_framework=$(grep -oP '(pytest|unittest)' "$ws_dir/pyproject.toml" 2>/dev/null | head -1 || echo "pytest")
+    build_system="pip/setuptools"
+  elif [ -f "$ws_dir/go.mod" ]; then
+    lang="Go"
+    test_framework="go test (built-in)"
+    build_system="go build"
+  elif [ -f "$ws_dir/Makefile" ]; then
+    lang="Unknown (has Makefile)"
+    build_system="make"
+  else
+    lang="Unknown"
+    build_system="Unknown"
+  fi
+
+  local file_count
+  file_count=$(find "$ws_dir" -not -path '*/.git/*' -not -path '*/.icm/*' -not -name '.gitignore' -not -name '.kodehold-state' -type f 2>/dev/null | wc -l)
+  local commit_count=0
+  if [ -d "$ws_dir/.git" ]; then
+    commit_count=$(git -C "$ws_dir" log --oneline 2>/dev/null | wc -l)
+  fi
+
+  # Design doc template
+  cat > "$ws_dir/docs/design/README.md" << EOF
+# $name — Design Document
+**Version:** 0.1
+**Status:** Draft
+**Design Authority:** Architects
+**Last Reviewed:** $(date +%Y-%m-%d)
+**Origin:** Adopted ($target_path)
+
+> Project adopted by KodeHold on $(date +%Y-%m-%d). It was not originally created with KodeHold.
+> This design document is a retroactive description of the existing codebase.
+
+## 1. Purpose & Scope
+_Describe what this project does — derived from existing code._
+
+## 2. Requirements
+_Reverse-engineered from existing functionality._
+
+## 3. Architecture Overview
+_Describe the existing architecture._
+
+- Language: $lang
+- Build system: $build_system
+- Test framework: ${test_framework:-None detected}
+- $file_count source files, $commit_count git commits
+
+## 4. Component Design
+_Catalogue existing components and modules._
+
+## 5. Data Model
+_Document existing data structures and schemas._
+
+## 6. API Design
+_Document existing API endpoints and interfaces._
+
+## 7. Implementation Plan
+_No forward plan — this project is already implemented. Use for feature additions._
+
+## 8. Testing Strategy
+_Describe existing test approach._
+
+- Test framework: ${test_framework:-Not detected}
+- _Add test discovery results here_
+
+## 9. ADR Index
+_Record architectural decisions retroactively as ADRs._
+
+## 10. Open Questions
+_What needs to be understood about the codebase._
+
+## 11. Changelog
+- $(date +%Y-%m-%d): Adopted by KodeHold — design doc created retroactively
+EOF
+
+  # ADR index
+  cat > "$ws_dir/docs/adr/README.md" << EOF
+# ADR Index — $name (Adopted Project)
+
+| ADR | Title | Status |
+|-----|-------|--------|
+EOF
+
+  info "Project scan complete: $lang, $file_count files, $commit_count commits"
+
+  # Register in catalog
+  local catalog
+  catalog=$(catalog_read)
+  catalog=$(echo "$catalog" | jq \
+    --arg n "$name" \
+    --arg p "$ws_dir" \
+    --arg r "$target_path" \
+    '. + {($n): {"state": "INIT", "created": now | strftime("%Y-%m-%d"), "path": $p, "origin": "adopted", "real_path": $r}}')
+  catalog_write "$catalog"
+
+  pass "Adopted '$name' from $target_path"
+  info "Next steps:"
+  info "  1. Read design doc at $ws_dir/docs/design/README.md"
+  info "  2. Fill in Purpose, Architecture, Components sections"
+  info "  3. Run: bash scripts/workspace.sh gate $name INIT_TO_ACTIVE"
+  info "  Note: Adopted projects get relaxed gates — design doc fill-in is the priority"
+}
+
 ws_list() {
   local catalog
   catalog=$(catalog_read)
@@ -209,7 +377,8 @@ usage() {
   echo "Usage: bash scripts/workspace.sh <command> [options]"
   echo ""
   echo "Commands:"
-  echo "  init <name>         Create a new project workspace"
+  echo "  init <name>         Create a new project workspace from scratch"
+  echo "  adopt <name> <path> Adopt an existing project (symlink + KodeHold bootstrap)"
   echo "  list                List all workspaces"
   echo "  state <name>        Show lifecycle state of a workspace"
   echo "  gate <name> <t>     Run a gate transition on a workspace"
@@ -230,6 +399,10 @@ case "${1:-}" in
   init)
     [ -n "${2:-}" ] || usage
     ws_init "$2"
+    ;;
+  adopt)
+    [ -n "${3:-}" ] || usage
+    ws_adopt "$2" "$3"
     ;;
   list)
     ws_list
