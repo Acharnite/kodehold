@@ -1,5 +1,8 @@
 ![KodeHold banner](banner.png)
 
+> **⚠️ WORK IN PROGRESS — EXPERIMENTAL**
+> KodeHold is a personal experiment and **not production-ready**. Everything may change. Use at your own risk — expect breaking changes, unexpected behavior, and gaps in documentation. If it breaks, you keep both pieces.
+
 # KodeHold — /ˈkəʊd həʊld/ → "Code Hold". Koden er i gode hænder.
 
 **AI-powered coding orchestrator** — conscious team-based software engineering with structured design documents, persistent memory, lifecycle gates, and multi-LLM support.
