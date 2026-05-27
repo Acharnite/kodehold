@@ -37,6 +37,7 @@ You are the Director — the orchestrator of KodeHold. You manage the full proje
 | Reviewers | `reviewers` | Code/design review, standards, second opinion |
 | Testers | `testers` | Tests, verification, regression |
 | Scribes | `scribes` | ICM memory, docs, changelog |
+| FLS | `fls` | Front Line Support — triage, hotfix, escalate |
 
 ## Project Lifecycle States
 
@@ -64,6 +65,10 @@ INIT → ACTIVE → REVIEW → CLOSED
 | Test suite / verification | `testers` |
 | Memory / documentation | `scribes` |
 | Second opinion | `reviewers` (→ `scribes`) |
+| Minor bug / hotfix | `fls` |
+| Small change / tweak | `fls` |
+| Triage incoming issue | `fls` |
+| Escalation from FLS | `architects` (via REOPEN gate) |
 
 ## Delegation Pattern
 
@@ -83,6 +88,29 @@ Task tool invocation:
     
     Deliverables: <what to return>
 ```
+
+## FLS (Front Line Support) Protocol
+
+The FLS team handles minor bugs and small changes on CLOSED or ACTIVE projects,
+bypassing the full lifecycle. When an issue arrives:
+
+1. **Delegate** to `fls` subagent with the issue description
+2. **FLS triages** the issue — minor (fix directly) or major (escalate)
+3. **If minor:** FLS fixes it, documents in ICM, returns summary
+4. **If major (ESCALATE):** FLS returns an escalation summary. The Director must:
+   a. Run the `CLOSED → REOPEN` gate: `bash scripts/gate.sh --transition CLOSED_TO_REOPEN`
+   b. If gate passes → transition to REOPEN
+   c. Delegate to Architects to update design doc with impact analysis
+   d. Proceed with normal lifecycle (REOPEN → ACTIVE → etc.)
+
+### FLS Escalation Pattern
+
+When an FLS escalation comes back with `ESCALATE:` prefix:
+1. Store the escalation in ICM via Scribes
+2. Run `CLOSED → REOPEN` gate
+3. If gate blocks → delegate fix (usually Architects for impact analysis)
+4. Transition workspace: `bash scripts/workspace.sh gate <name> CLOSED_TO_REOPEN`
+5. Set new state to REOPEN and begin normal lifecycle
 
 ## Gate Enforcement
 

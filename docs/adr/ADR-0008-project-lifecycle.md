@@ -42,39 +42,59 @@ Without a defined lifecycle and reopening protocol:
                   └──────────┬───────────────────────┘
                              │ Director closes
                              ▼
-                  ┌──────────────────────────────────┐
-                  │           CLOSED                   │
-                  │  Context stored in ICM             │
-                  │  Design doc archived               │
-                  │  Project inactive                   │
-                  └──────────┬───────────────────────┘
-                             │ New feature / bugfix
-                             ▼
-                  ┌──────────────────────────────────┐
-                  │           REOPEN                   │
-                  │  Context loaded from ICM            │
-                  │  Impact analysis (Architects)       │
-                  │  Design doc updated                  │
-                  └──────────┬───────────────────────┘
-                             │ → ACTIVE (above)
+                   ┌──────────────────────────────────┐
+                   │           CLOSED                   │
+                   │  Context stored in ICM             │
+                   │  Design doc archived               │
+                   │  Project inactive                   │
+                   └──────────┬───────────────────────┘
+                              │ Issue reported
+                              ▼
+                   ┌──────────────────────────────────┐
+                   │    FLS Triage (see ADR-0010)       │
+                   │  ┌─ Minor → FLS fixes directly    │
+                   │  └─ Major → escalate to REOPEN    │
+                   └──────────┬───────────────────────┘
+                              │ Major change
+                              ▼
+                   ┌──────────────────────────────────┐
+                   │           REOPEN                   │
+                   │  Context loaded from ICM            │
+                   │  Impact analysis (Architects)       │
+                   │  Design doc updated                  │
+                   └──────────┬───────────────────────┘
+                              │ → ACTIVE (above)
 ```
 
 ### Close Protocol
 
 When a project is closed, the Director orchestrates:
 
-1. **Testers**: Run complete test suite. All tests must pass.
-2. **Reviewers**: Final code review. Verify design doc matches implementation.
-3. **Architects**: Final ADR review. Any decisions made during implementation that lack ADRs must be documented.
-4. **Scribes**:
+1. **FLS**: Onboard FLS with project context — design doc, ADRs, key code areas, test patterns. FLS must be ready to triage future issues.
+2. **Testers**: Run complete test suite. All tests must pass.
+3. **Reviewers**: Final code review. Verify design doc matches implementation.
+4. **Architects**: Final ADR review. Any decisions made during implementation that lack ADRs must be documented.
+5. **Scribes**:
    - Store full project summary in ICM (memories with high importance)
    - Extract concepts for cross-project knowledge
    - Store design doc and ADR index as permanent memories
    - Log project status, dates, and team composition
+   - Tag memories so FLS can recall them rapidly
+
+### FLS Triage Protocol (CLOSED → minor fix or REOPEN)
+
+When an issue is reported on a CLOSED project:
+
+1. **Director** delegates to `fls` subagent with the issue description
+2. **FLS** triages per criteria in ADR-0010:
+   - **Minor**: Read design doc + ADRs, implement fix, verify, document in ICM
+   - **Major**: Prepare escalation summary with impact assessment
+3. **If minor**: FLS returns fix summary. No lifecycle transition needed.
+4. **If major (ESCALATE)**: Director receives escalation, runs CLOSED → REOPEN gate, then follows the reopen protocol below.
 
 ### Reopen Protocol
 
-When a project is reopened:
+When a project is reopened (via FLS escalation or direct request):
 
 1. **Director**: Receives request with new requirements (features or bugfixes)
 2. **Scribes**: Query ICM for all project memories. Load design doc, ADRs, and final context. Summarize for teams.
@@ -87,6 +107,7 @@ When a project is reopened:
 - Bug fixes: Any project can be reopened for bug fixes regardless of age
 - New features: Only if the design doc can accommodate them without requiring a full rewrite. If > 50% of the design would change, a new project should be created instead.
 - Dependency updates: Can be handled as a bug fix (security) or new feature (major version bump)
+- FLS escalation: If FLS determines an issue is too comprehensive for a hotfix, it escalates to REOPEN
 
 ### Archive
 

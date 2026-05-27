@@ -36,17 +36,17 @@ The orchestrator is design-document-centric: every project begins with a design 
 │  Orchestrates lifecycle, assigns work, gates     │
 │  quality, triggers second opinions               │
 └─────────────────────────────────────────────────┘
-          │            │           │           │
-          ▼            ▼           ▼           ▼
-┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
-│ARCHITECTS│  │ENGINEERS │  │REVIEWERS │  │ TESTERS  │  │ SCRIBES  │
-├──────────┤  ├──────────┤  ├──────────┤  ├──────────┤  ├──────────┤
-│Design    │  │Implement │  │Code      │  │Write     │  │ICM       │
-│Documents │  │Features  │  │Review    │  │Tests     │  │Memory    │
-│ADRs      │  │Refactor  │  │Design    │  │Verify    │  │Doc       │
-│Tech      │  │Bugfixes  │  │Review    │  │Regression│  │Changelog │
-│Decisions │  │          │  │Standards │  │Perf Test │  │Extract   │
-└──────────┘  └──────────┘  └──────────┘  └──────────┘  └──────────┘
+          │            │           │           │           │
+          ▼            ▼           ▼           ▼           ▼
+┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
+│ARCHITECTS│  │ENGINEERS │  │REVIEWERS │  │ TESTERS  │  │ SCRIBES  │  │   FLS    │
+├──────────┤  ├──────────┤  ├──────────┤  ├──────────┤  ├──────────┤  ├──────────┤
+│Design    │  │Implement │  │Code      │  │Write     │  │ICM       │  │Triage    │
+│Documents │  │Features  │  │Review    │  │Tests     │  │Memory    │  │Hotfix    │
+│ADRs      │  │Refactor  │  │Design    │  │Verify    │  │Doc       │  │Escalate  │
+│Tech      │  │Bugfixes  │  │Review    │  │Regression│  │Changelog │  │Support   │
+│Decisions │  │          │  │Standards │  │Perf Test │  │Extract   │  │          │
+└──────────┘  └──────────┘  └──────────┘  └──────────┘  └──────────┘  └──────────┘
 ```
 
 ### 3.1 Director
@@ -97,6 +97,16 @@ Memory and documentation team. Responsibilities:
 - Generate and update project documentation
 - Maintain CHANGELOG
 - Extract knowledge from completed work for future reuse
+
+### 3.7 FLS (Front Line Support)
+
+First line of defense for minor bugs and small changes. Responsibilities:
+- Triage incoming issues — determine minor (fix directly) vs major (escalate)
+- Apply hotfixes to CLOSED and ACTIVE projects
+- Escalate comprehensive issues to REOPEN with impact summary
+- Maintain deep knowledge of completed projects for rapid response
+
+See ADR-0010 for full FLS specification.
 
 ---
 
@@ -178,6 +188,8 @@ Consequences: Trade-offs and follow-ups
 | ADR-0006 | Second Opinion Protocol | Accepted |
 | ADR-0007 | Token Optimization Strategy | Accepted |
 | ADR-0008 | Project Lifecycle and Reopening | Accepted |
+| ADR-0009 | ICM MCP Integration | Accepted |
+| ADR-0010 | FLS — Front Line Support Team | Accepted |
 
 See `docs/adr/README.md` for full details.
 
@@ -296,6 +308,7 @@ kodehold/
 │   ├── agents/
 │   │   ├── architects.md          # Design authority
 │   │   ├── engineers.md           # Implementation team
+│   │   ├── fls.md                 # Front Line Support
 │   │   ├── reviewers.md           # Code/design review
 │   │   ├── testers.md             # Verification team
 │   │   └── scribes.md             # Memory and documentation

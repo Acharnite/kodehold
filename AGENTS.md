@@ -20,6 +20,8 @@ Full agent definition: `.opencode/agents/director.md`
 | Review | `reviewers` |
 | Test | `testers` |
 | Memory/Docs | `scribes` |
+| Support/Hotfix | `fls` |
+| Triage | `fls` |
 
 ### States
 

@@ -38,6 +38,18 @@
         "bash": "allow",
         "task": "allow"
       }
+    },
+    "fls": {
+      "description": "KodeHold FLS — Front Line Support, triage and hotfix",
+      "file": ".opencode/agents/fls.md",
+      "permission": {
+        "read": "allow",
+        "write": "allow",
+        "edit": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "bash": "allow"
+      }
     }
   },
   "permission": {

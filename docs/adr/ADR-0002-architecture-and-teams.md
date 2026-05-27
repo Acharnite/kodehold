@@ -14,7 +14,7 @@ KodeHold needs a team structure that mirrors a disciplined software organization
 
 ## Decision
 
-We adopt a Director + 5 specialist teams structure:
+We adopt a Director + 6 specialist teams structure:
 
 ```
 Director
@@ -22,7 +22,8 @@ Director
 ├── Engineers    — implementation, refactoring, bug fixes
 ├── Reviewers    — code review, design review, standards enforcement
 ├── Testers      — test authoring, verification, regression
-└── Scribes      — ICM memory, documentation, knowledge extraction
+├── Scribes      — ICM memory, documentation, knowledge extraction
+└── FLS          — front line support, triage, hotfix, escalation
 ```
 
 **Director**: Top-level orchestrator. Owns the project lifecycle (init → active → review → closed → reopen). Assigns work to teams, enforces quality gates at each transition, and manages token budgets. The Director does not write code or tests directly — it coordinates.
@@ -37,11 +38,15 @@ Director
 
 **Scribes**: Handle all ICM interactions — storing memories, retrieving context, extracting concepts. Generate documentation, CHANGELOGs, and summaries. This team exists solely to manage persistent knowledge, freeing other teams from context management overhead.
 
+**FLS (Front Line Support)**: First line of defense for minor bugs and small changes on CLOSED or ACTIVE projects. Triages incoming issues, applies hotfixes directly, and escalates comprehensive issues to REOPEN. Maintains deep knowledge of completed projects for rapid response. See ADR-0010.
+
 ## Consequences
 
 - Positive: Clear responsibilities — no role ambiguity
 - Positive: Built-in quality gates via separation of review from implementation
 - Positive: Scribes ensure persistent memory is actually used (not just configured)
+- Positive: FLS provides a fast lane for minor fixes without full lifecycle overhead
 - Negative: More handoffs = more orchestration steps per task
 - Negative: Director becomes a bottleneck if not implemented efficiently
 - Neutral: Teams can be collapsed in "light" mode (see ADR-0005)
+- Neutral: FLS expansion from 5 to 6 teams reflects growing maturity of KodeHold

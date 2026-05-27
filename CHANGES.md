@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.4.0 — 2026-05-27
+
+### Added
+- FLS (Front Line Support) team — 6th team with triage, hotfix, and escalation protocol
+- ADR-0010 — FLS Front Line Support Team (Accepted)
+- `.opencode/agents/fls.md` — FLS agent definition with triage criteria and workflow
+- FLS Protocol in Director — delegation pattern and escalation handling
+
+### Changed
+- ADR-0002 — Director + 5 teams → Director + 6 teams (FLS added)
+- ADR-0008 — FLS triage gateway between CLOSED and REOPEN; Close Protocol includes FLS onboarding
+- ADR-0009 — Status promoted from Proposed to Accepted
+- Design doc — organisational structure, team descriptions (3.7 FLS), ADR index, file layout updated
+- ADR index README — ADR-0010 added, ADR-0009 status updated
+- VERSION.md — bumped to 0.4.0
+- TODO.md — comprehensive update with FLS items, ADR-0009 follow-ups, completed items marked
+
+### Fixed
+- All 10 ADRs now pass Nygaard format smoke test
+
 ## 0.3.0 — 2026-05-26
 
 ### Added
