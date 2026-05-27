@@ -32,18 +32,21 @@
 - [x] ADR-0008 updated: FLS triage gateway between CLOSED and REOPEN
 - [x] All ADRs follow Nygaard format (validated by smoke test)
 - [x] **Default Director agent** — hardcoded as default_agent in opencode.json with mode: primary
+- [x] ADR-0006 updated: cross-provider second opinion (Claude/Codex), fallback til brugerprompt
+- [x] Second opinion cross-provider krav — implementeret i Director og Reviewers agenter
+- [x] Scribes agent opdateret til MCP tools (icm_memory_store, icm_memory_recall)
+- [x] ICM naming convention — 7 nye memoirs, 6 team learnings topics, konsistent navnestruktur
+- [x] ICM Knowledge Flow (6-step) — implementeret i alle 6 agenter
+- [x] Feedback tool references — tilføjet til Director og Reviewers (icm_feedback_record/icm_feedback_search)
+- [x] Initial memoirs for KodeHold architecture — 12 team/domain memoirs oprettet
 
 ## High Priority
 
 - [ ] **Exercise FLS flow** — run FLS triage + hotfix against lib-validate or another project
 - [ ] **Exercise reopen flow** — run FLS escalation → CLOSED→REOPEN gate → full lifecycle on a real project
+- [ ] **Test auto-dedup behavior** — verify MCP auto-dedup med flere agents samtidig
+- [ ] **Measure recall quality** — sammenlign hybrid search (vector + BM25) vs FTS5-only
 - [ ] **Study ICM docs** (https://github.com/rtk-ai/icm/tree/main/docs) to improve KodeHold ICM integration
-- [ ] **ADR-0009 follow-up items:**
-  - [ ] Update Scribes agent file to reference MCP tools as primary ICM interface
-  - [ ] Add feedback tool references to Director and Reviewers agent files
-  - [ ] Test auto-dedup behavior with multiple agents writing to same topic
-  - [ ] Measure recall quality improvement with hybrid search vs FTS5-only
-  - [ ] Create initial memoirs for existing KodeHold architecture knowledge
 
 ## Medium Priority
 

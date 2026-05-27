@@ -3,34 +3,34 @@
 ## 0.4.0 — 2026-05-27
 
 ### Added
-- ADR-0011 — Team Meeting (collective project review, replaces solo Director approval)
-- Team Meeting as step 0 in shipping gate (9 steps total)
-- Director agent: Shipping Gate updated with Team Meeting protocol
-- AGENTS.md: shipping gate updated to 9 steps with team-meeting first
-
-### Changed
-- ADR-0003 — Final Review updated to Team Meeting (ADR-0011)
-- ADR-0008 — Close Protocol updated with Team Meeting as first step
-- Design doc — Review Cadence and REVIEW state updated to reference Team Meeting
-- TODO.md — Team Meeting marked completed, removed from High Priority
-
-### Added
 - FLS (Front Line Support) team — 6th team with triage, hotfix, and escalation protocol
 - ADR-0010 — FLS Front Line Support Team (Accepted)
+- ADR-0011 — Team Meeting (collective project review, replaces solo Director approval)
 - `.opencode/agents/fls.md` — FLS agent definition with triage criteria and workflow
-- FLS Protocol in Director — delegation pattern and escalation handling
+- Team Meeting as step 0 in shipping gate (9 steps total)
+- Director as default_agent in opencode.json with mode: primary
+- Second opinion now requires cross-provider model (Claude/Codex), not same-family local
+- 7 new ICM memoirs: kodehold-architects, kodehold-engineers, kodehold-reviewers, kodehold-testers, kodehold-scribes, kodehold-fls, kodehold-learnings
+- ICM Knowledge Flow (6-step) added to all 6 agent files: search shared → search team → execute → store shared → store team → distill/refine
 
 ### Changed
 - ADR-0002 — Director + 5 teams → Director + 6 teams (FLS added)
-- ADR-0008 — FLS triage gateway between CLOSED and REOPEN; Close Protocol includes FLS onboarding
+- ADR-0003 — Final Review updated to Team Meeting (ADR-0011)
+- ADR-0006 — second opinion must use different provider (cross-provider mandated)
+- ADR-0008 — FLS triage gateway between CLOSED and REOPEN; Team Meeting in Close Protocol
 - ADR-0009 — Status promoted from Proposed to Accepted
-- Design doc — organisational structure, team descriptions (3.7 FLS), ADR index, file layout updated
-- ADR index README — ADR-0010 added, ADR-0009 status updated
+- All 6 agent files — ICM Knowledge Flow section added before existing workflows
+- Scribes — migrated from CLI (`icm store`/`icm recall`) to MCP tools (`icm_memory_store`/`icm_memory_recall`)
+- Reviewers — second opinion stores outcomes in team learnings
+- Design doc — organisational structure (6 teams), Review Cadence, REVIEW state, ADR index
+- README.md — architecture diagram includes FLS, 6 teams, ADR range to 0011
 - VERSION.md — bumped to 0.4.0
-- TODO.md — comprehensive update with FLS items, ADR-0009 follow-ups, completed items marked
+- TODO.md — updated with all completed items
 
 ### Fixed
-- All 10 ADRs now pass Nygaard format smoke test
+- All 11 ADRs now pass Nygaard format smoke test
+- `teams` memoir: FLS concept added, kodehold concept updated to 6 teams, scribes refined to MCP
+- Frontmatter test: accepts mode: all for director (needs primary + subagent)
 
 ## 0.3.0 — 2026-05-26
 

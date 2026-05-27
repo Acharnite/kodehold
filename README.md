@@ -7,7 +7,7 @@ KodeHold simulates a disciplined software organization where specialized AI agen
 ## Philosophy
 
 - **Design-first** — no code without an approved design
-- **Separation of concerns** — distinct teams for design, implementation, review, testing, and memory
+- **Separation of concerns** — distinct teams for design, implementation, review, testing, memory, and support
 - **Token-conscious** — every operation evaluated for token cost
 - **Persistent memory** — full context preserved across sessions via ICM
 - **Traceable decisions** — all architecture decisions recorded as ADRs
@@ -22,7 +22,8 @@ Director                        ← orchestrator, gates, delegation
 ├── Engineers    — implementation, refactoring, bug fixes
 ├── Reviewers    — code review, design review, second opinion
 ├── Testers      — testing, verification, regression
-└── Scribes      — ICM memory, documentation, knowledge extraction
+├── Scribes      — ICM memory, documentation, knowledge extraction
+└── FLS          — front line support, triage, hotfix, escalation
 ```
 
 ## Lifecycle
@@ -47,7 +48,7 @@ Managed projects live in `workspaces/<name>/`:
 # Prerequisites: OpenCode, ICM, RTK — all installed
 git clone https://github.com/Acharnite/kodehold.git
 cd kodehold
-opencode --agent director
+opencode
 ```
 
 ## Documentation
@@ -55,9 +56,9 @@ opencode --agent director
 | Path | Description |
 |------|-------------|
 | `docs/design/README.md` | Main design document — full architecture, lifecycle, constraints |
-| `docs/adr/` | Architecture Decision Records (ADR-0001 through ADR-0008) |
+| `docs/adr/` | Architecture Decision Records (ADR-0001 through ADR-0011) |
 | `.opencode/agents/director.md` | Director agent — full orchestrator protocol |
-| `.opencode/agents/` | Team subagent definitions (5 teams) |
+| `.opencode/agents/` | Team subagent definitions (6 teams) |
 | `scripts/gate.sh` | Lifecycle gate automation |
 | `scripts/workspace.sh` | Workspace project management |
 | `scripts/ship.sh` | Shipping gate automation |
