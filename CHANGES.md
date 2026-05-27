@@ -1,18 +1,46 @@
 # Changelog
 
-## 0.6.0 — 2026-05-27
+## 0.8.0 — 2026-05-27
 
 ### Added
+- **FLS-specific tests** — `tests/integration/04-fls-workflow.sh` with 7 test areas (triage criteria, workflow, state restrictions, skill references, ICM docs, permissions), 50+ assertions
+- **Shared `.venv`** — KodeHold root `.venv/` with pytest, pyyaml, requests installed. Agents now reference `.venv/bin/pytest` consistently instead of creating temp venvs
+- **ADR-0013** — Investigate Skill: Systematic Debugging (Accepted). Documents 4-phase methodology, gstack adaptations, and agent integration
+
+### Changed
+- **English-only subagent prompts** — Director Core Protocol rule #6: "ALWAYS write subagent prompts in English only". Bold warning in Delegation Pattern section
+- `scripts/workspace.sh` — removed wasteful `find` call in `ws_adopt()` that returned 0 through symlinks
+- `.opencode/agents/testers.md` — references KodeHold root `.venv/bin/pytest` instead of "if a venv exists"
+- `.opencode/agents/fls.md` — references `.venv/bin/pytest` for test verification; fixed workflow numbering (missing "4. If Major" heading)
+- `.opencode/agents/engineers.md` — added step for systematic debugging via investigate skill
+- `.opencode/agents/director.md` — added `Investigate / root cause` trigger mapping; `skill: allow` permission
+- `.opencode/agents/reviewers.md` — added `skill: allow` permission
+- `.gitignore` — added `.venv/`, `__pycache__/`, `*.pyc`
+- `docs/design/README.md` — v1.0 → 1.1, Draft→Active, added §7.4 Skills System, updated file layout
+- `docs/adr/README.md` — ADR-0013 added to index
+
+## 0.7.0 — 2026-05-27
+
+### Added
+- **Investigate skill** — `.opencode/skills/investigate/SKILL.md` with 4-phase systematic debugging adapted from gstack. Iron Law, pattern analysis, 3-strike rule, regression test requirement, structured debug report, ICM storage ([#2](https://github.com/Acharnite/kodehold/issues/2))
 - ACTIVE→REVIEW gate enforces Test→Review sequence — checks `.testers_done` marker, blocks if missing
 - Design doc discipline — all 7 agents now update the design doc after completing work
 - Pytest best practices codified in Testers agent (`.venv/bin/pytest`, `PYTHONPATH=src`, `pytest-asyncio`, no `rtk pytest`)
-- Pytest learning stored in ICM `kodehold-learnings` (high importance)
 
 ### Changed
-- `scripts/gate.sh` — `active_to_review()` checks `.testers_done` marker, deletes after pass
-- `.opencode/agents/testers.md` — creates `.testers_done` marker on completion, updates Testing Strategy section
-- `.opencode/agents/reviewers.md` — refuses to start without `.testers_done`, updates design doc after review
-- `.opencode/agents/engineers.md` — updates Component Design and Implementation Plan after implementation
+- **Skillified state-awareness** — enhanced `.opencode/skills/state-awareness/SKILL.md` with full 4-step protocol (check, verify, refuse, workspace). All 6 agents now load the skill instead of inlining state checks, replacing ~90 lines of duplication
+- **Removed per-project `.icm/`** — workspaces and adopted projects no longer create their own ICM database. All memory uses the central `.icm/` in the kodehold root with topic prefixes (`kodehold-<project>-*`)
+- `scripts/workspace.sh` — `ws_adopt()` no longer creates `.icm/` or adds `.icm/` to `.gitignore`
+- `scripts/gate.sh` — removed `ICM_DB` variable and per-project `.icm/` check; uses `icm stats` without `--db`; `active_to_review()` checks `.testers_done` marker
+- `scripts/ship.sh` — removed `--db .icm/memories.db` flag
+- `.opencode/agents/director.md` — all `--db` references removed from ICM protocol, workspace, session lifecycle; added `skill: allow`
+- `.opencode/agents/testers.md` — creates `.testers_done` marker on completion
+- `.opencode/agents/reviewers.md` — refuses to start without `.testers_done`
+- `.opencode/agents/engineers.md` — updates Component Design after implementation
+- `tests/init/01-config-valid.sh` — removed `.icm/` gitignore check
+- `tests/init/02-icm-check.sh` — removed all `--db .icm/memories.db` references
+- `.github/workflows/kodehold-ci.yml` — removed `--db .icm/memories.db`
+- `docs/adr/ADR-0012-adopted-projects.md` — removed `.icm/` from directory tree and consequences
 - `.opencode/agents/architects.md` — reviews + updates design doc after implementation cycles
 - `.opencode/agents/fls.md` — updates design doc if fix changes documented behavior
 - `.opencode/agents/scribes.md` — updates design doc Changelog and Version in pre-transition workflow

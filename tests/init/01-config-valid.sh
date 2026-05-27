@@ -19,8 +19,8 @@ assert 'provider' in c and 'ollama' in c['provider'], 'missing Ollama provider'
 " && pass "opencode.json: has Ollama provider configured" \
   || fail "opencode.json: missing Ollama provider"
 
-# .gitignore must exist and contain .icm/
-grep -q "^\.icm/$" .gitignore && pass ".gitignore: ignores .icm/" || fail ".gitignore: missing .icm/"
+# .gitignore must exist
+[ -f .gitignore ] && pass ".gitignore exists" || fail ".gitignore missing"
 
 # VERSION.md must have current version
 grep -q "^| 0\.2\.0 " VERSION.md && pass "VERSION.md: version 0.2.0 found" || fail "VERSION.md: version 0.2.0 not found"

@@ -119,8 +119,7 @@ ws_adopt() {
   ln -s "$target_path" "$ws_dir"
 
   # Create KodeHold artifacts inside the adopted project
-  mkdir -p "$ws_dir/docs/design" "$ws_dir/docs/adr" "$ws_dir/.icm"
-  touch "$ws_dir/.icm/config.toml"
+  mkdir -p "$ws_dir/docs/design" "$ws_dir/docs/adr"
 
   # .kodehold-state with ADOPTED flag
   cat > "$ws_dir/.kodehold-state" << EOF
@@ -134,17 +133,6 @@ ADRS_COMPLETE=false
 TESTS_PASSING=false
 CODE_REVIEWED=false
 EOF
-
-  # .gitignore addition for .icm/ if not present
-  local gitignore="$ws_dir/.gitignore"
-  if [ -f "$gitignore" ]; then
-    if ! grep -q "^\.icm/" "$gitignore" 2>/dev/null; then
-      echo -e "\n# KodeHold\n.icm/" >> "$gitignore"
-    fi
-  else
-    echo "# KodeHold" > "$gitignore"
-    echo ".icm/" >> "$gitignore"
-  fi
 
   # Quick project scan for design doc
   local lang=""
@@ -174,8 +162,6 @@ EOF
     build_system="Unknown"
   fi
 
-  local file_count
-  file_count=$(find "$ws_dir" -not -path '*/.git/*' -not -path '*/.icm/*' -not -name '.gitignore' -not -name '.kodehold-state' -type f 2>/dev/null | wc -l)
   local commit_count=0
   if [ -d "$ws_dir/.git" ]; then
     commit_count=$(git -C "$ws_dir" log --oneline 2>/dev/null | wc -l)
@@ -205,7 +191,7 @@ _Describe the existing architecture._
 - Language: $lang
 - Build system: $build_system
 - Test framework: ${test_framework:-None detected}
-- $file_count source files, $commit_count git commits
+- $commit_count git commits
 
 ## 4. Component Design
 _Catalogue existing components and modules._
@@ -243,7 +229,7 @@ EOF
 |-----|-------|--------|
 EOF
 
-  info "Project scan complete: $lang, $file_count files, $commit_count commits"
+  info "Project scan complete: $lang, $commit_count commits"
 
   # Register in catalog
   local catalog

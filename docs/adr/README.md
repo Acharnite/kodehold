@@ -20,3 +20,4 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0010](ADR-0010-fls-front-line-support.md) | FLS — Front Line Support Team | Accepted | 2026-05-27 |
 | [ADR-0011](ADR-0011-team-meeting.md) | Team Meeting — Collective Project Review | Accepted | 2026-05-27 |
 | [ADR-0012](ADR-0012-adopted-projects.md) | Adopted Projects — Existing Codebases in KodeHold | Accepted | 2026-05-27 |
+| [ADR-0013](ADR-0013-investigate-skill.md) | Investigate Skill — Systematic Debugging | Accepted | 2026-05-27 |

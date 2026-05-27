@@ -12,7 +12,6 @@ STATE_FILE=".kodehold-state"
 DESIGN_DOC="docs/design/README.md"
 ADR_DIR="docs/adr"
 TEST_RUNNER="tests/run.sh"
-ICM_DB=".icm/memories.db"
 
 gate_failed=0
 check() {
@@ -188,16 +187,11 @@ review_to_closed() {
   # Design doc matches implementation (structural consistency)
   assert_file "$DESIGN_DOC"
 
-  # ICM database exists and is accessible (check if .icm/ exists — optional for workspaces)
-  if [ -d ".icm" ]; then
-    if [ -f "$ICM_DB" ]; then
-      pass "ICM database exists"
-      command -v icm &>/dev/null && icm stats --db "$ICM_DB" &>/dev/null && pass "ICM database accessible" || warn "ICM stats check failed"
-    else
-      warn "ICM directory present but no database at $ICM_DB — run icm init"
-    fi
+  # ICM accessible (central KodeHold database)
+  if command -v icm &>/dev/null; then
+    icm stats &>/dev/null && pass "ICM accessible (central database)" || warn "ICM stats check failed"
   else
-    warn "No .icm/ directory — using central KodeHold ICM for memory"
+    warn "ICM not installed — skip ICM check"
   fi
 
   # Git is clean (no uncommitted changes)

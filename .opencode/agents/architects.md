@@ -58,18 +58,13 @@ Trade-offs and follow-ups
 
 ## State Awareness
 
-Before starting any work, check the current lifecycle state:
-- Read `.kodehold-state` or run: `bash scripts/gate.sh --status`
+Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these team-specific rules:
+
 - Architects work in **INIT** (creating design) and **REOPEN** (impact analysis)
 - Architects do NOT implement code — that is Engineers' role in ACTIVE phase
 - If the project is in ACTIVE or REVIEW, you should only be doing design updates, not new designs
 
-**If the project is in the wrong state for the requested work:**
-Report to the Director with:
-1. Current state
-2. What state is required
-3. What gate must pass to get there
-Example: *"Project is ACTIVE, not INIT. An Architects task was requested, but design work should happen in INIT. Run INIT→ACTIVE gate first, or clarify the task."*
+**Refusal example:** *"Project is ACTIVE, not INIT. An Architects task was requested, but design work should happen in INIT. Run INIT→ACTIVE gate first, or clarify the task."*
 
 ## ICM Knowledge Flow
 

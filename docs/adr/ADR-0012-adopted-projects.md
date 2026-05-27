@@ -31,7 +31,6 @@ We introduce `workspace.sh adopt <name> <path>` — a command that registers an 
 workspaces/<name> → /path/to/existing/project  (symlink)
 /path/to/existing/project/
 ├── .kodehold-state       # Lifecycle state with ADOPTED=true flag
-├── .icm/                 # ICM memory database (gitignored)
 ├── docs/
 │   ├── design/
 │   │   └── README.md     # Retroactive design doc
@@ -84,5 +83,5 @@ The only difference is the INIT phase — instead of designing forward, Architec
 - Positive: Relaxed gates match reality — code already exists, ADRs can be written as time allows
 - Negative: Symlinks can break if the target is moved or the symlink is not recreated (mitigated by catalog tracking)
 - Negative: Retroactive design is inherently less precise than forward design — gaps in understanding may surface later
-- Negative: The .icm/ and .kodehold-state files are added to the project root, which may feel like "pollution" (mitigated by .gitignore)
+- Negative: The .kodehold-state file is added to the project root, which may feel like "pollution" (mitigated by .gitignore)
 - Neutral: Adopted projects start in INIT but can transition to ACTIVE immediately after design doc is filled in

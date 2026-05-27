@@ -17,6 +17,7 @@ Full agent definition: `.opencode/agents/director.md`
 |---------|------------------------|----------|
 | Design/ADR | `architects` | — |
 | Implementation | `engineers` | — |
+| Investigate/Debug | `engineers` or `fls` via investigate skill | Root cause first, fix second |
 | Test | `testers` | Must finish **before** review |
 | Review | `reviewers` | Must run **after** tests pass |
 | Memory/Docs | `scribes` | — |

@@ -14,6 +14,7 @@ permission:
   grep: allow
   bash: allow
   task: deny
+  skill: allow
 ---
 # Reviewers
 
@@ -28,8 +29,8 @@ You are the quality gate. You ensure all code and design meet KodeHold standards
 
 ## State Awareness
 
-Before starting any work, check the current lifecycle state:
-- Read `.kodehold-state` or run: `bash scripts/gate.sh --status`
+Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these team-specific rules:
+
 - Reviewers work in **INIT** (design review), **ACTIVE** (continuous code review), **REVIEW** (final review gate), and **REOPEN** (impact review)
 - Reviewers do NOT work in CLOSED (project complete)
 - The review scope depends on the state:
@@ -38,12 +39,7 @@ Before starting any work, check the current lifecycle state:
   - REVIEW → full final review + test verification
   - REOPEN → impact analysis review
 
-**If the project is in the wrong state for the requested work:**
-Report to the Director with:
-1. Current state
-2. What state is required
-3. What gate must pass first
-Example: *"Project is INIT, but code review was requested. No code exists yet. Run INIT→ACTIVE gate first."*
+**Refusal example:** *"Project is INIT, but code review was requested. No code exists yet. Run INIT→ACTIVE gate first."*
 
 ## Review Checklist
 

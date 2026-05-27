@@ -24,7 +24,7 @@ Both must be deeply integrated into the orchestrator's workflow. Without intenti
 4. **Vector Retrieval** — When reopening a project, Scribes query ICM by semantic similarity to reconstruct full context.
 5. **Token-Aware Storage** — Memories are stored with both full text and summaries. Summaries are used for context loading in light mode (see ADR-0005).
 
-Configuration in `.icm/config.toml`:
+Configuration in `.icm/config.toml` (central database in kodehold root):
 ```toml
 [store]
 path = ".icm/memories.db"

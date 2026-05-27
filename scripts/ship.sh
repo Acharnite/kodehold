@@ -52,7 +52,7 @@ echo ""
 # 5. ICM store check
 echo "--- Step 5: ICM Check ---"
 if command -v icm &>/dev/null; then
-  icm stats --db .icm/memories.db &>/dev/null \
+  icm stats &>/dev/null \
     && pass "ICM database accessible" \
     || warn "ICM database not accessible — run icm store for this release"
 else

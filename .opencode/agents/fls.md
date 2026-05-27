@@ -14,6 +14,7 @@ permission:
   grep: allow
   bash: allow
   task: deny
+  skill: allow
 ---
 # FLS — Front Line Support
 
@@ -29,9 +30,7 @@ You are the Front Line Support team. You handle minor bugs and small changes qui
 
 ## State Awareness
 
-Check current lifecycle state before acting:
-- `bash scripts/gate.sh --status` for KodeHold itself
-- `bash scripts/workspace.sh state <name>` for workspace projects
+Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these team-specific rules:
 
 | Project State | FLS Allowed Actions |
 |---------------|---------------------|
@@ -89,29 +88,31 @@ icm_memory_recall -t kodehold-<project-name> -i critical high medium
        icm_memoir_search_all "<user's description>"
        ```
     c. Show found projects/topics to the user and ask which one they mean
- 3. **If Minor:**
-    a. Load context: read design doc, relevant ADRs, affected code
-    b. **Recall project history** — search ICM for all memories related to the specific project (architecture, bugfixes, decisions):
-       ```
-       icm_memory_recall -t kodehold-<project> -i critical high
-       icm_memory_recall -t kodehold-<project>-fls -i critical high medium
-       ```
-    c. Search `kodehold-fls` for similar past fixes
-    d. Implement the fix
-    e. Verify: run relevant tests
-    f. **Update the design doc** — if the fix changes documented behavior, API contracts, or architecture, update the relevant design doc sections.
-    g. **Document in ICM:**
-       ```
-       icm_memory_store -t kodehold-<project>-fls -i medium \
-         -k "fix,<issue-type>" -c "FLS fix: <description>"
-       ```
-    h. Return summary to Director
-    a. Prepare escalation summary:
-       - Impact assessment (files, modules, data, security)
-       - Recommended next steps
-       - Reference to relevant design doc sections
-    b. Return escalation to Director with `ESCALATE:` prefix
-    c. Director will run CLOSED → REOPEN gate
+  3. **If Minor, clear root cause:**
+     a. Load context: read design doc, relevant ADRs, affected code
+     b. **Recall project history** — search ICM for all memories related to the specific project (architecture, bugfixes, decisions):
+        ```
+        icm_memory_recall -t kodehold-<project> -i critical high
+        icm_memory_recall -t kodehold-<project>-fls -i critical high medium
+        ```
+     c. Search `kodehold-fls` for similar past fixes
+     d. **If root cause is unclear,** load the `.opencode/skills/investigate/SKILL.md` skill and run its 4-phase debugging protocol before implementing
+    e. Implement the fix
+    f. Verify: run relevant tests using KodeHold root `.venv/bin/pytest`
+     g. **Update the design doc** — if the fix changes documented behavior, API contracts, or architecture, update the relevant design doc sections
+     h. **Document in ICM:**
+        ```
+        icm_memory_store -t kodehold-<project>-fls -i medium \
+          -k "fix,<issue-type>" -c "FLS fix: <description>"
+        ```
+     i. Return summary to Director
+  4. **If Major (escalate → REOPEN):**
+     a. Prepare escalation summary:
+        - Impact assessment (files, modules, data, security)
+        - Recommended next steps
+        - Reference to relevant design doc sections
+     b. Return escalation to Director with `ESCALATE:` prefix
+     c. Director will run CLOSED → REOPEN gate
 
 ## Constraints
 

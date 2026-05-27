@@ -42,7 +42,7 @@ jobs:
       - name: Bootstrap ICM database
         run: |
           mkdir -p .icm
-          icm store --db .icm/memories.db \
+          icm store \
             -t kodehold-ci-bootstrap \
             -i low \
             -k "ci,bootstrap" \

@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.0  
-**Status:** Draft  
-**Last Updated:** 2026-05-25
+**Version:** 1.1  
+**Status:** Active  
+**Last Updated:** 2026-05-27
 
 ---
 
@@ -192,6 +192,7 @@ Consequences: Trade-offs and follow-ups
 | ADR-0010 | FLS — Front Line Support Team | Accepted |
 | ADR-0011 | Team Meeting — Collective Project Review | Accepted |
 | ADR-0012 | Adopted Projects — Existing Codebases in KodeHold | Accepted |
+| ADR-0013 | Investigate Skill — Systematic Debugging | Accepted |
 
 See `docs/adr/README.md` for full details.
 
@@ -247,6 +248,20 @@ RTK is used for all CLI interaction to reduce token consumption:
 - `rtk git` for version control
 - `rtk find` for file discovery
 - Compact output format reduces tokens by 40-60%
+
+### 7.4 Skills System
+
+KodeHold uses OpenCode skills (`.opencode/skills/<name>/SKILL.md`) for reusable,
+on-demand instruction sets shared across multiple agents. Skills are loaded
+via the `skill` tool with zero token cost until invoked.
+
+| Skill | Purpose | Used by |
+|-------|---------|---------|
+| `icm-knowledge-flow` | 7-step ICM memory protocol (search, execute, reflect, store) | All 6 team subagents |
+| `state-awareness` | Lifecycle state check preamble and mismatch reporting | All 6 team subagents |
+| `investigate` | 4-phase systematic debugging (Iron Law, pattern analysis, 3-strike rule) | FLS, Engineers, Reviewers, Director |
+
+See `docs/adr/ADR-0013-investigate-skill.md` for the full ADR on the investigate skill.
 
 ---
 
@@ -317,7 +332,14 @@ kodehold/
 │   │   └── scribes.md             # Memory and documentation
 │   ├── references/
 │   │   └── kodehold-protocol.md   # Shared protocol reference
-│   └── skills/                    # Optional skills (future)
+│   └── skills/                    # Reusable skills
+│       ├── README.md              # Skill index
+│       ├── icm-knowledge-flow/
+│       │   └── SKILL.md           # 7-step ICM knowledge flow
+│       ├── investigate/
+│       │   └── SKILL.md           # Systematic debugging protocol (4 phases)
+│       └── state-awareness/
+│           └── SKILL.md           # Lifecycle state checking + mismatch protocol
 ├── docs/
 │   ├── design/
 │   │   └── README.md              # This file — main design document

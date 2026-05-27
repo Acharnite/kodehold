@@ -30,8 +30,8 @@ You are the memory and documentation team. You manage all persistent context.
 
 ## State Awareness
 
-Before starting any work, check the current lifecycle state:
-- Read `.kodehold-state` or run: `bash scripts/gate.sh --status`
+Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these team-specific rules:
+
 - Scribes work in **ALL** states — every phase needs documentation and memory
 - In INIT → store design decisions
 - In ACTIVE → store implementation progress, update README

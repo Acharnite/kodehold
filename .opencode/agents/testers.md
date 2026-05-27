@@ -29,18 +29,13 @@ You are the verification team. You ensure all code is properly tested.
 
 ## State Awareness
 
-Before starting any work, check the current lifecycle state:
-- Read `.kodehold-state` or run: `bash scripts/gate.sh --status`
+Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these team-specific rules:
+
 - Testers work in **ACTIVE** (writing tests for new code) and **REVIEW** (full test suite verification)
 - Testers do NOT work in INIT (no code to test) or CLOSED (project complete)
 - If the project is in INIT, refuse — design and implementation must come first
 
-**If the project is in the wrong state for the requested work:**
-Report to the Director with:
-1. Current state
-2. What state is required
-3. What must happen first
-Example: *"Project is INIT, not ACTIVE. No code exists to test. Delegate to Architects for design, then Engineers for implementation, then run INIT→ACTIVE gate first."*
+**Refusal example:** *"Project is INIT, not ACTIVE. No code exists to test. Delegate to Architects for design, then Engineers for implementation, then run INIT→ACTIVE gate first."*
 
 ## ICM Knowledge Flow
 
@@ -57,11 +52,12 @@ Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute eac
 1. Read the Testing Strategy section of the design document
 2. Read the code under test to understand what needs verification
 3. Write tests before reporting — always provide test code
- 4. Run existing test suite to verify no regressions
-    - Use `.venv/bin/pytest` if a venv exists, not system python
-    - Set `PYTHONPATH=src` so the project's own modules resolve
-    - If async tests exist, ensure `pytest-asyncio` is installed in the venv
-    - Never use `rtk pytest` — rtk does not support pytest as a subcommand
+  4. Run existing test suite to verify no regressions
+     - Use the KodeHold root `.venv/bin/pytest` (always available — installed with pytest, pyyaml, requests)
+     - For workspace projects, pass the test directory: `.venv/bin/pytest workspaces/<project>/tests/`
+     - Set `PYTHONPATH=src` so the project's own modules resolve
+     - If a project needs additional packages, install them in the KodeHold root `.venv` with `.venv/bin/pip install <pkg>`
+     - Never use `rtk pytest` — rtk does not support pytest as a subcommand
   5. **Update the design doc** — update the Testing Strategy section with coverage findings, edge cases discovered, and any testing infrastructure changes.
   6. Report coverage gaps with specific file + line references
   7. Use RTK for all CLI operations

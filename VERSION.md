@@ -4,6 +4,8 @@
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.8.0 | 2026-05-27 | FLS-specific tests, shared .venv, English-only subagent prompts, ADR-0013 investigate skill, workspace `find` fix |
+| 0.7.0 | 2026-05-27 | Investigate skill (gstack port), state-awareness skillified, per-project .icm/ removed, Test→Review gate enforced |
 | 0.6.0 | 2026-05-27 | ACTIVE→REVIEW gate enforces Test→Review sequence, design doc discipline across all 7 agents, pytest best practices codified |
 | 0.5.0 | 2026-05-27 | ICM docs study, auto-dedup/recall/extract_patterns tested, consolidation threshold in all agents, FLS cross-project recall + project discovery |
 | 0.4.0 | 2026-05-27 | FLS, Team Meeting, Director default, ICM naming convention, cross-provider second opinion |
@@ -21,4 +23,4 @@
 
 ## Current
 
-**0.6.0** — Gate enforcement and design doc discipline. ACTIVE→REVIEW gate now checks `.testers_done` marker — blocks if Testers haven't completed before Reviewers. All 7 agents updated with "update design doc after work" steps. Testers agent codifies pytest best practices (venv, PYTHONPATH, pytest-asyncio, no rtk pytest). Pytest ICM learning stored permanently.
+**0.8.0** — FLS-specific tests, shared .venv, English-only subagent prompts. New `tests/integration/04-fls-workflow.sh` with 50+ assertions across 7 areas. KodeHold root `.venv/` with pytest/pyyaml/requests — agents reference it consistently. Director Core Protocol rule #6 enforces English-only delegation prompts. ADR-0013 documents investigate skill architecture. Workspace `find` call removed (wasteful through symlinks).

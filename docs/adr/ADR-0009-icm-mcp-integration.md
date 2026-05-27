@@ -79,7 +79,7 @@ This creates a searchable history of corrections that future agents can learn fr
 ### Layer 4 — CLI for Scripts and Automation
 
 The CLI remains used for:
-- `scripts/gate.sh` — quick state checks (`icm stats --db`)
+- `scripts/gate.sh` — quick state checks (`icm stats`)
 - `scripts/workspace.sh` — batch operations
 - CRON jobs — `icm decay`, `icm prune`, `icm embed`
 - CI pipeline — `icm stats` verification
