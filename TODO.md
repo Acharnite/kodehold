@@ -32,9 +32,10 @@
 - [x] **Default Director agent** — hardcoded as default_agent in opencode.json with mode: primary
 
 ## High Priority
-- [ ] **Director final approval** — compare design doc with final product before shipping gate; approve/reject gate
+
 - [ ] **Exercise FLS flow** — run FLS triage + hotfix against lib-validate or another project
 - [ ] **Exercise reopen flow** — run FLS escalation → CLOSED→REOPEN gate → full lifecycle on a real project
+- [ ] **Team meeting feature** — all teams + Director meet to review projects together, replacing solo Director final approval
 - [ ] **Study ICM docs** (https://github.com/rtk-ai/icm/tree/main/docs) to improve KodeHold ICM integration
 - [ ] **ADR-0009 follow-up items:**
   - [ ] Update Scribes agent file to reference MCP tools as primary ICM interface
@@ -42,10 +43,6 @@
   - [ ] Test auto-dedup behavior with multiple agents writing to same topic
   - [ ] Measure recall quality improvement with hybrid search vs FTS5-only
   - [ ] Create initial memoirs for existing KodeHold architecture knowledge
-
-### Design
-
-- [ ] **Team meeting feature** — all teams + Director review projects together instead of solo Director review
 
 ## Medium Priority
 
