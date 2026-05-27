@@ -115,6 +115,38 @@ When the Director requests context storage before a state transition:
  5. Update documentation files (README, CHANGES, TODO, VERSION) if needed
  6. Store a session checkpoint
 
+## Session Checkpoints
+
+The Director may request a session checkpoint to preserve progress before context gets too large (especially on small-context models like Ollama at 32K).
+
+### Store Checkpoint
+
+When the Director delegates with a checkpoint request, store:
+
+```
+Topic: kodehold-<project>-session-checkpoint
+Importance: critical
+Content:
+  Project: <name>
+  State: <INIT|ACTIVE|REVIEW|CLOSED|REOPEN>
+  Completed: <what was accomplished>
+  InProgress: <what's being worked on>
+  NextSteps: <what to do next>
+  Decisions: <key decisions made>
+  DesignDocVersion: <current version>
+  ADRCount: <number>
+```
+
+Include keywords: `checkpoint, session, <project>` for easy recall.
+
+### Resume from Checkpoint
+
+When the Director asks to resume from a checkpoint:
+1. Query: `icm_memory_recall -t kodehold-<project>-session-checkpoint -i critical`
+2. Read the most recent checkpoint
+3. Present a summary to the Director: last state, what was completed, what's next
+4. Load current design doc + ADRs for additional context
+
 ## Context Reconstruction (for REOPEN)
 
 When a project is reopened:

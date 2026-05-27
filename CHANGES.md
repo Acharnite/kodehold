@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.9.0 — 2026-05-27
+
+### Added
+- **Gate markers for quality enforcement** — `.design_reviewed` (Reviewers approve design before INIT→ACTIVE), `.impact_analysis_done` (Architects assess scope before CLOSED→REOPEN)
+- **User review stop at INIT→ACTIVE** — gate presents design doc + ADR list and asks for confirmation before proceeding
+- **Session checkpoint protocol** — Director stores checkpoint in ICM every ~8 delegations. Scribes can resume from checkpoint
+- **`--yes` flag** for `scripts/gate.sh` — skip interactive prompts for CI/automation
+- **Compaction config** — `opencode.json` now has `compaction: { auto: true, prune: true, reserved: 7000 }`
+- **`webfetch`/`websearch` permissions** for Architects agent — research before designing
+
+### Changed
+- `scripts/gate.sh` — `init_to_active()` shows design doc + ADRs and prompts user before transition; `closed_to_reopen()` checks `.impact_analysis_done`; `review_to_closed()` cleans up all lifecycle markers
+- `.opencode/agents/reviewers.md` — creates `.design_reviewed` after approving design
+- `.opencode/agents/architects.md` — step 10: creates `.impact_analysis_done` after impact analysis
+- `.opencode/agents/director.md` — trimmed 301→153 lines (49% reduction); added session checkpoint protocol
+- `.opencode/agents/scribes.md` — session checkpoint store/resume workflow
+- `opencode.json` — compaction config added
+- Team Meeting (ADR-0011) exercised on radarr-lang-router — 6 teams, 4 approve + 2 approve-with-concerns
+
 ## 0.8.0 — 2026-05-27
 
 ### Added

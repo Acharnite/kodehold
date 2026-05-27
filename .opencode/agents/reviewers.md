@@ -53,6 +53,11 @@ For every review, verify:
 - [ ] RTK was used for all CLI operations
 - [ ] Documentation (README, CHANGES, TODO, VERSION) is accurate if present
 
+After approving a design document (INIT phase), create `.design_reviewed` marker to allow the INIT→ACTIVE gate to pass:
+```bash
+touch .design_reviewed
+```
+
 ## ICM Knowledge Flow
 
 Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute each step with these team-specific parameters:

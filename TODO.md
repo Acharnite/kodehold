@@ -57,17 +57,26 @@
 - [x] **Design doc discipline** — agents must read design doc before work and update it with results when done (enforce via agent files)
 - [x] **Implement reopen protocol** — end-to-end with ICM context restoration (Architects impact analysis → design update → new ADRs). Exercised on lib-validate async validators.
 - [x] **Investigate skill** — adapted from gstack: 4-phase systematic debugging (investigate→analyze→hypothesize→implement) with Iron Law, pattern analysis, 3-strike rule, regression test requirement, structured debug report, and ICM storage ([#2](https://github.com/Acharnite/kodehold/issues/2))
-- [ ] **Implement light mode** (KODEHOLD_LIGHT=1) with collapsed Quality team (Reviewers + Testers)
+- [ ] **Implement light mode** (KODEHOLD_LIGHT=1) with collapsed Quality team (Reviewers + Testers). Related strategies for Ollama 32K ctx limit:
+  - [x] **Trim director.md** — 301 → 153 lines (49% reduction). Core identity preserved. Removed: duplicate Second Opinion section, FLS Escalation Pattern, Test→Review duplicate, Gate Blockers, detailed adopted projects. Condensed: Gate Enforcement, Workspace, Session Lifecycle. Saves ~8K tokens per Director call
+  - [x] **Session checkpoint + reload** — Director gemmer checkpoint i ICM efter ~8 kald. Scribes har store/resume workflow. Director kan foreslå fresh session for små context modeller (Ollama 32K)
+  - [ ] **ICM context summaries** — Scribes komprimerer chat-historik til ICM summaries jævnligt i stedet for at beholde alt i context
+  - [x] **Auto-compaction threshold** — tilføjet `compaction: { auto: true, prune: true, reserved: 7000 }` til opencode.json. Efterlader 7K buffer så compaction starter tidligere end default
 - [x] **All subagent prompts must be in English** — added rule #6 to Director's Core Protocol ("ALWAYS write subagent prompts in English only") and a bold warning in the Delegation Pattern section. Also translate remaining Danish in TODO.md (lines 48, 61, 62, 75).
 - [x] **Fjern per-project .icm/** — KodeHold opretter ikke længere `.icm/` i workspace/adopted projekter. Alt bruger central `.icm/` i kodehold roden med topic prefixes (`kodehold-<project>-*`)
 - [x] **Test adopted project** — end-to-end: adopt → design → feature → gates → CLOSED. ✅ All 3 gates passed, full lifecycle INIT→ACTIVE→REVIEW→CLOSED, central ICM brugt, ingen `.icm/` i workspace. 1 cosmetic issue: `find` i symlink rapporterer 0 files (non-blocking).
 - [ ] **Token budget tracking** — per team/phase with alerts when exceeded
-- [ ] **Architects: research** — use webfetch/websearch before designing new features
+- [x] **Architects: research** — added `webfetch: allow` + `websearch: allow` permissions and "Research before designing" step in workflow
+- [x] **Team Meeting (ADR-0011)** — exercised on radarr-lang-router. 6 teams presented, 4 approve + 2 approve-with-concerns. Final: APPROVED-WITH-CONCERNS. Protocol validated — single Task call, 8K budget
+- [x] **Initial design review gate** — added `.design_reviewed` marker (Reviewers approves design) to INIT→ACTIVE gate. Also added `.impact_analysis_done` marker (Architects impact assessment) to CLOSED→REOPEN gate
+- [ ] **Memoir distillation at CLOSED** — ADR-0009 phase 4: Scribes should distill project memories into memoirs after each CLOSED transition. Currently manual
+
 - [x] **Run KodeHold against another real project** — validated full lifecycle on radarr-lang-router: adopt → design → tests → gates → CLOSED. 50 tests, ADR-0001, 3 gates passed. FLS hotfixed a KeyError bug.
 - [x] **ADR format CI** — ADR Nygaard validering kører allerede i CI via smoke tests (`tests/smoke/03-adr-format.sh` in `smoke` job)
 
 ## Low Priority
 
+- [ ] **FLS→Scribes protocol fix** — ADR-0010 says FLS requests Scribes via Director for ICM storage. FLS currently stores directly. Resolve inconsistency
 - [ ] Expand test suite beyond 10 tests — edge cases, failure modes, workspace stress tests
 - [ ] Performance benchmarks — token usage with/without RTK, with/without ICM summaries
 - [x] FLS-specific tests — `tests/integration/04-fls-workflow.sh` med 7 test areas (triage criteria, workflow, state restrictions, skill references, ICM docs, permissions), 50+ assertions, 11/11 total suite

@@ -13,6 +13,8 @@ permission:
   glob: allow
   grep: allow
   bash: allow
+  webfetch: allow
+  websearch: allow
   task: deny
 ---
 # Architects
@@ -79,13 +81,18 @@ Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute eac
 ## Workflow
 
 1. Read existing design doc and all ADRs before starting any work
-2. Use ICM to recall prior decisions: `icm memoir search-all <query>`
-3. Create/update design doc first, write ADRs second
-4. Set design doc `Status:` to "Active" when the design is ready for review
- 5. **After implementation cycles** — review and update the design doc to reflect current reality. Ensure Component Design, API Design, and Implementation Plan sections match what was built.
- 6. Never approve your own design — the Reviewers team must review
- 7. New ADRs automatically trigger a second opinion — the Director coordinates this via Reviewers
- 8. Store each design decision in ICM: `icm store -t kodehold-<project>-design -i high`
+2. **Research before designing** — use `webfetch` and `websearch` to research technology options, prior art, and best practices before making architectural decisions. Document findings in the ADR Context section
+3. Use ICM to recall prior decisions: `icm memoir search-all <query>`
+4. Create/update design doc first, write ADRs second
+5. Set design doc `Status:` to "Active" when the design is ready for review
+ 6. **After implementation cycles** — review and update the design doc to reflect current reality. Ensure Component Design, API Design, and Implementation Plan sections match what was built.
+ 7. Never approve your own design — the Reviewers team must review
+ 8. New ADRs automatically trigger a second opinion — the Director coordinates this via Reviewers
+  9. Store each design decision in ICM: `icm store -t kodehold-<project>-design -i high`
+ 10. **When reopening a project** (CLOSED→REOPEN): perform impact analysis, update design doc, write new ADRs, then create `.impact_analysis_done` marker to allow the gate to pass:
+     ```bash
+     touch .impact_analysis_done
+     ```
 
 ## Adopted Projects
 

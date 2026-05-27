@@ -14,11 +14,36 @@ ADR_DIR="docs/adr"
 TEST_RUNNER="tests/run.sh"
 
 gate_failed=0
+cleanup_markers=()
 check() {
   if ! "$@" >/dev/null 2>&1; then
     fail "$1 failed"
     gate_failed=1
   fi
+}
+
+queue_cleanup_marker() {
+  cleanup_markers+=("$1")
+}
+
+cleanup_markers_on_pass() {
+  if [ "${#cleanup_markers[@]}" -eq 0 ]; then
+    return
+  fi
+
+  rm -f "${cleanup_markers[@]}"
+  pass "Lifecycle markers cleaned up: ${cleanup_markers[*]}"
+}
+
+is_noninteractive() {
+  case "${OPENCODE_NONINTERACTIVE:-}" in
+    true|TRUE|1|yes|YES)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
 }
 
 assert_file() {
@@ -100,6 +125,35 @@ init_to_active() {
     warn "Design doc status not set to Active"
   fi
 
+  # Design reviewed by Reviewers — ensures quality review before implementation
+  if [ -f ".design_reviewed" ]; then
+    pass "Design reviewed and approved by Reviewers (sequence enforced)"
+    queue_cleanup_marker ".design_reviewed"
+  else
+    fail "Design not reviewed — Reviewers must approve design doc before INIT→ACTIVE"
+    gate_failed=1
+  fi
+
+  # User review stop — present design summary and ask for confirmation
+  if [ "$gate_failed" -eq 0 ] && ! is_noninteractive; then
+    echo ""
+    echo "  ─── Design Review ───"
+    echo "  Design doc:  $DESIGN_DOC"
+    echo "  ADRs:"
+    for adr in "$ADR_DIR"/ADR-*.md; do
+      title=$(head -1 "$adr" 2>/dev/null | sed 's/^# //')
+      echo "    • $(basename "$adr") — $title"
+    done
+    echo ""
+    echo -e "  ${YELLOW}Review the design documents above before proceeding.${NC}"
+    echo -n "  Proceed with INIT → ACTIVE? [Y/n] "
+    read -r confirm
+    case "$confirm" in
+      n|N|no|NO) fail "User cancelled — design needs changes" && gate_failed=1 ;;
+      *) pass "User approved — proceeding with transition" ;;
+    esac
+  fi
+
 }
 
 active_to_review() {
@@ -141,7 +195,7 @@ active_to_review() {
   # Testers completed — verify .testers_done marker exists (ensures sequential flow)
   if [ -f ".testers_done" ]; then
     pass "Testers completed before review (sequence enforced)"
-    rm -f ".testers_done"
+    queue_cleanup_marker ".testers_done"
   else
     fail "Testers did not complete before review — must run Testers before Reviewers"
     gate_failed=1
@@ -200,6 +254,11 @@ review_to_closed() {
   else
     warn "Uncommitted changes exist — should commit before CLOSED"
   fi
+
+  # Clean up lifecycle markers — fresh state for next reopen
+  queue_cleanup_marker ".design_reviewed"
+  queue_cleanup_marker ".testers_done"
+  queue_cleanup_marker ".impact_analysis_done"
 }
 
 closed_to_reopen() {
@@ -218,6 +277,15 @@ closed_to_reopen() {
     pass "Impact analysis notes found"
   else
     warn "No impact analysis in docs/decisions/ — manual check needed"
+  fi
+
+  # Impact analysis completed by Architects — ensures quality assessment before reopening
+  if [ -f ".impact_analysis_done" ]; then
+    pass "Impact analysis completed by Architects (sequence enforced)"
+    queue_cleanup_marker ".impact_analysis_done"
+  else
+    fail "Impact analysis not completed — Architects must assess scope before CLOSED→REOPEN"
+    gate_failed=1
   fi
 }
 
@@ -252,6 +320,10 @@ usage() {
   echo "  --transition  The state transition to validate"
   echo "  --list        List all gates and their checks"
   echo "  --status      Show current lifecycle state"
+  echo "  --yes         Skip interactive prompts (for CI/automation)"
+  echo ""
+  echo "Environment:"
+  echo "  OPENCODE_NONINTERACTIVE=true  Skip all interactive prompts"
   echo ""
   exit 1
 }
@@ -290,6 +362,10 @@ case "${1:-}" in
     fi
     exit 0
     ;;
+  --yes)
+    OPENCODE_NONINTERACTIVE=true bash "$0" "${@:2}"
+    exit $?
+    ;;
   *)
     usage
     ;;
@@ -297,6 +373,7 @@ esac
 
 echo ""
 if [ "$gate_failed" -eq 0 ]; then
+  cleanup_markers_on_pass
   echo -e "  ${GREEN}━━━ GATE PASSED ━━━${NC}"
 else
   echo -e "  ${RED}━━━ GATE BLOCKED — fix failures above ━━━${NC}"

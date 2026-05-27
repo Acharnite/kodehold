@@ -41,7 +41,6 @@ dimensions = 768
 2. **Content search**: `rtk grep` (replaces raw grep)
 3. **Git operations**: `rtk git status`, `rtk git diff`, `rtk git log`
 4. **Format**: All output uses `--format compact` to minimize tokens
-5. **Aliases**: Shell aliases are configured so `ls`, `read`, `grep`, `tree`, `find` default to RTK versions within KodeHold sessions
 
 ### Interaction Pattern
 

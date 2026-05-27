@@ -26,12 +26,20 @@ Full agent definition: `.opencode/agents/director.md`
 
 ### States
 
-`INIT → ACTIVE → REVIEW → CLOSED ↔ REOPEN`
+`INIT → ACTIVE → REVIEW → CLOSED → REOPEN → ACTIVE`
 
 ### Gates
 
 Before any state transition, run: `bash scripts/gate.sh --transition <FROM>_TO_<TO>`
 If gate blocks → delegate fix to responsible team, re-run gate, then transition.
+
+Required markers for each gate:
+| Gate | Marker | Created by |
+|------|--------|-----------|
+| INIT → ACTIVE | `.design_reviewed` + user confirmation | Reviewers |
+| ACTIVE → REVIEW | `.testers_done` | Testers |
+| REVIEW → CLOSED | Team Meeting (all 6 teams) | — |
+| CLOSED → REOPEN | `.impact_analysis_done` | Architects |
 
 ### Workspaces
 

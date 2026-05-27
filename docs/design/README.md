@@ -1,6 +1,6 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.1  
+**Version:** 1.2  
 **Status:** Active  
 **Last Updated:** 2026-05-27
 
@@ -155,12 +155,17 @@ Each design document follows this structure:
 
 ### 4.2 Review Cadence
 
-| Phase | Review Type | By |
-|-------|------------|-----|
-| Draft | Design Review | Reviewers + Architects |
-| During Implementation | Incremental Review | Reviewers |
-| Before Close | Team Meeting (ADR-0011) | All 6 teams — collective review |
-| On Reopen | Impact Review | Architects + Reviewers |
+| Phase | Review Type | By | Marker |
+|-------|------------|-----|--------|
+| Before INIT→ACTIVE | Design Review | Reviewers approve design | `.design_reviewed` |
+| During ACTIVE | Incremental Review | Reviewers | — |
+| Before ACTIVE→REVIEW | Test completion | Testers finish, then Reviewers review | `.testers_done` |
+| Before REVIEW→CLOSED | Team Meeting (ADR-0011) | All 6 teams — collective review | — |
+| Before CLOSED→REOPEN | Impact Assessment | Architects assess scope | `.impact_analysis_done` |
+
+For automation/CI, INIT→ACTIVE confirmation can be bypassed with `--yes` or
+`OPENCODE_NONINTERACTIVE=true`. Marker cleanup must still occur only after the
+gate fully passes.
 
 ---
 
@@ -193,6 +198,7 @@ Consequences: Trade-offs and follow-ups
 | ADR-0011 | Team Meeting — Collective Project Review | Accepted |
 | ADR-0012 | Adopted Projects — Existing Codebases in KodeHold | Accepted |
 | ADR-0013 | Investigate Skill — Systematic Debugging | Accepted |
+| ADR-0014 | Status Dashboard — Project Overview | Proposed |
 
 See `docs/adr/README.md` for full details.
 
@@ -214,14 +220,32 @@ INIT → ACTIVE → REVIEW → CLOSED → (REOPEN → ACTIVE)
 | CLOSED | Project complete, context stored in ICM |
 | REOPEN | Project resurrected for new feature or bugfix |
 
-### 6.2 Reopening
+### 6.2 Quality Gates (Markers)
+
+Each state transition requires a quality marker before the gate can pass:
+
+| Gate | Required Marker | Created By | Purpose |
+|------|----------------|-----------|---------|
+| INIT → ACTIVE | `.design_reviewed` | Reviewers | Design quality approved |
+| ACTIVE → REVIEW | `.testers_done` | Testers | Tests complete before review |
+| REVIEW → CLOSED | Team Meeting | All 6 teams | Collective sign-off |
+| CLOSED → REOPEN | `.impact_analysis_done` | Architects | Impact assessed before reopening |
+
+Markers are deleted by the gate only after a successful transition pass path
+(including INIT→ACTIVE confirmation when interactive). All lifecycle markers
+are queued and cleaned after REVIEW→CLOSED passes.
+
+The INIT→ACTIVE gate additionally presents the design doc and ADR list to the user and asks for confirmation before transitioning.
+
+### 6.3 Reopening
 
 When a project is reopened:
 1. Director loads project context from ICM
 2. Design doc is updated with new requirements
-3. Impact analysis is performed (Architects + Reviewers)
+3. Impact analysis is performed (Architects + Reviewers) → `.impact_analysis_done`
 4. New ADRs are written for significant changes
-5. Implementation proceeds as normal lifecycle
+5. CLOSED→REOPEN gate passes → marker cleaned
+6. Implementation proceeds as normal lifecycle
 
 ---
 
@@ -365,3 +389,11 @@ kodehold/
 ├── CHANGES.md                     # Changelog
 └── .gitignore                     # Git ignore rules
 ```
+
+---
+
+## 11. Changelog
+
+- **v1.2 (2026-05-27):** Clarified quality-gate marker semantics so cleanup
+  happens only on successful pass paths; documented INIT→ACTIVE non-interactive
+  confirmation bypass behavior (`--yes`, `OPENCODE_NONINTERACTIVE=true`).
