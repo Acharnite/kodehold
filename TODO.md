@@ -29,10 +29,9 @@
 - [x] ADR-0002 updated: Director + 6 teams (FLS added)
 - [x] ADR-0008 updated: FLS triage gateway between CLOSED and REOPEN
 - [x] All ADRs follow Nygaard format (validated by smoke test)
+- [x] **Default Director agent** — hardcoded as default_agent in opencode.json with mode: primary
 
 ## High Priority
-
-- [ ] **Default Director agent** — hardcode AGENTS.md as default agent in opencode.json so Director loads automatically per directory
 - [ ] **Director final approval** — compare design doc with final product before shipping gate; approve/reject gate
 - [ ] **Exercise FLS flow** — run FLS triage + hotfix against lib-validate or another project
 - [ ] **Exercise reopen flow** — run FLS escalation → CLOSED→REOPEN gate → full lifecycle on a real project
