@@ -13,15 +13,15 @@ Full agent definition: `.opencode/agents/director.md`
 
 ### Delegation
 
-| Trigger | Task tool subagent_type |
-|---------|------------------------|
-| Design/ADR | `architects` |
-| Implementation | `engineers` |
-| Review | `reviewers` |
-| Test | `testers` |
-| Memory/Docs | `scribes` |
-| Support/Hotfix | `fls` |
-| Triage | `fls` |
+| Trigger | Task tool subagent_type | Sequence |
+|---------|------------------------|----------|
+| Design/ADR | `architects` | — |
+| Implementation | `engineers` | — |
+| Test | `testers` | Must finish **before** review |
+| Review | `reviewers` | Must run **after** tests pass |
+| Memory/Docs | `scribes` | — |
+| Support/Hotfix | `fls` | — |
+| Triage | `fls` | — |
 
 ### States
 

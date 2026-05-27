@@ -69,20 +69,26 @@ Before every task, follow this knowledge flow to build on past experience and pr
    ```
    icm_memoir_search "kodehold-reviewers" "review OR checklist OR second opinion"
    ```
-3. **Execute task** — perform the standard Reviewers workflow below
-4. **Store shared learnings** — save new vulnerability patterns, quality findings, or review insights for all teams
+ 3. **Execute task** — perform the standard Reviewers workflow below
+ 4. **Pre-store consolidation check** — if the target topic has >5 entries, consolidate first (ICM warns at >7)
+    ```
+    icm_memory_health -t kodehold-learnings
+    icm_memory_health -t kodehold-reviewers-learnings
+    ```
+ 5. **Store shared learnings** — save new vulnerability patterns, quality findings, or review insights for all teams
    ```
    icm_memory_store -t kodehold-learnings -i high
    ```
-5. **Store team learnings** — save review techniques, checklist refinements, and cross-model bias observations
-   ```
-   icm_memory_store -t kodehold-reviewers-learnings -i medium
-   ```
-6. **Distill/refine concepts** — add or refine concepts in `kodehold-reviewers` and `kodehold-learnings`
-   ```
-   icm_memoir_add_concept "kodehold-reviewers" ...
-   icm_memoir_refine "kodehold-learnings" ...
-   ```
+ 6. **Store team learnings** — save review techniques, checklist refinements, and cross-model bias observations
+    ```
+    icm_memory_store -t kodehold-reviewers-learnings -i medium
+    ```
+ 7. **Distill/refine concepts** — add or refine concepts in `kodehold-reviewers` and `kodehold-learnings`
+    ```
+    icm_memoir_add_concept "kodehold-reviewers" ...
+    icm_memoir_refine "kodehold-learnings" ...
+    ```
+ 8. **Update the design doc** — after review, update the design doc's review status, note any corrections made, and bump Last Reviewed date.
 
 ## Second Opinion Triggers
 
@@ -110,3 +116,4 @@ When performing a second opinion:
 - Never approve your own work
 - Be specific in feedback — reference exact file + line numbers
 - Use RTK for all file operations
+- **Never start before Testers are done** — check `.testers_done` exists before beginning review. If missing, report to Director: "Testers have not completed yet — run Testers first."

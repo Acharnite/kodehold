@@ -1,5 +1,50 @@
 # Changelog
 
+## 0.6.0 — 2026-05-27
+
+### Added
+- ACTIVE→REVIEW gate enforces Test→Review sequence — checks `.testers_done` marker, blocks if missing
+- Design doc discipline — all 7 agents now update the design doc after completing work
+- Pytest best practices codified in Testers agent (`.venv/bin/pytest`, `PYTHONPATH=src`, `pytest-asyncio`, no `rtk pytest`)
+- Pytest learning stored in ICM `kodehold-learnings` (high importance)
+
+### Changed
+- `scripts/gate.sh` — `active_to_review()` checks `.testers_done` marker, deletes after pass
+- `.opencode/agents/testers.md` — creates `.testers_done` marker on completion, updates Testing Strategy section
+- `.opencode/agents/reviewers.md` — refuses to start without `.testers_done`, updates design doc after review
+- `.opencode/agents/engineers.md` — updates Component Design and Implementation Plan after implementation
+- `.opencode/agents/architects.md` — reviews + updates design doc after implementation cycles
+- `.opencode/agents/fls.md` — updates design doc if fix changes documented behavior
+- `.opencode/agents/scribes.md` — updates design doc Changelog and Version in pre-transition workflow
+- `.opencode/agents/director.md` — verifies design doc is updated before any gate transition
+- All 7 agents — "update design doc after work" steps added to workflows
+
+### Fixed
+- Gate enforcement gap — parallel Test/Review no longer possible (`.testers_done` blocks at gate level)
+- `VERSION.md`, `CHANGES.md`, `TODO.md` — bumped to 0.6.0
+
+## 0.5.0 — 2026-05-27
+
+### Added
+- ICM docs study — architecture, features, guide, integrations, product read. Key insights stored in kodehold-learnings
+- Consolidation threshold awareness — step 4 in ICM Knowledge Flow for all 6 agents: pre-store check at >5 entries
+- FLS cross-project recall — searches project-specific topics (`kodehold-<project>`, `kodehold-<project>-fls`) when project name is known
+- FLS project discovery — lists workspaces, all topics, and does broad ICM/memoir search when project name is forgotten
+- `ICM-Docs-Best-Practices` concept in `kodehold-scribes` memoir
+
+### Changed
+- `scribes.md` — ICM Best Practices section (consolidation, store nudge, auto-dedup, pattern extraction, memory lifecycle)
+- `director.md` — ICM Protocol extended with consolidate/extract patterns guidance
+- `fls.md` — project discovery step before triage, project history recall in minor fix workflow
+- All 6 agent files — ICM Knowledge Flow renumbered, step 4 added for pre-store consolidation check
+- `VERSION.md` — bumped to 0.5.0
+- `TODO.md` — marked 5 items completed, added 3 new items
+
+### Tested
+- **Auto-dedup** — identical memory in same topic → same ID (updated). Different memory → new ID.
+- **Recall quality** — "authorization" returned 3 relevant results via hybrid search where FTS5 would give 0.
+- **Extract patterns** — detected pattern across 2 session-checkpoint memories, created concept in kodehold-learnings.
+
 ## 0.4.0 — 2026-05-27
 
 ### Added

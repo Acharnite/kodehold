@@ -42,15 +42,19 @@
 
 ## High Priority
 
-- [ ] **Exercise FLS flow** — run FLS triage + hotfix against lib-validate or another project
-- [ ] **Exercise reopen flow** — run FLS escalation → CLOSED→REOPEN gate → full lifecycle on a real project
-- [ ] **Test auto-dedup behavior** — verify MCP auto-dedup med flere agents samtidig
-- [ ] **Measure recall quality** — sammenlign hybrid search (vector + BM25) vs FTS5-only
-- [ ] **Study ICM docs** (https://github.com/rtk-ai/icm/tree/main/docs) to improve KodeHold ICM integration
+- [x] **Exercise FLS flow** — FLS triaged + fixed 2 crashes (regex(-1), validate(-1)) on lib-validate. 254 tests passed.
+- [x] **Exercise reopen flow** — FLS escalation (async validators) → CLOSED→REOPEN→ACTIVE→REVIEW→CLOSED. ADR-0002, 48 async tests, 302 total.
+- [x] **Test auto-dedup behavior** — verified: >85% hybrid similarity i samme topic → opdaterer eksisterende (samme ID returneres). Forskellig memory → nyt ID.
+- [x] **Measure recall quality** — hybrid search (70% vector + 30% BM25) fanger semantisk mening. "authorization" matcher login/auth/JWT selvom ordet ikke findes i teksten. FTS5-only ville give 0 resultater.
+- [x] **Study ICM docs** — architecture, features, guide, integrations, product read. Key insights recorded in kodehold-learnings
+
+- [x] **Use icm_memory_extract_patterns** — testet mod kodehold-session-checkpoint (4 entries). Detected 1 pattern, created concept i kodehold-learnings. Auto-name = første keyword. Bedst når topics har 5+ entries.
+- [x] **Consolidation threshold awareness** — added as step 4 (pre-store check) i ICM Knowledge Flow i alle 6 agenter. Tjekker >5 entries, konsoliderer før lagring.
+- [x] **OpenCode ICM plugin** — run `icm init --mode hook` to install auto-extraction hooks for session.created, tool.execute.after
 
 ## Medium Priority
 
-- [ ] **Design doc discipline** — agents must read design doc before work and update it with results when done (enforce via agent files)
+- [x] **Design doc discipline** — agents must read design doc before work and update it with results when done (enforce via agent files)
 - [ ] **Implement light mode** (KODEHOLD_LIGHT=1) with collapsed Quality team (Reviewers + Testers)
 - [ ] **Token budget tracking** — per team/phase with alerts when exceeded
 - [ ] **Implement reopen protocol** — end-to-end with ICM context restoration (Architects impact analysis → design update → new ADRs)

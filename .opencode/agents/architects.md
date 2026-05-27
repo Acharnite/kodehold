@@ -83,16 +83,21 @@ Before every task, follow this knowledge flow to build on past experience and pr
    ```
    icm_memoir_search "kodehold-architects" "design OR ADR OR decision"
    ```
-3. **Execute task** — perform the standard Architects workflow below
-4. **Store shared learnings** — save new design patterns, architecture insights, or tech evaluations that benefit all teams
+ 3. **Execute task** — perform the standard Architects workflow below
+ 4. **Pre-store consolidation check** — if the target topic has >5 entries, consolidate first (ICM warns at >7)
+    ```
+    icm_memory_health -t kodehold-learnings
+    icm_memory_health -t kodehold-architects-learnings
+    ```
+ 5. **Store shared learnings** — save new design patterns, architecture insights, or tech evaluations that benefit all teams
    ```
    icm_memory_store -t kodehold-learnings -i high
    ```
-5. **Store team learnings** — save design doc improvements, ADR writing techniques, and tech evaluation experience
-   ```
-   icm_memory_store -t kodehold-architects-learnings -i medium
-   ```
-6. **Distill/refine concepts** — add new concepts to `kodehold-arch` or `kodehold-architects`, or refine existing ones in `kodehold-learnings`
+ 6. **Store team learnings** — save design doc improvements, ADR writing techniques, and tech evaluation experience
+    ```
+    icm_memory_store -t kodehold-architects-learnings -i medium
+    ```
+ 7. **Distill/refine concepts** — add new concepts to `kodehold-arch` or `kodehold-architects`, or refine existing ones in `kodehold-learnings`
    ```
    icm_memoir_add_concept "kodehold-arch" ...
    icm_memoir_refine "kodehold-architects" ...
@@ -104,6 +109,7 @@ Before every task, follow this knowledge flow to build on past experience and pr
 2. Use ICM to recall prior decisions: `icm memoir search-all <query>`
 3. Create/update design doc first, write ADRs second
 4. Set design doc `Status:` to "Active" when the design is ready for review
-5. Never approve your own design — the Reviewers team must review
-6. New ADRs automatically trigger a second opinion — the Director coordinates this via Reviewers
-7. Store each design decision in ICM: `icm store -t kodehold-<project>-design -i high`
+ 5. **After implementation cycles** — review and update the design doc to reflect current reality. Ensure Component Design, API Design, and Implementation Plan sections match what was built.
+ 6. Never approve your own design — the Reviewers team must review
+ 7. New ADRs automatically trigger a second opinion — the Director coordinates this via Reviewers
+ 8. Store each design decision in ICM: `icm store -t kodehold-<project>-design -i high`

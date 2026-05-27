@@ -1,9 +1,11 @@
-# Version 0.4.0 — FLS and ADR Alignment
+# Version 0.6.0 — Gate Enforcement and Design Doc Discipline
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.6.0 | 2026-05-27 | ACTIVE→REVIEW gate enforces Test→Review sequence, design doc discipline across all 7 agents, pytest best practices codified |
+| 0.5.0 | 2026-05-27 | ICM docs study, auto-dedup/recall/extract_patterns tested, consolidation threshold in all agents, FLS cross-project recall + project discovery |
 | 0.4.0 | 2026-05-27 | FLS, Team Meeting, Director default, ICM naming convention, cross-provider second opinion |
 | 0.3.0 | 2026-05-26 | Director agent, lifecycle gates, workspace system, state-aware agents, proof-of-concept project |
 | 0.2.0 | 2026-05-25 | Director orchestrator, 5 team subagents, test suite, CI, shipping gate |
@@ -19,4 +21,4 @@
 
 ## Current
 
-**0.4.0** — FLS and Team Meeting. 6th team (FLS) with triage/hotfix/escalation. ADR-0010 (FLS) and ADR-0011 (Team Meeting). Shipping Gate 9 steps. Director hardcoded as default_agent. Cross-provider second opinion (Claude/Codex). ICM naming convention with 7 team memoirs + shared learnings. All 6 agents enforce ICM Knowledge Flow (learn → do → store → distill). Scribes migrated to MCP tools. All ADRs Nygaard-format compliant.
+**0.6.0** — Gate enforcement and design doc discipline. ACTIVE→REVIEW gate now checks `.testers_done` marker — blocks if Testers haven't completed before Reviewers. All 7 agents updated with "update design doc after work" steps. Testers agent codifies pytest best practices (venv, PYTHONPATH, pytest-asyncio, no rtk pytest). Pytest ICM learning stored permanently.

@@ -54,16 +54,21 @@ Before every task, follow this knowledge flow to build on past experience and pr
    ```
    icm_memoir_search "kodehold-testers" "test OR fixture OR framework OR assertion"
    ```
-3. **Execute task** — perform the standard Testers workflow below
-4. **Store shared learnings** — save edge case findings, regression patterns, and test automation tips for all teams
+ 3. **Execute task** — perform the standard Testers workflow below
+ 4. **Pre-store consolidation check** — if the target topic has >5 entries, consolidate first (ICM warns at >7)
+    ```
+    icm_memory_health -t kodehold-learnings
+    icm_memory_health -t kodehold-testers-learnings
+    ```
+ 5. **Store shared learnings** — save edge case findings, regression patterns, and test automation tips for all teams
    ```
    icm_memory_store -t kodehold-learnings -i high
    ```
-5. **Store team learnings** — save assertion patterns, fixture management tips, and performance test setups
-   ```
-   icm_memory_store -t kodehold-testers-learnings -i medium
-   ```
-6. **Distill/refine concepts** — add or refine concepts in `kodehold-testers` and `kodehold-learnings`
+ 6. **Store team learnings** — save assertion patterns, fixture management tips, and performance test setups
+    ```
+    icm_memory_store -t kodehold-testers-learnings -i medium
+    ```
+ 7. **Distill/refine concepts** — add or refine concepts in `kodehold-testers` and `kodehold-learnings`
    ```
    icm_memoir_add_concept "kodehold-testers" ...
    icm_memoir_refine "kodehold-learnings" ...
@@ -74,9 +79,19 @@ Before every task, follow this knowledge flow to build on past experience and pr
 1. Read the Testing Strategy section of the design document
 2. Read the code under test to understand what needs verification
 3. Write tests before reporting — always provide test code
-4. Run existing test suite to verify no regressions
-5. Report coverage gaps with specific file + line references
-6. Use RTK for all CLI operations
+ 4. Run existing test suite to verify no regressions
+    - Use `.venv/bin/pytest` if a venv exists, not system python
+    - Set `PYTHONPATH=src` so the project's own modules resolve
+    - If async tests exist, ensure `pytest-asyncio` is installed in the venv
+    - Never use `rtk pytest` — rtk does not support pytest as a subcommand
+  5. **Update the design doc** — update the Testing Strategy section with coverage findings, edge cases discovered, and any testing infrastructure changes.
+  6. Report coverage gaps with specific file + line references
+  7. Use RTK for all CLI operations
+  8. **On completion** — when all tests pass, create `.testers_done` marker to signal gate:
+    ```
+    touch .testers_done
+    ```
+    The ACTIVE→REVIEW gate requires this marker before accepting review commits.
 
 ## Constraints
 

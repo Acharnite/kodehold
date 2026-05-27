@@ -67,20 +67,29 @@ Before every task, follow this knowledge flow to build on past experience and pr
    ```
    icm_memoir_search "kodehold-learnings" "hotfix OR bug OR escalation OR pattern"
    ```
-2. **Search team learnings** — search `kodehold-fls` memoir for project-specific quirks, quick-fix techniques, and triage experience
-   ```
-   icm_memoir_search "kodehold-fls" "fix OR triage OR project OR quirk"
-   ```
-3. **Execute task** — perform the standard FLS triage and fix workflow below
-4. **Store shared learnings** — save bug categories, recurring issues, and fix patterns that benefit all teams
+ 2. **Search team learnings** — search `kodehold-fls` memoir for project-specific quirks, quick-fix techniques, and triage experience
+    ```
+    icm_memoir_search "kodehold-fls" "fix OR triage OR project OR quirk"
+    ```
+    **If the user mentions a specific project** (e.g. lib-validate, my-project), also recall that project's full memory history:
+    ```
+    icm_memory_recall -t kodehold-<project-name> -i critical high medium
+    ```
+ 3. **Execute task** — perform the standard FLS triage and fix workflow below
+ 4. **Pre-store consolidation check** — if the target topic has >5 entries, consolidate first (ICM warns at >7)
+    ```
+    icm_memory_health -t kodehold-learnings
+    icm_memory_health -t kodehold-fls-learnings
+    ```
+ 5. **Store shared learnings** — save bug categories, recurring issues, and fix patterns that benefit all teams
    ```
    icm_memory_store -t kodehold-learnings -i high
    ```
-5. **Store team learnings** — save project-specific quirks, quick-fix techniques, and triage experience
-   ```
-   icm_memory_store -t kodehold-fls-learnings -i medium
-   ```
-6. **Distill/refine concepts** — add or refine concepts in `kodehold-fls` and `kodehold-learnings`
+ 6. **Store team learnings** — save project-specific quirks, quick-fix techniques, and triage experience
+    ```
+    icm_memory_store -t kodehold-fls-learnings -i medium
+    ```
+ 7. **Distill/refine concepts** — add or refine concepts in `kodehold-fls` and `kodehold-learnings`
    ```
    icm_memoir_add_concept "kodehold-fls" ...
    icm_memoir_refine "kodehold-learnings" ...
@@ -88,25 +97,42 @@ Before every task, follow this knowledge flow to build on past experience and pr
 
 ## Workflow
 
-1. **Triage** — read issue, assess against criteria above
-2. **If Minor:**
-   a. Load context: read design doc, relevant ADRs, affected code
-   b. Search `kodehold-fls` for similar past fixes
-   c. Implement the fix
-   d. Verify: run relevant tests
-   e. **Document in ICM:**
-      ```
-      icm_memory_store -t kodehold-<project>-fls -i medium \
-        -k "fix,<issue-type>" -c "FLS fix: <description>"
-      ```
-   f. Return summary to Director
-3. **If Major:**
-   a. Prepare escalation summary:
-      - Impact assessment (files, modules, data, security)
-      - Recommended next steps
-      - Reference to relevant design doc sections
-   b. Return escalation to Director with `ESCALATE:` prefix
-   c. Director will run CLOSED → REOPEN gate
+ 1. **Triage** — read issue, assess against criteria above
+ 2. **Project discovery** — if the user can't recall the exact project name:
+    a. List all known projects:
+       ```
+       bash scripts/workspace.sh list
+       icm_memory_list_topics
+       ```
+    b. Search ICM broadly with the user's description to find matching projects:
+       ```
+       icm_memory_recall "<user's description of the problem/project>" -l 10
+       icm_memoir_search_all "<user's description>"
+       ```
+    c. Show found projects/topics to the user and ask which one they mean
+ 3. **If Minor:**
+    a. Load context: read design doc, relevant ADRs, affected code
+    b. **Recall project history** — search ICM for all memories related to the specific project (architecture, bugfixes, decisions):
+       ```
+       icm_memory_recall -t kodehold-<project> -i critical high
+       icm_memory_recall -t kodehold-<project>-fls -i critical high medium
+       ```
+    c. Search `kodehold-fls` for similar past fixes
+    d. Implement the fix
+    e. Verify: run relevant tests
+    f. **Update the design doc** — if the fix changes documented behavior, API contracts, or architecture, update the relevant design doc sections.
+    g. **Document in ICM:**
+       ```
+       icm_memory_store -t kodehold-<project>-fls -i medium \
+         -k "fix,<issue-type>" -c "FLS fix: <description>"
+       ```
+    h. Return summary to Director
+    a. Prepare escalation summary:
+       - Impact assessment (files, modules, data, security)
+       - Recommended next steps
+       - Reference to relevant design doc sections
+    b. Return escalation to Director with `ESCALATE:` prefix
+    c. Director will run CLOSED → REOPEN gate
 
 ## Constraints
 

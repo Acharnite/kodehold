@@ -113,6 +113,15 @@ active_to_review() {
     gate_failed=1
   fi
 
+  # Testers completed — verify .testers_done marker exists (ensures sequential flow)
+  if [ -f ".testers_done" ]; then
+    pass "Testers completed before review (sequence enforced)"
+    rm -f ".testers_done"
+  else
+    fail "Testers did not complete before review — must run Testers before Reviewers"
+    gate_failed=1
+  fi
+
   # Code reviewed — check for recent review commits
   if git log --oneline -20 2>/dev/null | grep -qiE "review|reviewed|approve"; then
     pass "Recent review commits found"

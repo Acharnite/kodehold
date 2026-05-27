@@ -50,7 +50,7 @@ INIT → ACTIVE → REVIEW → CLOSED
 | State | Action |
 |-------|--------|
 | INIT | Create design doc, draft ADRs, scope project. Delegate to Architects. |
-| ACTIVE | Assign implementation to Engineers. Assign tests to Testers. Continuous review via Reviewers. |
+| ACTIVE | Assign implementation to Engineers. **Then sequentially:** Testers write + run tests (must be green), **then** Reviewers review code + test results. Never parallel. |
 | REVIEW | Final review gate. Reviewers verify all code matches design doc. Testers run full suite. |
 | CLOSED | Scribes store full summary in ICM. Project archived. |
 | REOPEN | Scribes load context. Architects update design doc. Transition to ACTIVE. |
@@ -72,7 +72,15 @@ INIT → ACTIVE → REVIEW → CLOSED
 
 ## Delegation Pattern
 
-When delegating work, use the Task tool with precise context:
+When delegating work, use the Task tool with precise context. **IMPORTANT: Test and Review must always be sequential, never parallel.** Testers produce results (green/red), Reviewers need those results as input.
+
+In ACTIVE phase, the correct order is:
+1. Engineers → implement
+2. Testers → write + run tests (must be green), create `.testers_done` marker
+3. Reviewers → verify `.testers_done` exists, then review code + test results
+4. The ACTIVE→REVIEW gate enforces this: it blocks if `.testers_done` is missing
+
+
 
 ```
 Task tool invocation:
@@ -122,15 +130,17 @@ bash scripts/gate.sh --transition <FROM>_TO_<TO>
 
 The gate script runs structural checks (design doc sections, ADR count, test suite, git state, ICM). If the gate **fails** (exit code 1), the Director MUST NOT transition state — instead delegate to the appropriate team to fix the issues, then re-run the gate.
 
+**Design doc discipline:** Before any gate transition, verify the design doc has been updated to reflect completed work. Check that the Last Updated date, Version, and Changelog section are current. If not, delegate to the appropriate team to update first.
+
 ### Gates
 
-| Transition | Automated Check (`scripts/gate.sh`) | Failure → Delegation |
-|------------|--------------------------------------|----------------------|
-| INIT → ACTIVE | Design doc exists with all 11 sections, ADRs written, ADR index valid | → `architects` to fix design/ADRs |
-| ACTIVE → REVIEW | Tests pass, code reviewed (git log), TODO complete | → `engineers` for failing tests, `reviewers` for missing review |
-| REVIEW → CLOSED | Tests green, ICM database accessible, git clean | → `testers` for test failures, `scribes` for ICM |
-| CLOSED → REOPEN | Design doc updated, impact analysis in `docs/decisions/` | → `architects` for impact analysis |
-| REOPEN → ACTIVE | Design doc approved, new ADRs in place | → `architects` to update design doc |
+| Transition | Automated Check (`scripts/gate.sh`) | Failure → Delegation | Sequence |
+|------------|--------------------------------------|----------------------|----------|
+| INIT → ACTIVE | Design doc exists with all 11 sections, ADRs written, ADR index valid | → `architects` to fix design/ADRs | — |
+| ACTIVE → REVIEW | Tests pass, code reviewed (git log), TODO complete | → `engineers` for failing tests, `reviewers` for missing review | **1. Testers** → **2. Reviewers** (never parallel) |
+| REVIEW → CLOSED | Tests green, ICM database accessible, git clean | → `testers` for test failures, `scribes` for ICM | — |
+| CLOSED → REOPEN | Design doc updated, impact analysis in `docs/decisions/` | → `architects` for impact analysis | — |
+| REOPEN → ACTIVE | Design doc approved, new ADRs in place | → `architects` to update design doc | — |
 
 ### Second Opinion Triggers
 The Director MUST trigger a second opinion (via Reviewers) for:
@@ -156,6 +166,12 @@ Selection order:
    or run `/connect` to add a new provider.
    ```
    Block the transition until a secondary provider is confirmed available.
+
+### Test → Review Sequence (ACTIVE → REVIEW)
+Before running the ACTIVE→REVIEW gate, the Director MUST ensure:
+1. **Testers finish first** — tests written, executed, and all green
+2. **Reviewers review second** — code review against design doc, with test results as part of the review input
+3. Never delegate to Testers and Reviewers in parallel during ACTIVE phase — Testers produce the evidence Reviewers need
 
 ### Scribes Requirement
 Before EVERY state transition, Scribes MUST:
@@ -206,6 +222,8 @@ Track tokens per phase. If budget exceeded, activate light mode (`KODEHOLD_LIGHT
 - Load context: `icm recall -t kodehold-<project> --db <project>/.icm/memories.db` at session start
 - Store decisions: `icm store -t kodehold-<project>-<phase> -i <importance> --db <project>/.icm/memories.db`
 - Consult memoirs: `icm memoir search-all <query> --db <project>/.icm/memories.db`
+- **Consolidate** topics when they exceed 7 entries (ICM warns at >7)
+- **Extract patterns** via `icm_memory_extract_patterns` to distill recurring team learnings into memoir concepts
 
 ## Second Opinion
 

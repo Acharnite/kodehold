@@ -62,20 +62,47 @@ Before every task, follow this knowledge flow to build on past experience and pr
    ```
    icm_memoir_search "kodehold-scribes" "ICM OR memoir OR distill OR MCP"
    ```
-3. **Execute task** — perform the standard Scribes workflow below
-4. **Store shared learnings** — save documentation standards, knowledge management patterns, and cross-project insights for all teams
-   ```
-   icm_memory_store -t kodehold-learnings -i high
-   ```
-5. **Store team learnings** — save MCP tool experiences, query optimizations, and distillation workflow improvements
-   ```
-   icm_memory_store -t kodehold-scribes-learnings -i medium
-   ```
-6. **Distill/refine concepts** — add or refine concepts in `kodehold-scribes` and `kodehold-learnings`
+ 3. **Execute task** — perform the standard Scribes workflow below
+ 4. **Pre-store consolidation check** — if the target topic has >5 entries, consolidate before storing to stay under ICM's 7-entry warning threshold
+    ```
+    icm_memory_health -t kodehold-learnings
+    icm_memory_health -t kodehold-scribes-learnings
+    ```
+ 5. **Store shared learnings** — save documentation standards, knowledge management patterns, and cross-project insights for all teams
+    ```
+    icm_memory_store -t kodehold-learnings -i high
+    ```
+ 6. **Store team learnings** — save MCP tool experiences, query optimizations, and distillation workflow improvements
+    ```
+    icm_memory_store -t kodehold-scribes-learnings -i medium
+    ```
+ 7. **Distill/refine concepts** — add or refine concepts in `kodehold-scribes` and `kodehold-learnings`
    ```
    icm_memoir_add_concept "kodehold-scribes" ...
    icm_memoir_refine "kodehold-learnings" ...
    ```
+
+## ICM Best Practices (from ICM Docs)
+
+### Consolidation Threshold
+ICM warns when a topic has >7 entries. Proactively consolidate or distill topics before they reach this limit. Use `icm_memory_consolidate` when a topic grows large, or `icm_memory_extract_patterns` to detect recurring patterns and create memoir concepts automatically.
+
+### Store Nudge
+ICM counts consecutive tool calls without `icm_memory_store`. After 10 calls, it hints: "Consider saving important context." Save regularly — at minimum after every meaningful task step — so the nudge never fires.
+
+### Auto-Dedup
+ICM auto-dedup (MCP only): if a new memory in an existing topic has >85% hybrid similarity to an existing one, it updates instead of duplicating. No need for KodeHold agents to deduplicate manually — but be descriptive enough that semantically different facts don't collide.
+
+### Pattern Extraction
+`icm_memory_extract_patterns` detects recurring patterns in a topic by keyword clustering. Optionally creates concepts in a memoir from detected patterns. Use this for distilling team learnings into permanent knowledge:
+```
+icm_memory_extract_patterns -t kodehold-fls-learnings -m kodehold-fls
+```
+
+### Memory Lifecycle
+- **Decay**: Critical=never, High=0.5x, Medium=1.0x, Low=2.0x. Access_count slows decay.
+- **Hybrid search**: 30% BM25 + 70% cosine similarity. Multilingual (e5-base, 100+ langs).
+- **Prune**: Only Medium/Low importance memories with weight < threshold are ever deleted. Critical/High are never pruned.
 
 ## ICM Database
 
@@ -106,8 +133,9 @@ When the Director requests context storage before a state transition:
 1. Read the current design doc, ADRs, and TODO to understand what was completed
 2. Store memories for: project overview, architecture decisions, review results, test results
 3. Extract knowledge concepts from what was learned — add/refine in relevant team memoirs
-4. Update documentation files (README, CHANGES, TODO, VERSION) if needed
-5. Store a session checkpoint
+ 4. **Update the design doc** — ensure the design doc's Changelog section and Version reflect the latest changes. Bump Last Updated date.
+ 5. Update documentation files (README, CHANGES, TODO, VERSION) if needed
+ 6. Store a session checkpoint
 
 ## Context Reconstruction (for REOPEN)
 
