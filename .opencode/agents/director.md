@@ -6,7 +6,7 @@ description: >
   via the Task tool, enforces quality gates, manages token budgets, and ensures
   the design document remains the single source of truth.
   Triggers: orchestrate, lifecycle, gate, ship, delegate, plan
-mode: subagent
+mode: all
 permission:
   read: allow
   write: allow

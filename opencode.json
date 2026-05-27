@@ -1,5 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "default_agent": "director",
   "provider": {
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
@@ -28,6 +29,7 @@
     },
     "director": {
       "description": "KodeHold Director — orchestrator that delegates to specialist teams",
+      "mode": "primary",
       "file": ".opencode/agents/director.md",
       "permission": {
         "read": "allow",
