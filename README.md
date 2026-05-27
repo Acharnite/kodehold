@@ -1,3 +1,5 @@
+![KodeHold banner](banner.png)
+
 # KodeHold — /ˈkəʊd həʊld/ → "Code Hold". Koden er i gode hænder.
 
 **AI-powered coding orchestrator** — conscious team-based software engineering with structured design documents, persistent memory, lifecycle gates, and multi-LLM support.
