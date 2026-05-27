@@ -15,6 +15,11 @@
       }
     }
   },
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 7000
+  },
   "agent": {
     "plan": {
       "permission": {
