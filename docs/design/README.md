@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.2  
+**Version:** 1.4.2  
 **Status:** Active  
-**Last Updated:** 2026-05-27
+**Last Updated:** 2026-05-28
 
 ---
 
@@ -158,14 +158,27 @@ Each design document follows this structure:
 | Phase | Review Type | By | Marker |
 |-------|------------|-----|--------|
 | Before INIT→ACTIVE | Design Review | Reviewers approve design | `.design_reviewed` |
-| During ACTIVE | Incremental Review | Reviewers | — |
-| Before ACTIVE→REVIEW | Test completion | Testers finish, then Reviewers review | `.testers_done` |
+| Before INIT→ACTIVE | Mandatory Second Opinion | Cross-model validation | `.second_opinion_done` |
+| ACTIVE — after Architects | Design Review Gate (Gate 1) | Reviewers | `.design_review_v2` |
+| ACTIVE — after Engineers | Code Review Gate (Gate 2) | Reviewers | `.code_reviewed` |
+| ACTIVE — after Testers | Comprehensive Review (Gate 3) | Reviewers | `.testers_done` |
 | Before REVIEW→CLOSED | Team Meeting (ADR-0011) | All 6 teams — collective review | — |
 | Before CLOSED→REOPEN | Impact Assessment | Architects assess scope | `.impact_analysis_done` |
+
+Reviewers serve as **gatekeepers** for lifecycle transitions (ADR-0017). Before the Director runs `gate.sh --transition`, Reviewers validate that all transition requirements are met via `gate.sh --validate-only`. This ensures independent quality validation — the Director orchestrates, Reviewers validate.
+
+See ADR-0016 for the full specification of early review gates in ACTIVE phase.
+See ADR-0017 for the full specification of Reviewers as gatekeeper and mandatory second opinion.
 
 For automation/CI, INIT→ACTIVE confirmation can be bypassed with `--yes` or
 `OPENCODE_NONINTERACTIVE=true`. Marker cleanup must still occur only after the
 gate fully passes.
+
+> **Note:** `--yes` must be the **first flag** for proper argument passthrough.
+> Example: `bash scripts/gate.sh --yes --validate-only ACTIVE_TO_REVIEW` works,
+> but `bash scripts/gate.sh --validate-only --yes ACTIVE_TO_REVIEW` does not.
+
+> **Reviewer Mode:** When `--reviewer-mode` is used, gate.sh outputs structured results including `GATE_RESULT`, `CHECKS`, `MARKERS_REQUIRED`, `MARKERS_CLEANUP`. The `CHECKS` field lists individual check results (e.g., `design_reviewed:PASS,second_opinion_done:FAIL`). The `MARKERS_REQUIRED` field lists markers that must exist for the transition.
 
 ---
 
@@ -199,6 +212,9 @@ Consequences: Trade-offs and follow-ups
 | ADR-0012 | Adopted Projects — Existing Codebases in KodeHold | Accepted |
 | ADR-0013 | Investigate Skill — Systematic Debugging | Accepted |
 | ADR-0014 | Status Dashboard — Project Overview | Proposed |
+| ADR-0015 | Director Delegation Enforcement via Tool Permissions | Proposed |
+| ADR-0016 | Early Review Gates in ACTIVE Phase | Proposed |
+| ADR-0017 | Reviewers as Gatekeeper + Mandatory Second Opinion | Accepted |
 
 See `docs/adr/README.md` for full details.
 
@@ -227,15 +243,23 @@ Each state transition requires a quality marker before the gate can pass:
 | Gate | Required Marker | Created By | Purpose |
 |------|----------------|-----------|---------|
 | INIT → ACTIVE | `.design_reviewed` | Reviewers | Design quality approved |
+| INIT → ACTIVE | `.second_opinion_done` | Reviewers | Cross-model validation completed |
+| ACTIVE — Gate 1 | `.design_review_v2` | Reviewers | Design reviewed before implementation |
+| ACTIVE — Gate 2 | `.code_reviewed` | Reviewers | Code reviewed before testing |
 | ACTIVE → REVIEW | `.testers_done` | Testers | Tests complete before review |
 | REVIEW → CLOSED | Team Meeting | All 6 teams | Collective sign-off |
 | CLOSED → REOPEN | `.impact_analysis_done` | Architects | Impact assessed before reopening |
+| REOPEN → ACTIVE | `.second_opinion_done` | Reviewers | Cross-model validation for updated design |
 
 Markers are deleted by the gate only after a successful transition pass path
 (including INIT→ACTIVE confirmation when interactive). All lifecycle markers
 are queued and cleaned after REVIEW→CLOSED passes.
 
-The INIT→ACTIVE gate additionally presents the design doc and ADR list to the user and asks for confirmation before transitioning.
+**Gatekeeper authority:** Reviewers validate transitions before the Director runs gate.sh (ADR-0017). Reviewers run `gate.sh --validate-only` and return PASS/BLOCKED. The Director runs the actual gate only after Reviewers approve.
+
+The ACTIVE phase enforces sequential flow: **Architects → Gate 1 → Engineers → Gate 2 → Testers → Gate 3**. Each gate marker must exist before the next team starts work.
+
+See ADR-0016 for the full early review gate specification.
 
 ### 6.3 Reopening
 
@@ -394,6 +418,10 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.4 (2026-05-28):** Added ADR-0017 — Reviewers as gatekeeper for lifecycle transitions and mandatory second opinion on ADRs/design documents. Updated Review Cadence (4.2) with gatekeeper authority and `.second_opinion_done` marker. Updated Quality Gates (6.2) with second opinion markers for INIT→ACTIVE and REOPEN→ACTIVE.
+- **v1.4.1 (2026-05-28):** ADR-0017 status updated to Accepted. Documented `--yes` flag ordering constraint in gate.sh (must be first flag).
+- **v1.4.2 (2026-05-28):** gate.sh `--reviewer-mode` output now includes `CHECKS` and `MARKERS_REQUIRED` fields per ADR-0017. `CHECKS` lists individual check results (e.g., `design_reviewed:PASS,second_opinion_done:FAIL`). `MARKERS_REQUIRED` lists markers required for the transition.
+- **v1.3 (2026-05-28):** Added early review gates (ADR-0016) — three-checkpoint review system in ACTIVE phase. Updated Review Cadence (4.2) and Quality Gates (6.2) with Gate 1 (design review, `.design_review_v2`) and Gate 2 (code review, `.code_reviewed`).
 - **v1.2 (2026-05-27):** Clarified quality-gate marker semantics so cleanup
   happens only on successful pass paths; documented INIT→ACTIVE non-interactive
   confirmation bypass behavior (`--yes`, `OPENCODE_NONINTERACTIVE=true`).
