@@ -35,6 +35,7 @@ You are the memory and ALL documentation team. You manage all persistent context
 11. **VERSION.md management** — bump versions per Shipping Gate
 12. **Centralized ICM memory operations** — store all project memories (replaces team-specific ICM storage)
 13. **Pre-transition documentation** — ensure design doc current before gates
+14. **Memoir distillation at CLOSED** — distill project memories into permanent memoir concepts after each CLOSED transition (ADR-0009 phase 4)
 
 ## State Awareness
 
@@ -44,7 +45,7 @@ Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these tea
 - In INIT → store design decisions
 - In ACTIVE → store implementation progress, update README
 - In REVIEW → store review results, prepare docs for CLOSED
-- In CLOSED → final documentation, CHANGES.md, VERSION.md, TODO.md
+- In CLOSED → final documentation, CHANGES.md, VERSION.md, TODO.md, then distill project memories into memoirs
 - In REOPEN → load context from ICM
 
 ## Documentation Files
@@ -161,6 +162,7 @@ Content:
   Decisions: <key decisions made>
   DesignDocVersion: <current version>
   ADRCount: <number>
+  TokenUsage: <per-team token consumption from token-usage.sh (run script before storing)>
 ```
 
 Include keywords: `checkpoint, session, <project>` for easy recall.
@@ -184,7 +186,10 @@ Read the current session's delegation history. Identify:
 - Files created or modified
 - Blockers encountered
 
-### Step 2: Store ICM summary
+### Step 2: Query token usage
+Run `scripts/token-usage.sh --project <project> --minutes 60` to get approximate token consumption per team for the current session. Include the results in the summary under "TokenUsage". If the script fails or returns no data, note "Token usage unavailable".
+
+### Step 3: Store ICM summary
 Use `icm_memory_store` with:
 - Topic: `kodehold-<project>-session-summary`
 - Importance: `high`
@@ -201,17 +206,18 @@ Structure each summary as follows for consistency and easy recall:
 - Teams: <which teams were involved and their results>
 - Blockers: <any blockers or open questions>
 - Carry-forward: <what needs to continue in next session>
+- TokenUsage: <per-team token consumption from token-usage.sh>
 ```
 
-Aim for 200–400 tokens per summary — concise but complete.
+Aim for 200–400 tokens per summary — concise but complete. TokenUsage field should be compact (e.g., "engineers: 1.2M, scribes: 0.8M, reviewers: 0.5M").
 
-### Step 3: Consolidate if needed
+### Step 4: Consolidate if needed
 Check entry count in topic. If >= 10:
 - Use `icm_memory_recall` to find oldest 5 entries
 - Use `icm_memory_consolidate` to merge them into a single "session history" summary
 - Store consolidated summary, forget individual old entries
 
-### Step 4: Confirm to Director
+### Step 5: Confirm to Director
 Return confirmation that summary was stored, including:
 - Number of entries in topic
 - Whether consolidation was performed
@@ -237,6 +243,69 @@ When a project is reopened:
 4. Search relevant team memoirs for patterns: `icm_memoir_search "kodehold-<team>" "<project context>"`
 5. Summarize context for the Director
 6. Store reopen event in ICM
+
+## CLOSED Memoir Distillation (ADR-0009 Phase 4)
+
+When the gate passes REVIEW→CLOSED, `gate.sh` creates a `.distill_needed` marker. Scribes check for this marker and perform memoir distillation.
+
+### Trigger
+
+After any state transition to CLOSED, check for `.distill_needed`:
+```bash
+if [ -f .distill_needed ]; then
+  # Perform distillation, then remove marker
+fi
+```
+
+### Distillation Protocol
+
+1. **List available memoirs**: `icm_memoir_list`
+   - Check which team memoirs exist (kodehold-architects, kodehold-engineers, etc.)
+
+2. **Recall project memories**: Query project-specific topics
+   ```
+   icm_memory_recall -t kodehold-<project>-* -i critical high
+   ```
+
+3. **Extract patterns**: Use pattern detection to find recurring themes
+   ```
+   icm_memory_extract_patterns -t kodehold-<project>-learnings -m kodehold-<project>
+   ```
+
+4. **Create/refine concepts in memoirs**:
+   - Add new concepts for architectural decisions: `icm_memoir_add_concept`
+   - Refine existing concepts with new learnings: `icm_memoir_refine`
+   - Link related concepts: `icm_memoir_link`
+
+5. **Document distillation**: Store summary of what was distilled
+   ```
+   icm_memory_store -t kodehold-<project>-distillation-log -i medium
+   ```
+
+6. **Remove marker**: `rm .distill_needed`
+
+### Memoir Targets
+
+| Project Type | Primary Memoir | Secondary Memoirs |
+|--------------|----------------|-------------------|
+| Workspace project | `workspace-<name>` | Team memoirs (architects, engineers, etc.) |
+| KodeHold itself | `kodehold-arch` | `kodehold-patterns` |
+
+### Concept Extraction Focus
+
+When distilling, focus on extracting:
+- **Architectural patterns** — reusable design decisions
+- **Anti-patterns** — what didn't work and why
+- **Tool/library learnings** — performance, reliability, gotchas
+- **Process improvements** — workflow optimizations discovered
+- **Integration insights** — how components interact
+
+### Quality Rules
+
+- Never distill without first recalling project memories
+- Each concept must have a clear definition and labels
+- Link related concepts to build knowledge graph connections
+- Verify concept doesn't already exist before adding (use `icm_memoir_search`)
 
 ## Constraints
 

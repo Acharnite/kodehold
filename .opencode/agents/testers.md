@@ -47,6 +47,20 @@ Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute eac
 - Team learnings topic: `kodehold-testers-learnings`
 - Concept memoirs: `kodehold-testers`, `kodehold-learnings`
 
+## Adopted Projects — Symlink Awareness
+
+When testing an adopted project (ADR-0012), the workspace path (`workspaces/<name>/`) is a **symlink** to the real project directory. This can cause issues:
+
+- **Test collection failures:** Some test frameworks (pytest, jest) resolve paths internally. Symlinked paths may cause duplicate test collection or "module not found" errors. If this happens, use the real path instead:
+  ```bash
+  .venv/bin/pytest "$(realpath "workspaces/<name>/tests")"
+  ```
+- **PYTHONPATH / NODE_PATH:** Set these to the real path (`realpath workspaces/<name>/src`) rather than the symlink path to avoid import resolution issues.
+- **pytest confdir:** Pytest uses the rootdir for config discovery. If pytest complains about config, pass `--rootdir "$(realpath workspaces/<name>)"` explicitly.
+- **Marker file location:** `.testers_done` must be created in the workspace root (`workspaces/<name>/`), which resolves to the real project root via the symlink.
+
+If test collection fails with path-related errors, always fall back to `realpath` resolution.
+
 ## Workflow
 
 1. Read the Testing Strategy section of the design document

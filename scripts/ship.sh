@@ -1,12 +1,130 @@
 #!/usr/bin/env bash
 # KodeHold Shipping Gate — automated steps 1-7 of 8-step shipping process
 # Step 0 (Team Meeting) must be completed manually before running this script
+#
+# Usage:
+#   bash scripts/ship.sh                  # Run shipping gate checks
+#   bash scripts/ship.sh --generate-changes  # Auto-generate CHANGES.md entry from git log
+#
+# --generate-changes
+#   Reads commits since the last tag, groups them by conventional commit type,
+#   and inserts a new version entry at the top of CHANGES.md. This is a
+#   convenience feature — you can still write entries manually.
 set -euo pipefail
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; NC='\033[0m'
 pass() { echo -e "  ${GREEN}✓${NC} $1"; }
 fail() { echo -e "  ${RED}✗${NC} $1"; exit 1; }
 warn() { echo -e "  ${YELLOW}⚠${NC} $1"; }
+
+# ── --generate-changes ──────────────────────────────────────────────────────
+
+generate_changes() {
+  # Determine version from VERSION.md
+  local ver
+  ver=$(grep -oP '(?<=^\| )\s*\d+\.\d+\.\d+\s*(?= \|)' VERSION.md | head -1 | xargs)
+  [ -z "$ver" ] && fail "Could not parse version from VERSION.md"
+
+  local today
+  today=$(date -u '+%Y-%m-%d')
+
+  # Check if entry already exists
+  if grep -q "^## $ver " CHANGES.md 2>/dev/null; then
+    warn "CHANGES.md already has an entry for v$ver — skipping generation"
+    return 0
+  fi
+
+  # Get commits since last tag
+  local last_tag
+  last_tag=$(git describe --tags --abbrev=0 HEAD 2>/dev/null || echo "")
+
+  local raw_log
+  if [ -n "$last_tag" ]; then
+    raw_log=$(git log --oneline "${last_tag}..HEAD" 2>/dev/null)
+  else
+    raw_log=$(git log --oneline 2>/dev/null)
+  fi
+  if [ -z "$raw_log" ]; then
+    warn "No commits found since last tag — nothing to generate"
+    return 0
+  fi
+
+  # Classify commits by conventional commit type
+  local added="" changed="" fixed="" docs="" ci="" other=""
+  while IFS= read -r line; do
+    # Extract subject after the short hash
+    local subject="${line#* }"
+    # Strip scope prefix like "feat(scope): " → keep description
+    local desc
+    desc=$(echo "$subject" | sed -E 's/^[a-z]+(\([^)]*\))?[ :] *//')
+    # Capitalise first letter
+    desc="$(echo "${desc:0:1}" | tr '[:lower:]' '[:upper:]')${desc:1}"
+
+    case "$subject" in
+      feat*|add*)          added="$added\n- $desc" ;;
+      fix*|bug*)          fixed="$fixed\n- $desc" ;;
+      docs*|doc*)         docs="$docs\n- $desc" ;;
+      refactor*)          changed="$changed\n- $desc" ;;
+      ci*|chore*)         ci="$ci\n- $desc" ;;
+      test*)              ;;  # skip internal test commits
+      *)                  other="$other\n- $desc" ;;
+    esac
+  done <<< "$raw_log"
+
+  # Build the new entry
+  local entry="## $ver — $today"
+  [ -n "$added" ]   && entry="$entry\n\n### Added$added"
+  [ -n "$changed" ] && entry="$entry\n\n### Changed$changed"
+  [ -n "$fixed" ]   && entry="$entry\n\n### Fixed$fixed"
+  [ -n "$docs" ]    && entry="$entry\n\n### Docs$docs"
+  [ -n "$ci" ]      && entry="$entry\n\n### CI$ci"
+  [ -n "$other" ]   && entry="$entry\n\n### Other$other"
+
+  # Insert after "# Changelog" header
+  local tmp
+  tmp=$(mktemp)
+  # Find line number of first version entry (first "## " after header)
+  local start_line
+  start_line=$(grep -n '^## ' CHANGES.md | head -1 | cut -d: -f1)
+  {
+    echo "# Changelog"
+    echo ""
+    echo -e "$entry"
+    echo ""
+    # Append everything from the first existing version entry onwards
+    if [ -n "$start_line" ]; then
+      tail -n "+$start_line" CHANGES.md
+    fi
+  } > "$tmp"
+  mv "$tmp" CHANGES.md
+  pass "Generated CHANGES.md entry for v$ver ($today)"
+  echo ""
+  echo "Generated entry:"
+  echo "────────────────"
+  echo -e "$entry"
+  echo "────────────────"
+  echo ""
+  echo "Review and edit CHANGES.md before shipping."
+}
+
+# ── Parse arguments ─────────────────────────────────────────────────────────
+
+GENERATE=false
+for arg in "$@"; do
+  case "$arg" in
+    --generate-changes) GENERATE=true ;;
+  esac
+done
+
+if [ "$GENERATE" = true ]; then
+  echo ""
+  echo "=========================================="
+  echo "  Generating CHANGES.md entry"
+  echo "=========================================="
+  echo ""
+  generate_changes
+  exit 0
+fi
 
 echo ""
 echo "=========================================="
@@ -20,7 +138,7 @@ echo "--- Step 1: Version Check ---"
 if [ ! -f VERSION.md ]; then
   fail "VERSION.md not found"
 fi
-current_ver=$(grep -oP '(?<=^\| )\d+\.\d+\.\d+(?= \|)' VERSION.md | head -1)
+current_ver=$(grep -oP '(?<=^\| )\s*\d+\.\d+\.\d+\s*(?= \|)' VERSION.md | head -1 | xargs)
 [ -n "$current_ver" ] && pass "Current version: $current_ver" || fail "Could not parse version from VERSION.md"
 echo ""
 

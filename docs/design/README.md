@@ -1,6 +1,6 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.4.15  
+**Version:** 1.4.16  
 **Status:** Active  
 **Last Updated:** 2026-05-29
 
@@ -224,6 +224,7 @@ Consequences: Trade-offs and follow-ups
 | ADR-0023 | Semantic Memory Automation | Proposed |
 | ADR-0024 | Shared Memory (Multi-Agent Alignment) | Proposed |
 | ADR-0025 | A2A Protocol (Agent-to-Agent Coordination) | Proposed |
+| ADR-0026 | Second Opinion Same-Model Bias Enforcement | Proposed |
 
 See `docs/adr/README.md` for full details.
 
@@ -311,6 +312,8 @@ ICM provides persistent, queryable memory across sessions:
 
 KodeHold maintains a **central** `.icm/` directory at the project root for all persistent memory. Workspace projects (`workspaces/<name>/`) and adopted projects do **not** receive their own `.icm/` — they share the central store. Each project's memories are scoped via topic prefixes (`kodehold-<project>-*`) for isolation while keeping a single queryable database.
 
+**ICM Knowledge Flow** — the 8-step protocol governing how every team searches, captures, and refines knowledge — is documented in detail at `docs/icm-knowledge-flow.md`. All 6 team agents parameterize this protocol with team-specific queries, memoir names, and topic namespaces. The protocol bookends every task: search shared and team learnings before work (Steps 1-2), execute the task (Step 3), then reflect, consolidate, store, and distill what was learned (Steps 4-8).
+
 ### 7.3 RTK (Runtime Toolkit)
 
 RTK is used for all CLI interaction to reduce token consumption:
@@ -327,7 +330,7 @@ via the `skill` tool with zero token cost until invoked.
 
 | Skill | Purpose | Used by |
 |-------|---------|---------|
-| `icm-knowledge-flow` | 7-step ICM memory protocol (search, execute, reflect, store) | All 6 team subagents |
+| `icm-knowledge-flow` | 8-step ICM memory protocol (search, execute, reflect, store, distill) | All 6 team subagents |
 | `state-awareness` | Lifecycle state check preamble and mismatch reporting | All 6 team subagents |
 | `investigate` | 4-phase systematic debugging (Iron Law, pattern analysis, 3-strike rule) | FLS, Engineers, Reviewers, Director |
 
@@ -359,6 +362,28 @@ On small-context models (Ollama 32K), chat history grows with every delegation r
 **Consolidation:** When `session-summary` topic exceeds 10 entries, oldest 5 are consolidated into a single "session history" entry.
 
 See ADR-0019 for the full specification.
+
+### 7.6 Adopted Project Symlinks (ADR-0012)
+
+When KodeHold adopts an existing project, `workspace.sh adopt` creates a **symlink** from `workspaces/<name>/` to the real project directory. This is a symlink, not a copy — the project stays at its original location.
+
+**Path behavior:**
+| Operation | Path | Resolves To |
+|-----------|------|-------------|
+| File access | `workspaces/<name>/src/file.py` | `<real_path>/src/file.py` |
+| Real path | `realpath workspaces/<name>/` | `<real_path>/` |
+| Git operations | `git -C workspaces/<name>/` | `<real_path>/` |
+| Module imports | Through symlink | Transparent — imports work normally |
+
+**Agent guidance:**
+- **Engineers:** Use the symlink path for consistency. Module imports and build commands resolve through symlinks transparently.
+- **Testers:** Symlinked paths can cause test collection failures (pytest, jest). Use `realpath` to resolve to the absolute path when test discovery fails. Set `PYTHONPATH`/`NODE_PATH` to the real path.
+- **All teams:** Use `realpath workspaces/<name>` to verify the symlink target exists before relying on it.
+
+**Known issues (ADR-0012):**
+- Symlinks break if the target is moved without recreating the symlink
+- Some test frameworks produce confusing errors on symlinked paths
+- Error messages may show the symlink path instead of the real path
 
 ---
 
@@ -410,6 +435,20 @@ Protocol:
 | Token budget tracking | All operations | Variable |
 | English-only configs | All configuration | ~15% vs Danish |
 
+### Token Budget Tracking Details
+
+Token budget tracking is implemented via a lightweight protocol:
+
+1. **Token usage script** (`scripts/token-usage.sh`): Queries OpenCode's SQLite database for aggregated token counts per agent (team) within a time window. Outputs JSON with per-team token consumption.
+
+2. **Director's warning protocol**: Before each delegation, Director runs the token-usage script and compares usage against per-phase budgets (ADR-0007). If any team exceeds 80% of its phase budget, a warning is issued; if exceeds 100%, the user is alerted and suggested to compress context.
+
+3. **Session compression logging**: During session compression, Scribes runs the token-usage script and includes per-team token consumption in the ICM summary (field `TokenUsage`). This provides a historical record of token usage across sessions.
+
+4. **Checkpoint token usage**: Session checkpoints also include token usage per team, enabling quick assessment when resuming.
+
+The script provides approximate token counts based on OpenCode's aggregated session data. It is not real-time but reflects cumulative usage per team for the current project.
+
 ---
 
 ## 10. File Layout
@@ -433,7 +472,7 @@ kodehold/
 │   └── skills/                    # Reusable skills
 │       ├── README.md              # Skill index
 │       ├── icm-knowledge-flow/
-│       │   └── SKILL.md           # 7-step ICM knowledge flow
+│       │   └── SKILL.md           # 8-step ICM knowledge flow
 │       ├── investigate/
 │       │   └── SKILL.md           # Systematic debugging protocol (4 phases)
 │       └── state-awareness/
@@ -468,6 +507,7 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.4.16 (2026-05-29):** Registered ADR-0026 — Second Opinion Same-Model Bias Enforcement (Proposed). Added to ADR index in both `docs/adr/README.md` and design doc ADR table.
 - **v1.4.15 (2026-05-29):** Shipping gate alignment — AGENTS.md and ship.sh now agree on step count (8 total: 1 manual Team Meeting + 7 automated). CHANGES.md check upgraded from warn to fail.
 - **v1.4.14 (2026-05-29):** Fixed FLS→Scribes protocol inconsistency (bug #15) — removed direct ICM storage from FLS workflow, now delegates through Director→Scribes per ADR-0010.
 - **v1.4.13 (2026-05-29):** Added Dependabot configuration (`.github/dependabot.yml`) for weekly automated dependency updates — GitHub Actions and npm packages in `.opencode/`.

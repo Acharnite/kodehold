@@ -57,8 +57,9 @@ Within a single session, context is deduplicated. If two teams receive the same 
 
 Token usage is tracked per session via:
 1. ICM message table (token counts per message)
-2. Director's token budget tracker
-3. Alerts when any team exceeds its per-phase allocation
+2. Director's token budget tracker — runs `scripts/token-usage.sh` before each delegation and warns when approaching per-phase budgets (80% warning, 100% alert)
+3. Session compression logging — Scribes includes per-team token consumption in ICM summaries
+4. Checkpoint token usage — session checkpoints include token usage per team
 
 ## Consequences
 
