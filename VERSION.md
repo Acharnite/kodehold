@@ -1,9 +1,10 @@
-# Version 0.12.0 — GitHub MCP Server Upgrade
+# Version 0.13.0 — Dependabot Configuration
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.13.0 | 2026-05-29 | Dependabot config added: weekly automated dependency updates for GitHub Actions and npm packages in `.opencode/` |
 | 0.12.0 | 2026-05-29 | GitHub MCP server upgrade: replaced deprecated `@modelcontextprotocol/server-github` npm package with official `github/github-mcp-server` Go binary v1.1.2. Resolves intermittent auth failures. Closed issues #22 (stale test count) and #25 (GitHub MCP auth) |
 | 0.11.0 | 2026-05-29 | Documentation audit: corrected test count (10→12), marked light mode complete, fixed version header consistency, updated README ADR range, closed stale GitHub issues #4 and #5 |
 | 0.10.0 | 2026-05-29 | ADR status compliance fix (ADR-0015/0016/0019), gate.sh workspace `--project-path`, commit protection protocol, git clean -fd safeguard |
@@ -26,6 +27,8 @@
 - **PATCH**: Documentation updates, refinements, bug fixes
 
 ## Current
+
+**0.13.0** — Dependabot configuration added. `.github/dependabot.yml` enables weekly automated dependency updates for GitHub Actions (version + security) and npm packages in `.opencode/`.
 
 **0.12.0** — GitHub MCP server upgrade. Replaced deprecated `@modelcontextprotocol/server-github` npm package with official `github/github-mcp-server` Go binary v1.1.2, installed at `/home/kiffer/.local/bin/github-mcp-server`. Eliminates intermittent authentication failures. Closed issues #22 (stale test count) and #25 (GitHub MCP auth).
 

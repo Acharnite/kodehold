@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.13.0 — 2026-05-29
+
+### Added
+- **Dependabot configuration** — `.github/dependabot.yml` for weekly automated dependency updates: GitHub Actions (version + security) and npm packages in `.opencode/`
+
 ## 0.12.0 — 2026-05-29
 
 ### Changed
