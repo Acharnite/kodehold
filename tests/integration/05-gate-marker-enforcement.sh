@@ -59,7 +59,7 @@ case_dir="$TMP_ROOT/case_cleanup_timing"
 setup_project "$case_dir"
 touch "$case_dir/.design_reviewed"
 touch "$case_dir/.second_opinion_done"
-if (cd "$case_dir" && printf 'n\n' | bash "scripts/gate.sh" --transition INIT_TO_ACTIVE >"out.log" 2>&1); then
+if (cd "$case_dir" && printf 'n\n' | env -u OPENCODE_NONINTERACTIVE bash "scripts/gate.sh" --transition INIT_TO_ACTIVE >"out.log" 2>&1); then
   fail "INIT_TO_ACTIVE should fail when user cancels"
 fi
 [ -f "$case_dir/.design_reviewed" ] \
