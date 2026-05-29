@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.0 — 2026-05-29
+
+### Changed
+- **GitHub MCP server upgrade** — replaced deprecated `@modelcontextprotocol/server-github` npm package with official `github/github-mcp-server` Go binary v1.1.2. Binary installed at `/home/kiffer/.local/bin/github-mcp-server`. Resolves intermittent authentication failures ([#25](https://github.com/Acharnite/kodehold/issues/25))
+
+### Closed
+- GitHub issue [#22](https://github.com/Acharnite/kodehold/issues/22) — stale test count (fixed in v0.11.0)
+- GitHub issue [#25](https://github.com/Acharnite/kodehold/issues/25) — GitHub MCP auth failures (deprecated package replaced)
+
 ## 0.11.0 — 2026-05-29
 
 ### Fixed

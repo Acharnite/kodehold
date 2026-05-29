@@ -1,6 +1,6 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.4.11  
+**Version:** 1.4.12  
 **Status:** Active  
 **Last Updated:** 2026-05-29
 
@@ -468,6 +468,7 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.4.12 (2026-05-29):** GitHub MCP server upgrade — replaced deprecated `@modelcontextprotocol/server-github` npm package with official `github/github-mcp-server` Go binary v1.1.2. Eliminates intermittent authentication failures. Closed issues #22 (stale test count) and #25 (GitHub MCP auth).
 - **v1.4.11 (2026-05-29):** Fixed ADR-0019 status to "Accepted" across all ADR files (ADR-0019 file, ADR README index). Design doc already had correct status.
 - **v1.4.10 (2026-05-29):** Documentation audit and fixes — corrected test count (10 → 12), marked light mode as complete, fixed version header consistency, updated README.md ADR range and test count, closed stale GitHub issues (#4, #5).
 - **v1.4.9 (2026-05-29):** Added ADR-0020 through ADR-0025 — AI Agent Memory Stack features: Hierarchical Memory (Hot/Warm/Cold), Prospective Memory (Task Queue & Scheduler), Automated Episodic Extraction, Semantic Memory Automation, Shared Memory (Multi-Agent Alignment), and A2A Protocol (Agent-to-Agent Coordination). All status: Proposed.

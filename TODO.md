@@ -86,6 +86,8 @@
 - [ ] **Hvad er ICM Knowledge Flow?** — Nogle agenter kalder "ICM Knowledge Flow" men det er ikke klart hvad dette er eller hvor det er defineret. Skal undersøges og dokumenteres. Muligvis en protokol der skal tilføjes til agent dokumentationen. ([#13](https://github.com/Acharnite/kodehold/issues/13))
 - [ ] **Ryd state filer op ved REVIEW→CLOSED** — Når projekter går fra REVIEW til CLOSED, skal alle state filer ryddes op (.design_reviewed, .testers_done, .code_reviewed, .second_opinion_done, .impact_analysis_done, .team_meeting_done). Dette bør automatiseres i gate-scriptet eller workspace.sh. ([#14](https://github.com/Acharnite/kodehold/issues/14))
 - [x] **Commit untracked filer før session slut** — ADR-0015 til ADR-0019 blev oprettet men aldrig committed, og forsvandt ved session reload. Tilføj regel i Director/Scribes protokol: nye ADR-, design- eller konfigurationsfiler skal commits før session afsluttes. ([#23](https://github.com/Acharnite/kodehold/issues/23)) ✅ Implemented 2026-05-29
+- [x] **Upgrade GitHub MCP server** — replaced deprecated `@modelcontextprotocol/server-github` npm package with official `github/github-mcp-server` Go binary v1.1.2. Resolves intermittent auth failures. ([#25](https://github.com/Acharnite/kodehold/issues/25)) ✅ Implemented 2026-05-29
+- [x] **Fix stale test count** — TODO.md and README.md corrected "10 tests" → "12 tests". ([#22](https://github.com/Acharnite/kodehold/issues/22)) ✅ Implemented 2026-05-29
 - [ ] **consolidate-all script** — Opret script der automatisk consolidere alle ICM topics med >5 entries. Kører `icm_memory_health`, konsolidere store topics via `icm_memory_consolidate`, rapporterer resultat. ([#24](https://github.com/Acharnite/kodehold/issues/24))
 
 ## Low Priority

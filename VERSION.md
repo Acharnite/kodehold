@@ -1,9 +1,10 @@
-# Version 0.11.0 — Documentation Audit & Issue Cleanup
+# Version 0.12.0 — GitHub MCP Server Upgrade
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.12.0 | 2026-05-29 | GitHub MCP server upgrade: replaced deprecated `@modelcontextprotocol/server-github` npm package with official `github/github-mcp-server` Go binary v1.1.2. Resolves intermittent auth failures. Closed issues #22 (stale test count) and #25 (GitHub MCP auth) |
 | 0.11.0 | 2026-05-29 | Documentation audit: corrected test count (10→12), marked light mode complete, fixed version header consistency, updated README ADR range, closed stale GitHub issues #4 and #5 |
 | 0.10.0 | 2026-05-29 | ADR status compliance fix (ADR-0015/0016/0019), gate.sh workspace `--project-path`, commit protection protocol, git clean -fd safeguard |
 | 0.9.0 | 2026-05-27 | Gate markers (.design_reviewed, .impact_analysis_done), user review stop at INIT→ACTIVE, session checkpoint protocol, compaction config, Architects research, ADR-0014 dashboard |
@@ -25,5 +26,7 @@
 - **PATCH**: Documentation updates, refinements, bug fixes
 
 ## Current
+
+**0.12.0** — GitHub MCP server upgrade. Replaced deprecated `@modelcontextprotocol/server-github` npm package with official `github/github-mcp-server` Go binary v1.1.2, installed at `/home/kiffer/.local/bin/github-mcp-server`. Eliminates intermittent authentication failures. Closed issues #22 (stale test count) and #25 (GitHub MCP auth).
 
 **0.11.0** — Documentation audit and issue cleanup. Corrected test count from 10 to 12 (4 smoke + 3 init + 5 integration). Marked light mode implementation as complete (all 4 sub-items done). Fixed design doc version header consistency (was 1.4.8, changelog had 1.4.9). Updated README.md ADR range from 0011 to 0025. Closed stale GitHub issues #4 (GitHub integration) and #5 (ICM context summaries).
