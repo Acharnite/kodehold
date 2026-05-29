@@ -1,6 +1,6 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.4.2  
+**Version:** 1.4.3  
 **Status:** Active  
 **Last Updated:** 2026-05-28
 
@@ -215,6 +215,8 @@ Consequences: Trade-offs and follow-ups
 | ADR-0015 | Director Delegation Enforcement via Tool Permissions | Proposed |
 | ADR-0016 | Early Review Gates in ACTIVE Phase | Proposed |
 | ADR-0017 | Reviewers as Gatekeeper + Mandatory Second Opinion | Accepted |
+| ADR-0018 | Centralize All Documentation Under Scribes | Accepted |
+| ADR-0019 | Session Context Compression via Periodic ICM Summaries | Proposed |
 
 See `docs/adr/README.md` for full details.
 
@@ -266,7 +268,7 @@ See ADR-0016 for the full early review gate specification.
 When a project is reopened:
 1. Director loads project context from ICM
 2. Design doc is updated with new requirements
-3. Impact analysis is performed (Architects + Reviewers) → `.impact_analysis_done`
+3. Impact analysis is performed by Architects → `.impact_analysis_done`
 4. New ADRs are written for significant changes
 5. CLOSED→REOPEN gate passes → marker cleaned
 6. Implementation proceeds as normal lifecycle
@@ -310,6 +312,33 @@ via the `skill` tool with zero token cost until invoked.
 | `investigate` | 4-phase systematic debugging (Iron Law, pattern analysis, 3-strike rule) | FLS, Engineers, Reviewers, Director |
 
 See `docs/adr/ADR-0013-investigate-skill.md` for the full ADR on the investigate skill.
+
+### 7.5 Session Context Compression
+
+On small-context models (Ollama 32K), chat history grows with every delegation round and eventually overflows. Session context compression periodically compresses the running chat into structured ICM summaries, reducing context window pressure.
+
+**Compression triggers:**
+| Trigger | Frequency | Rationale |
+|---------|-----------|-----------|
+| Delegation rounds | Every 4 Task tool invocations | Catches growth before critical |
+| State transitions | After every gate passes | Natural summary point |
+| Explicit request | User says "compress" / "summarize" | Manual override |
+
+**Summary structure:** Each summary is a 200-400 token document covering: completed work, in-progress items, decisions made, files changed, team assignments, blockers, and context carry-forward. Stored in ICM topic `kodehold-<project>-session-summary` with importance `high`.
+
+**Relationship to checkpoints:**
+| Aspect | Summary | Checkpoint |
+|--------|---------|------------|
+| Purpose | Compress running chat | Snapshot full project state |
+| Frequency | Every 4 rounds | Every 8 rounds OR state transition |
+| Content | Decisions, changes, assignments | Full state: completed, in-progress, next |
+| Importance | `high` | `critical` |
+
+**Wake-up integration:** Session start loads the latest summary via `icm_memory_recall` after the standard `icm_wake_up`, providing immediate "what happened last time" context.
+
+**Consolidation:** When `session-summary` topic exceeds 10 entries, oldest 5 are consolidated into a single "session history" entry.
+
+See ADR-0019 for the full specification.
 
 ---
 
@@ -355,6 +384,7 @@ Protocol:
 |-----------|------------|--------------|
 | RTK compact output | All CLI commands | 40-60% |
 | ICM summaries | Context loading | 30-50% |
+| Session context compression | Running chat history | 60-80% per cycle |
 | Minimal prompts | All agent messages | 20-30% |
 | Chunked processing | Large file handling | 50-70% |
 | Token budget tracking | All operations | Variable |
@@ -421,6 +451,7 @@ kodehold/
 - **v1.4 (2026-05-28):** Added ADR-0017 — Reviewers as gatekeeper for lifecycle transitions and mandatory second opinion on ADRs/design documents. Updated Review Cadence (4.2) with gatekeeper authority and `.second_opinion_done` marker. Updated Quality Gates (6.2) with second opinion markers for INIT→ACTIVE and REOPEN→ACTIVE.
 - **v1.4.1 (2026-05-28):** ADR-0017 status updated to Accepted. Documented `--yes` flag ordering constraint in gate.sh (must be first flag).
 - **v1.4.2 (2026-05-28):** gate.sh `--reviewer-mode` output now includes `CHECKS` and `MARKERS_REQUIRED` fields per ADR-0017. `CHECKS` lists individual check results (e.g., `design_reviewed:PASS,second_opinion_done:FAIL`). `MARKERS_REQUIRED` lists markers required for the transition.
+- **v1.4.3 (2026-05-28):** Added ADR-0019 — Session context compression via periodic ICM summaries. Added section 7.5 (Session Context Compression) to Integration. Updated token optimization table with compression savings estimate.
 - **v1.3 (2026-05-28):** Added early review gates (ADR-0016) — three-checkpoint review system in ACTIVE phase. Updated Review Cadence (4.2) and Quality Gates (6.2) with Gate 1 (design review, `.design_review_v2`) and Gate 2 (code review, `.code_reviewed`).
 - **v1.2 (2026-05-27):** Clarified quality-gate marker semantics so cleanup
   happens only on successful pass paths; documented INIT→ACTIVE non-interactive

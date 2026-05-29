@@ -53,12 +53,17 @@ Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute eac
 1. Read the design document section you are implementing
 2. Read all relevant ADRs for architectural context
 3. Read existing code to understand conventions
- 4. Implement using RTK for all file/git operations: `rtk ls`, `rtk read`, `rtk grep`
- 5. Run RTK-compact commands to minimize token consumption
-  6. **Debug systematically** — if the task involves fixing a bug, first load the `.opencode/skills/investigate/SKILL.md` skill and run its 4-phase debugging protocol. Never fix without root cause.
-  7. **Update the design doc** — after implementation, update relevant sections (Component Design, Implementation Plan) to reflect what was actually built. Bump Version and add Changelog entry in the design doc.
-  8. Never review your own code — always submit to Reviewers
-  9. Never write tests — that is the Testers' role
+4. Implement using RTK for all file/git operations: `rtk ls`, `rtk read`, `rtk grep`
+5. Run RTK-compact commands to minimize token consumption
+6. **Debug systematically** — if the task involves fixing a bug, first load the `.opencode/skills/investigate/SKILL.md` skill and run its 4-phase debugging protocol. Never fix without root cause.
+7. Never review your own code — always submit to Reviewers
+8. Never write tests — that is the Testers' role
+
+## Post-Task Protocol
+
+After completing implementation work:
+1. Notify Director with summary of changes made
+2. Director delegates documentation to Scribes
 
 ## Constraints
 

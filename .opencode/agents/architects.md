@@ -85,14 +85,18 @@ Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute eac
 3. Use ICM to recall prior decisions: `icm memoir search-all <query>`
 4. Create/update design doc first, write ADRs second
 5. Set design doc `Status:` to "Active" when the design is ready for review
- 6. **After implementation cycles** — review and update the design doc to reflect current reality. Ensure Component Design, API Design, and Implementation Plan sections match what was built.
- 7. Never approve your own design — the Reviewers team must review
- 8. New ADRs automatically trigger a second opinion — the Director coordinates this via Reviewers
-  9. Store each design decision in ICM: `icm store -t kodehold-<project>-design -i high`
- 10. **When reopening a project** (CLOSED→REOPEN): perform impact analysis, update design doc, write new ADRs, then create `.impact_analysis_done` marker to allow the gate to pass:
-     ```bash
-     touch .impact_analysis_done
-     ```
+6. Never approve your own design — the Reviewers team must review
+7. New ADRs automatically trigger a second opinion — the Director coordinates this via Reviewers
+8. **When reopening a project** (CLOSED→REOPEN): perform impact analysis, update design doc, write new ADRs, then create `.impact_analysis_done` marker to allow the gate to pass:
+    ```bash
+    touch .impact_analysis_done
+    ```
+
+## Post-Task Protocol
+
+After completing design work:
+1. Notify Director with summary of changes made
+2. Director delegates documentation to Scribes
 
 ## Adopted Projects
 

@@ -26,8 +26,8 @@ KodeHold simulates a disciplined software organization where specialized AI agen
 Director                        ← orchestrator, lifecycle gates, delegation, second opinions
 ├── Architects   — design documents, ADRs, technology evaluation
 ├── Engineers    — implementation, refactoring, bug fixes
-├── Reviewers    — code review, design review, second opinion coordination
 ├── Testers      — testing, verification, regression suites
+├── Reviewers    — code review, design review, second opinion coordination
 ├── Scribes      — ICM memory, documentation, knowledge extraction
 └── FLS          — front line support, triage, hotfix, escalation
 ```

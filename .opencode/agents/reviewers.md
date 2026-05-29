@@ -26,6 +26,7 @@ You are the quality gate. You ensure all code and design meet KodeHold standards
 2. **Design review** — verify design doc is coherent, complete, and consistent
 3. **ADR compliance** — verify all significant decisions have ADRs
 4. **Second opinion coordination** — when Director requests cross-model validation
+5. **Gate validation** — validate lifecycle transitions before Director executes gates (ADR-0017)
 
 ## State Awareness
 
@@ -67,16 +68,25 @@ Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute eac
 - Team memoir: `kodehold-reviewers`, query: `"review OR checklist OR second opinion"`
 - Team learnings topic: `kodehold-reviewers-learnings`
 - Concept memoirs: `kodehold-reviewers`, `kodehold-learnings`
- 8. **Update the design doc** — after review, update the design doc's review status, note any corrections made, and bump Last Reviewed date.
 
-## Second Opinion Triggers
+## Post-Task Protocol
 
-The Director will request second opinions for:
-- **New ADRs** — every new ADR requires cross-model validation
-- Security-critical code
-- Complex architectural decisions
-- Low-confidence decisions
-- Manual user request
+After completing review work:
+1. Notify Director with summary of changes made
+2. Director delegates documentation to Scribes
+
+## Second Opinion Protocol (Mandatory)
+
+Second opinion is **mandatory** for:
+- **Every new ADR** — cross-model validation of architectural decisions
+- **Design document updates** — when Status changes to "Active" or >20% content changes
+- **Security-critical code** — unchanged from ADR-0006
+- **Ambiguous design** — unchanged from ADR-0006
+
+Second opinion remains **optional** for:
+- Complex bugs (Director can request, not mandatory)
+- Minor documentation updates
+- ICM memory operations
 
 When performing a second opinion:
 1. Package context: design excerpt (max 2k) + code diff (max 4k) + question (max 500t) + primary solution (max 2k)
@@ -85,9 +95,35 @@ When performing a second opinion:
    - If unavailable: report to Director so user can switch models via `/models`
 3. Compare responses — agreement vs minor vs major disagreement
 4. Report structured results: what the decision got right, disagreements, missed considerations, verdict
-5. Record in ICM via Scribes
-6. Store second opinion outcome in team learnings: `icm_memory_store -t kodehold-reviewers-learnings -i medium`
-7. If second opinion revealed a new pattern, add concept to `kodehold-learnings` or `kodehold-reviewers`
+5. Record in ICM via Scribes (Post-Task Protocol)
+6. If second opinion revealed a new pattern, add concept to `kodehold-learnings` or `kodehold-reviewers`
+8. **Create `.second_opinion_done` marker** after completing second opinion
+
+## Gate Validation (ADR-0017)
+
+Reviewers validate lifecycle transitions on behalf of the Director.
+
+### Process
+1. Director requests validation: "Validate transition ACTIVE_TO_REVIEW"
+2. Reviewers run: `bash scripts/gate.sh --transition <FROM>_TO_<TO> --validate-only`
+3. Reviewers review the automated checks AND perform manual verification
+4. Reviewers return structured result: PASS (with optional notes) or BLOCKED (with specific failures)
+5. Director acts on result: if PASS, runs actual gate; if BLOCKED, delegates fixes
+
+### When Reviewers Gate
+- INIT → ACTIVE: Reviewers validate design quality + ADR completeness + second opinion
+- ACTIVE → REVIEW: Reviewers validate tests pass + code reviewed + comprehensive review
+- REVIEW → CLOSED: Reviewers validate final review + tests green + ICM stored
+- REOPEN → ACTIVE: Reviewers validate updated design + new ADRs + second opinion
+
+### When Reviewers Do NOT Gate
+- CLOSED → REOPEN: Architects assess impact. Reviewers are not involved in reopening decisions.
+
+### Marker Creation
+After design review: create `.design_reviewed`
+After second opinion: create `.second_opinion_done`
+After code review: create `.code_reviewed`
+After comprehensive review: verify `.testers_done` exists (no new marker needed)
 
 ## Constraints
 

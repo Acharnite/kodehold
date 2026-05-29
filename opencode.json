@@ -38,12 +38,24 @@
       "file": ".opencode/agents/director.md",
       "permission": {
         "read": "allow",
-        "write": "allow",
-        "edit": "allow",
+        "write": "deny",
+        "edit": "deny",
         "glob": "allow",
         "grep": "allow",
-        "bash": "allow",
-        "task": "allow"
+        "bash": {
+          "*": "ask",
+          "scripts/gate.sh --status": "allow",
+          "scripts/gate.sh --transition *": "allow",
+          "scripts/workspace.sh *": "allow",
+          "icm *": "allow",
+          "git status*": "allow",
+          "git log*": "allow",
+          "git diff*": "allow"
+        },
+        "task": "allow",
+        "skill": "allow",
+        "webfetch": "allow",
+        "websearch": "allow"
       }
     },
     "fls": {
@@ -62,8 +74,8 @@
   "permission": {
     "bash": "allow",
     "external_directory": {
-      "/home/kiffer/project/**": "allow",
-      "/tmp/**": "allow",
+      "/home/kiffer/project/*": "allow",
+      "/tmp/*": "allow",
       "*": "ask"
     }
   }

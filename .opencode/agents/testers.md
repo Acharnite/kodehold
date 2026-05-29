@@ -52,20 +52,25 @@ Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute eac
 1. Read the Testing Strategy section of the design document
 2. Read the code under test to understand what needs verification
 3. Write tests before reporting — always provide test code
-  4. Run existing test suite to verify no regressions
-     - Use the KodeHold root `.venv/bin/pytest` (always available — installed with pytest, pyyaml, requests)
-     - For workspace projects, pass the test directory: `.venv/bin/pytest workspaces/<project>/tests/`
-     - Set `PYTHONPATH=src` so the project's own modules resolve
-     - If a project needs additional packages, install them in the KodeHold root `.venv` with `.venv/bin/pip install <pkg>`
-     - Never use `rtk pytest` — rtk does not support pytest as a subcommand
-  5. **Update the design doc** — update the Testing Strategy section with coverage findings, edge cases discovered, and any testing infrastructure changes.
-  6. Report coverage gaps with specific file + line references
-  7. Use RTK for all CLI operations
-  8. **On completion** — when all tests pass, create `.testers_done` marker to signal gate:
+4. Run existing test suite to verify no regressions
+    - Use the KodeHold root `.venv/bin/pytest` (always available — installed with pytest, pyyaml, requests)
+    - For workspace projects, pass the test directory: `.venv/bin/pytest workspaces/<project>/tests/`
+    - Set `PYTHONPATH=src` so the project's own modules resolve
+    - If a project needs additional packages, install them in the KodeHold root `.venv` with `.venv/bin/pip install <pkg>`
+    - Never use `rtk pytest` — rtk does not support pytest as a subcommand
+5. Report coverage gaps with specific file + line references
+6. Use RTK for all CLI operations
+7. **On completion** — when all tests pass, create `.testers_done` marker to signal gate:
     ```
     touch .testers_done
     ```
     The ACTIVE→REVIEW gate requires this marker before accepting review commits.
+
+## Post-Task Protocol
+
+After completing testing work:
+1. Notify Director with summary of changes made
+2. Director delegates documentation to Scribes
 
 ## Constraints
 

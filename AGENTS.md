@@ -15,14 +15,33 @@ Full agent definition: `.opencode/agents/director.md`
 
 | Trigger | Task tool subagent_type | Sequence |
 |---------|------------------------|----------|
-| Design/ADR | `architects` | — |
-| Implementation | `engineers` | — |
-| Investigate/Debug | `engineers` or `fls` via investigate skill | Root cause first, fix second |
-| Test | `testers` | Must finish **before** review |
-| Review | `reviewers` | Must run **after** tests pass |
+| Design/ADR | `architects` → `scribes` | Post-task documentation |
+| Implementation | `engineers` → `scribes` | Post-task documentation |
+| Investigate/Debug | `engineers` or `fls` via investigate skill → `scribes` | Root cause first, fix second, then documentation |
+| Test | `testers` → `scribes` | Must finish **before** review, then documentation |
+| Review | `reviewers` → `scribes` | Must run **after** tests pass, then documentation |
 | Memory/Docs | `scribes` | — |
-| Support/Hotfix | `fls` | — |
-| Triage | `fls` | — |
+| Support/Hotfix | `fls` → `scribes` | Post-task documentation |
+| Triage | `fls` → `scribes` | Post-task documentation |
+
+**Note:** Scribes handles ALL documentation post-task. Teams complete their core work, then Director delegates documentation updates to Scribes. Teams READ design docs before work but don't UPDATE them.
+
+### Triage-Check (MANDATORY)
+
+Before ANY action, the Director must answer:
+> **"Is this a triage task?"**
+
+| Signal | Delegate to |
+|--------|------------|
+| Bug / error / "fix this" | `fls` |
+| Feature request | `architects` → `engineers` |
+| Design question | `architects` |
+| Test failure | `engineers` → `testers` |
+| Read-only question | Answer directly (read: allow) |
+| Gate / ICM / git read | Execute directly (bash: allow) |
+| Documentation | `scribes` |
+
+**Enforcement:** Director has `edit: deny`, `write: deny` — file modifications are blocked at the framework level. The ONLY way to make changes is via the Task tool.
 
 ### States
 

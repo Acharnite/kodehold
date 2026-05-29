@@ -21,7 +21,7 @@ The key forces are:
 
 ## Decision
 
-Replace the Director-only final approval with a **Team Meeting** — a structured synchronous review where all six teams (Architects, Engineers, Reviewers, Testers, Scribes, FLS) present their findings to each other and the Director facilitates.
+Replace the Director-only final approval with a **Team Meeting** — a structured synchronous review where all six teams (Architects, Engineers, Testers, Reviewers, Scribes, FLS) present their findings to each other and the Director facilitates.
 
 ### Meeting Structure
 
@@ -31,8 +31,8 @@ The Team Meeting runs once per project phase transition, but is **mandatory** be
 Director  (facilitator)
 ├── Architects    — "Does the implementation match the design doc?"
 ├── Engineers     — "What was built, what changed during implementation?"
-├── Reviewers     — "Code quality, standards compliance, concerns?"
 ├── Testers       — "Test coverage, regressions, edge cases?"
+├── Reviewers     — "Code quality, standards compliance, concerns?"
 ├── Scribes       — "ICM memories stored, documentation complete?"
 └── FLS           — "Support readiness — do we know the project?"
 ```
@@ -40,7 +40,7 @@ Director  (facilitator)
 ### Protocol
 
 1. **Director** opens the meeting, states the project and phase
-2. **Each team** presents in order (Architects → Engineers → Reviewers → Testers → Scribes → FLS):
+2. **Each team** presents in order (Architects → Engineers → Testers → Reviewers → Scribes → FLS):
    - What they delivered
    - What they observed (deviations from design, quality concerns, risks)
    - Whether they approve the transition

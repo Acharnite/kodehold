@@ -34,12 +34,12 @@ Without a defined lifecycle and reopening protocol:
                   └──────────┬───────────────────────┘
                              │ All work complete
                              ▼
-                  ┌──────────────────────────────────┐
-                  │           REVIEW                   │
-                  │  Final review by Reviewers         │
-                  │  Full test suite run by Testers    │
-                  │  Design doc verification            │
-                  └──────────┬───────────────────────┘
+                   ┌──────────────────────────────────┐
+                   │           REVIEW                   │
+                   │  Full test suite run by Testers    │
+                   │  Final review by Reviewers         │
+                   │  Design doc verification            │
+                   └──────────┬───────────────────────┘
                              │ Director closes
                              ▼
                    ┌──────────────────────────────────┐
@@ -70,7 +70,7 @@ Without a defined lifecycle and reopening protocol:
 
 When a project is closed, the Director orchestrates:
 
-1. **Team Meeting** (see ADR-0011): All six teams present — Architects, Engineers, Reviewers, Testers, Scribes, FLS. Each team approves or blocks the transition. Replaces solo Director approval.
+1. **Team Meeting** (see ADR-0011): All six teams present — Architects, Engineers, Testers, Reviewers, Scribes, FLS. Each team approves or blocks the transition. Replaces solo Director approval.
 2. **FLS**: Onboard FLS with project context — design doc, ADRs, key code areas, test patterns. FLS must be ready to triage future issues.
 3. **Testers**: Run complete test suite. All tests must pass.
 3. **Reviewers**: Final code review. Verify design doc matches implementation.

@@ -97,15 +97,14 @@ icm_memory_recall -t kodehold-<project-name> -i critical high medium
         ```
      c. Search `kodehold-fls` for similar past fixes
      d. **If root cause is unclear,** load the `.opencode/skills/investigate/SKILL.md` skill and run its 4-phase debugging protocol before implementing
-    e. Implement the fix
-    f. Verify: run relevant tests using KodeHold root `.venv/bin/pytest`
-     g. **Update the design doc** — if the fix changes documented behavior, API contracts, or architecture, update the relevant design doc sections
-     h. **Document in ICM:**
-        ```
-        icm_memory_store -t kodehold-<project>-fls -i medium \
-          -k "fix,<issue-type>" -c "FLS fix: <description>"
-        ```
-     i. Return summary to Director
+     e. Implement the fix
+     f. Verify: run relevant tests using KodeHold root `.venv/bin/pytest`
+      g. **Store fix in ICM** — record the fix details:
+         ```
+         icm_memory_store -t kodehold-<project>-fls -c "Fixed <brief description>: <root cause>. Changes: <files changed>." -k "hotfix, bugfix, <project>" -i medium
+         ```
+      h. **Document in ICM** — delegate to Scribes via Post-Task Protocol
+      i. Return summary to Director
   4. **If Major (escalate → REOPEN):**
      a. Prepare escalation summary:
         - Impact assessment (files, modules, data, security)
@@ -113,6 +112,12 @@ icm_memory_recall -t kodehold-<project-name> -i critical high medium
         - Reference to relevant design doc sections
      b. Return escalation to Director with `ESCALATE:` prefix
      c. Director will run CLOSED → REOPEN gate
+
+## Post-Task Protocol
+
+After completing triage/hotfix work:
+1. Notify Director with summary of changes made
+2. Director delegates documentation to Scribes
 
 ## Constraints
 

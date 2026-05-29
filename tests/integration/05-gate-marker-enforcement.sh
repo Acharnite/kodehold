@@ -58,17 +58,22 @@ grep -q "Design not reviewed" "$case_dir/out.log" \
 case_dir="$TMP_ROOT/case_cleanup_timing"
 setup_project "$case_dir"
 touch "$case_dir/.design_reviewed"
+touch "$case_dir/.second_opinion_done"
 if (cd "$case_dir" && printf 'n\n' | bash "scripts/gate.sh" --transition INIT_TO_ACTIVE >"out.log" 2>&1); then
   fail "INIT_TO_ACTIVE should fail when user cancels"
 fi
 [ -f "$case_dir/.design_reviewed" ] \
   && pass ".design_reviewed retained when INIT_TO_ACTIVE is cancelled" \
   || fail ".design_reviewed removed before INIT_TO_ACTIVE passed"
+[ -f "$case_dir/.second_opinion_done" ] \
+  && pass ".second_opinion_done retained when INIT_TO_ACTIVE is cancelled" \
+  || fail ".second_opinion_done removed before INIT_TO_ACTIVE passed"
 
 # OPENCODE_NONINTERACTIVE prompt bypass + cleanup on pass
 case_dir="$TMP_ROOT/case_noninteractive_env"
 setup_project "$case_dir"
 touch "$case_dir/.design_reviewed"
+touch "$case_dir/.second_opinion_done"
 (cd "$case_dir" && OPENCODE_NONINTERACTIVE=true bash "scripts/gate.sh" --transition INIT_TO_ACTIVE >"out.log" 2>&1) \
   && pass "OPENCODE_NONINTERACTIVE bypasses INIT_TO_ACTIVE prompt" \
   || fail "OPENCODE_NONINTERACTIVE INIT_TO_ACTIVE run failed"
@@ -78,11 +83,15 @@ grep -q "Proceed with INIT → ACTIVE\?" "$case_dir/out.log" \
 [ ! -f "$case_dir/.design_reviewed" ] \
   && pass ".design_reviewed removed only after INIT_TO_ACTIVE passed" \
   || fail ".design_reviewed not cleaned after successful INIT_TO_ACTIVE"
+[ ! -f "$case_dir/.second_opinion_done" ] \
+  && pass ".second_opinion_done removed only after INIT_TO_ACTIVE passed" \
+  || fail ".second_opinion_done not cleaned after successful INIT_TO_ACTIVE"
 
 # --yes prompt bypass + cleanup on pass
 case_dir="$TMP_ROOT/case_yes_flag"
 setup_project "$case_dir"
 touch "$case_dir/.design_reviewed"
+touch "$case_dir/.second_opinion_done"
 (cd "$case_dir" && bash "scripts/gate.sh" --yes --transition INIT_TO_ACTIVE >"out.log" 2>&1) \
   && pass "--yes bypasses INIT_TO_ACTIVE prompt" \
   || fail "--yes INIT_TO_ACTIVE run failed"
@@ -92,6 +101,9 @@ grep -q "Proceed with INIT → ACTIVE\?" "$case_dir/out.log" \
 [ ! -f "$case_dir/.design_reviewed" ] \
   && pass ".design_reviewed cleaned after --yes pass" \
   || fail ".design_reviewed not cleaned after --yes pass"
+[ ! -f "$case_dir/.second_opinion_done" ] \
+  && pass ".second_opinion_done cleaned after --yes pass" \
+  || fail ".second_opinion_done not cleaned after --yes pass"
 
 # .impact_analysis_done enforcement + cleanup
 case_dir="$TMP_ROOT/case_impact_marker"
