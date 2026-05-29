@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Deprecated — Director already serves as coordinator. Task tool provides structured handoff. Sequential pipeline + Team Meeting implement the relevant workflow patterns. Parallel execution and specialized roles are over-engineering for current needs. GitHub issue #31 closed as over-engineering.
 
 ## Context
 
@@ -129,4 +129,4 @@ requires_response: true|false
 - Negative: Debugging multi-agent workflows is harder than sequential delegation
 - Negative: Risk of context drift in long agent chains
 - Neutral: Parallel execution benefits may be limited by sequential gate requirements
-- Neutral: Designed but not yet implemented — requires extensive testing on real workflows
+- Resolved: Not needed. Existing Director coordination + Task tool handoff covers the required patterns. Deprecated as over-engineering.

@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Deprecated — KodeHold's sequential delegation model eliminates file conflicts by design. Teams never work simultaneously on the same resources. Marker-based coordination provides sufficient state propagation. GitHub issue #30 closed as over-engineering.
 
 ## Context
 
@@ -110,4 +110,4 @@ Total overhead per delegation round: ~85 tokens (acceptable).
 - Negative: Manual conflict resolution required for file-level conflicts
 - Negative: Lock management adds complexity to ICM operations
 - Neutral: Lock timeout (5 minutes) may need tuning based on actual work durations
-- Neutral: Designed but not yet implemented — requires validation on multi-team projects
+- Resolved: Not needed. Sequential delegation model makes file-level locking unnecessary. Deprecated as over-engineering.

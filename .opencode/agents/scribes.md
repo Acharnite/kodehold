@@ -316,3 +316,57 @@ When distilling, focus on extracting:
 - Always use MCP tools for ICM operations (not CLI)
 - Store at minimum importance level, use higher for critical decisions
 - Keep summaries concise — token-conscious at all times
+
+## Prospective Memory CRUD (ADR-0021)
+
+Manage deferred and recurring tasks stored in ICM topic `kodehold-<project>-prospective`.
+
+### Create Task
+
+When Director or user requests a deferred/recurring task:
+
+```
+icm_memory_store(
+  topic="kodehold-<project>-prospective",
+  content="[PROSPECTIVE-TASK]\nid: <4-char-random>\ntype: deferred|recurring\naction: <what to do>\nexecute_after: <ISO 8601>\nrecurring_interval: <duration, recurring only>\npriority: <critical|high|medium|low>\ncontext: <additional context>\ncreated_at: <now ISO 8601>\nstatus: pending",
+  importance="<maps from priority>",
+  keywords=["prospective", "task-type:<type>", "status:pending"]
+)
+```
+
+Then update TODO.md with current prospective task count.
+
+### Read Tasks (Session Start — Director does this)
+
+Director queries at session start. Scribes is not involved in the read path.
+
+### Complete Task
+
+When a task is executed, Scribes forgets it:
+
+```
+icm_memory_forget(id="<task-id>")
+```
+
+For recurring tasks, Scribes creates a new task instead:
+
+```
+# Calculate new execute_after = now + recurring_interval
+# Store new task with same fields, new id, new execute_after
+icm_memory_store(...)
+```
+
+Update TODO.md with new count.
+
+### Expire Stale Tasks
+
+If prospective task count exceeds budget (35 total, or per-priority limits), Scribes forgets the oldest low-priority pending tasks first.
+
+### Token Budget Enforcement
+
+| Priority | Max | Action when exceeded |
+|----------|-----|---------------------|
+| Critical | 5 | Never expire — escalate to Director |
+| High | 10 | Expire oldest medium first, then low |
+| Medium | 15 | Expire oldest low first |
+| Low | 5 | Expire oldest |

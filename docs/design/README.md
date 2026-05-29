@@ -1,6 +1,6 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.4.20  
+**Version:** 1.4.21  
 **Status:** Active  
 **Last Updated:** 2026-05-29
 
@@ -218,12 +218,12 @@ Consequences: Trade-offs and follow-ups
 | ADR-0017 | Reviewers as Gatekeeper + Mandatory Second Opinion | Accepted |
 | ADR-0018 | Centralize All Documentation Under Scribes | Accepted |
 | ADR-0019 | Session Context Compression via Periodic ICM Summaries | Accepted |
-| ADR-0020 | Hierarchical Memory (Hot/Warm/Cold) | Proposed |
-| ADR-0021 | Prospective Memory (Task Queue & Scheduler) | Proposed |
-| ADR-0022 | Automated Episodic Extraction | Proposed |
-| ADR-0023 | Semantic Memory Automation | Proposed |
-| ADR-0024 | Shared Memory (Multi-Agent Alignment) | Proposed |
-| ADR-0025 | A2A Protocol (Agent-to-Agent Coordination) | Proposed |
+| ADR-0020 | Hierarchical Memory (Hot/Warm/Cold) | Superseded |
+| ADR-0021 | Prospective Memory (Task Queue & Scheduler) | Accepted |
+| ADR-0022 | Automated Episodic Extraction | Superseded |
+| ADR-0023 | Semantic Memory Automation | Superseded |
+| ADR-0024 | Shared Memory (Multi-Agent Alignment) | Deprecated |
+| ADR-0025 | A2A Protocol (Agent-to-Agent Coordination) | Deprecated |
 | ADR-0026 | Second Opinion Same-Model Bias Enforcement | Proposed |
 | ADR-0027 | ICM Knowledge Flow Invocation Modes | Proposed |
 
@@ -386,6 +386,96 @@ When KodeHold adopts an existing project, `workspace.sh adopt` creates a **symli
 - Some test frameworks produce confusing errors on symlinked paths
 - Error messages may show the symlink path instead of the real path
 
+### 7.7 Prospective Memory (ADR-0021)
+
+Prospective memory enables deferred actions, recurring tasks, and future intentions that survive session boundaries. Instead of losing "I should check X next time" when a session ends, tasks are stored in ICM and checked at session start.
+
+**Scope (v1):**
+- Deferred tasks — execute after a timestamp
+- Recurring tasks — re-create after execution (no scheduler — AI agents have no time sense)
+
+**Out of scope (future):**
+- Trigger-based execution — requires event monitoring that AI agents cannot do reliably
+
+#### Storage Format
+
+Tasks are stored as ICM memories in topic `kodehold-<project>-prospective`. The content field uses a structured format that ICM's hybrid search can query:
+
+```
+[PROSPECTIVE-TASK]
+id: <short-uuid>
+type: deferred|recurring
+action: <what to do — plain language>
+execute_after: <ISO 8601 timestamp>
+recurring_interval: <duration, e.g. "2d", "1w">  (recurring only)
+priority: critical|high|medium|low
+context: <additional context needed to execute>
+created_at: <ISO 8601 timestamp>
+status: pending
+```
+
+**ICM parameters per task:**
+- Topic: `kodehold-<project>-prospective`
+- Importance: maps from priority (critical→critical, high→high, medium→medium, low→low)
+- Keywords: `["prospective", "task-type:<type>", "status:pending"]`
+
+#### Task Types
+
+| Type | Fields | Behavior |
+|------|--------|----------|
+| **Deferred** | `execute_after` | Checked at session start. If `execute_after <= now()` → present to Director. One-shot. |
+| **Recurring** | `execute_after` + `recurring_interval` | Same as deferred, but after execution, Scribes re-creates with `execute_after = now + interval`. |
+
+#### Session-Start Integration
+
+Add a new step in Director's session lifecycle (section "Session Lifecycle" in director.md), between step 1 (ICM context) and step 2 (session summary):
+
+```
+1.5. Check prospective tasks:
+     icm_memory_recall(topic="kodehold-<project>-prospective", limit=10)
+     Filter: status=pending AND execute_after <= now()
+     If due tasks found → present to user as "Pending tasks:"
+     User decides: execute now / skip / dismiss
+```
+
+This is a lightweight check — one ICM query, filtered in-context. No new scripts or tools.
+
+#### Task Lifecycle
+
+```
+Created → Pending → [Due] → Executing → Completed
+                                        ↓
+                               Re-created (recurring) or forgotten (deferred)
+```
+
+- **Created:** Scribes stores via `icm_memory_store` with status=pending
+- **Due:** Session-start check finds `execute_after <= now()` — presented to Director
+- **Executing:** Director delegates to appropriate team
+- **Completed:** Scribes updates status via `icm_memory_update` or forgets via `icm_memory_forget`
+- **Recurring re-create:** After completion, Scribes stores new task with `execute_after = now + interval`
+
+#### Token Budget
+
+| Priority | Max Tasks | Rationale |
+|----------|-----------|-----------|
+| Critical | 5 | Must execute — blocking issues |
+| High | 10 | Important but not blocking |
+| Medium | 15 | Nice-to-have deferred actions |
+| Low | 5 | Recurring maintenance |
+
+Total: ~35 tasks max. Scribes enforces by expiring oldest low-priority tasks when limit is reached.
+
+#### TODO.md Integration
+
+Prospective tasks are **separate** from TODO.md. TODO.md tracks "what we're building now"; prospective memory tracks "what to do later." A summary line in TODO.md can reference active prospective task count:
+
+```markdown
+## Prospective Tasks
+- 3 deferred tasks in ICM (next due: 2026-06-01)
+```
+
+Scribes updates this line when creating/expiring tasks.
+
 ---
 
 ## 8. LLM Support
@@ -508,6 +598,7 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.4.21 (2026-05-29):** Implemented ADR-0021 — Prospective Memory (Task Queue & Scheduler). Added section 7.7 to design doc. Updated director.md session lifecycle with prospective task check (step 1.5). Updated scribes.md with Prospective Memory CRUD operations. ADR-0021 status promoted to Accepted. Scope: deferred + recurring tasks only; trigger engine deferred to future.
 - **v1.4.20 (2026-05-29):** ADR-0027 implementation review fixes — SKILL.md renumbered to match ADR-0027 step numbering (steps 1-2 Pre-task, steps 4-8 Post-task, step 3 removed from knowledge flow). docs/icm-knowledge-flow.md updated with ADR-0027 reference, 3 invocation modes, Scribes Post-task-only documentation, consolidation threshold fixed (>5→>7). Fixed `memoit=` typo to `memoir=`. Added Full mode to Mode Selection table. Updated second-opinion.md with Post-task mode declaration.
 - **v1.4.19 (2026-05-29):** Updated all 6 agent files with ADR-0027 invocation modes (Pre-task/Post-task). Scribes uses Post-task only; other teams use Pre-task default. Fixes token waste and semantic confusion.
 - **v1.4.18 (2026-05-29):** Registered ADR-0027 — ICM Knowledge Flow Invocation Modes (Proposed). Added to ADR index in both `docs/adr/README.md` and design doc ADR table.

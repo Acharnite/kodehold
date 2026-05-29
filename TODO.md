@@ -101,9 +101,15 @@
 
 ## Memory Stack Features (from AI Agent patterns)
 
-- [ ] ADR-0020: Hierarchical Memory (Hot/Warm/Cold) — [#26](https://github.com/Acharnite/kodehold/issues/26)
-- [ ] ADR-0021: Prospective Memory (Task Queue & Scheduler) — [#27](https://github.com/Acharnite/kodehold/issues/27)
-- [ ] ADR-0022: Automated Episodic Extraction — [#28](https://github.com/Acharnite/kodehold/issues/28)
-- [ ] ADR-0023: Semantic Memory Automation — [#29](https://github.com/Acharnite/kodehold/issues/29)
-- [ ] ADR-0024: Shared Memory (Multi-Agent Alignment) — [#30](https://github.com/Acharnite/kodehold/issues/30)
-- [ ] ADR-0025: A2A Protocol (Agent-to-Agent Coordination) — [#31](https://github.com/Acharnite/kodehold/issues/31)
+- [x] ADR-0020: Hierarchical Memory (Hot/Warm/Cold) — **Superseded** by ICM decay system ([#26](https://github.com/Acharnite/kodehold/issues/26))
+- [x] ADR-0021: Prospective Memory (Task Queue & Scheduler) — Accepted & implemented ([#27](https://github.com/Acharnite/kodehold/issues/27)) ✅ Implemented 2026-05-29
+- [x] ADR-0022: Automated Episodic Extraction — **Superseded** by ICM plugin hooks ([#28](https://github.com/Acharnite/kodehold/issues/28))
+- [x] ADR-0023: Semantic Memory Automation — **Superseded** by ICM plugin + memoir system ([#29](https://github.com/Acharnite/kodehold/issues/29))
+- [x] ADR-0024: Shared Memory (Multi-Agent Alignment) — **Deprecated** (sequential delegation eliminates conflicts) ([#30](https://github.com/Acharnite/kodehold/issues/30))
+- [x] ADR-0025: A2A Protocol (Agent-to-Agent Coordination) — **Deprecated** (Director already serves as coordinator) ([#31](https://github.com/Acharnite/kodehold/issues/31))
+
+## Prospective Tasks (ICM-managed)
+
+_This section is maintained by Scribes. Active deferred/recurring tasks live in ICM topic `kodehold-<project>-prospective`._
+
+- 0 deferred tasks in ICM

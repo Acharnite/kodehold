@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Superseded by ICM's built-in decay and access-aware memory system. ICM provides importance-based tiers (critical/high/medium/low) with decay rates, access-frequency-aware decay (`decay / (1 + access_count × 0.1)`), auto-pruning of low-weight memories, health audits, consolidation hints, and auto-dedup. GitHub issue #26 closed.
 
 ## Context
 
@@ -97,4 +97,4 @@ promoted_at: <timestamp>
 - Negative: Demotion may occasionally remove memories that are still relevant but rarely accessed
 - Negative: Requires tracking access metadata (last_accessed, access_count) on all memories
 - Neutral: Tier thresholds (3 accesses, 14 days) may need tuning based on actual usage patterns
-- Neutral: Designed but not yet implemented — requires testing to validate token savings
+- Resolved: ICM's decay system (importance tiers + access-aware decay + auto-pruning) covers ~90% of this ADR. No separate hierarchical memory layer needed.

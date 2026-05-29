@@ -27,11 +27,11 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0017](ADR-0017-reviewers-gatekeeper-and-mandatory-second-opinion.md) | Reviewers as Gatekeeper + Mandatory Second Opinion | Accepted | 2026-05-28 |
 | [ADR-0018](ADR-0018-centralize-documentation-under-scribes.md) | Centralize All Documentation Work Under Scribes | Accepted | 2026-05-28 |
 | [ADR-0019](ADR-0019-session-context-compression.md) | Session Context Compression via Periodic ICM Summaries | Accepted | 2026-05-28 |
-| [ADR-0020](ADR-0020-hierarchical-memory.md) | Hierarchical Memory (Hot/Warm/Cold) | Proposed | 2026-05-29 |
-| [ADR-0021](ADR-0021-prospective-memory.md) | Prospective Memory (Task Queue & Scheduler) | Proposed | 2026-05-29 |
-| [ADR-0022](ADR-0022-automated-episodic-extraction.md) | Automated Episodic Extraction | Proposed | 2026-05-29 |
-| [ADR-0023](ADR-0023-semantic-memory-automation.md) | Semantic Memory Automation | Proposed | 2026-05-29 |
-| [ADR-0024](ADR-0024-shared-memory.md) | Shared Memory (Multi-Agent Alignment) | Proposed | 2026-05-29 |
-| [ADR-0025](ADR-0025-a2a-protocol.md) | A2A Protocol (Agent-to-Agent Coordination) | Proposed | 2026-05-29 |
+| [ADR-0020](ADR-0020-hierarchical-memory.md) | Hierarchical Memory (Hot/Warm/Cold) | Superseded | 2026-05-29 |
+| [ADR-0021](ADR-0021-prospective-memory.md) | Prospective Memory (Task Queue & Scheduler) | Accepted | 2026-05-29 |
+| [ADR-0022](ADR-0022-automated-episodic-extraction.md) | Automated Episodic Extraction | Superseded | 2026-05-29 |
+| [ADR-0023](ADR-0023-semantic-memory-automation.md) | Semantic Memory Automation | Superseded | 2026-05-29 |
+| [ADR-0024](ADR-0024-shared-memory.md) | Shared Memory (Multi-Agent Alignment) | Deprecated | 2026-05-29 |
+| [ADR-0025](ADR-0025-a2a-protocol.md) | A2A Protocol (Agent-to-Agent Coordination) | Deprecated | 2026-05-29 |
 | [ADR-0026](ADR-0026-second-opinion-same-model-bias.md) | Second Opinion Same-Model Bias Enforcement | Proposed | 2026-05-29 |
 | [ADR-0027](ADR-0027-icm-knowledge-flow-invocation-modes.md) | ICM Knowledge Flow Invocation Modes | Proposed | 2026-05-29 |

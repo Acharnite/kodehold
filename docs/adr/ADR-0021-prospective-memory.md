@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 
@@ -34,7 +34,7 @@ Add a prospective memory layer with task queue, scheduler/trigger engine, and de
 Each prospective memory is stored in ICM with structured fields:
 
 ```
-task_id: <uuid>
+id: <short-uuid>
 type: deferred|recurring|trigger
 action: <what to do>
 trigger_condition: <when to execute>
@@ -109,17 +109,27 @@ Total prospective memory budget: ~35 tasks max. Scribes consolidates or expires 
 |------|--------|
 | scribes.md | Add prospective memory CRUD, task lifecycle management |
 | director.md | Add session-start task check, trigger event monitoring |
-| icm-knowledge-flow SKILL.md | Add prospective memory storage/retrieval steps |
 | design doc | Add section 7.7 — Prospective Memory |
 
 ## Consequences
 
 - Positive: Tasks survive session boundaries — no more "I should remember to check X"
-- Positive: Trigger-based actions enable reactive workflows without manual intervention
 - Positive: Recurring tasks reduce manual maintenance overhead
+- Positive: Zero new infrastructure — leverages existing ICM memory store
 - Negative: Adds state management overhead — task lifecycle must be maintained
-- Negative: Trigger engine requires monitoring event patterns, adding complexity
 - Negative: Token budget for prospective tasks competes with other context needs
 - Negative: Expired/stale tasks must be cleaned up to prevent memory bloat
 - Neutral: Task priority levels may need tuning based on actual workflow patterns
-- Neutral: Designed but not yet implemented — requires integration testing
+- Deferred: Trigger-based execution (event monitoring) deferred to future iteration — AI agents lack reliable time/event sensing
+
+## Implementation Plan (v1)
+
+| File | Change |
+|------|--------|
+| `docs/design/README.md` | Add section 7.7 — Prospective Memory |
+| `docs/adr/ADR-0021-prospective-memory.md` | Status → Accepted, add implementation plan |
+| `.opencode/agents/director.md` | Add step 1.5 to Session Lifecycle: prospective task check |
+| `.opencode/agents/scribes.md` | Add Prospective Memory CRUD section with ICM operations |
+| `TODO.md` | Add "Prospective Tasks" summary line |
+
+### No new files, scripts, or skills required.

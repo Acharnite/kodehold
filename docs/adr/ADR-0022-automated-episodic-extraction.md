@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Superseded by ICM OpenCode plugin (`~/.config/opencode/plugins/icm.ts`) — Layer 0 (tool.execute.after) and Layer 1 (session.compacting) implement automated episodic extraction. GitHub issue #28 closed.
 
 ## Context
 
@@ -105,4 +105,4 @@ Not every event becomes an episodic memory. Filtering criteria:
 - Negative: Extraction overhead adds tokens to each delegation round (~50-100 tokens)
 - Negative: ICM storage grows faster with automated extraction
 - Neutral: Filtering thresholds may need adjustment based on actual project patterns
-- Neutral: Designed but not yet implemented — requires validation on real projects
+- Resolved: Automated extraction implemented via ICM plugin hooks (icm.ts Layer 0 + Layer 1). No further work needed.

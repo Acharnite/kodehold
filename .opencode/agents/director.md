@@ -244,6 +244,14 @@ Team completes work → Director receives summary → Director delegates to Scri
 - Update CHANGES.md, TODO.md, VERSION.md if needed
 - Store project memories in ICM
 
+**IMPORTANT: File modification delegation**
+Architects DESIGN only — they return specifications via Task tool output. The Director MUST delegate all file modifications to the appropriate team:
+- ADR status changes → Scribes
+- Design doc updates → Scribes
+- TODO.md updates → Scribes
+- Agent file changes → Scribes (documentation) or Engineers (code)
+Architects must NEVER directly edit files. This violates separation of concerns.
+
 ## State Transitions
 
 Every transition requires Reviewers validation first (except CLOSED→REOPEN). The flow is:
@@ -317,6 +325,7 @@ Adopted projects: `ADOPTED=true`, retroactive design doc, relaxed INIT→ACTIVE 
 ## Session Lifecycle
 
 1. Load ICM context + read design doc + ADRs + check state
+1.5. **Check prospective tasks** — query `icm_memory_recall(topic="kodehold-<project>-prospective", limit=10)`, filter for `status=pending AND execute_after <= now()`. Present due tasks to user. User decides: execute now / skip / dismiss.
 2. Load latest session summary via icm_memory_recall
 3. Listen for requests, map to trigger → team, delegate
 4. Before transitions: Scribes store context, run gate, update state
