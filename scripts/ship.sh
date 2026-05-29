@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# KodeHold Shipping Gate — run before every push, PR, or release
+# KodeHold Shipping Gate — automated steps 1-7 of 8-step shipping process
+# Step 0 (Team Meeting) must be completed manually before running this script
 set -euo pipefail
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; NC='\033[0m'
@@ -28,7 +29,7 @@ echo "--- Step 2: CHANGES.md ---"
 if [ ! -f CHANGES.md ]; then
   fail "CHANGES.md not found"
 fi
-grep -q "^## $current_ver " CHANGES.md 2>/dev/null || warn "No entry for v$current_ver in CHANGES.md — add one"
+grep -q "^## $current_ver " CHANGES.md 2>/dev/null || fail "No entry for v$current_ver in CHANGES.md — add one before shipping"
 echo ""
 
 # 3. TODO.md check

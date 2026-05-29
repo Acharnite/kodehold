@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.13.3 — 2026-05-29
+
+### Fixed
+- **Shipping gate alignment** — AGENTS.md and ship.sh now agree on step count (8 total: 1 manual Team Meeting + 7 automated in ship.sh). Team Meeting (step 0) clarified as manual pre-requisite. CHANGES.md check in ship.sh upgraded from `warn` to `fail` — shipping without a changelog entry is now blocked.
+
+### Changed
+- `AGENTS.md` — Shipping Gate section expanded from one-liner to structured table with 8 steps (manual/automated distinction)
+- `scripts/ship.sh` — CHANGES.md check: `warn` → `fail`; header comment updated to document 8-step process
+
+## 0.13.2 — 2026-05-29
+
+### Fixed
+- **FLS ICM protocol inconsistency** — removed direct `icm_memory_store` call from FLS workflow (step g). FLS now delegates ICM storage to Scribes via Director, consistent with ADR-0010 ("FLS requests Scribes via Director") and director.md delegation patterns ("fls → scribes (post-task)"). Fixes bug #15.
+
+## 0.13.1 — 2026-05-29
+
+### Fixed
+- **FLS ICM protocol inconsistency** — removed direct `icm_memory_store` call from FLS workflow (step g). FLS now delegates ICM storage to Scribes via Director, consistent with ADR-0010 ("FLS requests Scribes via Director") and director.md delegation patterns ("fls → scribes (post-task)"). Fixes bug #15.
+
 ## 0.13.0 — 2026-05-29
 
 ### Added

@@ -71,4 +71,17 @@ Managed projects live in `workspaces/<name>/`.
 
 ### Shipping Gate
 
-9 steps: team-meeting → version → changelog → todo → tests → icm → commit → push → tag
+8 steps total. Step 0 is manual; steps 1-7 are automated via `scripts/ship.sh`.
+
+| Step | Name | Type | Description |
+|------|------|------|-------------|
+| 0 | Team Meeting | Manual | All 6 teams review and sign off (ADR-0011) |
+| 1 | Version Check | Automated | VERSION.md exists and version parses correctly |
+| 2 | CHANGES.md | Automated | Changelog entry exists for current version |
+| 3 | TODO.md | Automated | Task list file exists |
+| 4 | Tests | Automated | Full test suite passes |
+| 5 | ICM Check | Automated | ICM database accessible |
+| 6 | Git Status | Automated | Changes staged, no surprises |
+| 7 | Branch Check | Automated | On correct branch, PR reminder if needed |
+
+Run: `bash scripts/ship.sh` (covers steps 1-7). Step 0 (Team Meeting) must be completed before running the script.

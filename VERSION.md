@@ -1,9 +1,12 @@
-# Version 0.13.0 — Dependabot Configuration
+# Version 0.13.3 — Shipping Gate Alignment
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.13.3 | 2026-05-29 | Shipping gate alignment: AGENTS.md and ship.sh now agree on step count (8 total: 1 manual + 7 automated). CHANGES.md check upgraded from warn to fail. |
+| 0.13.2 | 2026-05-29 | Fixed FLS→Scribes protocol inconsistency: removed direct ICM storage from FLS workflow, now delegates through Director→Scribes per ADR-0010 |
+| 0.13.1 | 2026-05-29 | Shipping gate alignment: AGENTS.md now correctly documents 8 steps (1 manual + 7 automated in ship.sh). CHANGES.md check in ship.sh upgraded from warn to fail. Team Meeting clarified as manual pre-requisite. |
 | 0.13.0 | 2026-05-29 | Dependabot config added: weekly automated dependency updates for GitHub Actions and npm packages in `.opencode/` |
 | 0.12.0 | 2026-05-29 | GitHub MCP server upgrade: replaced deprecated `@modelcontextprotocol/server-github` npm package with official `github/github-mcp-server` Go binary v1.1.2. Resolves intermittent auth failures. Closed issues #22 (stale test count) and #25 (GitHub MCP auth) |
 | 0.11.0 | 2026-05-29 | Documentation audit: corrected test count (10→12), marked light mode complete, fixed version header consistency, updated README ADR range, closed stale GitHub issues #4 and #5 |
@@ -28,8 +31,10 @@
 
 ## Current
 
+**0.13.3** — Shipping gate alignment. AGENTS.md and ship.sh now agree on step count (8 total: 1 manual Team Meeting + 7 automated). CHANGES.md check upgraded from warn to fail. Team Meeting clarified as manual pre-requisite.
+
+**0.13.2** — Fixed FLS ICM protocol inconsistency. Removed direct `icm_memory_store` call from FLS workflow. FLS now delegates ICM storage to Scribes via Director, consistent with ADR-0010 and director.md delegation patterns.
+
+**0.13.1** — Shipping gate alignment. AGENTS.md now correctly documents 8 steps (1 manual + 7 automated in ship.sh). CHANGES.md check in ship.sh upgraded from warn to fail. Team Meeting clarified as manual pre-requisite.
+
 **0.13.0** — Dependabot configuration added. `.github/dependabot.yml` enables weekly automated dependency updates for GitHub Actions (version + security) and npm packages in `.opencode/`.
-
-**0.12.0** — GitHub MCP server upgrade. Replaced deprecated `@modelcontextprotocol/server-github` npm package with official `github/github-mcp-server` Go binary v1.1.2, installed at `/home/kiffer/.local/bin/github-mcp-server`. Eliminates intermittent authentication failures. Closed issues #22 (stale test count) and #25 (GitHub MCP auth).
-
-**0.11.0** — Documentation audit and issue cleanup. Corrected test count from 10 to 12 (4 smoke + 3 init + 5 integration). Marked light mode implementation as complete (all 4 sub-items done). Fixed design doc version header consistency (was 1.4.8, changelog had 1.4.9). Updated README.md ADR range from 0011 to 0025. Closed stale GitHub issues #4 (GitHub integration) and #5 (ICM context summaries).

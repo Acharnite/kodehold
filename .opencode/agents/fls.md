@@ -88,23 +88,18 @@ icm_memory_recall -t kodehold-<project-name> -i critical high medium
        icm_memoir_search_all "<user's description>"
        ```
     c. Show found projects/topics to the user and ask which one they mean
-  3. **If Minor, clear root cause:**
-     a. Load context: read design doc, relevant ADRs, affected code
-     b. **Recall project history** — search ICM for all memories related to the specific project (architecture, bugfixes, decisions):
-        ```
-        icm_memory_recall -t kodehold-<project> -i critical high
-        icm_memory_recall -t kodehold-<project>-fls -i critical high medium
-        ```
-     c. Search `kodehold-fls` for similar past fixes
-     d. **If root cause is unclear,** load the `.opencode/skills/investigate/SKILL.md` skill and run its 4-phase debugging protocol before implementing
-     e. Implement the fix
-     f. Verify: run relevant tests using KodeHold root `.venv/bin/pytest`
-      g. **Store fix in ICM** — record the fix details:
+   3. **If Minor, clear root cause:**
+      a. Load context: read design doc, relevant ADRs, affected code
+      b. **Recall project history** — search ICM for all memories related to the specific project (architecture, bugfixes, decisions):
          ```
-         icm_memory_store -t kodehold-<project>-fls -c "Fixed <brief description>: <root cause>. Changes: <files changed>." -k "hotfix, bugfix, <project>" -i medium
+         icm_memory_recall -t kodehold-<project> -i critical high
+         icm_memory_recall -t kodehold-<project>-fls -i critical high medium
          ```
-      h. **Document in ICM** — delegate to Scribes via Post-Task Protocol
-      i. Return summary to Director
+      c. Search `kodehold-fls` for similar past fixes
+      d. **If root cause is unclear,** load the `.opencode/skills/investigate/SKILL.md` skill and run its 4-phase debugging protocol before implementing
+      e. Implement the fix
+      f. Verify: run relevant tests using KodeHold root `.venv/bin/pytest`
+      g. Return summary to Director (Post-Task Protocol handles ICM storage via Scribes)
   4. **If Major (escalate → REOPEN):**
      a. Prepare escalation summary:
         - Impact assessment (files, modules, data, security)

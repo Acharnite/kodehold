@@ -139,15 +139,18 @@ grep -q "root cause is unclear" "$FLS" \
 # ──────────────────────────────────────────────
 echo "  [6/7] ICM documentation requirements"
 
-grep -q "icm_memory_store" "$FLS" \
-  && pass "icm_memory_store referenced in workflow" \
-  || fail "missing icm_memory_store in FLS workflow"
+# FLS routes ICM storage through Director → Scribes (per ADR-0010)
+# Verify FLS mentions Scribes in context of ICM documentation
+grep -qi "ICM.*Scribes\|Scribes.*ICM\|ICM storage via Scribes" "$FLS" \
+  && pass "ICM routing through Scribes documented" \
+  || fail "missing ICM routing through Scribes in FLS workflow"
 
-grep -q "Document in ICM" "$FLS" \
-  && pass "'Document in ICM' section present" \
-  || fail "missing 'Document in ICM' instruction"
+# Verify FLS mentions Director in context of ICM/documentation
+grep -qi "Director.*ICM\|ICM.*Director\|Director.*Scribes\|Scribes.*Director" "$FLS" \
+  && pass "Director → Scribes ICM flow documented" \
+  || fail "missing Director → Scribes ICM flow in FLS workflow"
 
-# Verify the top-level responsibility also mentions documentation
+# Verify documentation is mentioned in responsibilities
 grep -q "Document" "$FLS" \
   && pass "documentation mentioned in responsibilities" \
   || fail "documentation not mentioned in FLS responsibilities"

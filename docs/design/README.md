@@ -1,6 +1,6 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.4.13  
+**Version:** 1.4.15  
 **Status:** Active  
 **Last Updated:** 2026-05-29
 
@@ -468,6 +468,8 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.4.15 (2026-05-29):** Shipping gate alignment — AGENTS.md and ship.sh now agree on step count (8 total: 1 manual Team Meeting + 7 automated). CHANGES.md check upgraded from warn to fail.
+- **v1.4.14 (2026-05-29):** Fixed FLS→Scribes protocol inconsistency (bug #15) — removed direct ICM storage from FLS workflow, now delegates through Director→Scribes per ADR-0010.
 - **v1.4.13 (2026-05-29):** Added Dependabot configuration (`.github/dependabot.yml`) for weekly automated dependency updates — GitHub Actions and npm packages in `.opencode/`.
 - **v1.4.12 (2026-05-29):** GitHub MCP server upgrade — replaced deprecated `@modelcontextprotocol/server-github` npm package with official `github/github-mcp-server` Go binary v1.1.2. Eliminates intermittent authentication failures. Closed issues #22 (stale test count) and #25 (GitHub MCP auth).
 - **v1.4.11 (2026-05-29):** Fixed ADR-0019 status to "Accepted" across all ADR files (ADR-0019 file, ADR README index). Design doc already had correct status.
