@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.4.3  
+**Version:** 1.4.8  
 **Status:** Active  
-**Last Updated:** 2026-05-28
+**Last Updated:** 2026-05-29
 
 ---
 
@@ -25,6 +25,7 @@ The orchestrator is design-document-centric: every project begins with a design 
 | 5 | **LLM-Agnostic** | Core works with any LLM; Ollama is primary; second-opinion cross-check supported |
 | 6 | **Traceable Decisions** | All architectural decisions are recorded as ADRs in git |
 | 7 | **Project Lifecycle** | Projects can be opened, closed, and reopened without losing context |
+| 8 | **Safe Operations** | `git clean -fd` must never be executed automatically — it deletes all untracked files and requires explicit user approval |
 
 ---
 
@@ -212,11 +213,17 @@ Consequences: Trade-offs and follow-ups
 | ADR-0012 | Adopted Projects — Existing Codebases in KodeHold | Accepted |
 | ADR-0013 | Investigate Skill — Systematic Debugging | Accepted |
 | ADR-0014 | Status Dashboard — Project Overview | Proposed |
-| ADR-0015 | Director Delegation Enforcement via Tool Permissions | Proposed |
-| ADR-0016 | Early Review Gates in ACTIVE Phase | Proposed |
+| ADR-0015 | Director Delegation Enforcement via Tool Permissions | Accepted |
+| ADR-0016 | Early Review Gates in ACTIVE Phase | Accepted |
 | ADR-0017 | Reviewers as Gatekeeper + Mandatory Second Opinion | Accepted |
 | ADR-0018 | Centralize All Documentation Under Scribes | Accepted |
-| ADR-0019 | Session Context Compression via Periodic ICM Summaries | Proposed |
+| ADR-0019 | Session Context Compression via Periodic ICM Summaries | Accepted |
+| ADR-0020 | Hierarchical Memory (Hot/Warm/Cold) | Proposed |
+| ADR-0021 | Prospective Memory (Task Queue & Scheduler) | Proposed |
+| ADR-0022 | Automated Episodic Extraction | Proposed |
+| ADR-0023 | Semantic Memory Automation | Proposed |
+| ADR-0024 | Shared Memory (Multi-Agent Alignment) | Proposed |
+| ADR-0025 | A2A Protocol (Agent-to-Agent Coordination) | Proposed |
 
 See `docs/adr/README.md` for full details.
 
@@ -273,6 +280,19 @@ When a project is reopened:
 5. CLOSED→REOPEN gate passes → marker cleaned
 6. Implementation proceeds as normal lifecycle
 
+### 6.4 Commit Protection Protocol
+
+To prevent data loss (inspired by ADR-0015 through ADR-0019 being lost when sessions ended before committing), KodeHold enforces a commit protection protocol:
+
+- Before any checkpoint, state transition, or session end, untracked files in `docs/adr/`, `docs/design/`, and `.opencode/agents/` must be identified via `git status --short`
+- The Director prompts the user for approval before committing any uncommitted files
+- Commits use structured messages with conventional commit prefixes:
+  - `docs(adr): ADR-00XX - <title>` for new ADR files
+  - `docs(design): <description>` for design document changes
+  - `config: <description>` for agent configuration changes
+- If the user declines, the Director logs the warning in ICM and continues — data loss risk is acknowledged
+- Scribes verify file persistence before storing pre-transition context and escalate untracked files to the Director
+
 ---
 
 ## 7. Integration
@@ -289,7 +309,7 @@ ICM provides persistent, queryable memory across sessions:
 - Session tracking for audit and continuity
 - Vector embeddings for semantic retrieval
 
-Configured in `.icm/config.toml`. All project state is persisted here.
+KodeHold maintains a **central** `.icm/` directory at the project root for all persistent memory. Workspace projects (`workspaces/<name>/`) and adopted projects do **not** receive their own `.icm/` — they share the central store. Each project's memories are scoped via topic prefixes (`kodehold-<project>-*`) for isolation while keeping a single queryable database.
 
 ### 7.3 RTK (Runtime Toolkit)
 
@@ -448,10 +468,15 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.4.9 (2026-05-29):** Added ADR-0020 through ADR-0025 — AI Agent Memory Stack features: Hierarchical Memory (Hot/Warm/Cold), Prospective Memory (Task Queue & Scheduler), Automated Episodic Extraction, Semantic Memory Automation, Shared Memory (Multi-Agent Alignment), and A2A Protocol (Agent-to-Agent Coordination). All status: Proposed.
+- **v1.4.8 (2026-05-29):** Implemented ADR-0019 — Session Context Compression. Updated director.md with compression triggers every 4 rounds, summary template, and consolidation policy. Updated scribes.md with summary template, escalation path for large topics. ADR-0019 status promoted to Accepted. This completes the last remaining KODEHOLD_LIGHT=1 component.
+- **v1.4.7 (2026-05-29):** Added Principle #8 — Safe Operations (no automatic `git clean -fd`). Added corresponding constraints in director.md and AGENTS.md. Added Commit Protection Protocol — prevents data loss from uncommitted ADR, design, and agent files at session end. Updated Director agent with 5-step protocol, Scribes agent with file persistence verification step in pre-transition workflow, and design doc section 6.4.
 - **v1.4 (2026-05-28):** Added ADR-0017 — Reviewers as gatekeeper for lifecycle transitions and mandatory second opinion on ADRs/design documents. Updated Review Cadence (4.2) with gatekeeper authority and `.second_opinion_done` marker. Updated Quality Gates (6.2) with second opinion markers for INIT→ACTIVE and REOPEN→ACTIVE.
 - **v1.4.1 (2026-05-28):** ADR-0017 status updated to Accepted. Documented `--yes` flag ordering constraint in gate.sh (must be first flag).
 - **v1.4.2 (2026-05-28):** gate.sh `--reviewer-mode` output now includes `CHECKS` and `MARKERS_REQUIRED` fields per ADR-0017. `CHECKS` lists individual check results (e.g., `design_reviewed:PASS,second_opinion_done:FAIL`). `MARKERS_REQUIRED` lists markers required for the transition.
 - **v1.4.3 (2026-05-28):** Added ADR-0019 — Session context compression via periodic ICM summaries. Added section 7.5 (Session Context Compression) to Integration. Updated token optimization table with compression savings estimate.
+- **v1.4.4 (2026-05-29):** Clarified Section 7.2 (ICM) — workspace/adopted projects do not get their own `.icm/`; all project memory uses the central `.icm/` with topic prefix scoping (`kodehold-<project>-*`).
+- **v1.4.5 (2026-05-29):** Fixed ADR status inconsistencies — ADR-0015, ADR-0016 promoted to Accepted; ADR-0019 status updated to "Designed — not yet implemented"
 - **v1.3 (2026-05-28):** Added early review gates (ADR-0016) — three-checkpoint review system in ACTIVE phase. Updated Review Cadence (4.2) and Quality Gates (6.2) with Gate 1 (design review, `.design_review_v2`) and Gate 2 (code review, `.code_reviewed`).
 - **v1.2 (2026-05-27):** Clarified quality-gate marker semantics so cleanup
   happens only on successful pass paths; documented INIT→ACTIVE non-interactive

@@ -54,7 +54,7 @@
 
 ## Medium Priority
 
-- [ ] **Forbyd git clean -fd uden brugertilladelse** — git clean -fd må ALDRIG bruges uden bruger tilladelse. Kommandoen sletter alle untracked filer og kan forårsage tab af data. Dette bør tilføjes som en regel i Director protokollen og i agent dokumentationen. ([#3](https://github.com/Acharnite/kodehold/issues/3))
+- [x] **Forbyd git clean -fd uden brugertilladelse** — git clean -fd må ALDRIG bruges uden bruger tilladelse. Kommandoen sletter alle untracked filer og kan forårsage tab af data. Dette bør tilføjes som en regel i Director protokollen og i agent dokumentationen. ([#3](https://github.com/Acharnite/kodehold/issues/3)) ✅ Implemented 2026-05-29
 - [x] **Brug GitHub til issue tracking og generel integration** — KodeHold bør bruge GitHub Issues til at holde styr på projekter og generelt integrere GitHub features (PRs, releases, branch protection, etc.) i workflowet. Dette forbedrer projektstyring og samarbejde. ([#4](https://github.com/Acharnite/kodehold/issues/4))
 - [x] **Design doc discipline** — agents must read design doc before work and update it with results when done (enforce via agent files)
 - [x] **Implement reopen protocol** — end-to-end with ICM context restoration (Architects impact analysis → design update → new ADRs). Exercised on lib-validate async validators.
@@ -62,7 +62,7 @@
 - [ ] **Implement light mode** (KODEHOLD_LIGHT=1) with collapsed Quality team (Reviewers + Testers). Related strategies for Ollama 32K ctx limit:
   - [x] **Trim director.md** — 301 → 153 lines (49% reduction). Core identity preserved. Removed: duplicate Second Opinion section, FLS Escalation Pattern, Test→Review duplicate, Gate Blockers, detailed adopted projects. Condensed: Gate Enforcement, Workspace, Session Lifecycle. Saves ~8K tokens per Director call
   - [x] **Session checkpoint + reload** — Director gemmer checkpoint i ICM efter ~8 kald. Scribes har store/resume workflow. Director kan foreslå fresh session for små context modeller (Ollama 32K)
-  - [ ] **ICM context summaries** — Scribes komprimerer chat-historik til ICM summaries jævnligt i stedet for at beholde alt i context ([#5](https://github.com/Acharnite/kodehold/issues/5))
+  - [x] **ICM context summaries** — Scribes komprimerer chat-historik til ICM summaries jævnligt i stedet for at beholde alt i context ([#5](https://github.com/Acharnite/kodehold/issues/5)) ✅ Implemented 2026-05-29
   - [x] **Auto-compaction threshold** — tilføjet `compaction: { auto: true, prune: true, reserved: 7000 }` til opencode.json. Efterlader 7K buffer så compaction starter tidligere end default
 - [x] **All subagent prompts must be in English** — added rule #6 to Director's Core Protocol ("ALWAYS write subagent prompts in English only") and a bold warning in the Delegation Pattern section. Also translate remaining Danish in TODO.md (lines 48, 61, 62, 75).
 - [x] **Fjern per-project .icm/** — KodeHold opretter ikke længere `.icm/` i workspace/adopted projekter. Alt bruger central `.icm/` i kodehold roden med topic prefixes (`kodehold-<project>-*`)
@@ -78,13 +78,15 @@
 - [x] **Run KodeHold against another real project** — validated full lifecycle on radarr-lang-router: adopt → design → tests → gates → CLOSED. 50 tests, ADR-0001, 3 gates passed. FLS hotfixed a KeyError bug.
 - [x] **ADR format CI** — ADR Nygaard validering kører allerede i CI via smoke tests (`tests/smoke/03-adr-format.sh` in `smoke` job)
 - [x] **Udvid Scribes rolle til alt dokumentationsarbejde** — Scribes skal håndtere AL dokumentation: design docs, ADR'er, CHANGES.md, README, status-opdateringer, ICM-lagring, changelog. De øvrige teams skal KUN køre state-awareness protokol og udføre deres kerneopgave (Architects designer, Engineers implementerer, Reviewers reviewer, Testers tester, FLS triager). Ingen team-medlemmer skal skrive dokumentation selv. Dette kræver opdatering af alle 6 agent-.md filer, director.md delegation-sektionen, og Scribes' workflow-beskrivelse.
-- [ ] **Fix gate-script workspace directory check** — gate.sh checks for markers (.design_reviewed, .second_opinion_done) in main project directory instead of workspace directory. Causes false negatives for workspace/adopted projects. Manual state updates needed as workaround (see qbit-migrate adoption). Fix: gate.sh should accept project path parameter or check workspaces/<name>/ when validating workspace projects. ([#8](https://github.com/Acharnite/kodehold/issues/8))
+- [x] **Fix gate-script workspace directory check** — gate.sh checks for markers (.design_reviewed, .second_opinion_done) in main project directory instead of workspace directory. Causes false negatives for workspace/adopted projects. Manual state updates needed as workaround (see qbit-migrate adoption). Fix: gate.sh should accept project path parameter or check workspaces/<name>/ when validating workspace projects. ([#8](https://github.com/Acharnite/kodehold/issues/8)) ✅ Implemented 2026-05-29
 - [ ] **Investigate symlink/rtk command issues** — Commands on symlinked workspace directories have challenges (e.g., test collection fails with FileNotFoundError when importing modules). User suspects rtk-related root cause. Investigate and fix. Example: qbit-migrate tests fail because LOG_FILE path calculation resolves incorrectly when imported via symlink. Related to ADR-0012 (adopted projects). ([#9](https://github.com/Acharnite/kodehold/issues/9))
 - [ ] **Agenter skal være opmærksomme på at alle adopterede projekter er symlinks** — Når KodeHold adopterer et projekt, oprettes der et symlink fra workspaces/<name>/ til det oprindelige projekt. Dette betyder at filstiberegninger, imports og kommandoer kan opføre sig anderledes end forventet. Agent dokumentation skal informere om dette. Relateret til ADR-0012 (adopterede projekter). ([#10](https://github.com/Acharnite/kodehold/issues/10))
 - [ ] **Bruger-accept checkpoint før final review** — Inden REVIEW→CLOSED overgangen skal der stoppes op og gives bruger accept for at forhindre at et projekt går i CLOSED state bare for at blive genåbnet igen for at tilføje nye features. Dette kræver en ny gate-check eller et interaktivt prompt i REVIEW→CLOSED transitionen. ([#11](https://github.com/Acharnite/kodehold/issues/11))
 - [ ] **Second opinion bruger samme model — bias problem** — Second opinion (cross-model validation) bruger samme model som den oprindelige design/proces. Dette skaber bias og reducerer effektiviteten af second opinion. Skal undersøges og fixes. Mulige løsninger: Brug en anden model til second opinion, eller implementer et andet valideringsmekanisme. ([#12](https://github.com/Acharnite/kodehold/issues/12))
 - [ ] **Hvad er ICM Knowledge Flow?** — Nogle agenter kalder "ICM Knowledge Flow" men det er ikke klart hvad dette er eller hvor det er defineret. Skal undersøges og dokumenteres. Muligvis en protokol der skal tilføjes til agent dokumentationen. ([#13](https://github.com/Acharnite/kodehold/issues/13))
 - [ ] **Ryd state filer op ved REVIEW→CLOSED** — Når projekter går fra REVIEW til CLOSED, skal alle state filer ryddes op (.design_reviewed, .testers_done, .code_reviewed, .second_opinion_done, .impact_analysis_done, .team_meeting_done). Dette bør automatiseres i gate-scriptet eller workspace.sh. ([#14](https://github.com/Acharnite/kodehold/issues/14))
+- [x] **Commit untracked filer før session slut** — ADR-0015 til ADR-0019 blev oprettet men aldrig committed, og forsvandt ved session reload. Tilføj regel i Director/Scribes protokol: nye ADR-, design- eller konfigurationsfiler skal commits før session afsluttes. ([#23](https://github.com/Acharnite/kodehold/issues/23)) ✅ Implemented 2026-05-29
+- [ ] **consolidate-all script** — Opret script der automatisk consolidere alle ICM topics med >5 entries. Kører `icm_memory_health`, konsolidere store topics via `icm_memory_consolidate`, rapporterer resultat. ([#24](https://github.com/Acharnite/kodehold/issues/24))
 
 ## Low Priority
 
@@ -94,3 +96,12 @@
 - [x] FLS-specific tests — `tests/integration/04-fls-workflow.sh` med 7 test areas (triage criteria, workflow, state restrictions, skill references, ICM docs, permissions), 50+ assertions, 11/11 total suite
 - [ ] Auto-generate CHANGES.md entries from git log on ship ([#18](https://github.com/Acharnite/kodehold/issues/18))
 - [ ] Workshop: dokumentér KodeHold-metoden så nye teams kan onboardes ([#19](https://github.com/Acharnite/kodehold/issues/19))
+
+## Memory Stack Features (from AI Agent patterns)
+
+- [ ] ADR-0020: Hierarchical Memory (Hot/Warm/Cold) — [#26](https://github.com/Acharnite/kodehold/issues/26)
+- [ ] ADR-0021: Prospective Memory (Task Queue & Scheduler) — [#27](https://github.com/Acharnite/kodehold/issues/27)
+- [ ] ADR-0022: Automated Episodic Extraction — [#28](https://github.com/Acharnite/kodehold/issues/28)
+- [ ] ADR-0023: Semantic Memory Automation — [#29](https://github.com/Acharnite/kodehold/issues/29)
+- [ ] ADR-0024: Shared Memory (Multi-Agent Alignment) — [#30](https://github.com/Acharnite/kodehold/issues/30)
+- [ ] ADR-0025: A2A Protocol (Agent-to-Agent Coordination) — [#31](https://github.com/Acharnite/kodehold/issues/31)

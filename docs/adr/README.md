@@ -22,8 +22,14 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0012](ADR-0012-adopted-projects.md) | Adopted Projects — Existing Codebases in KodeHold | Accepted | 2026-05-27 |
 | [ADR-0013](ADR-0013-investigate-skill.md) | Investigate Skill — Systematic Debugging | Accepted | 2026-05-27 |
 | [ADR-0014](ADR-0014-status-dashboard.md) | Status Dashboard — Project Overview | Proposed | 2026-05-27 |
-| [ADR-0015](ADR-0015-director-delegation-enforcement.md) | Director Delegation Enforcement via Tool Permissions | Proposed | 2026-05-28 |
-| [ADR-0016](ADR-0016-early-review-gates.md) | Early Review Gates in ACTIVE Phase | Proposed | 2026-05-28 |
+| [ADR-0015](ADR-0015-director-delegation-enforcement.md) | Director Delegation Enforcement via Tool Permissions | Accepted | 2026-05-28 |
+| [ADR-0016](ADR-0016-early-review-gates.md) | Early Review Gates in ACTIVE Phase | Accepted | 2026-05-28 |
 | [ADR-0017](ADR-0017-reviewers-gatekeeper-and-mandatory-second-opinion.md) | Reviewers as Gatekeeper + Mandatory Second Opinion | Accepted | 2026-05-28 |
 | [ADR-0018](ADR-0018-centralize-documentation-under-scribes.md) | Centralize All Documentation Work Under Scribes | Accepted | 2026-05-28 |
-| [ADR-0019](ADR-0019-session-context-compression.md) | Session Context Compression via Periodic ICM Summaries | Accepted | 2026-05-28 |
+| [ADR-0019](ADR-0019-session-context-compression.md) | Session Context Compression via Periodic ICM Summaries | Designed — not yet implemented | 2026-05-28 |
+| [ADR-0020](ADR-0020-hierarchical-memory.md) | Hierarchical Memory (Hot/Warm/Cold) | Proposed | 2026-05-29 |
+| [ADR-0021](ADR-0021-prospective-memory.md) | Prospective Memory (Task Queue & Scheduler) | Proposed | 2026-05-29 |
+| [ADR-0022](ADR-0022-automated-episodic-extraction.md) | Automated Episodic Extraction | Proposed | 2026-05-29 |
+| [ADR-0023](ADR-0023-semantic-memory-automation.md) | Semantic Memory Automation | Proposed | 2026-05-29 |
+| [ADR-0024](ADR-0024-shared-memory.md) | Shared Memory (Multi-Agent Alignment) | Proposed | 2026-05-29 |
+| [ADR-0025](ADR-0025-a2a-protocol.md) | A2A Protocol (Agent-to-Agent Coordination) | Proposed | 2026-05-29 |
