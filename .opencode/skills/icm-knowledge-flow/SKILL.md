@@ -1,3 +1,11 @@
+---
+name: icm-knowledge-flow
+description: |
+  Shared ICM Knowledge Flow used by all 6 team subagents.
+  8-step protocol: search learnings → execute task → store learnings → refine concepts.
+  Triggers on delegation. Use at session start and after each delegation round.
+---
+
 # ICM Knowledge Flow
 
 Before every task, follow this knowledge flow to build on past experience and preserve new insights from the work:

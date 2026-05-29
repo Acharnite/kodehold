@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.13.4 — 2026-05-29
+
+### Fixed
+- **ICM Knowledge Flow skill missing frontmatter** — added YAML frontmatter with `name` and `description` fields to `.opencode/skills/icm-knowledge-flow/SKILL.md`. Skill now registers correctly with OpenCode's skill discovery. Fixes #13 follow-up.
+
 ## 0.13.3 — 2026-05-29
 
 ### Fixed

@@ -1,9 +1,10 @@
-# Version 0.13.3 — Shipping Gate Alignment
+# Version 0.13.4 — ICM Knowledge Flow Frontmatter Fix
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.13.4 | 2026-05-29 | ICM Knowledge Flow skill frontmatter fix: added YAML frontmatter so skill registers with OpenCode |
 | 0.13.3 | 2026-05-29 | Shipping gate alignment: AGENTS.md and ship.sh now agree on step count (8 total: 1 manual + 7 automated). CHANGES.md check upgraded from warn to fail. |
 | 0.13.2 | 2026-05-29 | Fixed FLS→Scribes protocol inconsistency: removed direct ICM storage from FLS workflow, now delegates through Director→Scribes per ADR-0010 |
 | 0.13.1 | 2026-05-29 | Shipping gate alignment: AGENTS.md now correctly documents 8 steps (1 manual + 7 automated in ship.sh). CHANGES.md check in ship.sh upgraded from warn to fail. Team Meeting clarified as manual pre-requisite. |
@@ -30,6 +31,8 @@
 - **PATCH**: Documentation updates, refinements, bug fixes
 
 ## Current
+
+**0.13.4** — ICM Knowledge Flow skill frontmatter fix. Added YAML frontmatter to `.opencode/skills/icm-knowledge-flow/SKILL.md` so the skill registers correctly with OpenCode's discovery.
 
 **0.13.3** — Shipping gate alignment. AGENTS.md and ship.sh now agree on step count (8 total: 1 manual Team Meeting + 7 automated). CHANGES.md check upgraded from warn to fail. Team Meeting clarified as manual pre-requisite.
 

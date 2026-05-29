@@ -1,6 +1,6 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.4.16  
+**Version:** 1.4.17  
 **Status:** Active  
 **Last Updated:** 2026-05-29
 
@@ -507,6 +507,7 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.4.17 (2026-05-29):** Fixed missing YAML frontmatter in ICM Knowledge Flow skill file (`.opencode/skills/icm-knowledge-flow/SKILL.md`). Skill now registers correctly with OpenCode's skill discovery.
 - **v1.4.16 (2026-05-29):** Registered ADR-0026 — Second Opinion Same-Model Bias Enforcement (Proposed). Added to ADR index in both `docs/adr/README.md` and design doc ADR table.
 - **v1.4.15 (2026-05-29):** Shipping gate alignment — AGENTS.md and ship.sh now agree on step count (8 total: 1 manual Team Meeting + 7 automated). CHANGES.md check upgraded from warn to fail.
 - **v1.4.14 (2026-05-29):** Fixed FLS→Scribes protocol inconsistency (bug #15) — removed direct ICM storage from FLS workflow, now delegates through Director→Scribes per ADR-0010.
