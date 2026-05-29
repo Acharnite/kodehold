@@ -113,7 +113,7 @@ ws_adopt() {
   fi
 
   # Resolve to absolute path
-  target_path="$(cd "$target_path" && pwd 2>/dev/null)" || fail "Cannot resolve path: $target_path"
+  target_path="$(cd "$target_path" && pwd -P 2>/dev/null)" || fail "Cannot resolve path: $target_path"
 
   info "Adopting existing project: $target_path → $ws_dir"
   ln -s "$target_path" "$ws_dir"
@@ -305,7 +305,9 @@ ws_transition() {
 
   # Run the gate using --project-path so markers resolve in workspace directory
   if [ -f "$GATE_SCRIPT" ]; then
-    if bash "$WS_ROOT/$GATE_SCRIPT" --project-path "$ws_dir" --transition "$transition"; then
+    local real_ws_dir
+    real_ws_dir="$(realpath "$ws_dir" 2>/dev/null || (cd "$ws_dir" && pwd -P))"
+    if bash "$WS_ROOT/$GATE_SCRIPT" --project-path "$real_ws_dir" --transition "$transition"; then
       pass "Gate $transition passed for '$name'"
     else
       fail "Gate $transition BLOCKED for '$name' — fix before transition"

@@ -496,7 +496,7 @@ if [ -n "$PROJECT_PATH" ]; then
     echo "Example: $0 --project-path workspaces/my-project --status"
     exit 1
   fi
-  cd "$PROJECT_PATH"
+  cd "$(realpath "$PROJECT_PATH" 2>/dev/null || echo "$PROJECT_PATH")"
 fi
 
 # Handle --status (deferred so --project-path is processed first)
