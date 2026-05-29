@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.10.0 — 2026-05-29
+
+### Added
+- **ADR status fix** — ADR-0015, ADR-0016, ADR-0019 statuses corrected across all docs (Proposed→Accepted)
+- **`--project-path` parameter for gate.sh** — gate.sh now accepts `--project-path` flag to check markers in workspace directories instead of main project root, fixing false negatives for workspace/adopted projects ([#8](https://github.com/Acharnite/kodehold/issues/8))
+
+### Changed
+- **Commit protection protocol** — Director and Scribes now have explicit rules: new ADR, design, and config files must be committed before session end or checkpoint. Added to Director Core Protocol, Scribes Post-Task workflow, and design doc ([#23](https://github.com/Acharnite/kodehold/issues/23))
+- **git clean -fd protection** — added explicit prohibition in Director, AGENTS.md, and design doc: `git clean -fd` must never be used without explicit user permission ([#3](https://github.com/Acharnite/kodehold/issues/3))
+
 ## 0.9.0 — 2026-05-27
 
 ### Added
