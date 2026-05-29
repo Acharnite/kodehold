@@ -17,6 +17,8 @@ gate_failed=0
 cleanup_markers=()
 validate_only=false
 reviewer_mode=false
+PROJECT_PATH=""
+show_status=false
 declare -A check_results
 check() {
   if ! "$@" >/dev/null 2>&1; then
@@ -402,6 +404,7 @@ usage() {
   echo ""
   echo "Options:"
   echo "  --transition     The state transition to validate"
+  echo "  --project-path   Path to project directory (default: current dir)"
   echo "  --validate-only  Run checks without executing transition (for Reviewers)"
   echo "  --reviewer-mode  Output structured results for Reviewers (PASS/BLOCKED per check)"
   echo "  --list           List all gates and their checks"
@@ -443,6 +446,10 @@ while [ $# -gt 0 ]; do
         transition="${1:-}"
       fi
       ;;
+    --project-path)
+      shift
+      PROJECT_PATH="${1:-}"
+      ;;
     --list)
       echo "Available transitions:"
       echo "  INIT_TO_ACTIVE"
@@ -453,12 +460,7 @@ while [ $# -gt 0 ]; do
       exit 0
       ;;
     --status)
-      if [ -f "$STATE_FILE" ]; then
-        cat "$STATE_FILE"
-      else
-        echo "No state file found — project not initialized"
-      fi
-      exit 0
+      show_status=true
       ;;
     --yes)
       OPENCODE_NONINTERACTIVE=true bash "$0" "${@:2}"
@@ -471,6 +473,27 @@ while [ $# -gt 0 ]; do
   esac
   shift
 done
+
+# Change to project path if specified (so all relative paths resolve correctly)
+if [ -n "$PROJECT_PATH" ]; then
+  if [ ! -d "$PROJECT_PATH" ]; then
+    echo "Error: Project path not found: $PROJECT_PATH"
+    echo "Usage: $0 --project-path <path> [--transition <transition>]"
+    echo "Example: $0 --project-path workspaces/my-project --status"
+    exit 1
+  fi
+  cd "$PROJECT_PATH"
+fi
+
+# Handle --status (deferred so --project-path is processed first)
+if [ "$show_status" = true ]; then
+  if [ -f "$STATE_FILE" ]; then
+    cat "$STATE_FILE"
+  else
+    echo "No state file found — project not initialized"
+  fi
+  exit 0
+fi
 
 if [ -z "$transition" ]; then
   echo "Error: --transition is required"

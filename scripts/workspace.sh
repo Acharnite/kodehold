@@ -303,9 +303,9 @@ ws_transition() {
     fail "Workspace '$name' not found"
   fi
 
-  # Run the gate from the workspace directory
+  # Run the gate using --project-path so markers resolve in workspace directory
   if [ -f "$GATE_SCRIPT" ]; then
-    if (cd "$ws_dir" && bash "$WS_ROOT/$GATE_SCRIPT" --transition "$transition"); then
+    if bash "$WS_ROOT/$GATE_SCRIPT" --project-path "$ws_dir" --transition "$transition"; then
       pass "Gate $transition passed for '$name'"
     else
       fail "Gate $transition BLOCKED for '$name' — fix before transition"
