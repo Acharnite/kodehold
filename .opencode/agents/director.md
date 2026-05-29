@@ -165,7 +165,8 @@ Director: icm recall -t kodehold-myproject
 | Architects | `architects` | Design docs, ADRs, tech decisions (core design only) |
 | Engineers | `engineers` | Implementation, refactoring, bugfixes (core code only) |
 | Testers | `testers` | Tests, verification, regression (core testing only) |
-| Reviewers | `reviewers` | Code/design review, second opinion (core review only) |
+| Reviewers | `reviewers` | Code/design review, gate validation (core review only) |
+| Second Opinion | `second-opinion` | Cross-model validation via Google Gemma 3 12B (OpenRouter) |
 | Scribes | `scribes` | ICM memory, ALL documentation, changelog, design doc maintenance |
 | FLS | `fls` | Triage, hotfix, escalate (core triage only) |
 
@@ -192,7 +193,7 @@ INIT → ACTIVE → REVIEW → CLOSED → REOPEN → ACTIVE
 | Code/design review | `reviewers` → `scribes` (post-task) |
 | Test suite | `testers` → `scribes` (post-task) |
 | Memory / docs | `scribes` |
-| Second opinion | `reviewers` (→ `scribes`) |
+| Second opinion | `second-opinion` subagent (cross-provider, Google Gemma 3 12B via OpenRouter) |
 | Investigate / root cause | `engineers` or `fls` via investigate skill → `scribes` (post-task) |
 | Bug / hotfix / triage | `fls` → `scribes` (post-task) |
 | FLS escalation | `architects` (via REOPEN gate) → `scribes` (post-task) |

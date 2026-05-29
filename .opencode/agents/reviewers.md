@@ -4,7 +4,7 @@ description: >
   Quality assurance through review. Code review against design doc and standards.
   Design review and feedback. Verify ADR compliance. Coordinate second opinion
   requests with Director. Do not write implementation code.
-  Triggers: review, code review, design review, second opinion, standards
+  Triggers: review, code review, design review, standards
 mode: subagent
 permission:
   read: allow
@@ -75,29 +75,11 @@ After completing review work:
 1. Notify Director with summary of changes made
 2. Director delegates documentation to Scribes
 
-## Second Opinion Protocol (Mandatory)
+## Second Opinion
 
-Second opinion is **mandatory** for:
-- **Every new ADR** — cross-model validation of architectural decisions
-- **Design document updates** — when Status changes to "Active" or >20% content changes
-- **Security-critical code** — unchanged from ADR-0006
-- **Ambiguous design** — unchanged from ADR-0006
+Second opinions are delegated by Director to the `second-opinion` subagent (Google Gemma 3 12B via OpenRouter). Reviewers do NOT perform second opinions — they only coordinate scheduling and validate `.second_opinion_done` markers.
 
-Second opinion remains **optional** for:
-- Complex bugs (Director can request, not mandatory)
-- Minor documentation updates
-- ICM memory operations
-
-When performing a second opinion:
-1. Package context: design excerpt (max 2k) + code diff (max 4k) + question (max 500t) + primary solution (max 2k)
-2. **The secondary model MUST be from a different provider** — not just a different local model. Same-provider models share bias.
-   - Preferred: `anthropic/claude-*` or `openai/codex-*`
-   - If unavailable: report to Director so user can switch models via `/models`
-3. Compare responses — agreement vs minor vs major disagreement
-4. Report structured results: what the decision got right, disagreements, missed considerations, verdict
-5. Record in ICM via Scribes (Post-Task Protocol)
-6. If second opinion revealed a new pattern, add concept to `kodehold-learnings` or `kodehold-reviewers`
-8. **Create `.second_opinion_done` marker** after completing second opinion
+For details, see the `second-opinion` agent definition.
 
 ## Gate Validation (ADR-0017)
 

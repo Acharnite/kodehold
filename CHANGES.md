@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.14.0 — 2026-05-29
+
+### Added
+- **Dedicated second-opinion subagent** — created second-opinion subagent with Google Gemma 3 12B via OpenRouter, OpenRouter configured as provider in opencode.json, Director routes second opinions to dedicated subagent, Reviewers.md cleaned up (protocol removed, delegation pointer added). Fixes [#12](https://github.com/Acharnite/kodehold/issues/12).
+
+### Changed
+- `opencode.json` — OpenRouter provider added, second-opinion subagent registered
+- `.opencode/agents/reviewers.md` — second opinion protocol removed, delegation pointer added
+- `.opencode/agents/director.md` — second opinion routing to dedicated subagent
+
+### Tested
+- 12/12 tests PASS, Review: PASS
+
 ## 0.13.4 — 2026-05-29
 
 ### Fixed

@@ -4,6 +4,7 @@
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.14.0 | 2026-05-29 | Dedicated second-opinion subagent with Google Gemma 3 12B via OpenRouter, OpenRouter provider configured, Director routes second opinions to dedicated subagent, Reviewers.md cleaned up. Fixes #12 |
 | 0.13.4 | 2026-05-29 | ICM Knowledge Flow skill frontmatter fix: added YAML frontmatter so skill registers with OpenCode |
 | 0.13.3 | 2026-05-29 | Shipping gate alignment: AGENTS.md and ship.sh now agree on step count (8 total: 1 manual + 7 automated). CHANGES.md check upgraded from warn to fail. |
 | 0.13.2 | 2026-05-29 | Fixed FLS→Scribes protocol inconsistency: removed direct ICM storage from FLS workflow, now delegates through Director→Scribes per ADR-0010 |
@@ -31,6 +32,8 @@
 - **PATCH**: Documentation updates, refinements, bug fixes
 
 ## Current
+
+**0.14.0** — Dedicated second-opinion subagent with Google Gemma 3 12B via OpenRouter. OpenRouter configured as provider. Director routes second opinions to dedicated subagent. Reviewers.md cleaned up. Resolves issue #12 (bias problem).
 
 **0.13.4** — ICM Knowledge Flow skill frontmatter fix. Added YAML frontmatter to `.opencode/skills/icm-knowledge-flow/SKILL.md` so the skill registers correctly with OpenCode's discovery.
 
