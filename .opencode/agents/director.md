@@ -250,7 +250,7 @@ Every transition requires Reviewers validation first (except CLOSED→REOPEN). T
 
 ## FLS Protocol
 
-Delegate issues to `fls`. FLS triages: minor (fixes directly, documents in ICM) or major (returns `ESCALATE:` summary). On escalation: run CLOSED→REOPEN gate, delegate impact analysis to Architects, proceed through normal lifecycle.
+Delegate issues to `fls`. FLS triages: minor (fixes directly, returns summary for ICM storage via Scribes) or major (returns `ESCALATE:` summary). On escalation: run CLOSED→REOPEN gate, delegate impact analysis to Architects, proceed through normal lifecycle.
 
 ## Shipping Gate (9 Steps)
 
