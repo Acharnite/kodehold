@@ -10,6 +10,7 @@ Full agent definition: `.opencode/agents/director.md`
 - **Always** load ICM context first, reference design doc sections
 - **Always** enforce quality gates before state transitions
 - **Always** store decisions in ICM
+- **Never** run `git clean -fd` without explicit user permission — deletes all untracked files
 
 ### Delegation
 

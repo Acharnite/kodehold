@@ -122,7 +122,8 @@ When the Director requests context storage before a state transition:
 3. Extract knowledge concepts from what was learned — add/refine in relevant team memoirs
 4. **Update the design doc** — ensure ALL sections reflect current state. Bump Version, Changelog, Last Updated date.
 5. Update documentation files (README, CHANGES, TODO, VERSION) as needed
-6. Store a session checkpoint
+6. **Verify file persistence** — Before storing pre-transition context, run `git status --short` to check for untracked ADR, design, or agent files. If found, escalate to Director with list of files that need committing.
+7. Store a session checkpoint
 
 ## Post-Task Documentation Workflow
 
@@ -189,6 +190,21 @@ Use `icm_memory_store` with:
 - Importance: `high`
 - Keywords: `session-summary`, `context-compression`, project name
 
+### Summary template
+Structure each summary as follows for consistency and easy recall:
+
+```
+- Completed: <what was accomplished this session>
+- In-progress: <what is currently being worked on>
+- Decisions: <key decisions made and rationale>
+- Files: <files created or modified>
+- Teams: <which teams were involved and their results>
+- Blockers: <any blockers or open questions>
+- Carry-forward: <what needs to continue in next session>
+```
+
+Aim for 200–400 tokens per summary — concise but complete.
+
 ### Step 3: Consolidate if needed
 Check entry count in topic. If >= 10:
 - Use `icm_memory_recall` to find oldest 5 entries
@@ -200,6 +216,13 @@ Return confirmation that summary was stored, including:
 - Number of entries in topic
 - Whether consolidation was performed
 - Estimated token savings
+
+### Escalation for large topics
+If the topic exceeds 20 entries (too many to consolidate in a single call):
+1. Do NOT attempt to consolidate all at once — this may exceed tool limits
+2. Escalate to Director with: topic name, entry count, and age range of entries
+3. Director decides: consolidate oldest 10 first, or split into multiple sub-topics
+4. Continue storing the current summary regardless — never block compression on escalation
 
 ### Error handling
 - If `icm_memory_store` fails, report failure to Director. Director continues without compression this cycle.

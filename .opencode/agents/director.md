@@ -277,6 +277,7 @@ Blocked if: any team blocks, any test fails, VERSION/CHANGES not updated, design
 - `KODEHOLD_LIGHT=1`: English only, 28k token budget, collapsed Quality team (Reviewers+Testers)
 - Handle agent refusals: read `.kodehold-state`, run appropriate gate, re-delegate
 - **Todo Sequence Protocol:** Always create todowrite with dependency-ordered items before multi-step tasks. Only mark completed when verified, not assumed.
+- **NEVER** run `git clean -fd` without explicit user confirmation — this command deletes all untracked files and can cause permanent data loss
 
 ## Workspace Management
 
@@ -301,6 +302,16 @@ Adopted projects: `ADOPTED=true`, retroactive design doc, relaxed INIT→ACTIVE 
 5. On agent refusal: verify state, run gate, re-delegate
 6. End: store checkpoint in ICM, summarize
 
+## Commit Protection Protocol
+
+Before ending any session (checkpoint, state transition, or explicit user end):
+
+1. **Check for untracked files** — run `git status --short` and look for `??` (untracked) entries
+2. **Verify new ADRs** — check `docs/adr/` for any new ADR files not yet committed
+3. **Verify design/doc changes** — check `docs/design/` and `.opencode/agents/` for uncommitted changes
+4. **Prompt user** — ask "There are N uncommitted files. Shall I commit them?" before ending session
+5. **Commit if approved** — use structured commit messages: `docs(adr): ADR-00XX - <title>` or `docs(design): <description>`
+
 ## Session Checkpoint Protocol
 
 When running on models with small context windows (e.g. Ollama at 32K ctx), context grows with every delegation and eventually overflows. The checkpoint protocol prevents this.
@@ -308,7 +319,7 @@ When running on models with small context windows (e.g. Ollama at 32K ctx), cont
 ### Checkpoint Trigger
 
 Store a checkpoint when **any** of these conditions are met:
-- After **8 delegation rounds** (compression) or ~8 rounds (checkpoint) — compression happens more frequently
+- After **8 delegation rounds** — compression is finer-grained (every 4 rounds, see Session Compression Protocol)
 - After a **state transition** (gate passes)
 - When the **user explicitly requests** it ("checkpoint", "save state", "start fresh")
 
