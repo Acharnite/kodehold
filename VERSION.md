@@ -1,9 +1,10 @@
-# Version 0.13.4 — ICM Knowledge Flow Frontmatter Fix
+# Version 0.15.0 — ADR-0027 ICM Knowledge Flow Invocation Modes
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.15.0 | 2026-05-29 | Registered ADR-0027 — ICM Knowledge Flow Invocation Modes (Proposed). Fixed consolidation threshold inconsistency (>5→>7) in ADR-0027. |
 | 0.14.0 | 2026-05-29 | Dedicated second-opinion subagent with Google Gemma 3 12B via OpenRouter, OpenRouter provider configured, Director routes second opinions to dedicated subagent, Reviewers.md cleaned up. Fixes #12 |
 | 0.13.4 | 2026-05-29 | ICM Knowledge Flow skill frontmatter fix: added YAML frontmatter so skill registers with OpenCode |
 | 0.13.3 | 2026-05-29 | Shipping gate alignment: AGENTS.md and ship.sh now agree on step count (8 total: 1 manual + 7 automated). CHANGES.md check upgraded from warn to fail. |
@@ -32,6 +33,8 @@
 - **PATCH**: Documentation updates, refinements, bug fixes
 
 ## Current
+
+**0.15.0** — ADR-0027: ICM Knowledge Flow Invocation Modes. Defines three invocation modes (Pre-task, Post-task, Full) for the ICM Knowledge Flow skill. Fixed consolidation threshold inconsistency in ADR-0027.
 
 **0.14.0** — Dedicated second-opinion subagent with Google Gemma 3 12B via OpenRouter. OpenRouter configured as provider. Director routes second opinions to dedicated subagent. Reviewers.md cleaned up. Resolves issue #12 (bias problem).
 

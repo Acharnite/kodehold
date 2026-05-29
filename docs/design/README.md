@@ -1,6 +1,6 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.4.17  
+**Version:** 1.4.18  
 **Status:** Active  
 **Last Updated:** 2026-05-29
 
@@ -225,6 +225,7 @@ Consequences: Trade-offs and follow-ups
 | ADR-0024 | Shared Memory (Multi-Agent Alignment) | Proposed |
 | ADR-0025 | A2A Protocol (Agent-to-Agent Coordination) | Proposed |
 | ADR-0026 | Second Opinion Same-Model Bias Enforcement | Proposed |
+| ADR-0027 | ICM Knowledge Flow Invocation Modes | Proposed |
 
 See `docs/adr/README.md` for full details.
 
@@ -507,6 +508,7 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.4.18 (2026-05-29):** Registered ADR-0027 — ICM Knowledge Flow Invocation Modes (Proposed). Added to ADR index in both `docs/adr/README.md` and design doc ADR table.
 - **v1.4.17 (2026-05-29):** Fixed missing YAML frontmatter in ICM Knowledge Flow skill file (`.opencode/skills/icm-knowledge-flow/SKILL.md`). Skill now registers correctly with OpenCode's skill discovery.
 - **v1.4.16 (2026-05-29):** Registered ADR-0026 — Second Opinion Same-Model Bias Enforcement (Proposed). Added to ADR index in both `docs/adr/README.md` and design doc ADR table.
 - **v1.4.15 (2026-05-29):** Shipping gate alignment — AGENTS.md and ship.sh now agree on step count (8 total: 1 manual Team Meeting + 7 automated). CHANGES.md check upgraded from warn to fail.

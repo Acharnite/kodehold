@@ -34,3 +34,4 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0024](ADR-0024-shared-memory.md) | Shared Memory (Multi-Agent Alignment) | Proposed | 2026-05-29 |
 | [ADR-0025](ADR-0025-a2a-protocol.md) | A2A Protocol (Agent-to-Agent Coordination) | Proposed | 2026-05-29 |
 | [ADR-0026](ADR-0026-second-opinion-same-model-bias.md) | Second Opinion Same-Model Bias Enforcement | Proposed | 2026-05-29 |
+| [ADR-0027](ADR-0027-icm-knowledge-flow-invocation-modes.md) | ICM Knowledge Flow Invocation Modes | Proposed | 2026-05-29 |

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.15.0 — 2026-05-29
+
+### Added
+- **ADR-0027** — ICM Knowledge Flow Invocation Modes (Proposed). Defines three invocation modes (Pre-task, Post-task, Full) for the ICM Knowledge Flow skill, replacing the generic "execute each step" approach. Scribes uses Post-task only (no search steps); other teams use Pre-task default. Fixes token waste and semantic confusion from running search steps immediately before store.
+
+### Fixed
+- **Consolidation threshold inconsistency in ADR-0027** — step 5 in the Proposed SKILL.md section said ">5 entries" while the Context section said ">7 entries". Unified to ">7 entries" (canonical value per ICM docs).
+
 ## 0.14.0 — 2026-05-29
 
 ### Added
