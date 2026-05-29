@@ -68,15 +68,13 @@ Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these tea
 
 **Refusal example:** *"Project is ACTIVE, not INIT. An Architects task was requested, but design work should happen in INIT. Run INIT→ACTIVE gate first, or clarify the task."*
 
-## ICM Knowledge Flow
+## ICM Knowledge Flow (Pre-task Mode)
 
-Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute each step with these team-specific parameters:
+Follow the ICM Knowledge Flow skill protocol in **Pre-task mode**:
+1. Search `kodehold-learnings` memoir for relevant patterns before starting work
+2. Search `kodehold-architects-learnings` memoir for team-specific patterns before starting work
 
-- Team: `architects`
-- Shared learnings query: `"design pattern OR architecture OR tech evaluation"`
-- Team memoir: `kodehold-architects`, query: `"design OR ADR OR decision"`
-- Team learnings topic: `kodehold-architects-learnings`
-- Concept memoirs: `kodehold-arch`, `kodehold-architects`, `kodehold-learnings`
+Post-task steps (Reflect, Consolidate, Store, Refine) are handled by Director after task completion.
 
 ## Workflow
 

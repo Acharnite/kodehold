@@ -1,6 +1,6 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.4.18  
+**Version:** 1.4.20  
 **Status:** Active  
 **Last Updated:** 2026-05-29
 
@@ -331,7 +331,7 @@ via the `skill` tool with zero token cost until invoked.
 
 | Skill | Purpose | Used by |
 |-------|---------|---------|
-| `icm-knowledge-flow` | 8-step ICM memory protocol (search, execute, reflect, store, distill) | All 6 team subagents |
+| `icm-knowledge-flow` | 7-step ICM memory protocol (search, reflect, store, distill) with 3 invocation modes | All 6 team subagents |
 | `state-awareness` | Lifecycle state check preamble and mismatch reporting | All 6 team subagents |
 | `investigate` | 4-phase systematic debugging (Iron Law, pattern analysis, 3-strike rule) | FLS, Engineers, Reviewers, Director |
 
@@ -508,6 +508,8 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.4.20 (2026-05-29):** ADR-0027 implementation review fixes — SKILL.md renumbered to match ADR-0027 step numbering (steps 1-2 Pre-task, steps 4-8 Post-task, step 3 removed from knowledge flow). docs/icm-knowledge-flow.md updated with ADR-0027 reference, 3 invocation modes, Scribes Post-task-only documentation, consolidation threshold fixed (>5→>7). Fixed `memoit=` typo to `memoir=`. Added Full mode to Mode Selection table. Updated second-opinion.md with Post-task mode declaration.
+- **v1.4.19 (2026-05-29):** Updated all 6 agent files with ADR-0027 invocation modes (Pre-task/Post-task). Scribes uses Post-task only; other teams use Pre-task default. Fixes token waste and semantic confusion.
 - **v1.4.18 (2026-05-29):** Registered ADR-0027 — ICM Knowledge Flow Invocation Modes (Proposed). Added to ADR index in both `docs/adr/README.md` and design doc ADR table.
 - **v1.4.17 (2026-05-29):** Fixed missing YAML frontmatter in ICM Knowledge Flow skill file (`.opencode/skills/icm-knowledge-flow/SKILL.md`). Skill now registers correctly with OpenCode's skill discovery.
 - **v1.4.16 (2026-05-29):** Registered ADR-0026 — Second Opinion Same-Model Bias Enforcement (Proposed). Added to ADR index in both `docs/adr/README.md` and design doc ADR table.

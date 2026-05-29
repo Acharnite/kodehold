@@ -59,15 +59,13 @@ After approving a design document (INIT phase), create `.design_reviewed` marker
 touch .design_reviewed
 ```
 
-## ICM Knowledge Flow
+## ICM Knowledge Flow (Pre-task Mode)
 
-Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute each step with these team-specific parameters:
+Follow the ICM Knowledge Flow skill protocol in **Pre-task mode**:
+1. Search `kodehold-learnings` memoir for relevant patterns before starting work
+2. Search `kodehold-reviewers-learnings` memoir for team-specific patterns before starting work
 
-- Team: `reviewers`
-- Shared learnings query: `"review OR security OR quality OR bug pattern"`
-- Team memoir: `kodehold-reviewers`, query: `"review OR checklist OR second opinion"`
-- Team learnings topic: `kodehold-reviewers-learnings`
-- Concept memoirs: `kodehold-reviewers`, `kodehold-learnings`
+Post-task steps (Reflect, Consolidate, Store, Refine) are handled by Director after task completion.
 
 ## Post-Task Protocol
 

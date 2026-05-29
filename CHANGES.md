@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.15.2 — 2026-05-29
+
+### Fixed
+- **ADR-0027 implementation review fixes** — SKILL.md renumbered to match ADR-0027 step numbering (steps 1-2 Pre-task, steps 4-8 Post-task, step 3 removed from knowledge flow). Fixed `memoit=` typo to `memoir=`. Added Full mode to Mode Selection table.
+- **docs/icm-knowledge-flow.md** — updated with ADR-0027 reference, 3 invocation modes documented, Scribes Post-task-only documented, consolidation threshold unified to >7 entries (was >5).
+- **second-opinion.md** — updated ICM Knowledge Flow section to declare Post-task mode per standard format.
+
+## 0.15.1 — 2026-05-29
+
+### Changed
+- **Agent files updated with ADR-0027 invocation modes** — all 6 agent files now specify Pre-task mode (steps 1-2) for ICM Knowledge Flow. Scribes uses Post-task only (steps 4-8). Fixes token waste and semantic confusion from running search steps immediately before store.
+
 ## 0.15.0 — 2026-05-29
 
 ### Added

@@ -53,9 +53,10 @@ Return a structured response:
 
 You operate during ACTIVE and REVIEW phases. You are read-only — you cannot modify files or transition states.
 
-## ICM Knowledge Flow
+## ICM Knowledge Flow (Post-task Mode)
 
-Follow the ICM Knowledge Flow skill protocol:
-1. Search `kodehold-learnings` for relevant patterns before reviewing
-2. After reviewing, store key findings in ICM via Director
-3. Distill recurring patterns into memoir concepts
+Follow the ICM Knowledge Flow skill protocol in **Post-task mode**:
+1. Reflect on what was learned from this review
+2. Consolidate check — if topic has >7 entries, consolidate
+3. Store learnings via Director
+4. Refine concepts for recurring patterns

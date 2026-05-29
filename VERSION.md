@@ -1,9 +1,11 @@
-# Version 0.15.0 — ADR-0027 ICM Knowledge Flow Invocation Modes
+# Version 0.15.2 — ADR-0027 Implementation Review Fixes
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.15.2 | 2026-05-29 | ADR-0027 implementation review fixes: SKILL.md renumbered, docs updated, second-opinion.md standardized, typo fixed, Full mode added. |
+| 0.15.1 | 2026-05-29 | Updated all 6 agent files with ADR-0027 invocation modes (Pre-task/Post-task). Scribes uses Post-task only; other teams use Pre-task default. |
 | 0.15.0 | 2026-05-29 | Registered ADR-0027 — ICM Knowledge Flow Invocation Modes (Proposed). Fixed consolidation threshold inconsistency (>5→>7) in ADR-0027. |
 | 0.14.0 | 2026-05-29 | Dedicated second-opinion subagent with Google Gemma 3 12B via OpenRouter, OpenRouter provider configured, Director routes second opinions to dedicated subagent, Reviewers.md cleaned up. Fixes #12 |
 | 0.13.4 | 2026-05-29 | ICM Knowledge Flow skill frontmatter fix: added YAML frontmatter so skill registers with OpenCode |
@@ -34,7 +36,9 @@
 
 ## Current
 
-**0.15.0** — ADR-0027: ICM Knowledge Flow Invocation Modes. Defines three invocation modes (Pre-task, Post-task, Full) for the ICM Knowledge Flow skill. Fixed consolidation threshold inconsistency in ADR-0027.
+**0.15.2** — ADR-0027 implementation review fixes. SKILL.md renumbered to match ADR-0027, docs updated with invocation modes, second-opinion.md standardized, typo fixed.
+
+**0.15.1** — Updated all 6 agent files with ADR-0027 invocation modes. Scribes uses Post-task only; other teams use Pre-task default. Fixes token waste and semantic confusion.
 
 **0.14.0** — Dedicated second-opinion subagent with Google Gemma 3 12B via OpenRouter. OpenRouter configured as provider. Director routes second opinions to dedicated subagent. Reviewers.md cleaned up. Resolves issue #12 (bias problem).
 

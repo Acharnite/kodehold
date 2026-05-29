@@ -58,15 +58,13 @@ Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these tea
 - Architectural change
 - Uncertain root cause
 
-## ICM Knowledge Flow
+## ICM Knowledge Flow (Pre-task Mode)
 
-Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute each step with these team-specific parameters:
+Follow the ICM Knowledge Flow skill protocol in **Pre-task mode**:
+1. Search `kodehold-learnings` memoir for relevant patterns before starting work
+2. Search `kodehold-fls-learnings` memoir for team-specific patterns before starting work
 
-- Team: `fls`
-- Shared learnings query: `"hotfix OR bug OR escalation OR pattern"`
-- Team memoir: `kodehold-fls`, query: `"fix OR triage OR project OR quirk"`
-- Team learnings topic: `kodehold-fls-learnings`
-- Concept memoirs: `kodehold-fls`, `kodehold-learnings`
+Post-task steps (Reflect, Consolidate, Store, Refine) are handled by Director after task completion.
 
 **If the user mentions a specific project** (e.g. lib-validate, my-project), also recall that project's full memory history before executing:
 ```

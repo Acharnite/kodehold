@@ -60,15 +60,15 @@ For every workspace project, ensure these files exist and are up to date:
 | `TODO.md` | Completed checklist + future roadmap | After each feature/fix |
 | `VERSION.md` | Current version declaration | Per Shipping Gate |
 
-## ICM Knowledge Flow
+## ICM Knowledge Flow (Post-task Only)
 
-Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute each step with these team-specific parameters:
+Follow the ICM Knowledge Flow skill protocol in **Post-task mode only**:
+1. **Reflect** — identify what was learned from this delegation
+2. **Consolidate check** — if topic has >7 entries, consolidate
+3. **Store learnings** — ICM memory_store to team learnings topic
+4. **Refine concepts** — ICM memoir_refine for recurring patterns (2+ occurrences)
 
-- Team: `scribes`
-- Shared learnings query: `"documentation OR knowledge OR memory"`
-- Team memoir: `kodehold-scribes`, query: `"ICM OR memoir OR distill OR MCP"`
-- Team learnings topic: `kodehold-scribes-learnings`
-- Concept memoirs: `kodehold-scribes`, `kodehold-learnings`
+**IMPORTANT:** Do NOT run pre-task search steps (1-2). As Scribes, you are always invoked post-task. Searching before execution is not applicable.
 
 ## ICM Best Practices (from ICM Docs)
 

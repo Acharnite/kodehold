@@ -38,15 +38,13 @@ Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these tea
 
 **Refusal example:** *"Project is INIT, not ACTIVE. Cannot implement code until design doc is approved and INIT→ACTIVE gate passes. Delegate to Architects first."*
 
-## ICM Knowledge Flow
+## ICM Knowledge Flow (Pre-task Mode)
 
-Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute each step with these team-specific parameters:
+Follow the ICM Knowledge Flow skill protocol in **Pre-task mode**:
+1. Search `kodehold-learnings` memoir for relevant patterns before starting work
+2. Search `kodehold-engineers-learnings` memoir for team-specific patterns before starting work
 
-- Team: `engineers`
-- Shared learnings query: `"implementation OR pattern OR library OR performance"`
-- Team memoir: `kodehold-engineers`, query: `"convention OR refactor OR build"`
-- Team learnings topic: `kodehold-engineers-learnings`
-- Concept memoirs: `kodehold-engineers`, `kodehold-learnings`
+Post-task steps (Reflect, Consolidate, Store, Refine) are handled by Director after task completion.
 
 ## Adopted Projects — Symlink Awareness
 
