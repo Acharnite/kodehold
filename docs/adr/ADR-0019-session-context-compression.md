@@ -2,7 +2,7 @@
 
 ## Status
 
-Designed — not yet implemented at time of acceptance.
+Accepted
 
 ## Context
 

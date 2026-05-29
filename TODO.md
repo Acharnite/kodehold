@@ -11,7 +11,7 @@
 - [x] opencode.json with Ollama provider (no hardcoded default model — user's global OpenCode model used)
 - [x] AGENTS.md, README.md, VERSION.md, TODO.md, CHANGES.md, .gitignore
 - [x] ICM memories, memoirs, concepts, links — 144 memories, 7 memoirs
-- [x] Test suite: 10 tests (smoke/init/integration) with GitHub Actions CI (3 jobs)
+- [x] Test suite: 12 tests (4 smoke + 3 init + 5 integration) with GitHub Actions CI (3 jobs)
 - [x] Shipping gate protocol with scripts/ship.sh (8-step process)
 - [x] Director as working agent with `task: allow`
 - [x] Lifecycle state tracking (.kodehold-state) with gate automation (scripts/gate.sh)
@@ -59,7 +59,7 @@
 - [x] **Design doc discipline** — agents must read design doc before work and update it with results when done (enforce via agent files)
 - [x] **Implement reopen protocol** — end-to-end with ICM context restoration (Architects impact analysis → design update → new ADRs). Exercised on lib-validate async validators.
 - [x] **Investigate skill** — adapted from gstack: 4-phase systematic debugging (investigate→analyze→hypothesize→implement) with Iron Law, pattern analysis, 3-strike rule, regression test requirement, structured debug report, and ICM storage ([#2](https://github.com/Acharnite/kodehold/issues/2))
-- [ ] **Implement light mode** (KODEHOLD_LIGHT=1) with collapsed Quality team (Reviewers + Testers). Related strategies for Ollama 32K ctx limit:
+- [x] **Implement light mode** (KODEHOLD_LIGHT=1) with collapsed Quality team (Reviewers + Testers). Related strategies for Ollama 32K ctx limit:
   - [x] **Trim director.md** — 301 → 153 lines (49% reduction). Core identity preserved. Removed: duplicate Second Opinion section, FLS Escalation Pattern, Test→Review duplicate, Gate Blockers, detailed adopted projects. Condensed: Gate Enforcement, Workspace, Session Lifecycle. Saves ~8K tokens per Director call
   - [x] **Session checkpoint + reload** — Director gemmer checkpoint i ICM efter ~8 kald. Scribes har store/resume workflow. Director kan foreslå fresh session for små context modeller (Ollama 32K)
   - [x] **ICM context summaries** — Scribes komprimerer chat-historik til ICM summaries jævnligt i stedet for at beholde alt i context ([#5](https://github.com/Acharnite/kodehold/issues/5)) ✅ Implemented 2026-05-29
@@ -91,7 +91,7 @@
 ## Low Priority
 
 - [ ] **FLS→Scribes protocol fix** — ADR-0010 says FLS requests Scribes via Director for ICM storage. FLS currently stores directly. Resolve inconsistency ([#15](https://github.com/Acharnite/kodehold/issues/15))
-- [ ] Expand test suite beyond 10 tests — edge cases, failure modes, workspace stress tests ([#16](https://github.com/Acharnite/kodehold/issues/16))
+- [ ] Expand test suite beyond 12 tests — edge cases, failure modes, workspace stress tests ([#16](https://github.com/Acharnite/kodehold/issues/16))
 - [ ] Performance benchmarks — token usage with/without RTK, with/without ICM summaries ([#17](https://github.com/Acharnite/kodehold/issues/17))
 - [x] FLS-specific tests — `tests/integration/04-fls-workflow.sh` med 7 test areas (triage criteria, workflow, state restrictions, skill references, ICM docs, permissions), 50+ assertions, 11/11 total suite
 - [ ] Auto-generate CHANGES.md entries from git log on ship ([#18](https://github.com/Acharnite/kodehold/issues/18))

@@ -95,13 +95,13 @@ The Director agent loads automatically as the default agent. Start by reading `A
 |------|-------------|
 | `AGENTS.md` | Quick reference — states, delegation table, gates, shipping gate |
 | `docs/design/README.md` | Main design document — full architecture, lifecycle, constraints |
-| `docs/adr/` | Architecture Decision Records (ADR-0001 through ADR-0011) |
+| `docs/adr/` | Architecture Decision Records (ADR-0001 through ADR-0025) |
 | `.opencode/agents/director.md` | Director agent — full orchestrator protocol |
 | `.opencode/agents/` | Team agent definitions (7 agents) |
 | `scripts/gate.sh` | Lifecycle gate automation (5 transitions) |
 | `scripts/ship.sh` | Shipping gate automation (9 steps: team-meeting → version → changelog → todo → tests → icm → commit → push → tag) |
 | `scripts/workspace.sh` | Workspace project management |
-| `tests/run.sh` | Test suite — 10 tests across smoke, init, integration |
+| `tests/run.sh` | Test suite — 12 tests across smoke, init, integration |
 
 ## Requirements
 

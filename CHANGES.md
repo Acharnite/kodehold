@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.11.0 — 2026-05-29
+
+### Fixed
+- **Test count** — TODO.md and README.md: corrected "10 tests" → "12 tests" (4 smoke + 3 init + 5 integration)
+- **Light mode checkbox** — TODO.md: parent item marked [x] (all 4 sub-items already done)
+- **Design doc version consistency** — header bumped from 1.4.8 to 1.4.10 to match changelog (v1.4.9 ADR entry existed but header was stale)
+- **README.md ADR range** — updated from "ADR-0001 through ADR-0011" to "ADR-0001 through ADR-0025"
+
+### Closed
+- GitHub issue [#4](https://github.com/Acharnite/kodehold/issues/4) — GitHub integration (implemented)
+- GitHub issue [#5](https://github.com/Acharnite/kodehold/issues/5) — ICM context summaries (implemented)
+
 ## 0.10.0 — 2026-05-29
 
 ### Added

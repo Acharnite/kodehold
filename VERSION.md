@@ -1,9 +1,10 @@
-# Version 0.10.0 — ADR Compliance, Gate Workspace Fix, and Commit Protection
+# Version 0.11.0 — Documentation Audit & Issue Cleanup
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.11.0 | 2026-05-29 | Documentation audit: corrected test count (10→12), marked light mode complete, fixed version header consistency, updated README ADR range, closed stale GitHub issues #4 and #5 |
 | 0.10.0 | 2026-05-29 | ADR status compliance fix (ADR-0015/0016/0019), gate.sh workspace `--project-path`, commit protection protocol, git clean -fd safeguard |
 | 0.9.0 | 2026-05-27 | Gate markers (.design_reviewed, .impact_analysis_done), user review stop at INIT→ACTIVE, session checkpoint protocol, compaction config, Architects research, ADR-0014 dashboard |
 | 0.8.0 | 2026-05-27 | FLS-specific tests, shared .venv, English-only subagent prompts, ADR-0013 investigate skill, workspace `find` fix |
@@ -25,4 +26,4 @@
 
 ## Current
 
-**0.10.0** — ADR status compliance fix: ADR-0015, ADR-0016, ADR-0019 corrected from Proposed to Accepted across all docs. Gate.sh workspace support: `--project-path` flag so markers check workspace directories instead of main project root. Commit protection protocol: Director/Scribes must commit new ADR, design, and config files before session end. Git clean -fd safeguard: explicit prohibition in Director, AGENTS.md, and design doc — never without user permission.
+**0.11.0** — Documentation audit and issue cleanup. Corrected test count from 10 to 12 (4 smoke + 3 init + 5 integration). Marked light mode implementation as complete (all 4 sub-items done). Fixed design doc version header consistency (was 1.4.8, changelog had 1.4.9). Updated README.md ADR range from 0011 to 0025. Closed stale GitHub issues #4 (GitHub integration) and #5 (ICM context summaries).

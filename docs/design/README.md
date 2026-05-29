@@ -1,6 +1,6 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.4.8  
+**Version:** 1.4.11  
 **Status:** Active  
 **Last Updated:** 2026-05-29
 
@@ -468,6 +468,8 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.4.11 (2026-05-29):** Fixed ADR-0019 status to "Accepted" across all ADR files (ADR-0019 file, ADR README index). Design doc already had correct status.
+- **v1.4.10 (2026-05-29):** Documentation audit and fixes — corrected test count (10 → 12), marked light mode as complete, fixed version header consistency, updated README.md ADR range and test count, closed stale GitHub issues (#4, #5).
 - **v1.4.9 (2026-05-29):** Added ADR-0020 through ADR-0025 — AI Agent Memory Stack features: Hierarchical Memory (Hot/Warm/Cold), Prospective Memory (Task Queue & Scheduler), Automated Episodic Extraction, Semantic Memory Automation, Shared Memory (Multi-Agent Alignment), and A2A Protocol (Agent-to-Agent Coordination). All status: Proposed.
 - **v1.4.8 (2026-05-29):** Implemented ADR-0019 — Session Context Compression. Updated director.md with compression triggers every 4 rounds, summary template, and consolidation policy. Updated scribes.md with summary template, escalation path for large topics. ADR-0019 status promoted to Accepted. This completes the last remaining KODEHOLD_LIGHT=1 component.
 - **v1.4.7 (2026-05-29):** Added Principle #8 — Safe Operations (no automatic `git clean -fd`). Added corresponding constraints in director.md and AGENTS.md. Added Commit Protection Protocol — prevents data loss from uncommitted ADR, design, and agent files at session end. Updated Director agent with 5-step protocol, Scribes agent with file persistence verification step in pre-transition workflow, and design doc section 6.4.
