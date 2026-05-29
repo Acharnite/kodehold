@@ -147,6 +147,62 @@ This ADR extends ADR-0009 (ICM MCP Integration) by:
 - Making the Post-task storage pattern (steps 4-8) a first-class mode instead of an implicit "run everything"
 - Aligning with ADR-0018 (Scribes centralization) — Scribes is always Post-task because it never executes a task between search and store
 
+### Team-Specific Parameters
+
+Each team loads the same skill but parameterizes it differently:
+
+| Team | Shared Learnings Query | Team Memoir | Team Learnings Topic | Concept Memoirs |
+|------|----------------------|-------------|---------------------|-----------------|
+| **Architects** | `"design pattern OR architecture OR tech evaluation"` | `kodehold-architects` (query: `"design OR ADR OR decision"`) | `kodehold-architects-learnings` | `kodehold-arch`, `kodehold-architects`, `kodehold-learnings` |
+| **Engineers** | `"implementation OR pattern OR library OR performance"` | `kodehold-engineers` (query: `"convention OR refactor OR build"`) | `kodehold-engineers-learnings` | `kodehold-engineers`, `kodehold-learnings` |
+| **Testers** | `"test OR edge case OR regression OR coverage"` | `kodehold-testers` (query: `"test OR fixture OR framework OR assertion"`) | `kodehold-testers-learnings` | `kodehold-testers`, `kodehold-learnings` |
+| **Reviewers** | `"review OR security OR quality OR bug pattern"` | `kodehold-reviewers` (query: `"review OR checklist OR second opinion"`) | `kodehold-reviewers-learnings` | `kodehold-reviewers`, `kodehold-learnings` |
+| **Scribes** | `"documentation OR knowledge OR memory"` | `kodehold-scribes` (query: `"ICM OR memoir OR distill OR MCP"`) | `kodehold-scribes-learnings` | `kodehold-scribes`, `kodehold-learnings` |
+| **FLS** | `"hotfix OR bug OR escalation OR pattern"` | `kodehold-fls` (query: `"fix OR triage OR project OR quirk"`) | `kodehold-fls-learnings` | `kodehold-fls`, `kodehold-learnings` |
+
+### How Parameters Map to Steps
+
+| Parameter | Used in Step | Purpose |
+|-----------|-------------|---------|
+| Shared learnings query | Step 1 | What to search in `kodehold-learnings` before starting work |
+| Team memoir | Step 2, Step 8 | Where to search for team-specific patterns (Step 2) and where to store distilled concepts (Step 8) |
+| Team learnings topic | Step 7 | Where to store team-specific findings after task completion |
+| Concept memoirs | Step 8 | Which memoirs to add/refine concepts in |
+
+### Integration with KodeHold Lifecycle
+
+The knowledge flow runs on every task delegation, adapting to the current lifecycle phase:
+
+| Phase | Step 3 (Task) | Steps 6-7 (Store) |
+|-------|--------------|-------------------|
+| **INIT** | Architects create design doc + ADRs | Store design decisions, technology choices |
+| **ACTIVE** | Engineers implement, Testers test, Reviewers review | Store implementation patterns, test strategies, review findings |
+| **REVIEW** | Final verification and team meeting | Store review results, test outcomes |
+| **CLOSED** | Scribes final documentation | Store project summary, extract reusable concepts |
+| **REOPEN** | Impact analysis, design updates | Store impact assessment, updated decisions |
+
+### Relationship to ICM Operations
+
+The knowledge flow uses ICM MCP tools for all storage and retrieval:
+
+- **Steps 1-2 (Search):** `icm_memory_recall`, `icm_memoir_search`
+- **Step 5 (Consolidate):** `icm_memory_consolidate`
+- **Steps 6-7 (Store):** `icm_memory_store`
+- **Step 8 (Distill):** `icm_memoir_add_concept`, `icm_memoir_refine`, `icm_memory_extract_patterns`
+
+### Consolidation Policy
+
+ICM warns when a topic accumulates >7 entries. The knowledge flow enforces proactive consolidation:
+
+- **Step 5** checks entry count before storing
+- At >7 entries: consolidate before adding new memories
+- Use `icm_memory_consolidate` to merge related entries
+- Use `icm_memory_extract_patterns` to detect recurring patterns and create memoir concepts
+
+### Auto-Dedup
+
+ICM's MCP server auto-deduplicates: if a new memory has >85% hybrid similarity to an existing one in the same topic, it updates instead of creating a duplicate. This means agents should be descriptive enough in their memory content that semantically different facts don't collide.
+
 ## Consequences
 
 ### Positive

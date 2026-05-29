@@ -313,7 +313,7 @@ ICM provides persistent, queryable memory across sessions:
 
 KodeHold maintains a **central** `.icm/` directory at the project root for all persistent memory. Workspace projects (`workspaces/<name>/`) and adopted projects do **not** receive their own `.icm/` — they share the central store. Each project's memories are scoped via topic prefixes (`kodehold-<project>-*`) for isolation while keeping a single queryable database.
 
-**ICM Knowledge Flow** — the 8-step protocol governing how every team searches, captures, and refines knowledge — is documented in detail at `docs/icm-knowledge-flow.md`. All 6 team agents parameterize this protocol with team-specific queries, memoir names, and topic namespaces. The protocol bookends every task: search shared and team learnings before work (Steps 1-2), execute the task (Step 3), then reflect, consolidate, store, and distill what was learned (Steps 4-8).
+**ICM Knowledge Flow** — the 8-step protocol governing how every team searches, captures, and refines knowledge — is implemented in `.opencode/skills/icm-knowledge-flow/SKILL.md` with team-specific parameters and lifecycle integration documented in `docs/adr/ADR-0027-icm-knowledge-flow-invocation-modes.md`. All 6 team agents parameterize this protocol with team-specific queries, memoir names, and topic namespaces.
 
 ### 7.3 RTK (Runtime Toolkit)
 

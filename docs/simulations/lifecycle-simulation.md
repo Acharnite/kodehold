@@ -137,7 +137,7 @@ bash scripts/gate.sh --project-path workspaces/taskflow-api --transition INIT_TO
 | Marker | Created When | Cleaned When | Purpose |
 |--------|-------------|-------------|---------|
 | `.design_reviewed` | Reviewers approve design doc | Gate passes (INIT→ACTIVE) | Confirms design quality |
-| `.second_opinion_done` | Second Opinion validates tech choice | Gate passes (INIT→ACTIVE) | Cross-model confirmation |
+| `.second_opinion_done` | Second Opinion validates tech choice | Gate passes (INIT→ACTIVE) | Cross-model confirmation. **Mandatory triggers (per ADR-0017):** every new ADR, design doc updates exceeding 20% change, security-critical code changes |
 | `.design_review_v2` | Architects complete detailed design | Gate 1 validated | Detailed design complete |
 | `.code_reviewed` | Reviewers approve code | Gate passes (ACTIVE→REVIEW) | Code quality confirmed |
 | `.testers_done` | Testers complete test suite | Gate passes (ACTIVE→REVIEW) | Tests written and passing |
@@ -423,7 +423,8 @@ bash scripts/gate.sh --project-path workspaces/taskflow-api --transition INIT_TO
 **Step 25** — **Director → All 6 Teams** (Task tool — Team Meeting, ADR-0011)
 
 - **Context:** Project in REVIEW, all implementation complete
-- **Task:** Each team presents their assessment:
+- **Task:** Each team presents their assessment
+- **Token budget:** 8k max for the full meeting context (per ADR-0011)
 
 | Team | Assessment |
 |------|-----------|
@@ -747,6 +748,7 @@ Teams involved: Director, FLS, Scribes
 
 **Step 25** — **Team Meeting**
 
+- **Token budget:** 8k max for the full meeting context (per ADR-0011)
 - 6 teams present, 6/6 APPROVE
 - Architects: "WebSocket design matches implementation"
 - Engineers: "Real-time notifications working end-to-end"
