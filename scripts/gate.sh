@@ -317,6 +317,20 @@ review_to_closed() {
   queue_cleanup_marker ".design_reviewed"
   queue_cleanup_marker ".testers_done"
   queue_cleanup_marker ".impact_analysis_done"
+  queue_cleanup_marker ".code_reviewed"
+  queue_cleanup_marker ".second_opinion_done"
+  queue_cleanup_marker ".team_meeting_done"
+
+  # User review stop — ask for confirmation before closing
+  if [ "$gate_failed" -eq 0 ] && ! is_noninteractive; then
+    echo ""
+    echo -e "  ${YELLOW}Proceed with REVIEW → CLOSED? (y/N)${NC} "
+    read -r confirm
+    case "$confirm" in
+      y|Y|yes|YES) pass "User approved — proceeding with transition" ;;
+      *) fail "User cancelled — REVIEW → CLOSED aborted" && gate_failed=1 ;;
+    esac
+  fi
 }
 
 closed_to_reopen() {
@@ -563,6 +577,13 @@ fi
 # In validate-only mode, do NOT clean markers or modify state
 if [ "$validate_only" = false ] && [ "$gate_failed" -eq 0 ]; then
   cleanup_markers_on_pass
+
+  # Trigger memoir distillation for Scribes (ADR-0009 phase 4)
+  # After CLOSED transition, Scribes should distill project memories into memoirs
+  if [ "$transition" = "REVIEW_TO_CLOSED" ]; then
+    touch .distill_needed
+    pass "Memoir distillation marker created (.distill_needed)"
+  fi
 fi
 
 exit "$gate_failed"

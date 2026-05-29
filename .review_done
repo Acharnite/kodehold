@@ -1,0 +1,18 @@
+Reviewer: Code review
+Project: kodehold
+State: ACTIVE
+Bugs reviewed: #15 (FLS→Scribes protocol), #21 (AGENTS.md/ship.sh alignment)
+Verdict: PASS with 1 minor recommendation
+
+Files reviewed:
+- .opencode/agents/fls.md — PASS: Correctly removed direct icm_memory_store, routes through Director→Scribes per ADR-0010
+- tests/integration/04-fls-workflow.sh — PASS: Updated test assertions, all 44 pass
+- AGENTS.md — PASS: Shipping gate table accurately reflects ship.sh implementation
+- scripts/ship.sh — PASS: Header updated, CHANGES.md warn→fail appropriate for shipping gate
+- director.md — MINOR: FLS Protocol text "documents in ICM" slightly ambiguous given bug #15 fix
+
+Key findings:
+1. ADR-0010 protocol correctly implemented: FLS returns summary → Director → Scribes handles ICM
+2. No regression risk: FLS workflow unchanged, only ICM storage routing differs
+3. ship.sh CHANGES.md warn→fail is appropriate — shipping gates should enforce, not warn
+4. director.md line 252 should clarify "documents in ICM" → "returns summary, Director delegates ICM to Scribes"

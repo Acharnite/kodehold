@@ -48,6 +48,17 @@ Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute eac
 - Team learnings topic: `kodehold-engineers-learnings`
 - Concept memoirs: `kodehold-engineers`, `kodehold-learnings`
 
+## Adopted Projects — Symlink Awareness
+
+When working on an adopted project (ADR-0012), the workspace path (`workspaces/<name>/`) is a **symlink** to the real project directory, not a copy. This affects file operations:
+
+- **Path resolution:** Use `realpath` or `readlink -f` to resolve absolute paths. File paths passed to tools should use the symlink path for consistency, but be aware that resolved paths differ from the symlink path.
+- **Module imports:** Python/Node/Go imports resolve through the symlink transparently — no special handling needed for imports.
+- **Build paths:** Build systems (npm, cargo, pip, go) resolve paths at runtime. Symlinked paths work but may produce confusing error messages if the target moves.
+- **Editing:** Edit files via the symlink path (`workspaces/<name>/...`). The changes land on the real project.
+
+When in doubt, run `realpath workspaces/<name>` to confirm the symlink target exists and is accessible.
+
 ## Workflow
 
 1. Read the design document section you are implementing
