@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.16.0 — 2026-05-29
+
+### Added
+- **Lifecycle simulation document** — `docs/simulations/lifecycle-simulation.md` with 4 complete scenarios: new project (30 steps), bug fix via FLS (6 steps), large feature reopen (26+ steps), adopted project (9+ steps). Includes Actor Reference, State Reference, Gate Reference, Cross-Reference Matrix, and Marker Lifecycle diagrams.
+- **ADR-0021 Prospective Memory design** — implementation design for deferred + recurring tasks via ICM memories. Accepted by Reviewers (Gate 1 PASS). Storage in `kodehold-<project>-prospective` topic, session-start task check, Scribes-managed CRUD.
+
+### Changed
+- **ADR status cleanup** — 5 ADRs resolved: ADR-0020 Superseded (ICM decay system), ADR-0022 Superseded (ICM plugin hooks), ADR-0023 Superseded (ICM plugin + memoir), ADR-0024 Deprecated (over-engineering), ADR-0025 Deprecated (over-engineering)
+- **Director delegation lesson** — Added file modification delegation rule: Architects never modify files directly, all changes via Scribes
+- **Architects agent** — Added explicit constraint: "Never directly modify files"
+
+### Fixed
+- **OPENCODE_NONINTERACTIVE env leak** — gate marker enforcement test now isolates env with `env -u OPENCODE_NONINTERACTIVE` to prevent false failures when parent env sets the variable
+- **Redundant file cleanup** — `docs/icm-knowledge-flow.md` deleted (content preserved in ADR-0027)
+
 ## 0.15.2 — 2026-05-29
 
 ### Fixed

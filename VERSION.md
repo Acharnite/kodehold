@@ -1,9 +1,10 @@
-# Version 0.15.2 — ADR-0027 Implementation Review Fixes
+# Version 0.16.0 — ADR-0021 Accepted, Lifecycle Simulation, ADR Cleanup
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.16.0 | 2026-05-29 | ADR-0021 accepted (Prospective Memory design), lifecycle simulation document (4 scenarios), ADR cleanup (5 ADRs resolved: Superseded/Deprecated), delegation lesson documented, OPENCODE_NONINTERACTIVE env leak test fix. |
 | 0.15.2 | 2026-05-29 | ADR-0027 implementation review fixes: SKILL.md renumbered, docs updated, second-opinion.md standardized, typo fixed, Full mode added. |
 | 0.15.1 | 2026-05-29 | Updated all 6 agent files with ADR-0027 invocation modes (Pre-task/Post-task). Scribes uses Post-task only; other teams use Pre-task default. |
 | 0.15.0 | 2026-05-29 | Registered ADR-0027 — ICM Knowledge Flow Invocation Modes (Proposed). Fixed consolidation threshold inconsistency (>5→>7) in ADR-0027. |
@@ -35,6 +36,8 @@
 - **PATCH**: Documentation updates, refinements, bug fixes
 
 ## Current
+
+**0.16.0** — ADR-0021 accepted (Prospective Memory design for deferred + recurring tasks via ICM). Lifecycle simulation document with 4 complete scenarios. ADR cleanup: 5 ADRs resolved (Superseded/Deprecated). Director delegation lesson documented. OPENCODE_NONINTERACTIVE env leak test fix.
 
 **0.15.2** — ADR-0027 implementation review fixes. SKILL.md renumbered to match ADR-0027, docs updated with invocation modes, second-opinion.md standardized, typo fixed.
 
