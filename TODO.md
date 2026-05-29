@@ -88,12 +88,12 @@
 - [x] **Commit untracked filer før session slut** — ADR-0015 til ADR-0019 blev oprettet men aldrig committed, og forsvandt ved session reload. Tilføj regel i Director/Scribes protokol: nye ADR-, design- eller konfigurationsfiler skal commits før session afsluttes. ([#23](https://github.com/Acharnite/kodehold/issues/23)) ✅ Implemented 2026-05-29
 - [x] **Upgrade GitHub MCP server** — replaced deprecated `@modelcontextprotocol/server-github` npm package with official `github/github-mcp-server` Go binary v1.1.2. Resolves intermittent auth failures. ([#25](https://github.com/Acharnite/kodehold/issues/25)) ✅ Implemented 2026-05-29
 - [x] **Fix stale test count** — TODO.md and README.md corrected "10 tests" → "12 tests". ([#22](https://github.com/Acharnite/kodehold/issues/22)) ✅ Implemented 2026-05-29
-- [ ] **consolidate-all script** — Opret script der automatisk consolidere alle ICM topics med >5 entries. Kører `icm_memory_health`, konsolidere store topics via `icm_memory_consolidate`, rapporterer resultat. ([#24](https://github.com/Acharnite/kodehold/issues/24))
+- [x] **consolidate-all script** — Opret script der automatisk consolidere alle ICM topics med >5 entries. Kører `icm_memory_health`, konsolidere store topics via `icm_memory_consolidate`, rapporterer resultat. ([#24](https://github.com/Acharnite/kodehold/issues/24))
 
 ## Low Priority
 
-- [ ] **FLS→Scribes protocol fix** — ADR-0010 says FLS requests Scribes via Director for ICM storage. FLS currently stores directly. Resolve inconsistency ([#15](https://github.com/Acharnite/kodehold/issues/15))
-- [ ] Expand test suite beyond 12 tests — edge cases, failure modes, workspace stress tests ([#16](https://github.com/Acharnite/kodehold/issues/16))
+- [x] **FLS→Scribes protocol fix** — ADR-0010 says FLS requests Scribes via Director for ICM storage. FLS currently stores directly. Resolve inconsistency ([#15](https://github.com/Acharnite/kodehold/issues/15))
+- [x] Expand test suite beyond 12 tests — edge cases, failure modes, workspace stress tests ([#16](https://github.com/Acharnite/kodehold/issues/16))
 - [x] **Performance benchmarks** — token usage with/without RTK, with/without ICM summaries ([#17](https://github.com/Acharnite/kodehold/issues/17)) ✅ Implemented v0.4.0 — scripts/benchmark.sh
 - [x] FLS-specific tests — `tests/integration/04-fls-workflow.sh` med 7 test areas (triage criteria, workflow, state restrictions, skill references, ICM docs, permissions), 50+ assertions, 11/11 total suite
 - [x] **Auto-generate CHANGES.md entries from git log on ship** ([#18](https://github.com/Acharnite/kodehold/issues/18)) ✅ Implemented v0.4.0 — ship.sh integration
