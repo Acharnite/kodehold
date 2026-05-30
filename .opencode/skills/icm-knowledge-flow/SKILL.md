@@ -16,7 +16,7 @@ This skill has 3 modes based on when the team is invoked:
 Run BEFORE starting work. For teams that execute tasks.
 
 1. **Search shared learnings** — search `kodehold-learnings` memoir for relevant patterns
-2. **Search team learnings** — search `<team>-learnings` memoir for team-specific patterns
+2. **Search team learnings** — search `kodehold-teams` memoir for team-specific patterns
 
 ### Post-task Mode (steps 4-8)
 Run AFTER completing work. For all teams, and the ONLY mode for Scribes.
@@ -51,7 +51,7 @@ icm_memoir_search(memoir="kodehold-learnings", query="[relevant keywords]")
 
 ### Step 2: Search team learnings
 ```
-icm_memoir_search(memoir="<team>-learnings", query="[relevant keywords]")
+icm_memoir_search(memoir="kodehold-teams", query="[relevant keywords]")
 ```
 
 ### Step 4: Reflect

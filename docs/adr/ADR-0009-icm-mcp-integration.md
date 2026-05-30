@@ -48,7 +48,7 @@ Memoirs replace ad-hoc ICM memories for **permanent architectural knowledge**:
 
 | Memoir | Concepts | Purpose |
 |--------|----------|---------|
-| `kodehold-arch` | Director, Architects, Engineers, Reviewers, Testers, Scribes | KodeHold's own architecture as a knowledge graph |
+| `kodehold-teams` | Director, Architects, Engineers, Reviewers, Testers, Scribes, FLS | KodeHold's own architecture and team knowledge as a knowledge graph |
 | `kodehold-patterns` | Composable validators, Protocol-based APIs, lifecycle gates | Reusable patterns extracted from completed projects |
 | `workspace-<name>` | per-project architecture concepts | One memoir per workspace for project-specific architecture |
 

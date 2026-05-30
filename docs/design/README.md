@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.4.21  
+**Version:** 1.4.22  
 **Status:** Active  
-**Last Updated:** 2026-05-29
+**Last Updated:** 2026-05-30
 
 ---
 
@@ -598,6 +598,7 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.4.22 (2026-05-30):** ICM memoir restructure — 7 team memoirs consolidated into `kodehold-teams` (27 concepts, 16 links). Learnings consolidated into `kodehold-learnings` (63 concepts, 68 links). All ADR references in ADR-0027, ADR-0023, ADR-0009 updated. CHANGES.md, VERSION.md bumped to 0.17.0.
 - **v1.4.21 (2026-05-29):** Implemented ADR-0021 — Prospective Memory (Task Queue & Scheduler). Added section 7.7 to design doc. Updated director.md session lifecycle with prospective task check (step 1.5). Updated scribes.md with Prospective Memory CRUD operations. ADR-0021 status promoted to Accepted. Scope: deferred + recurring tasks only; trigger engine deferred to future.
 - **v1.4.20 (2026-05-29):** ADR-0027 implementation review fixes — SKILL.md renumbered to match ADR-0027 step numbering (steps 1-2 Pre-task, steps 4-8 Post-task, step 3 removed from knowledge flow). docs/icm-knowledge-flow.md updated with ADR-0027 reference, 3 invocation modes, Scribes Post-task-only documentation, consolidation threshold fixed (>5→>7). Fixed `memoit=` typo to `memoir=`. Added Full mode to Mode Selection table. Updated second-opinion.md with Post-task mode declaration.
 - **v1.4.19 (2026-05-29):** Updated all 6 agent files with ADR-0027 invocation modes (Pre-task/Post-task). Scribes uses Post-task only; other teams use Pre-task default. Fixes token waste and semantic confusion.

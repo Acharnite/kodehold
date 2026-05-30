@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.17.0 — 2026-05-30
+
+### Changed
+- **ICM memoir restructure** — 7 team-specific memoirs (`kodehold-architects`, `kodehold-engineers`, `kodehold-testers`, `kodehold-reviewers`, `kodehold-scribes`, `kodehold-fls`, `kodehold-arch`) merged into single `kodehold-teams` memoir (27 concepts, 16 links)
+- **Learnings consolidation** — `kodehold` and per-team learnings merged into `kodehold-learnings` (63 concepts, 68 links)
+- **ADR-0027, ADR-0023, ADR-0009** — all references to per-team memoirs updated to `kodehold-teams` and `kodehold-learnings`
+- **FLS added to kodehold-teams** — `kodehold-teams` memoir now covers all 6 teams plus KodeHold architecture
+- **All agent configs** — updated to reference new consolidated memoir structure
+
+### Lifecycle
+- CLOSED→REOPEN→ACTIVE lifecycle transition completed
+
 ## 0.16.0 — 2026-05-29
 
 ### Added

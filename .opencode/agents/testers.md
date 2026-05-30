@@ -41,7 +41,7 @@ Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these tea
 
 Follow the ICM Knowledge Flow skill protocol in **Pre-task mode**:
 1. Search `kodehold-learnings` memoir for relevant patterns before starting work
-2. Search `kodehold-testers-learnings` memoir for team-specific patterns before starting work
+2. Search `kodehold-teams` memoir for team-specific testing patterns and strategies before starting work
 
 Post-task steps (Reflect, Consolidate, Store, Refine) are handled by Director after task completion.
 

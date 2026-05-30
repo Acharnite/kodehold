@@ -84,7 +84,7 @@ ICM auto-dedup (MCP only): if a new memory in an existing topic has >85% hybrid 
 ### Pattern Extraction
 `icm_memory_extract_patterns` detects recurring patterns in a topic by keyword clustering. Optionally creates concepts in a memoir from detected patterns. Use this for distilling team learnings into permanent knowledge:
 ```
-icm_memory_extract_patterns -t kodehold-fls-learnings -m kodehold-fls
+icm_memory_extract_patterns -t kodehold-fls-learnings -m kodehold-teams
 ```
 
 ### Memory Lifecycle
@@ -260,7 +260,7 @@ fi
 ### Distillation Protocol
 
 1. **List available memoirs**: `icm_memoir_list`
-   - Check which team memoirs exist (kodehold-architects, kodehold-engineers, etc.)
+   - Check which team memoir exists (kodehold-teams)
 
 2. **Recall project memories**: Query project-specific topics
    ```
@@ -289,7 +289,7 @@ fi
 | Project Type | Primary Memoir | Secondary Memoirs |
 |--------------|----------------|-------------------|
 | Workspace project | `workspace-<name>` | Team memoirs (architects, engineers, etc.) |
-| KodeHold itself | `kodehold-arch` | `kodehold-patterns` |
+| KodeHold teams | `kodehold-teams` | Cross-team patterns |
 
 ### Concept Extraction Focus
 

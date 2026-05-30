@@ -130,7 +130,7 @@ init_to_active() {
   assert_file "$ADR_DIR/README.md"
 
   # Design doc approved markers
-  if grep -q "Status: Active" "$DESIGN_DOC" 2>/dev/null; then
+  if grep -q "Status.*Active" "$DESIGN_DOC" 2>/dev/null; then
     pass "Design doc status is Active"
   else
     warn "Design doc status not set to Active"
@@ -380,7 +380,7 @@ reopen_to_active() {
   else
     record_check "design_doc_exists" "FAIL"
   fi
-  if grep -q "Status: Active" "$DESIGN_DOC" 2>/dev/null; then
+  if grep -q "Status.*Active" "$DESIGN_DOC" 2>/dev/null; then
     pass "Design doc status is Active"
   else
     warn "Design doc status not set to Active"

@@ -34,10 +34,10 @@ Implement hooks that automatically extract concepts from new ADRs and design doc
 
 | Source | What to Extract | Target Memoir |
 |--------|----------------|---------------|
-| New ADR | Decision, context, consequences as concepts | `kodehold-arch` |
-| Updated ADR | Refined concepts, new relationships | `kodehold-arch` |
-| Design doc component | Component role, relationships, dependencies | `kodehold-arch` |
-| Team structure | Team roles, responsibilities, interactions | `kodehold-architects` |
+| New ADR | Decision, context, consequences as concepts | `kodehold-teams` |
+| Updated ADR | Refined concepts, new relationships | `kodehold-teams` |
+| Design doc component | Component role, relationships, dependencies | `kodehold-teams` |
+| Team structure | Team roles, responsibilities, interactions | `kodehold-teams` |
 | Cross-project patterns | Reusable patterns, common decisions | `kodehold-learnings` |
 
 ### Concept Extraction Rules
@@ -90,8 +90,7 @@ Before creating a new concept:
 
 | Memoir | Purpose | Concept Types |
 |--------|---------|---------------|
-| `kodehold-arch` | Architecture decisions | Decision, Pattern, Anti-pattern, Component |
-| `kodehold-architects` | Team knowledge | Role, Responsibility, Workflow |
+| `kodehold-teams` | Architecture decisions, team knowledge | Decision, Pattern, Anti-pattern, Component, Role, Responsibility, Workflow |
 | `kodehold-learnings` | Cross-project lessons | Pattern, Anti-pattern, Gotcha, Best-practice |
 
 ### Implementation Plan

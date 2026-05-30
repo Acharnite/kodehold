@@ -63,7 +63,7 @@ touch .design_reviewed
 
 Follow the ICM Knowledge Flow skill protocol in **Pre-task mode**:
 1. Search `kodehold-learnings` memoir for relevant patterns before starting work
-2. Search `kodehold-reviewers-learnings` memoir for team-specific patterns before starting work
+2. Search `kodehold-teams` memoir for team-specific review patterns and quality standards before starting work
 
 Post-task steps (Reflect, Consolidate, Store, Refine) are handled by Director after task completion.
 

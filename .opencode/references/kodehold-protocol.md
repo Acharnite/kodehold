@@ -54,7 +54,7 @@ kodehold-<namespace>-<qualifier>
 
 Examples:
 - `kodehold-project-overview`
-- `kodehold-architecture-teams`
+- `kodehold-teams`
 - `kodehold-principles`
 - `kodehold-current-state`
 

@@ -11,12 +11,12 @@ The ICM Knowledge Flow skill (defined in `.opencode/skills/icm-knowledge-flow/SK
 | Step | Action | Timing |
 |------|--------|--------|
 | 1 | Search shared learnings (`kodehold-learnings` memoir) | Pre-task |
-| 2 | Search team learnings (`<team>-learnings` memoir) | Pre-task |
+| 2 | Search team learnings (`kodehold-learnings` memoir) | Pre-task |
 | 3 | Execute task (team's standard workflow) | — |
 | 4 | Reflect (identify what was learned) | Post-task |
 | 5 | Consolidate check (if topic >7 entries, consolidate) | Post-task |
 | 6 | Store shared learnings (`kodehold-learnings` memoir) | Post-task |
-| 7 | Store team learnings (`<team>-learnings` memoir) | Post-task |
+| 7 | Store team learnings (`kodehold-learnings` memoir) | Post-task |
 | 8 | Distill/refine concepts in memoirs | Post-task |
 
 **Problem:** All 6 agent files instruct teams to "execute each step" without distinguishing which steps apply at which point in the delegation lifecycle. This creates three concrete issues:
@@ -81,7 +81,7 @@ Run BEFORE the team executes its core task.
 Loads relevant past learnings into context.
 
 1. Search shared learnings — search `kodehold-learnings` memoir for relevant patterns
-2. Search team learnings — search `<team>-learnings` memoir for team-specific patterns
+2. Search team learnings — search `kodehold-learnings` memoir for team-specific patterns
 
 ### Post-task (steps 4-8)
 Run AFTER the team completes its core task.
@@ -90,7 +90,7 @@ Reflects on what was learned and stores it.
 4. Reflect — after execution, identify what was learned
 5. Consolidate check — if target topic has >7 entries, consolidate first (ICM warns at >7)
 6. Store shared learnings — save findings in `kodehold-learnings`
-7. Store team learnings — save team-specific findings in `<team>-learnings`
+7. Store team learnings — save team-specific findings in `kodehold-learnings`
 8. Distill/refine concepts — add/refine concepts in relevant memoirs
 
 ### Full (steps 1-2, then 4-8)
@@ -125,7 +125,7 @@ Load the skill at `.opencode/skills/icm-knowledge-flow/SKILL.md` and execute wit
 - **Mode**: Pre-task (default) — run steps 1-2 only
 - Team: `engineers`
 - Shared learnings query: `"code pattern OR implementation OR refactor"`
-- Team memoir: `kodehold-engineers`, query: `"engineering OR implementation OR code"`
+- Team memoir: `kodehold-teams`, query: `"engineering OR implementation OR code"`
 ```
 
 Scribes' agent file must explicitly note it uses **Post-task only** mode and skips search steps.
@@ -153,12 +153,12 @@ Each team loads the same skill but parameterizes it differently:
 
 | Team | Shared Learnings Query | Team Memoir | Team Learnings Topic | Concept Memoirs |
 |------|----------------------|-------------|---------------------|-----------------|
-| **Architects** | `"design pattern OR architecture OR tech evaluation"` | `kodehold-architects` (query: `"design OR ADR OR decision"`) | `kodehold-architects-learnings` | `kodehold-arch`, `kodehold-architects`, `kodehold-learnings` |
-| **Engineers** | `"implementation OR pattern OR library OR performance"` | `kodehold-engineers` (query: `"convention OR refactor OR build"`) | `kodehold-engineers-learnings` | `kodehold-engineers`, `kodehold-learnings` |
-| **Testers** | `"test OR edge case OR regression OR coverage"` | `kodehold-testers` (query: `"test OR fixture OR framework OR assertion"`) | `kodehold-testers-learnings` | `kodehold-testers`, `kodehold-learnings` |
-| **Reviewers** | `"review OR security OR quality OR bug pattern"` | `kodehold-reviewers` (query: `"review OR checklist OR second opinion"`) | `kodehold-reviewers-learnings` | `kodehold-reviewers`, `kodehold-learnings` |
-| **Scribes** | `"documentation OR knowledge OR memory"` | `kodehold-scribes` (query: `"ICM OR memoir OR distill OR MCP"`) | `kodehold-scribes-learnings` | `kodehold-scribes`, `kodehold-learnings` |
-| **FLS** | `"hotfix OR bug OR escalation OR pattern"` | `kodehold-fls` (query: `"fix OR triage OR project OR quirk"`) | `kodehold-fls-learnings` | `kodehold-fls`, `kodehold-learnings` |
+| **Architects** | `"design pattern OR architecture OR tech evaluation"` | `kodehold-teams` | `kodehold-learnings` | `kodehold-teams`, `kodehold-learnings` |
+| **Engineers** | `"implementation OR pattern OR library OR performance"` | `kodehold-teams` | `kodehold-learnings` | `kodehold-teams`, `kodehold-learnings` |
+| **Testers** | `"test OR edge case OR regression OR coverage"` | `kodehold-teams` | `kodehold-learnings` | `kodehold-teams`, `kodehold-learnings` |
+| **Reviewers** | `"review OR security OR quality OR bug pattern"` | `kodehold-teams` | `kodehold-learnings` | `kodehold-teams`, `kodehold-learnings` |
+| **Scribes** | `"documentation OR knowledge OR memory"` | `kodehold-teams` | `kodehold-learnings` | `kodehold-teams`, `kodehold-learnings` |
+| **FLS** | `"hotfix OR bug OR escalation OR pattern"` | `kodehold-teams` | `kodehold-learnings` | `kodehold-teams`, `kodehold-learnings` |
 
 ### How Parameters Map to Steps
 

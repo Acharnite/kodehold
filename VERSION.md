@@ -1,9 +1,10 @@
-# Version 0.16.0 — ADR-0021 Accepted, Lifecycle Simulation, ADR Cleanup
+# Version 0.17.0 — ICM Memoir Restructure, Consolidation
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.17.0 | 2026-05-30 | ICM memoir restructure: 7 team memoirs merged into `kodehold-teams` (27 concepts, 16 links), learnings consolidated into `kodehold-learnings` (63 concepts, 68 links). All ADR/doc references updated. CLOSED→REOPEN→ACTIVE lifecycle transition. |
 | 0.16.0 | 2026-05-29 | ADR-0021 accepted (Prospective Memory design), lifecycle simulation document (4 scenarios), ADR cleanup (5 ADRs resolved: Superseded/Deprecated), delegation lesson documented, OPENCODE_NONINTERACTIVE env leak test fix. |
 | 0.15.2 | 2026-05-29 | ADR-0027 implementation review fixes: SKILL.md renumbered, docs updated, second-opinion.md standardized, typo fixed, Full mode added. |
 | 0.15.1 | 2026-05-29 | Updated all 6 agent files with ADR-0027 invocation modes (Pre-task/Post-task). Scribes uses Post-task only; other teams use Pre-task default. |
@@ -36,6 +37,8 @@
 - **PATCH**: Documentation updates, refinements, bug fixes
 
 ## Current
+
+**0.17.0** — ICM memoir restructure: 7 team-specific memoirs merged into `kodehold-teams` (27 concepts, 16 links). All learnings consolidated into `kodehold-learnings` (63 concepts, 68 links). All ADR references updated to reflect new consolidated structure. CLOSED→REOPEN→ACTIVE lifecycle transition completed.
 
 **0.16.0** — ADR-0021 accepted (Prospective Memory design for deferred + recurring tasks via ICM). Lifecycle simulation document with 4 complete scenarios. ADR cleanup: 5 ADRs resolved (Superseded/Deprecated). Director delegation lesson documented. OPENCODE_NONINTERACTIVE env leak test fix.
 

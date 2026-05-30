@@ -62,7 +62,7 @@ Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these tea
 
 Follow the ICM Knowledge Flow skill protocol in **Pre-task mode**:
 1. Search `kodehold-learnings` memoir for relevant patterns before starting work
-2. Search `kodehold-fls-learnings` memoir for team-specific patterns before starting work
+2. Search `kodehold-teams` memoir for team-specific hotfix patterns and triage criteria before starting work
 
 Post-task steps (Reflect, Consolidate, Store, Refine) are handled by Director after task completion.
 
@@ -93,7 +93,7 @@ icm_memory_recall -t kodehold-<project-name> -i critical high medium
          icm_memory_recall -t kodehold-<project> -i critical high
          icm_memory_recall -t kodehold-<project>-fls -i critical high medium
          ```
-      c. Search `kodehold-fls` for similar past fixes
+      c. Search `kodehold-teams` for similar past fixes (FLS-related concepts)
       d. **If root cause is unclear,** load the `.opencode/skills/investigate/SKILL.md` skill and run its 4-phase debugging protocol before implementing
       e. Implement the fix
       f. Verify: run relevant tests using KodeHold root `.venv/bin/pytest`
