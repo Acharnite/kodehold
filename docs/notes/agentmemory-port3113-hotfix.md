@@ -24,3 +24,23 @@ source, binding the viewer/WebSocket endpoint (port 3113 = REST port + 2) to loo
 
 ## Note
 Patch is in `/usr/local/lib/node_modules/` — will be overwritten by `npm install -g @agentmemory/agentmemory` upgrade.
+
+## Automated Re-apply
+
+A patch script survives npm upgrades:
+
+```bash
+bash scripts/patch-agentmemory.sh
+```
+
+This patches both files via `sed` and reports status. Run it after:
+
+```bash
+npm install -g @agentmemory/agentmemory
+bash scripts/patch-agentmemory.sh
+systemctl --user restart agentmemory
+```
+
+### Files
+- **Script:** `scripts/patch-agentmemory.sh` — apply/reapply the fix
+- **Patch:** `patches/agentmemory-viewer-bind.patch` — reference diff (for documentation)

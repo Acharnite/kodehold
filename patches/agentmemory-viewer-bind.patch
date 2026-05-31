@@ -1,0 +1,18 @@
+--- /usr/local/lib/node_modules/@agentmemory/agentmemory/dist/index.mjs
++++ /usr/local/lib/node_modules/@agentmemory/agentmemory/dist/index.mjs
+@@ -14606,7 +14606,7 @@
+ 	const tryListen = () => {
+-		server.listen(currentPort, "127.0.0.1");
++		server.listen(currentPort, "0.0.0.0");
+ 	};
+ 	server.on("listening", () => {
+ 		const addr = server.address();
+--- /usr/local/lib/node_modules/@agentmemory/agentmemory/dist/src-B8J9Exum.mjs
++++ /usr/local/lib/node_modules/@agentmemory/agentmemory/dist/src-B8J9Exum.mjs
+@@ -14117,7 +14117,7 @@
+ 	const tryListen = () => {
+-		server.listen(currentPort, "127.0.0.1");
++		server.listen(currentPort, "0.0.0.0");
+ 	};
+ 	server.on("listening", () => {
+ 		const addr = server.address();
