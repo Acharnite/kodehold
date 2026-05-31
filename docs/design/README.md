@@ -1,6 +1,6 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.4.23  
+**Version:** 1.6.0  
 **Status:** Active  
 **Last Updated:** 2026-05-31
 
@@ -226,6 +226,7 @@ Consequences: Trade-offs and follow-ups
 | ADR-0025 | A2A Protocol (Agent-to-Agent Coordination) | Deprecated |
 | ADR-0026 | Second Opinion Same-Model Bias Enforcement | Proposed |
 | ADR-0027 | ICM Knowledge Flow Invocation Modes | Proposed |
+| ADR-0028 | Agentmemory Project Detection Strategy | Accepted |
 
 See `docs/adr/README.md` for full details.
 
@@ -600,6 +601,8 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.6.0 (2026-05-31):** ADR-0028: Agentmemory Project Detection — Accepted. Final decision: accept full filesystem path as project name. Plugin reverted to original upstream.
+- **v1.5.0 (2026-05-31):** ADR-0028: Agentmemory Project Detection Strategy — three-stage `resolveProject()` in OpenCode plugin. Replaces single-line project path assignment with env var / git toplevel / fallback resolution.
 - **v1.4.23 (2026-05-31):** Documented agentmemory binding configuration — `iii` daemon listens on `0.0.0.0` (all interfaces) via `~/.agentmemory/iii-config.yaml`. Added note in Section 7.2 (ICM) explaining the custom config approach that survives npm updates.
 - **v1.4.22 (2026-05-30):** ICM memoir restructure — 7 team memoirs consolidated into `kodehold-teams` (27 concepts, 16 links). Learnings consolidated into `kodehold-learnings` (63 concepts, 68 links). All ADR references in ADR-0027, ADR-0023, ADR-0009 updated. CHANGES.md, VERSION.md bumped to 0.17.0.
 - **v1.4.21 (2026-05-29):** Implemented ADR-0021 — Prospective Memory (Task Queue & Scheduler). Added section 7.7 to design doc. Updated director.md session lifecycle with prospective task check (step 1.5). Updated scribes.md with Prospective Memory CRUD operations. ADR-0021 status promoted to Accepted. Scope: deferred + recurring tasks only; trigger engine deferred to future.
