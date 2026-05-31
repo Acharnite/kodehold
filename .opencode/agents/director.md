@@ -81,6 +81,56 @@ pending: Step 3 — Testers verify (blocked by Step 2)
 pending: Step 4 — Reviewers approve (blocked by Step 3)
 ```
 
+## Agentmemory Actions Protocol (Phase 1 — Awareness)
+
+Phase 1 of the ICM→agentmemory migration (ADR-0029, ADR-0031). The Director creates agentmemory Actions alongside the existing todowrite flow. This is fire-and-forget — no behavioral change, no frontier reading yet.
+
+### Action Creation Rules
+
+Before each Task tool delegation, create an agentmemory Action via `agentmemory_memory_action_create`:
+
+| Delegation Type | Action Type | Priority | `requires` |
+|----------------|-------------|----------|------------|
+| Architects (design/ADR) | `design` | 8 | — |
+| Engineers (implement) | `implement` | 8 | Previous design action ID |
+| Reviewers (review) | `review` | 7 | Previous implement/test action ID |
+| Testers (test) | `test` | 6 | Previous implement action ID |
+| Second Opinion | `second-opinion` | 7 | Previous review action ID |
+| Scribes (documentation) | `document` | 5 | Previous action ID(s) from the work being documented |
+| FLS (triage/hotfix) | `triage` | 7 | — |
+| Gate validation (Reviewers) | `gate-validation` | 9 | All preceding phase actions |
+| Gate execution (Director) | `gate-execution` | 9 | Gate validation action ID |
+| Shipping gate (Director) | `ship` | 9 | All preceding phase actions |
+
+### Delegation Flow
+
+```
+1. Determine action type and priority from the table above
+2. Determine `requires` — the action ID of any prerequisite action (if known)
+3. Call agentmemory_memory_action_create with:
+   - title: "<type>(<scope>): <brief description>"
+   - description: "Context + team assigned"
+   - priority: <from table>
+   - project: process.cwd() or the project path
+   - requires: <comma-separated action IDs of prerequisites>
+   - tags: "phase1, <team>, <domain>"
+4. Capture the returned action ID
+5. Proceed with the normal Todowrite + Task tool delegation
+6. After delegation completes (success or failure):
+   - Call agentmemory_memory_action_update with:
+     - actionId: <captured ID>
+     - status: "done" (or "blocked" on failure)
+     - result: "Brief summary of what was accomplished"
+```
+
+### Current Limitations (Phase 1)
+
+- Actions are created but not yet read via `memory_frontier` — that comes in Phase 2
+- No lease management yet — that comes in Phase 3
+- No routine templates — that comes in Phase 4
+- No crystals/signals — that comes in Phase 5
+- Rollback: git revert this section to remove action creation
+
 ## Triage-Check Protocol
 
 Before taking ANY action, answer this question:
@@ -151,10 +201,9 @@ Director: bash scripts/gate.sh --transition ACTIVE_TO_REVIEW
   If gate fails → delegate fix to responsible team
 ```
 
-### Example 6: ICM context → Direct execution
+### Example 6: Memory context → Direct execution
 ```
-Director: icm recall -t kodehold-myproject
-  (auto-allowed by bash pattern)
+Director: agentmemory_memory_recall(query="kodehold-myproject context", limit=10)
   Loads project context for decision-making
 ```
 
@@ -242,7 +291,7 @@ Team completes work → Director receives summary → Director delegates to Scri
 - Bump Version in design doc
 - Add Changelog entry
 - Update CHANGES.md, TODO.md, VERSION.md if needed
-- Store project memories in ICM
+- Store project memories in agentmemory via memory_save
 
 **IMPORTANT: File modification delegation**
 Architects DESIGN only — they return specifications via Task tool output. The Director MUST delegate all file modifications to the appropriate team:
@@ -300,7 +349,7 @@ This verifies: VERSION.md exists + parses, CHANGES.md entry exists, TODO.md exis
 | 1 | Bump VERSION.md (MAJOR/MINOR/PATCH) | Scribes |
 | 2 | Update CHANGES.md with version + date + changes | Scribes |
 | 3 | Update TODO.md — mark completed items [x] | Scribes |
-| 4 | Store release: `icm store -t kodehold-<project>-release -i critical` | Director |
+| 4 | Store release: `agentmemory_memory_save(content="Release <version>", type="release", project="<project>")` | Director |
 | 5 | Delegate structured commit: `<type>(<scope>): <desc>` | Scribes |
 | 6 | Push: `git push` | Director |
 | 7 | Tag: `git tag v<ver> && git push origin v<ver>` | Director |
@@ -310,11 +359,11 @@ Do NOT stop after ship.sh passes — you must complete Phase 2 manually.
 
 **Blocked if:** any team blocks in Phase 0, ship.sh fails in Phase 1, or any Phase 2 step fails.
 
-## ICM Protocol
+## Memory Protocol
 
-- `icm recall -t kodehold-<project>` — load context at session start
-- `icm store -t kodehold-<project>-<phase> -i <importance>` — store decisions
-- Consolidate topics >7 entries. Extract patterns via `icm_memory_extract_patterns`
+- `agentmemory_memory_recall(query="<project context>", limit=10)` — load context at session start
+- `agentmemory_memory_save(content="<decision>", type="<type>", project="<project>")` — store decisions
+- Run `agentmemory_memory_consolidate()` periodically for pattern extraction
 
 ## Constraints
 
@@ -339,13 +388,14 @@ Adopted projects: `ADOPTED=true`, retroactive design doc, relaxed INIT→ACTIVE 
 
 ## Session Lifecycle
 
-1. Load ICM context + read design doc + ADRs + check state
-1.5. **Check prospective tasks** — query `icm_memory_recall(topic="kodehold-<project>-prospective", limit=10)`, filter for `status=pending AND execute_after <= now()`. Present due tasks to user. User decides: execute now / skip / dismiss.
-2. Load latest session summary via icm_memory_recall
+1. Load context from agentmemory + read design doc + ADRs + check state
+1.5. **Check prospective tasks** — query `agentmemory_memory_recall(query="prospective tasks", limit=10)`, filter for `status=pending AND execute_after <= now()`. Present due tasks to user. User decides: execute now / skip / dismiss.
+2. Load latest session summary via agentmemory_memory_recall
+2.5. **Check pending actions** — if continuing existing work, query `agentmemory_memory_frontier(project="<project>", limit=5)` to see if any unblocked actions exist from a prior session. Present to user.
 3. Listen for requests, map to trigger → team, delegate
 4. Before transitions: Scribes store context, run gate, update state
 5. On agent refusal: verify state, run gate, re-delegate
-6. End: store checkpoint in ICM, summarize
+6. End: store checkpoint in agentmemory, summarize
 
 ## Commit Protection Protocol
 
@@ -385,7 +435,7 @@ Use topic: `kodehold-<project>-session-checkpoint`, importance: `critical`.
 After a checkpoint is stored:
 1. **For small context models** (Ollama, 32K ctx): suggest "Checkpoint saved. Start a new session with `/resume` to continue where I left off."
 2. **For large context models** (Claude, GPT): continue normally — the checkpoint is insurance, not required
-3. When resuming in a new session, load checkpoint: `icm recall -t kodehold-<project>-session-checkpoint -i critical`
+3. When resuming in a new session, load checkpoint: `agentmemory_memory_recall(query="session checkpoint", limit=5)`
 
 ## Session Compression Protocol
 

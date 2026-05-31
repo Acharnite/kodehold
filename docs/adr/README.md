@@ -36,3 +36,8 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0026](ADR-0026-second-opinion-same-model-bias.md) | Second Opinion Same-Model Bias Enforcement | Proposed | 2026-05-29 |
 | [ADR-0027](ADR-0027-icm-knowledge-flow-invocation-modes.md) | ICM Knowledge Flow Invocation Modes | Proposed | 2026-05-29 |
 | [ADR-0028](ADR-0028-agentmemory-project-detection.md) | Agentmemory Project Detection Strategy | Proposed | 2026-05-31 |
+| [ADR-0029](ADR-0029-agentmemory-migration-strategy.md) | ICM → Agentmemory Migration Strategy | Proposed | 2026-05-31 |
+| [ADR-0030](ADR-0030-agentmemory-knowledge-flow.md) | Agentmemory Knowledge Flow | Proposed | 2026-05-31 |
+| [ADR-0031](ADR-0031-actions-crystals-integration.md) | Actions + Crystals for Director Delegation | Proposed | 2026-05-31 |
+| [ADR-0032](ADR-0032-routine-templates.md) | Routine Templates for Standard Flows | Proposed | 2026-05-31 |
+| [ADR-0033](ADR-0033-inter-agent-signals-sentinels.md) | Inter-Agent Signals + Sentinels | Proposed | 2026-05-31 |
