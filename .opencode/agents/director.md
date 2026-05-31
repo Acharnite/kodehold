@@ -125,7 +125,7 @@ Before each Task tool delegation, create an agentmemory Action via `agentmemory_
 
 ### Current Limitations (Phase 1)
 
-- Actions are created but not yet read via `memory_frontier` — that comes in Phase 2
+- Actions are created but not yet read via `memory_frontier` — frontier awareness comes in later phases (see ADR-0031 §3.1)
 - No lease management yet — that comes in Phase 3
 - No routine templates — that comes in Phase 4
 - No crystals/signals — that comes in Phase 5
@@ -391,7 +391,7 @@ Adopted projects: `ADOPTED=true`, retroactive design doc, relaxed INIT→ACTIVE 
 1. Load context from agentmemory + read design doc + ADRs + check state
 1.5. **Check prospective tasks** — query `agentmemory_memory_recall(query="prospective tasks", limit=10)`, filter for `status=pending AND execute_after <= now()`. Present due tasks to user. User decides: execute now / skip / dismiss.
 2. Load latest session summary via agentmemory_memory_recall
-2.5. **Check pending actions** — if continuing existing work, query `agentmemory_memory_frontier(project="<project>", limit=5)` to see if any unblocked actions exist from a prior session. Present to user.
+2.5. **Check pending actions (informational)** — if continuing existing work, query `agentmemory_memory_frontier(project="<project>", limit=5)` to see if any unblocked actions exist from a prior session. Present to user for awareness only — the delegation loop still uses todowrite, not frontier (Phase 1 limitation).
 3. Listen for requests, map to trigger → team, delegate
 4. Before transitions: Scribes store context, run gate, update state
 5. On agent refusal: verify state, run gate, re-delegate
