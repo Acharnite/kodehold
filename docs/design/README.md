@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.4.22  
+**Version:** 1.4.23  
 **Status:** Active  
-**Last Updated:** 2026-05-30
+**Last Updated:** 2026-05-31
 
 ---
 
@@ -313,6 +313,8 @@ ICM provides persistent, queryable memory across sessions:
 
 KodeHold maintains a **central** `.icm/` directory at the project root for all persistent memory. Workspace projects (`workspaces/<name>/`) and adopted projects do **not** receive their own `.icm/` — they share the central store. Each project's memories are scoped via topic prefixes (`kodehold-<project>-*`) for isolation while keeping a single queryable database.
 
+> **Agentmemory binding config:** The `iii` daemon that serves ICM listens on `0.0.0.0` (all interfaces) instead of the default `127.0.0.1` (loopback). This is configured via `~/.agentmemory/iii-config.yaml`, which overrides the dist/ defaults for the HTTP worker (port 3111), stream worker (port 3112), and their CORS allowed origins. The custom config path takes precedence in agentmemory's `findIiiConfig()` discovery and survives npm updates.
+
 **ICM Knowledge Flow** — the 8-step protocol governing how every team searches, captures, and refines knowledge — is implemented in `.opencode/skills/icm-knowledge-flow/SKILL.md` with team-specific parameters and lifecycle integration documented in `docs/adr/ADR-0027-icm-knowledge-flow-invocation-modes.md`. All 6 team agents parameterize this protocol with team-specific queries, memoir names, and topic namespaces.
 
 ### 7.3 RTK (Runtime Toolkit)
@@ -598,6 +600,7 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.4.23 (2026-05-31):** Documented agentmemory binding configuration — `iii` daemon listens on `0.0.0.0` (all interfaces) via `~/.agentmemory/iii-config.yaml`. Added note in Section 7.2 (ICM) explaining the custom config approach that survives npm updates.
 - **v1.4.22 (2026-05-30):** ICM memoir restructure — 7 team memoirs consolidated into `kodehold-teams` (27 concepts, 16 links). Learnings consolidated into `kodehold-learnings` (63 concepts, 68 links). All ADR references in ADR-0027, ADR-0023, ADR-0009 updated. CHANGES.md, VERSION.md bumped to 0.17.0.
 - **v1.4.21 (2026-05-29):** Implemented ADR-0021 — Prospective Memory (Task Queue & Scheduler). Added section 7.7 to design doc. Updated director.md session lifecycle with prospective task check (step 1.5). Updated scribes.md with Prospective Memory CRUD operations. ADR-0021 status promoted to Accepted. Scope: deferred + recurring tasks only; trigger engine deferred to future.
 - **v1.4.20 (2026-05-29):** ADR-0027 implementation review fixes — SKILL.md renumbered to match ADR-0027 step numbering (steps 1-2 Pre-task, steps 4-8 Post-task, step 3 removed from knowledge flow). docs/icm-knowledge-flow.md updated with ADR-0027 reference, 3 invocation modes, Scribes Post-task-only documentation, consolidation threshold fixed (>5→>7). Fixed `memoit=` typo to `memoir=`. Added Full mode to Mode Selection table. Updated second-opinion.md with Post-task mode declaration.
