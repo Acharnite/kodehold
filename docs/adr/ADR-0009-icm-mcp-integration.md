@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Deprecated — ICM MCP tools replaced by agentmemory memory_* tools per ADR-0029 (ICM → Agentmemory Migration Strategy).
 
 ## Context
 

@@ -1,9 +1,10 @@
-# Version 0.17.0 — ICM Memoir Restructure, Consolidation
+# Version 0.17.1 — CodeRabbitAI Validation Fix
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.17.1 | 2026-06-01 | CodeRabbitAI review fix: added runtime validation for `info?.directory` in agentmemory-capture.ts (replaces type assertion with `typeof` + length check per PR #749). ADR-0028 updated with finalized date and validation details. |
 | 0.17.0 | 2026-05-30 | ICM memoir restructure: 7 team memoirs merged into `kodehold-teams` (27 concepts, 16 links), learnings consolidated into `kodehold-learnings` (63 concepts, 68 links). All ADR/doc references updated. CLOSED→REOPEN→ACTIVE lifecycle transition. |
 | 0.16.0 | 2026-05-29 | ADR-0021 accepted (Prospective Memory design), lifecycle simulation document (4 scenarios), ADR cleanup (5 ADRs resolved: Superseded/Deprecated), delegation lesson documented, OPENCODE_NONINTERACTIVE env leak test fix. |
 | 0.15.2 | 2026-05-29 | ADR-0027 implementation review fixes: SKILL.md renumbered, docs updated, second-opinion.md standardized, typo fixed, Full mode added. |
@@ -37,6 +38,8 @@
 - **PATCH**: Documentation updates, refinements, bug fixes
 
 ## Current
+
+**0.17.1** — CodeRabbitAI review fix: added runtime validation for `info?.directory` in agentmemory-capture.ts. Replaces `(info?.directory as string)` type assertion with `typeof` + length check per PR #749. ADR-0028 updated with finalized date (2026-06-01) and validation documentation.
 
 **0.17.0** — ICM memoir restructure: 7 team-specific memoirs merged into `kodehold-teams` (27 concepts, 16 links). All learnings consolidated into `kodehold-learnings` (63 concepts, 68 links). All ADR references updated to reflect new consolidated structure. CLOSED→REOPEN→ACTIVE lifecycle transition completed.
 

@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded — replaced by agentmemory's native checkpoint and crystalization features. memory_checkpoint provides structured checkpoints, memory_crystallize auto-compresses completed action chains, and memory_consolidate handles multi-tier compression automatically.
 
 ## Context
 

@@ -3,7 +3,10 @@
   "mcp": {
     "github": {
       "type": "local",
-      "command": ["/home/kiffer/.local/bin/github-mcp-server", "stdio"],
+      "command": [
+        "/home/kiffer/.local/bin/github-mcp-server",
+        "stdio"
+      ],
       "environment": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "{env:GITHUB_PERSONAL_ACCESS_TOKEN}"
       }
@@ -56,7 +59,7 @@
       }
     },
     "director": {
-      "description": "KodeHold Director — orchestrator that delegates to specialist teams",
+      "description": "KodeHold Director \u2014 orchestrator that delegates to specialist teams",
       "mode": "primary",
       "file": ".opencode/agents/director.md",
       "permission": {
@@ -65,16 +68,7 @@
         "edit": "deny",
         "glob": "allow",
         "grep": "allow",
-        "bash": {
-          "*": "ask",
-          "scripts/gate.sh --status": "allow",
-          "scripts/gate.sh --transition *": "allow",
-          "scripts/workspace.sh *": "allow",
-          "icm *": "allow",
-          "git status*": "allow",
-          "git log*": "allow",
-          "git diff*": "allow"
-        },
+        "bash": "allow",
         "task": "allow",
         "skill": "allow",
         "webfetch": "allow",
@@ -82,7 +76,7 @@
       }
     },
     "fls": {
-      "description": "KodeHold FLS — Front Line Support, triage and hotfix",
+      "description": "KodeHold FLS \u2014 Front Line Support, triage and hotfix",
       "file": ".opencode/agents/fls.md",
       "permission": {
         "read": "allow",

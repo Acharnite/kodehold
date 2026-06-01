@@ -2,7 +2,7 @@
 
 ## Status
 
-Superseded by ICM OpenCode plugin (`~/.config/opencode/plugins/icm.ts`) — Layer 0 (tool.execute.after) and Layer 1 (session.compacting) implement automated episodic extraction. GitHub issue #28 closed.
+Superseded by agentmemory-capture.ts plugin (agentmemory's OpenCode integration) — tool.execute.after hooks capture observations automatically. Agentmemory's memory_recall and memory_smart_search provide structured retrieval without manual extraction.
 
 ## Context
 

@@ -64,6 +64,29 @@ Phase 1 of the ICM→agentmemory migration (ADR-0029). All memory/documentation 
 - After each task, confirm dual-write was performed
 - Track any agentmemory failures for the migration dashboard
 
+## Memory Taxonomy Guidelines
+
+When storing memories via `agentmemory_memory_save`, always use the `type` parameter with one of these standard types:
+
+| Type | Used For | Examples |
+|------|----------|---------|
+| `pattern` | Recurring behaviors, trends, repeated observations | "Engineers consistently forget error handling" |
+| `preference` | Project or team preferences, stylistic choices | "Project uses FastAPI, not Django" |
+| `architecture` | Design decisions, component relationships | "ADR-0031: Actions + Crystals for delegation" |
+| `bug` | Defects, root causes, fixes applied | "FLS hotfixed KeyError in async validator" |
+| `workflow` | Processes, procedures, step-by-step instructions | "How to run the shipping gate" |
+| `fact` | Project facts, configuration, environment details | "KodeHold state is ACTIVE" |
+| `decision` | Explicit decisions with rationale | "Chose OpenRouter for second opinion" |
+| `metric` | Numerical measurements, token usage, timing | "Token usage: engineers 8.3M total" |
+| `release` | Version releases and changelog entries | "v0.17.0 released 2026-05-31" |
+
+### Rules
+1. ALWAYS include the `type` parameter when calling `memory_save`
+2. Use the `concepts` parameter for free-form tagging (e.g., `"director, delegation, gate"`)
+3. Use the `files` parameter when the memory relates to specific files
+4. When in doubt between two types, prefer the more specific one (e.g., `architecture` over `fact` for design decisions)
+5. For `memory_lesson_save`, use the `tags` parameter instead — lessons have their own schema
+
 ## State Awareness
 
 Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these team-specific rules:
@@ -256,6 +279,31 @@ When the Director asks to resume from a checkpoint:
 3. Read the most recent checkpoint
 4. Present a summary to the Director: last state, what was completed, what's next
 5. Load current design doc + ADRs for additional context
+
+### Token Metrics Storage
+
+When storing checkpoints or session summaries, also persist token usage metrics separately for historical trend analysis:
+
+1. **Query token usage**: Run `bash scripts/token-usage.sh --project kodehold --minutes 60` to get current per-team token counts
+2. **Parse the output** for per-team totals
+3. **Store each team's token usage** via:
+   `agentmemory_memory_save(content="<json-blob>", type="metric", project="/home/kiffer/project/kodehold", concepts="token-usage, <team>")`
+
+   Store the JSON blob with this structure:
+   ```
+   {
+     "timestamp": "<ISO 8601>",
+     "team": "<team-name>",
+     "tokens": <number>,
+     "phase": "<current-phase>",
+     "sessions": <session-count>
+   }
+   ```
+
+4. **Store a grand total**:
+   `agentmemory_memory_save(content="<json-blob>", type="metric", project="/home/kiffer/project/kodehold", concepts="token-usage, total")`
+
+5. **Historical querying**: Use `agentmemory_memory_recall(query="token-usage", limit=20)` to view trends over time.
 
 ## Session Compression Workflow
 

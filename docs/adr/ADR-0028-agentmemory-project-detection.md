@@ -4,7 +4,7 @@
 
 Accepted
 
-**Finalized: 2026-05-31** — Accept the full filesystem path as the project name. This is the original plugin behavior (line 171 of agentmemory-capture.ts: `projectPath = ctx.worktree || ctx.project?.id || process.cwd()`). All prior fix attempts (Plugin-side resolveProject, Director-level getActiveProject, tool-call scanning) have been reverted. The plugin remains 100% original upstream.
+**Finalized: 2026-06-01** — Accept the full filesystem path as the project name. This is the original plugin behavior (line 171 of agentmemory-capture.ts: `projectPath = ctx.worktree || ctx.project?.id || process.cwd()`). All prior fix attempts (Plugin-side resolveProject, Director-level getActiveProject, tool-call scanning) have been reverted. Fix 5 (per-session `info?.directory`) applied 2026-05-31 — confirmed working. The plugin uses `info?.directory` from the session.created event with fallback to the original project path. Runtime validation added per CodeRabbitAI review (PR #749, 2026-06-01): replaces `(info?.directory as string)` type assertion with `typeof` + length check on line 191.
 
 ## Context
 
@@ -67,6 +67,7 @@ Proxies tool calls to the agentmemory daemon or local KV. It passes through proj
 | Fix 2 | `.kodehold-project` marker files at project roots | Agent never found them because `process.cwd()` returned the workspace root, not the sub-project directory; the plugin never changed cwd |
 | Fix 3 | Dynamic detection from tool-call data (parse file paths out of tool calls) | Fragile regex — `[^/]+` captured sentence fragments as project names. Race conditions: session.start fired before any tool calls existed to parse. Aliased sessions to wrong names |
 | Fix 4 | Tool-call scanning with module-level state | Worked functionally but had no design doc, no tests, and was reverted per the lesson to "tackle properly with ADR/design process" |
+| Fix 5 | Per-session `info?.directory` from session.created event | ✅ Success — uses native session metadata, no filesystem walk-up, no race conditions, no regex. Runtime validation added via CodeRabbitAI review (PR #749, 2026-06-01): `typeof` + length check replaces type assertion on line 191 |
 
 **Key lesson** (`lsn_1c753d4ac1088621`, confidence 0.9): "revert to original GitHub version and tackle with proper ADR/design" — this lesson was created precisely to avoid a 5th ad-hoc fix.
 
@@ -224,10 +225,11 @@ There is nothing to revert. The plugin is 100% original upstream. If a future ap
 - **Lesson `lsn_1c753d4ac1088621`** (confidence 0.9) — established the "revert and ADR/design" approach that created this ADR
 - **Lesson `lsn_ee3995917bb0baa8`** (confidence 0.9) — documented the session-startup race condition workaround (`/remember` instead of `icm recall`)
 - **Lesson `lsn_0f5d62807b06ed4a`** (confidence 0.9) — documented the regex parsing fragility in Fix 3
+- **Lesson `lsn_1cb3ac318435645c`** (confidence 0.9) — documented the per-session `info?.directory` approach from session.created event (Fix 5)
 
 ### Source Files Referenced
 
-- `/home/kiffer/.config/opencode/plugins/agentmemory-capture.ts` (v0.9.24, unmodified — reverted to original GitHub baseline)
+- `/home/kiffer/.config/opencode/plugins/agentmemory-capture.ts` (v0.9.24, Fix 5 applied per-session `info?.directory` from session.created event; line 191 now uses runtime `typeof` + length validation per CodeRabbitAI review PR #749)
 - `/home/kiffer/project/kodehold/.kodehold-state` — KodeHold project state file (project detection source)
 - `/home/kiffer/project/kodehold/docs/design/README.md` — KodeHold design document (fallback project detection source)
 - `/usr/local/lib/node_modules/@agentmemory/agentmemory/dist/hooks/session-start.mjs` (lines 6-23) — canonical `resolveProject()` implementation (no longer used by this approach)

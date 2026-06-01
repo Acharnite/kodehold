@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.17.2 — 2026-06-01
+
+### Fixed
+- **OpenCode startup session errors** — Removed broken gstack skill symlinks (`~/.config/opencode/skills/gstack/`) that caused 11 `ENOENT` errors per startup (P0, FLS fix). Ghost session accumulation (168 sessions) caused by agentmemory daemon v0.9.24 calling removed `sdk.triggerVoid()` from iii-sdk v0.11.2 — resolved via upstream PR #731 (P1, user fix). LLM circuit breaker timeouts handled independently (P2, user fix).
+
+## 0.17.1 — 2026-06-01
+
+### Fixed
+- **PR #749 CodeRabbitAI review** — Added runtime validation for `info?.directory` in agentmemory-capture.ts (replaces type assertion with proper `typeof` + length check)
+
 ## 0.17.0 — 2026-05-30
 
 ### Changed

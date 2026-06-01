@@ -1,11 +1,12 @@
 ---
 name: director
-description: >
-  Top-level orchestrator for KodeHold projects. Manages full project lifecycle,
+description: 'Top-level orchestrator for KodeHold projects. Manages full project lifecycle,
   assigns work to specialist teams (architects, engineers, testers, reviewers, scribes)
-  via the Task tool, enforces quality gates, manages token budgets, and ensures
-  the design document remains the single source of truth.
-  Triggers: orchestrate, lifecycle, gate, ship, delegate, plan
+  via the Task tool, enforces quality gates, manages token budgets, and ensures the
+  design document remains the single source of truth. Triggers: orchestrate, lifecycle,
+  gate, ship, delegate, plan
+
+  '
 mode: all
 permission:
   read: allow
@@ -13,16 +14,7 @@ permission:
   edit: deny
   glob: allow
   grep: allow
-  bash:
-    "*": ask
-    "scripts/gate.sh --status": allow
-    "scripts/gate.sh --transition *": allow
-    "scripts/workspace.sh *": allow
-    "scripts/token-usage.sh *": allow
-    "icm *": allow
-    "git status*": allow
-    "git log*": allow
-    "git diff*": allow
+  bash: allow
   task: allow
   skill: allow
   webfetch: allow
@@ -59,6 +51,31 @@ Before each delegation, the Director MUST check approximate token consumption fo
 5. Token usage is approximate (based on OpenCode's aggregated session data) and should be used as a guideline, not exact accounting.
 
 **Note:** When `KODEHOLD_LIGHT=1`, the overall budget is 28k tokens per operation; per-phase budgets are proportionally reduced.
+
+## Context Window Pressure Protocol
+
+Before each Task tool delegation, the Director MUST estimate current context size:
+
+1. **Estimate current context** — count approximate tokens used in the current session:
+   - Each prior message in the conversation: ~500 tokens average
+   - Current task prompt: estimate based on length
+   - Loaded files/context: approximate from file sizes
+   - Result: rough estimate of current context usage
+
+2. **Compare against model limit** — typical limits:
+   - Large context (Claude, GPT-4): 100K tokens
+   - Small context (Ollama 32K): 32K tokens
+   - Light mode (KODEHOLD_LIGHT=1): 28K budget
+
+3. **Act based on pressure level:**
+   - If estimated usage < 60% of limit → proceed normally
+   - If 60-80% → warn user: "Context at ~&lt;X&gt;%. Consider compression soon."
+   - If 80-90% → suggest compression: "Context at ~&lt;X&gt;%. Recommend session compression before next delegation."
+   - If > 90% → force compression via Scribes before proceeding. Delegate to Scribes to create a session summary, then suggest starting fresh session with /resume.
+
+4. **On KODEHOLD_LIGHT=1:** Use stricter thresholds (50/70/80%) since budget is tighter.
+
+5. **Token budget interaction:** If both context pressure AND token budget warnings trigger simultaneously, prioritize context pressure (it's an immediate failure risk).
 
 ## Todo Sequence Protocol
 
@@ -206,6 +223,20 @@ Director: bash scripts/gate.sh --transition ACTIVE_TO_REVIEW
 Director: agentmemory_memory_recall(query="kodehold-myproject context", limit=10)
   Loads project context for decision-making
 ```
+
+## Second Opinion Marker Protocol
+
+When the Director receives an approval from the second-opinion subagent:
+
+1. The second-opinion subagent returns `Recommendation: proceed` (or equivalent approval)
+2. The Director verifies the recommendation is approval (not revise/redesign)
+3. The Director creates the `.second_opinion_done` marker:
+   `bash: touch /home/kiffer/project/kodehold/.second_opinion_done`
+4. The Director stores the second-opinion result in agentmemory:
+   `agentmemory_memory_save(content="Second opinion approved: <summary>", type="decision", project="/home/kiffer/project/kodehold", concepts="second-opinion, gate-validation")`
+5. If second-opinion does NOT approve → do NOT create marker. Delegate fixes to appropriate team, then re-request second opinion.
+
+**Rationale:** The second-opinion subagent is read-only by design (no file access). The Director acts as its proxy for filesystem operations, ensuring the marker is only created on genuine approval while maintaining the audit trail.
 
 ## Available Teams
 
@@ -361,8 +392,8 @@ Do NOT stop after ship.sh passes — you must complete Phase 2 manually.
 
 ## Memory Protocol
 
+- `agentmemory_memory_save(content="<decision>", type="<type>", project="<project>", concepts="<tags>")` — store decisions. Uses the Memory Taxonomy (see scribes.md §Memory Taxonomy Guidelines for valid types).
 - `agentmemory_memory_recall(query="<project context>", limit=10)` — load context at session start
-- `agentmemory_memory_save(content="<decision>", type="<type>", project="<project>")` — store decisions
 - Run `agentmemory_memory_consolidate()` periodically for pattern extraction
 
 ## Constraints
@@ -426,7 +457,7 @@ Delegate to Scribes with instruction to store a checkpoint containing:
 - What is in progress (next steps, pending items)
 - Open questions or blockers
 - Last design doc version and ADR count
-- Per-team token usage (run `scripts/token-usage.sh` before storing)
+- Per-team token usage (run `scripts/token-usage.sh` before storing) — also persist as metric via `memory_save(type="metric", concepts="token-usage, <team>")`
 
 Use topic: `kodehold-<project>-session-checkpoint`, importance: `critical`.
 
@@ -466,7 +497,7 @@ Scribes stores a summary with this structure:
 - Teams: which teams were involved and their results
 - Blockers: any blockers or open questions
 - Carry-forward: what needs to continue in next session
-- TokenUsage: per-team token consumption from token-usage.sh (run script before storing)
+- TokenUsage: per-team token consumption from token-usage.sh (run script before storing). Also persist via memory_save(type="metric").
 
 ### Consolidation policy
 - Max 10 entries in topic `kodehold-<project>-session-summary`

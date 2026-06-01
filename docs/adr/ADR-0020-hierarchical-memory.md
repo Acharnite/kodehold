@@ -2,7 +2,7 @@
 
 ## Status
 
-Superseded by ICM's built-in decay and access-aware memory system. ICM provides importance-based tiers (critical/high/medium/low) with decay rates, access-frequency-aware decay (`decay / (1 + access_count × 0.1)`), auto-pruning of low-weight memories, health audits, consolidation hints, and auto-dedup. GitHub issue #26 closed.
+Superseded by agentmemory's memory_consolidate tier system and memory_save importance field. Agentmemory provides working→episodic→semantic→procedural consolidation tiers, importance-based priority (via the importance parameter), auto-dedup, and health monitoring. GitHub issue #26 closed.
 
 ## Context
 
