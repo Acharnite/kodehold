@@ -40,7 +40,7 @@ Gather context before forming any hypothesis.
 4. **Reproduce:** Can you trigger the bug deterministically? If not, gather
    more evidence before proceeding.
 
-5. **Check ICM for prior investigations:** Search for prior bug investigations
+5. **Check agentmemory for prior investigations:** Search for prior bug investigations
    on the same area. Recurring bugs in the same module are an architectural
    smell, not a coincidence.
 
@@ -134,15 +134,17 @@ Status:          DONE | DONE_WITH_CONCERNS | BLOCKED
 ═════════════════════════════════════════
 ```
 
-### Store findings in ICM
+### Store findings in agentmemory
 
 Save the investigation results so future sessions can find them:
 
 ```
-Topic: kodehold-<project>-investigations
-Content: Structured debug report
-Importance: high
-Keywords: bug, <component>, <error-type>
+agentmemory_memory_save(
+  content="[Structured debug report]",
+  type="bug",
+  project="<project-slug>",
+  concepts="investigations, <component>, <error-type>"
+)
 ```
 
 ---

@@ -38,11 +38,11 @@ Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these tea
 
 **Refusal example:** *"Project is INIT, not ACTIVE. Cannot implement code until design doc is approved and INIT→ACTIVE gate passes. Delegate to Architects first."*
 
-## ICM Knowledge Flow (Pre-task Mode)
+## Agentmemory Knowledge Flow (Pre-task Mode)
 
-Follow the ICM Knowledge Flow skill protocol in **Pre-task mode**:
-1. Search `kodehold-learnings` memoir for relevant patterns before starting work
-2. Search `kodehold-teams` memoir for team-specific engineering patterns and conventions before starting work
+Follow the Agentmemory Knowledge Flow skill protocol in **Pre-task mode**:
+1. Search `kodehold-learnings` for relevant patterns via `agentmemory_memory_lesson_recall` before starting work
+2. Search `kodehold-teams` for team-specific engineering patterns via `agentmemory_memory_lesson_recall` before starting work
 
 Post-task steps (Reflect, Consolidate, Store, Refine) are handled by Director after task completion.
 

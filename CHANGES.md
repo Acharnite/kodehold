@@ -1,5 +1,39 @@
 # Changelog
 
+## 0.19.0 — 2026-06-01
+
+### Added
+- **ICM → Agentmemory Migration Complete (Phases 1-5)** — Full replacement of ICM memory system with agentmemory throughout KodeHold
+- **ADR-0030** — Agentmemory Knowledge Flow (3-mode protocol: Pre-task/Post-task/Full, replaces icm-knowledge-flow skill)
+- **ADR-0031** — Actions + Crystals for Director Delegation (10 action types, dependency model, frontier flow, lease management)
+- **ADR-0032** — Routine Templates (4 standard flow templates: adr-flow, implement-flow, bugfix-flow, ship-gate)
+- **ADR-0033** — Crystals + Signals (auto-crystallize triggers, 5 inter-agent signal types)
+- **Action Frontier Protocol** — Director now uses `memory_frontier` + `memory_lease` + `memory_crystallize` instead of manual todowrite
+- **Routine Templates** — Director can instantiate standard workflows with single `memory_routine_run` call
+- **Auto-Crystallize** — 4 triggers (every 5 actions, state transitions, routine completion, explicit)
+- **Inter-Agent Signaling** — 5 signal types (info, request, response, alert, handoff) with routing rules
+- **agentmemory-knowledge-flow skill** — New skill replacing icm-knowledge-flow
+
+### Changed
+- **director.md** — Todo Sequence Protocol replaced by Action Frontier Protocol with 7-step delegation flow
+- **scribes.md** — Added Action Management, Crystal Consumption, and Signal Handling sections
+- **All 6 team agents** — ICM Knowledge Flow → Agentmemory Knowledge Flow references updated
+- **gate.sh + ship.sh** — ICM health checks replaced with agentmemory curl health checks
+- **kodehold-protocol.md + AGENTS.md** — All ICM references updated to agentmemory
+- **scripts/benchmark.sh + scripts/consolidate-all.sh** — Deprecated (agentmemory auto-consolidates)
+
+### Deprecated
+- **ADR-0027** — ICM Knowledge Flow Invocation Modes (replaced by ADR-0030)
+- **scripts/benchmark.sh** — ICM benchmarks, no agentmemory equivalent
+- **scripts/consolidate-all.sh** — Agentmemory auto-consolidates
+- **icm-knowledge-flow skill** — Replaced by agentmemory-knowledge-flow
+
+## 0.18.0 — 2026-06-01
+
+### Added
+- **Token report tool** (`scripts/token-report.py`) — generates a self-contained HTML report at `docs/dashboard/index.html` with cost and token usage visualizations. Queries OpenCode's local SQLite database for all session data and fetches OpenRouter billing data via API. Charts include: daily cost trend (line), daily tokens (stacked bar), cost by provider (doughnut), cost by model (horizontal bar), cost by team (horizontal bar). Tables: per model, per team, per provider. OpenRouter section: account usage vs credits, key usage, models used. Dark-themed, responsive, uses Chart.js CDN.
+- **Token report `--serve` mode** — added `--serve`, `--port`, `--host`, and `--refresh` CLI options to run the report tool as a headless HTTP server with auto-regeneration on a configurable timer. Default: port 8765, host 127.0.0.1, refresh every 60s.
+
 ## 0.17.2 — 2026-06-01
 
 ### Fixed

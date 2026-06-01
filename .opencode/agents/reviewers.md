@@ -59,11 +59,11 @@ After approving a design document (INIT phase), create `.design_reviewed` marker
 touch .design_reviewed
 ```
 
-## ICM Knowledge Flow (Pre-task Mode)
+## Agentmemory Knowledge Flow (Pre-task Mode)
 
-Follow the ICM Knowledge Flow skill protocol in **Pre-task mode**:
-1. Search `kodehold-learnings` memoir for relevant patterns before starting work
-2. Search `kodehold-teams` memoir for team-specific review patterns and quality standards before starting work
+Follow the Agentmemory Knowledge Flow skill protocol in **Pre-task mode**:
+1. Search `kodehold-learnings` for relevant patterns via `agentmemory_memory_lesson_recall` before starting work
+2. Search `kodehold-teams` for team-specific review patterns via `agentmemory_memory_lesson_recall` before starting work
 
 Post-task steps (Reflect, Consolidate, Store, Refine) are handled by Director after task completion.
 
@@ -93,7 +93,7 @@ Reviewers validate lifecycle transitions on behalf of the Director.
 ### When Reviewers Gate
 - INIT → ACTIVE: Reviewers validate design quality + ADR completeness + second opinion
 - ACTIVE → REVIEW: Reviewers validate tests pass + code reviewed + comprehensive review
-- REVIEW → CLOSED: Reviewers validate final review + tests green + ICM stored
+- REVIEW → CLOSED: Reviewers validate final review + tests green + agentmemory stored
 - REOPEN → ACTIVE: Reviewers validate updated design + new ADRs + second opinion
 
 ### When Reviewers Do NOT Gate

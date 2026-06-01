@@ -18,7 +18,7 @@ for f in .opencode/agents/*.md; do
 
   # Check required fields
   grep -q "^name: " "$f" || fail "$name: missing 'name' field"
-  grep -q "^description: >" "$f" || fail "$name: missing 'description' field"
+  grep -Eq "^description: (>|\|)" "$f" || fail "$name: missing 'description' field"
   if [ "$name" = "director" ]; then
     grep -q "^mode: all" "$f" || fail "$name: missing 'mode: all' (needs primary+subagent)"
   else

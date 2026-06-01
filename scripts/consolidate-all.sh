@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# DEPRECATED — Phase 3 (ADR-0031). Agentmemory auto-consolidates via its 4-tier
+# pipeline (working → episodic → semantic → procedural). Manual consolidation is
+# no longer needed. The agentmemory daemon handles consolidation automatically.
+# This script is preserved for reference but should not be executed.
+# =============================================================================
 # KodeHold ICM Consolidation — automatically consolidate ICM topics with too many entries
 set -euo pipefail
 
@@ -65,6 +70,9 @@ fi
 # ------------------------------------------------------------------
 # Check prerequisites
 # ------------------------------------------------------------------
+echo -e "${YELLOW}⚠ WARNING: This script consolidates the deprecated ICM system.${NC}"
+echo -e "${YELLOW}  Agentmemory auto-consolidates — this script is no longer needed.${NC}"
+echo ""
 if ! command -v icm &>/dev/null; then
   echo "Error: 'icm' CLI not found — is ICM installed?"
   exit 1

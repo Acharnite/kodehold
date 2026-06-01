@@ -40,4 +40,5 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0030](ADR-0030-agentmemory-knowledge-flow.md) | Agentmemory Knowledge Flow | Proposed | 2026-05-31 |
 | [ADR-0031](ADR-0031-actions-crystals-integration.md) | Actions + Crystals for Director Delegation | Proposed | 2026-05-31 |
 | [ADR-0032](ADR-0032-routine-templates.md) | Routine Templates for Standard Flows | Proposed | 2026-05-31 |
-| [ADR-0033](ADR-0033-inter-agent-signals-sentinels.md) | Inter-Agent Signals + Sentinels | Proposed | 2026-05-31 |
+| [ADR-0033](ADR-0033-crystals-signals.md) | Crystals + Signals for KodeHold | Accepted | 2026-06-01 |
+| [ADR-0033b](ADR-0033-inter-agent-signals-sentinels.md) | Inter-Agent Signals + Sentinels (Superseded by ADR-0033) | Superseded | 2026-05-31 |

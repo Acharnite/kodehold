@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KodeHold Token Report</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: #0f1117; color: #e1e4e8; line-height: 1.5;
+    padding: 20px;
+  }
+  .container { max-width: 1000px; margin: 0 auto; }
+  
+  /* ── Header ── */
+  .header { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d; }
+  .header h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 4px; }
+  .header .ts { color: #8b949e; font-size: 0.85rem; }
+
+  /* ── Summary Bar ── */
+  .summary-bar {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px; margin-bottom: 28px;
+  }
+  .summary-item {
+    background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+    padding: 14px 12px; text-align: center;
+  }
+  .summary-item .value { font-size: 1.3rem; font-weight: 700; color: #58a6ff; }
+  .summary-item .label { font-size: 0.75rem; color: #8b949e; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Chart Cards ── */
+  .chart-card {
+    background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+    padding: 20px; margin-bottom: 20px;
+  }
+  .chart-card h2 {
+    font-size: 1.05rem; font-weight: 600; margin-bottom: 12px;
+    color: #f0f6fc;
+  }
+  .chart-card .note {
+    font-size: 0.8rem; color: #8b949e; margin-top: 8px;
+    font-style: italic;
+  }
+  .chart-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-bottom: 20px;
+  }
+  .chart-grid.single { grid-template-columns: 1fr; }
+  .chart-container { position: relative; height: 220px; }
+  .chart-container.tall { height: 300px; }
+  .chart-container.short { height: 180px; }
+
+  /* ── Tables ── */
+  .table-card {
+    background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+    padding: 20px; margin-bottom: 20px; overflow-x: auto;
+  }
+  .table-card h2 { font-size: 1.05rem; font-weight: 600; margin-bottom: 12px; color: #f0f6fc; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid #21262d; }
+  th { color: #8b949e; font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; }
+  td { color: #e1e4e8; }
+  td:first-child, th:first-child { text-align: left; }
+  tr:hover td { background: #1c2128; }
+
+  /* ── OpenRouter Section ── */
+  .or-card {
+    background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+    padding: 20px; margin-bottom: 20px;
+  }
+  .or-card h2 { font-size: 1.05rem; font-weight: 600; margin-bottom: 12px; color: #f0f6fc; }
+  .progress-bar {
+    width: 100%; height: 24px; background: #21262d; border-radius: 12px;
+    overflow: hidden; margin: 8px 0 12px;
+  }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, #58a6ff, #3fb950);
+    border-radius: 12px; transition: width 0.3s;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 600; color: #fff; min-width: 40px;
+  }
+  .or-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 12px; }
+  .or-stat { padding: 8px; background: #0d1117; border-radius: 6px; }
+  .or-stat .val { font-weight: 600; color: #58a6ff; }
+  .or-stat .lbl { font-size: 0.7rem; color: #8b949e; text-transform: uppercase; }
+  .or-unavailable { color: #8b949e; font-style: italic; padding: 12px; background: #0d1117; border-radius: 6px; }
+
+  /* ── Empty State ── */
+  .empty-state {
+    text-align: center; padding: 40px 20px; color: #8b949e;
+  }
+  .empty-state h2 { font-size: 1.2rem; margin-bottom: 8px; color: #f0f6fc; }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .chart-grid { grid-template-columns: 1fr; }
+    .summary-bar { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  
+<div class="header">
+  <h1>KodeHold Token Usage</h1>
+  <div class="ts">Generated: 2026-06-01 21:27 UTC</div>
+</div>
+<div class="summary-bar">
+  <div class="summary-item"><div class="value">2153</div><div class="label">Sessions</div></div>
+  <div class="summary-item"><div class="value">235.32M</div><div class="label">Input Tokens</div></div>
+  <div class="summary-item"><div class="value">15.08M</div><div class="label">Output Tokens</div></div>
+  <div class="summary-item"><div class="value">9.12M</div><div class="label">Reasoning Tokens</div></div>
+  <div class="summary-item"><div class="value">95.1%</div><div class="label">Cache Hit Rate</div></div>
+</div>
+  
+<div class="chart-grid">
+  <div class="chart-card">
+    <h2>Daily Token Trend (Cost)</h2>
+    <div class="chart-container"><canvas id="dailyCostChart"></canvas></div>
+    <div class="note">39 days of data</div>
+  </div>
+  <div class="chart-card">
+    <h2>Daily Token Volume</h2>
+    <div class="chart-container"><canvas id="dailyTokenChart"></canvas></div>
+    <div class="note">Input vs Output tokens per day</div>
+  </div>
+</div><div class="chart-grid">
+  <div class="chart-card">
+    <h2>Sessions by Provider</h2>
+    <div class="chart-container"><canvas id="providerChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h2>Tokens by Model (Top 10)</h2>
+    <div class="chart-container tall"><canvas id="modelChart"></canvas></div>
+  </div></div>
+  
+<div class="table-card">
+  <h2>Per Model</h2>
+  <table>
+    <thead><tr><th>Model</th><th>Provider</th><th>Cost</th><th>Input Tokens</th><th>Output Tokens</th><th>Sessions</th></tr></thead>
+    <tbody><tr><td>deepseek-v4-flash</td><td>opencode-go <span class="sub-badge">(Subscription)</span></td><td><span class="sub-badge">Subscription</span></td><td>126.41M</td><td>8.49M</td><td>1005</td></tr><tr><td>deepseek-v4-pro</td><td>opencode-go <span class="sub-badge">(Subscription)</span></td><td><span class="sub-badge">Subscription</span></td><td>3.19M</td><td>310.1K</td><td>45</td></tr><tr><td>gpt-5.3-codex</td><td>opencode</td><td>$5.14</td><td>1.63M</td><td>130.2K</td><td>16</td></tr><tr><td>xiaomi/mimo-v2.5</td><td>openrouter</td><td>$2.14</td><td>10.86M</td><td>861.7K</td><td>227</td></tr><tr><td>deepseek-v4-flash-free</td><td>opencode</td><td>$0.31</td><td>24.09M</td><td>1.42M</td><td>219</td></tr><tr><td>google/gemma-3-12b-it</td><td>openrouter</td><td>$0.01</td><td>183.3K</td><td>4.5K</td><td>6</td></tr></tbody>
+  </table>
+</div>
+<div class="table-card">
+  <h2>Per Provider</h2>
+  <table>
+    <thead><tr><th>Provider</th><th>Cost</th><th>Tokens</th><th>Sessions</th></tr></thead>
+    <tbody><tr><td>opencode-go <span class="sub-badge">(Subscription)</span></td><td><span class="sub-badge">Subscription</span></td><td>138.40M</td><td>1050</td></tr><tr><td>opencode</td><td>$5.45</td><td>29.21M</td><td>281</td></tr><tr><td>openrouter</td><td>$2.15</td><td>12.19M</td><td>238</td></tr></tbody>
+  </table>
+</div>
+</div>
+<script>
+  
+document.addEventListener('DOMContentLoaded', function () {
+  // Color palette
+  const colors = [
+    '#58a6ff', '#3fb950', '#d29922', '#f85149', '#bc8cff',
+    '#79c0ff', '#56d364', '#e3b341', '#ff7b72', '#d2a8ff',
+    '#a5d6ff', '#7ee787', '#f0883e', '#ffa198', '#c9d1d9'
+  ];
+
+  Chart.defaults.color = '#8b949e';
+  Chart.defaults.borderColor = '#30363d';
+
+  // ── Daily Cost Chart ──
+  const dailyCostData = [0.0, 0.0, 0.0, 0.0, 0.0, 1.55, 4.45, 8.13, 4.21, 6.45, 7.14, 4.44, 2.66, 7.39, 5.73, 0.01, 0.82, 0.94, 3.87, 5.06, 2.58, 1.5, 2.07, 1.42, 1.89, 1.41, 1.4, 1.5, 1.04, 2.35, 0.69, 1.17, 0.72, 5.51, 0.6, 1.41, 1.82, 3.18, 2.51];
+  const dailyDates = ["2026-04-22", "2026-04-24", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07", "2026-05-08", "2026-05-09", "2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-16", "2026-05-17", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-23", "2026-05-24", "2026-05-25", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-05-30", "2026-05-31", "2026-06-01"];
+  if (document.getElementById('dailyCostChart') && dailyCostData.length > 0) {
+    new Chart('dailyCostChart', {
+      type: 'line',
+      data: {
+        labels: dailyDates,
+        datasets: [{
+          label: 'Cost ($)',
+          data: dailyCostData,
+          borderColor: '#58a6ff',
+          backgroundColor: 'rgba(88, 166, 255, 0.1)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { maxTicksLimit: 10, font: { size: 10 } } },
+          y: { beginAtZero: true, ticks: { callback: v => '$' + v.toFixed(2) } }
+        }
+      }
+    });
+  }
+
+  // ── Daily Token Chart ──
+  const dailyInput = [6615639, 2239556, 1169148, 800706, 13367375, 1269793, 2185108, 3663069, 2085894, 2825540, 2729169, 2298412, 2653120, 5531896, 5253925, 4622335, 5521347, 4743237, 5806794, 7711205, 6396116, 6299226, 6456635, 6846476, 7093056, 9156280, 8508544, 8349087, 6288395, 14906326, 5232493, 6064504, 2608182, 3750780, 5267783, 9331922, 8119036, 16529269, 15023805];
+  const dailyOutput = [219639, 107894, 67704, 63921, 548202, 107853, 168554, 181052, 62524, 190215, 275011, 175315, 194081, 304529, 359589, 268947, 325775, 321392, 534874, 636335, 355114, 411401, 529694, 509320, 563757, 501447, 503277, 620210, 448620, 768047, 357277, 523531, 187891, 346950, 345579, 691855, 658856, 806114, 833800];
+  if (document.getElementById('dailyTokenChart') && dailyInput.length > 0) {
+    new Chart('dailyTokenChart', {
+      type: 'bar',
+      data: {
+        labels: dailyDates,
+        datasets: [
+          { label: 'Input Tokens', data: dailyInput, backgroundColor: 'rgba(88, 166, 255, 0.7)', borderRadius: 2 },
+          { label: 'Output Tokens', data: dailyOutput, backgroundColor: 'rgba(188, 140, 255, 0.7)', borderRadius: 2 }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } } },
+        scales: {
+          x: { ticks: { maxTicksLimit: 8, font: { size: 10 } } },
+          y: { beginAtZero: true, ticks: { callback: v => v.toLocaleString() } }
+        }
+      }
+    });
+  }
+
+  // ── Provider Doughnut (by Sessions) ──
+  const providerNames = ["opencode", "openrouter"];
+  const providerSessions = [281, 238];
+  if (document.getElementById('providerChart') && providerNames.length > 0) {
+    new Chart('providerChart', {
+      type: 'doughnut',
+      data: {
+        labels: providerNames,
+        datasets: [{
+          data: providerSessions,
+          backgroundColor: colors.slice(0, providerNames.length),
+          borderWidth: 1,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'right', labels: { boxWidth: 12, font: { size: 10 } } },
+          tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed.toLocaleString() + ' sessions' } }
+        }
+      }
+    });
+  }
+
+  // ── Model Horizontal Bar (by Tokens) ──
+  const modelNames = ["deepseek-v4-flash-free", "xiaomi/mimo-v2.5", "gpt-5.3-codex", "google/gemma-3-12b-it"];
+  const modelTokens = [25507401, 11726517, 1756123, 187778];
+  if (document.getElementById('modelChart') && modelNames.length > 0) {
+    new Chart('modelChart', {
+      type: 'bar',
+      data: {
+        labels: modelNames,
+        datasets: [{
+          label: 'Tokens',
+          data: modelTokens,
+          backgroundColor: modelNames.map((_, i) => colors[i % colors.length]),
+          borderRadius: 3,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { beginAtZero: true, ticks: { callback: v => v.toLocaleString() } },
+          y: { ticks: { font: { size: 9 } } }
+        }
+      }
+    });
+  }
+});
+
+
+</script>
+</body>
+</html>

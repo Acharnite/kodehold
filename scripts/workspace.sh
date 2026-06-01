@@ -89,7 +89,7 @@ __pycache__/
   catalog=$(echo "$catalog" | jq \
     --arg n "$name" \
     --arg p "$ws_dir" \
-    '. + {($n): {"state": "INIT", "created": now | strftime("%Y-%m-%d"), "path": $p}}')
+    '. + {($n): {"created": now | strftime("%Y-%m-%d"), "path": $p}}')
   catalog_write "$catalog"
 
   pass "Workspace '$name' created at $ws_dir"
@@ -238,7 +238,7 @@ EOF
     --arg n "$name" \
     --arg p "$ws_dir" \
     --arg r "$target_path" \
-    '. + {($n): {"state": "INIT", "created": now | strftime("%Y-%m-%d"), "path": $p, "origin": "adopted", "real_path": $r}}')
+    '. + {($n): {"created": now | strftime("%Y-%m-%d"), "path": $p, "origin": "adopted", "real_path": $r}}')
   catalog_write "$catalog"
 
   pass "Adopted '$name' from $target_path"
@@ -268,8 +268,15 @@ ws_list() {
   printf "  %-20s %-12s %-14s %s\n" "NAME" "STATE" "UPDATED" "PATH"
   echo "  $(printf '%0.s─' {1..75})"
 
-  echo "$catalog" | jq -r 'to_entries[] | [.key, .value.state, .value.created, .value.path] | @tsv' |
-  while IFS=$'\t' read -r name state created path; do
+  echo "$catalog" | jq -r 'to_entries[] | [.key, .value.created, .value.path] | @tsv' |
+  while IFS=$'\t' read -r name created path; do
+    # Read state from .kodehold-state file (source of truth)
+    local state="N/A"
+    if [ -f "$path/.kodehold-state" ]; then
+      state=$(grep "^STATE=" "$path/.kodehold-state" 2>/dev/null | cut -d= -f2)
+      state="${state:-N/A}"
+    fi
+
     if [ -d "$path" ]; then
       printf "  %-20s %-12s %-14s %s\n" "$name" "$state" "$created" "$path"
     else
@@ -328,12 +335,7 @@ ws_transition() {
   sed -i "s/^STATE=.*/STATE=$next_state/" "$ws_dir/.kodehold-state"
   sed -i "s/^LAST_UPDATED=.*/LAST_UPDATED=$(date +%Y-%m-%d)/" "$ws_dir/.kodehold-state"
 
-  # Update catalog
-  local catalog
-  catalog=$(catalog_read)
-  catalog=$(echo "$catalog" | jq --arg n "$name" --arg s "$next_state" \
-    '.[$n].state = $s | .[$n].updated = (now | strftime("%Y-%m-%d"))')
-  catalog_write "$catalog"
+  # Catalog is a derived view — state is read from .kodehold-state at listing time
 
   pass "Transitioned '$name' to $next_state"
 }

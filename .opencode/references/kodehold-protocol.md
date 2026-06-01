@@ -29,7 +29,7 @@ rtk git log      # git log
 
 When `KODEHOLD_LIGHT=1` is set (user explicitly opts in):
 - Collapse Reviewers + Testers into single Quality team
-- Use ICM summaries, never full memories
+- Use agentmemory summaries, never full memories
 - Chunk files > 100 lines
 - 28k hard limit per operation
 - No redundant context between messages
@@ -46,7 +46,7 @@ Reason: <why this team is needed>
 Context: <what context to pass>
 ```
 
-## ICM Topic Convention
+## Agentmemory Topic Convention
 
 ```
 kodehold-<namespace>-<qualifier>
@@ -66,7 +66,7 @@ Before transitioning between lifecycle states, verify:
 - [ ] Code matches design doc specs
 - [ ] Tests exist and pass
 - [ ] Token budget is within limits
-- [ ] ICM memory is stored
+- [ ] Agentmemory is up to date
 
 ## Shipping Gate Checklist
 
@@ -75,7 +75,7 @@ Before every push, PR, or release, verify:
 - [ ] CHANGES.md entry added (version + date + structured changes)
 - [ ] TODO.md: completed items marked `[x]`, follow-ups added
 - [ ] Test suite green: `bash tests/run.sh` — all pass
-- [ ] Release summary stored: `icm store -t kodehold-<project>-release -i critical`
+- [ ] Release summary stored via agentmemory
 - [ ] Commit message follows `<type>(<scope>): <description>` format
 - [ ] PR created if on feature branch (`gh pr create`)
 - [ ] Tag applied for releases (`git tag v<version> && git push origin v<version>`)
@@ -86,4 +86,4 @@ Ship is BLOCKED if:
 - Any test fails (smoke / init / integration)
 - VERSION.md or CHANGES.md not updated
 - Design doc differs from implementation without an ADR
-- ICM memory not stored for the release
+- Agentmemory not written for the release

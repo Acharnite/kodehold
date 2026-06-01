@@ -168,14 +168,14 @@ else
 fi
 echo ""
 
-# 5. ICM store check
-echo "--- Step 5: ICM Check ---"
-if command -v icm &>/dev/null; then
-  icm stats &>/dev/null \
-    && pass "ICM database accessible" \
-    || warn "ICM database not accessible — run icm store for this release"
+# 5. Agentmemory store check
+echo "--- Step 5: Agentmemory Check ---"
+if command -v curl &>/dev/null; then
+  curl -sf http://localhost:3111/agentmemory/health >/dev/null 2>&1 \
+    && pass "Agentmemory daemon accessible" \
+    || warn "Agentmemory daemon not reachable — memories may not be stored"
 else
-  warn "ICM not installed — skip ICM check"
+  warn "curl not available — skip agentmemory health check"
 fi
 echo ""
 
@@ -210,7 +210,7 @@ echo ""
 echo "  Director: you must now manually execute:"
 echo "    1. Bump VERSION.md (MAJOR/MINOR/PATCH)"
 echo "    2. Update CHANGES.md with version + date + changes"
-echo "    3. Store release: icm store -t kodehold-<project>-release -i critical"
+echo "    3. Store release: agentmemory_memory_save(type=\"release\", project=\"<project>\")"
 echo "    4. Delegate structured commit to Scribes"
 echo "    5. Push: git push"
 echo "    6. Tag: git tag v<ver> && git push origin v<ver>"

@@ -2,6 +2,19 @@
 
 ## Completed
 
+- [x] **ICM → Agentmemory Migration Complete** — Phases 1-5 (ADR-0029): ADR-0030 through ADR-0033, Action Frontier Protocol, routine templates, auto-crystallize, inter-agent signaling. Complete replacement of ICM with agentmemory across all agents, scripts, and references.
+- [x] ADR-0030: Agentmemory Knowledge Flow Skill — unified knowledge flow via agentmemory replacing ICM Knowledge Flow
+- [x] ADR-0031: Action Frontier + Crystals — action dependency frontier with automatic crystallization of completed chains
+- [x] ADR-0032: Routine Templates — frozen workflow routines instantiable via agentmemory_routine_run
+- [x] ADR-0033: Inter-Agent Signals — typed messaging between agents via agentmemory signals
+- [x] **director.md Action Frontier Protocol** — agentmemory-driven action frontier with dependency resolution, sentinel gating, and auto-crystallization at delegation boundaries
+- [x] **scribes.md action management + signals** — Scribes manages actions via agentmemory (frontier, actions, leases, sentinels, crystals) and signals (typed messaging, threading, team feed)
+- [x] **gate.sh/ship.sh agentmemory update** — gate.sh and ship.sh updated to check agentmemory instead of ICM for pre-flight and readiness
+- [x] **agentmemory-knowledge-flow skill** — dedicated `.opencode/skills/agentmemory-knowledge-flow/SKILL.md` replacing old ICM Knowledge Flow
+- [x] **Auto-crystallize on delegation** — completed action chains auto-crystallized into compact digests with narrative, outcomes, and lessons
+- [x] **Inter-agent signal wiring** — all 6 teams wired with signal send/read for typed coordination via Director
+
+- [x] **Token report tool** — `scripts/token-report.py` generates self-contained HTML report at `docs/dashboard/index.html` with cost and token visualizations (5 chart types, per-model/per-team/per-provider tables, OpenRouter billing integration). Dark-themed responsive UI powered by Chart.js.
 - [x] ADR-0011: Team Meeting — Collective Project Review
 - [x] **Team meeting feature** — replaces solo Director final approval
 - [x] Design document with architecture, team structure, lifecycle

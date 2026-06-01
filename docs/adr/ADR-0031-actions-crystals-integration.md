@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 **Phase:** Phase 3 (Frontier-Driven Delegation) — replaces the Director's manual `todowrite` sequence protocol with agentmemory's action orchestration layer.
 

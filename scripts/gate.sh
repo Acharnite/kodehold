@@ -299,11 +299,13 @@ review_to_closed() {
     record_check "design_doc_exists" "FAIL"
   fi
 
-  # ICM accessible (central KodeHold database)
-  if command -v icm &>/dev/null; then
-    icm stats &>/dev/null && pass "ICM accessible (central database)" || warn "ICM stats check failed"
+  # Agentmemory accessible (health check)
+  if command -v curl &>/dev/null; then
+    curl -sf http://localhost:3111/agentmemory/health >/dev/null 2>&1 \
+      && pass "Agentmemory daemon accessible" \
+      || warn "Agentmemory daemon not reachable at localhost:3111"
   else
-    warn "ICM not installed — skip ICM check"
+    warn "curl not available — skip agentmemory health check"
   fi
 
   # Git is clean (no uncommitted changes)
@@ -412,7 +414,7 @@ usage() {
   echo "Transitions:"
   echo "  INIT_TO_ACTIVE    — design doc complete, ADRs written"
   echo "  ACTIVE_TO_REVIEW  — features implemented, tests pass, code reviewed"
-  echo "  REVIEW_TO_CLOSED  — final sign-off, tests green, ICM stored"
+  echo "  REVIEW_TO_CLOSED  — final sign-off, tests green, memories stored"
   echo "  CLOSED_TO_REOPEN  — impact analysis, design doc updated"
   echo "  REOPEN_TO_ACTIVE  — design doc approved, new ADRs"
   echo ""

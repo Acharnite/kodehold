@@ -2,7 +2,9 @@
 
 ## Status
 
-Deprecated — replaced by ADR-0030 (Agentmemory Knowledge Flow). The 3-mode invocation pattern (pre-task, post-task, full) is preserved but uses agentmemory tools instead of ICM tools.
+Deprecated — replaced by ADR-0030 (Agentmemory Knowledge Flow).
+
+**Replaced by:** [ADR-0030](ADR-0030-agentmemory-knowledge-flow.md)
 
 ## Context
 

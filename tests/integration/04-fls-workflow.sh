@@ -135,20 +135,20 @@ grep -q "root cause is unclear" "$FLS" \
   || fail "investigate skill not linked to 'root cause is unclear' condition"
 
 # ──────────────────────────────────────────────
-# Test 6: ICM documentation requirement
+# Test 6: agentmemory documentation requirement
 # ──────────────────────────────────────────────
-echo "  [6/7] ICM documentation requirements"
+echo "  [6/7] agentmemory documentation requirements"
 
-# FLS routes ICM storage through Director → Scribes (per ADR-0010)
-# Verify FLS mentions Scribes in context of ICM documentation
-grep -qi "ICM.*Scribes\|Scribes.*ICM\|ICM storage via Scribes" "$FLS" \
-  && pass "ICM routing through Scribes documented" \
-  || fail "missing ICM routing through Scribes in FLS workflow"
+# FLS routes agentmemory storage through Director → Scribes (per ADR-0010)
+# Verify FLS mentions Scribes in context of agentmemory documentation
+grep -qi "agentmemory.*Scribes\|Scribes.*agentmemory\|agentmemory storage via Scribes\|agentmemory via Scribes" "$FLS" \
+  && pass "agentmemory routing through Scribes documented" \
+  || fail "missing agentmemory routing through Scribes in FLS workflow"
 
-# Verify FLS mentions Director in context of ICM/documentation
-grep -qi "Director.*ICM\|ICM.*Director\|Director.*Scribes\|Scribes.*Director" "$FLS" \
-  && pass "Director → Scribes ICM flow documented" \
-  || fail "missing Director → Scribes ICM flow in FLS workflow"
+# Verify FLS mentions Director in context of agentmemory/documentation
+grep -qi "Director.*agentmemory\|agentmemory.*Director\|Director.*Scribes\|Scribes.*Director" "$FLS" \
+  && pass "Director → Scribes agentmemory flow documented" \
+  || fail "missing Director → Scribes agentmemory flow in FLS workflow"
 
 # Verify documentation is mentioned in responsibilities
 grep -q "Document" "$FLS" \

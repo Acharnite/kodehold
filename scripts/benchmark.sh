@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# DEPRECATED — Phase 3 (ADR-0031). This script benchmarks ICM (Infinite Context Memory),
+# which has been replaced by agentmemory per ADR-0029. Agentmemory has no equivalent
+# benchmarking CLI. Metrics are now collected via agentmemory_memory_diagnose() and
+# token-usage.sh. This script is preserved for reference but should not be used.
+# =============================================================================
 # KodeHold ICM Performance Benchmarks
 # Measures real-world ICM operation speeds and reports results as a table.
 # Usage: bash scripts/benchmark.sh [--quick] [--full] [--topic <name>]
@@ -59,6 +64,10 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Verify ICM is available
+echo -e "${YELLOW}⚠ WARNING: This script benchmarks the deprecated ICM system.${NC}"
+echo -e "${YELLOW}  Agentmemory has replaced ICM. Use scripts/token-usage.sh and${NC}"
+echo -e "${YELLOW}  agentmemory_memory_diagnose() for current metrics.${NC}"
+echo ""
 if ! command -v icm >/dev/null 2>&1; then
   echo -e "${RED}ERROR: icm binary not found${NC}" >&2
   exit 1

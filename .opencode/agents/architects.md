@@ -68,11 +68,11 @@ Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these tea
 
 **Refusal example:** *"Project is ACTIVE, not INIT. An Architects task was requested, but design work should happen in INIT. Run INIT→ACTIVE gate first, or clarify the task."*
 
-## ICM Knowledge Flow (Pre-task Mode)
+## Agentmemory Knowledge Flow (Pre-task Mode)
 
-Follow the ICM Knowledge Flow skill protocol in **Pre-task mode**:
-1. Search `kodehold-learnings` memoir for relevant patterns before starting work
-2. Search `kodehold-teams` memoir for team-specific architectural patterns and decisions before starting work
+Follow the Agentmemory Knowledge Flow skill protocol in **Pre-task mode**:
+1. Search `kodehold-learnings` for relevant patterns via `agentmemory_memory_lesson_recall` before starting work
+2. Search `kodehold-teams` for team-specific architectural patterns via `agentmemory_memory_lesson_recall` before starting work
 
 Post-task steps (Reflect, Consolidate, Store, Refine) are handled by Director after task completion.
 
@@ -80,7 +80,7 @@ Post-task steps (Reflect, Consolidate, Store, Refine) are handled by Director af
 
 1. Read existing design doc and all ADRs before starting any work
 2. **Research before designing** — use `webfetch` and `websearch` to research technology options, prior art, and best practices before making architectural decisions. Document findings in the ADR Context section
-3. Use ICM to recall prior decisions: `icm memoir search-all <query>`
+3. Use agentmemory to recall prior decisions: `agentmemory_memory_recall(query="<query>", limit=5)`
 4. Create/update design doc first, write ADRs second
 5. Set design doc `Status:` to "Active" when the design is ready for review
 6. Never approve your own design — the Reviewers team must review

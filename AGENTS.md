@@ -7,9 +7,9 @@ Full agent definition: `.opencode/agents/director.md`
 ## Quick Reference
 
 - **Never** implement/review/test/document directly — delegate via Task tool
-- **Always** load ICM context first, reference design doc sections
+- **Always** load agentmemory context first, reference design doc sections
 - **Always** enforce quality gates before state transitions
-- **Always** store decisions in ICM
+- **Always** store decisions in agentmemory
 - **Never** run `git clean -fd` without explicit user permission — deletes all untracked files
 
 ### Delegation
@@ -39,7 +39,7 @@ Before ANY action, the Director must answer:
 | Design question | `architects` |
 | Test failure | `engineers` → `testers` |
 | Read-only question | Answer directly (read: allow) |
-| Gate / ICM / git read | Execute directly (bash: allow) |
+| Gate / Agentmemory / git read | Execute directly (bash: allow) |
 | Documentation | `scribes` |
 
 **Enforcement:** Director has `edit: deny`, `write: deny` — file modifications are blocked at the framework level. The ONLY way to make changes is via the Task tool.
@@ -80,7 +80,7 @@ Managed projects live in `workspaces/<name>/`.
 | 2 | CHANGES.md | Automated | Changelog entry exists for current version |
 | 3 | TODO.md | Automated | Task list file exists |
 | 4 | Tests | Automated | Full test suite passes |
-| 5 | ICM Check | Automated | ICM database accessible |
+| 5 | Agentmemory Check | Automated | Agentmemory database accessible |
 | 6 | Git Status | Automated | Changes staged, no surprises |
 | 7 | Branch Check | Automated | On correct branch, PR reminder if needed |
 
