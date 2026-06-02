@@ -121,6 +121,17 @@
 - [x] ADR-0024: Shared Memory (Multi-Agent Alignment) — **Deprecated** (sequential delegation eliminates conflicts) ([#30](https://github.com/Acharnite/kodehold/issues/30))
 - [x] ADR-0025: A2A Protocol (Agent-to-Agent Coordination) — **Deprecated** (Director already serves as coordinator) ([#31](https://github.com/Acharnite/kodehold/issues/31))
 
+## Known Infrastructure Patches
+
+The following patches are applied directly to globally installed npm packages. They will be overwritten by `npm update -g` and must be reapplied after upgrades.
+
+| Package | Patch | Location | Reapply |
+|---------|-------|----------|---------|
+| `@agentmemory/agentmemory` | Viewer bind `127.0.0.1` → `0.0.0.0` (port 3113) | `scripts/patch-agentmemory.sh` | After `npm update -g @agentmemory/agentmemory` |
+| `@agentmemory/agentmemory` | Summary XML parsing — strip markdown fences, add retry loop | Direct patch to `dist/index.mjs` | After `npm update -g @agentmemory/agentmemory` |
+| `@agentmemory/agentmemory` | `triggerVoid()` → `trigger()` + `TriggerAction.Void()` | `patches/agentmemory-merged.patch` | After `npm update -g @agentmemory/agentmemory` |
+| `@agentmemory/agentmemory` | Agentmemory-capture project detection fix | `patches/agentmemory-capture-project-detection.patch` | After `npm update -g @agentmemory/agentmemory` |
+
 ## Prospective Tasks (ICM-managed)
 
 _This section is maintained by Scribes. Active deferred/recurring tasks live in ICM topic `kodehold-<project>-prospective`._

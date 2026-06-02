@@ -2,7 +2,9 @@
 
 ## Status
 
-Proposed
+Superseded
+
+> Superseded by dedicated second-opinion subagent with Google Gemma 3 12B via OpenRouter (cross-provider). The problem of same-model bias was solved by using a different provider/model rather than enriched gate markers.
 
 ## Context
 

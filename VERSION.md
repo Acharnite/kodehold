@@ -1,10 +1,10 @@
-# Version 0.19.0 — ICM → Agentmemory Migration Complete
+# Version 0.19.1 — CI Stability Fixes
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
-| 0.19.0 | 2026-06-01 | ICM → Agentmemory Migration (Phases 1-5): 4 new ADRs (0030-0033), Action Frontier Protocol, routine templates, auto-crystallize, inter-agent signaling. Complete replacement of ICM with agentmemory. All 8 agent files, 2 scripts, reference files updated. |
+| 0.19.1 | 2026-06-02 | CI fixes: ADR format test SIGPIPE antipatch resolved, agentmemory health check warns (not fails) in CI, obsolete ICM setup steps removed from CI workflow. |
 | 0.18.0 | 2026-06-01 | Token report tool (`scripts/token-report.py`): self-contained HTML report at `docs/dashboard/index.html` with cost/token charts, per-model/per-team/per-provider tables, OpenRouter billing integration. 5 chart types (daily cost trend, daily tokens, cost by provider/model/team), dark-themed responsive UI. |
 | 0.17.1 | 2026-06-01 | CodeRabbitAI review fix: added runtime validation for `info?.directory` in agentmemory-capture.ts (replaces type assertion with `typeof` + length check per PR #749). ADR-0028 updated with finalized date and validation details. |
 | 0.17.0 | 2026-05-30 | ICM memoir restructure: 7 team memoirs merged into `kodehold-teams` (27 concepts, 16 links), learnings consolidated into `kodehold-learnings` (63 concepts, 68 links). All ADR/doc references updated. CLOSED→REOPEN→ACTIVE lifecycle transition. |
@@ -40,6 +40,8 @@
 - **PATCH**: Documentation updates, refinements, bug fixes
 
 ## Current
+
+**0.19.1** — CI stability fixes: ADR format smoke test SIGPIPE antipatch resolved (direct `grep -q` instead of piped `echo`), agentmemory health check warns instead of failing when daemon unreachable (three-way logic: connection refused → WARN, 2xx → PASS, 4xx/5xx → FAIL), obsolete ICM setup steps removed from CI workflow.
 
 **0.19.0** — ICM → Agentmemory Migration (Phases 1-5). Complete replacement of ICM memory system with agentmemory. New ADR-0030 (Knowledge Flow), ADR-0031 (Actions + Crystals), ADR-0032 (Routine Templates), ADR-0033 (Crystals + Signals). Director now uses Action Frontier Protocol with memory_frontier + memory_lease + memory_crystallize. 4 standard flow templates (ADR, implement, bugfix, ship-gate). Auto-crystallize triggers (every 5 actions, state transitions, routine completion, explicit). Inter-agent signaling (5 types). All 6 team agents, scripts/gate.sh, scripts/ship.sh, references updated.
 

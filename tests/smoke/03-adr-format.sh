@@ -8,22 +8,22 @@ fail() { echo -e "  ${RED}FAIL${NC} $1"; exit 1; }
 echo "--- Smoke: ADR Format (Nygard) ---"
 
 for f in docs/adr/ADR-*.md; do
+  [[ "$f" == *.original.md ]] && continue
   name=$(basename "$f")
-  content=$(cat "$f")
 
   # Must have Status section
-  echo "$content" | grep -q "^## Status" || fail "$name: missing Status section"
+  grep -q "^## Status" "$f" || fail "$name: missing Status section"
   # Status must have a valid value
-  echo "$content" | grep -qE "^Accepted|^Proposed|^Deprecated|^Superseded" || fail "$name: invalid Status value"
+  grep -qE "^Accepted|^Proposed|^Deprecated|^Superseded" "$f" || fail "$name: invalid Status value"
 
   # Must have Context section
-  echo "$content" | grep -q "^## Context" || fail "$name: missing Context section"
+  grep -q "^## Context" "$f" || fail "$name: missing Context section"
 
   # Must have Decision section
-  echo "$content" | grep -q "^## Decision" || fail "$name: missing Decision section"
+  grep -q "^## Decision" "$f" || fail "$name: missing Decision section"
 
   # Must have Consequences section
-  echo "$content" | grep -q "^## Consequences" || fail "$name: missing Consequences section"
+  grep -q "^## Consequences" "$f" || fail "$name: missing Consequences section"
 
   pass "$name: valid Nygard format"
 done

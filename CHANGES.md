@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.19.1 — 2026-06-02
+
+### Fixed
+- **CI: ADR format smoke test (03-adr-format.sh)** — Replaced `echo "$content" | grep -q` with direct `grep -q ... "$f"` calls, removing unused `content` variable. Fixes `set -euo pipefail` + `grep -q` SIGPIPE antipattern that falsely reported ADR-0029 as missing Status section in CI.
+- **CI: Agentmemory health check (02-icm-check.sh)** — Three-way logic: connection refused (`curl` status `000`) → WARN (not FAIL), 2xx → PASS, 4xx/5xx → FAIL. Allows init tests to pass in CI where agentmemory daemon is not running, per ADR-0029.
+- **CI: Removed obsolete ICM setup steps** — Removed "Setup ICM" and "Bootstrap ICM database" steps from `.github/workflows/kodehold-ci.yml`. Added comment explaining removal per ADR-0029 (agentmemory migration).
+- **Agentmemory summary XML parsing** — Agentmemory v0.9.24 intermittently logged `[agentmemory] warn Failed to parse summary XML` (28 occurrences across 15+ sessions). Root cause: LLM wraps summary XML in markdown code fences (` ```xml...``` `) that the regex-based `getXmlTag` parser can't handle, and the final summarize call had no retry mechanism. Fix: `parseSummaryXml` now strips markdown code fences and extracts raw XML before regex parsing; the final summarize call now has a retry loop (2 attempts). Applied directly to `/usr/local/lib/node_modules/@agentmemory/agentmemory/dist/index.mjs`. Service restarted via `systemctl --user restart agentmemory`. **Caveat:** `npm update -g @agentmemory/agentmemory` will overwrite the patch.
+- **ADR test scripts** — `03-adr-format.sh` and `03-adr-index.sh` now skip `.original.md` files in their loops, preventing false failures from agentmemory compression backups.
+
 ## 0.19.0 — 2026-06-01
 
 ### Added

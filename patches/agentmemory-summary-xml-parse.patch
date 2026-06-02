@@ -1,0 +1,73 @@
+# Patch: agentmemory summary XML parsing fix — index.mjs (DEAD CODE)
+#
+# NOTE: index.mjs is DEAD CODE — agentmemory's cli.mjs imports
+# src-B8J9Exum.mjs at runtime, not index.mjs. This patch is kept for
+# reference/completeness; the REAL patch that must be applied is:
+#
+#   patches/agentmemory-summary-xml-parse-src.patch
+#
+# Which targets /usr/local/lib/node_modules/@agentmemory/agentmemory/dist/src-B8J9Exum.mjs
+#
+# Three changes (identical to the src patch):
+#   1. Strip markdown code fences (```xml/```) from parseSummaryXml input
+#   2. Extract root XML element from surrounding text before regex parsing
+#   3. Retry loop (2 attempts) on the final summarize call in
+#      registerSummarizeFunction
+#
+# Apply (for reference - you probably want the src patch):
+#   sudo patch -p0 < patches/agentmemory-summary-xml-parse.patch
+#   systemctl --user restart agentmemory
+#
+# Rollback:
+#   sudo patch -p0 -R < patches/agentmemory-summary-xml-parse.patch
+#   systemctl --user restart agentmemory
+
+--- a/index.mjs
++++ b/index.mjs
+@@ -5164,6 +5168,11 @@
+ 	};
+ }
+ function parseSummaryXml(xml, sessionId, project, obsCount) {
++	// Strip markdown code fences if present (```xml ... ``` or ``` ... ```)
++	xml = xml.replace(/```xml\n?/gi, "").replace(/```\n?/g, "").trim();
++	// If extra text exists before/after the XML root element, extract just the XML
++	const rootMatch = xml.match(/(<[a-zA-Z_][a-zA-Z0-9_-]*>[\s\S]*<\/[a-zA-Z_][a-zA-Z0-9_-]*>)/);
++	if (rootMatch) xml = rootMatch[1].trim();
+ 	const title = getXmlTag(xml, "title");
+ 	if (!title) return null;
+ 	return {
+@@ -5211,7 +5220,7 @@
+ 			};
+ 		}
+ 		try {
+-			const { response, mode, chunks } = await produceSummaryXml(provider, compressed, sessionId, session.project);
++			let { response, mode, chunks } = await produceSummaryXml(provider, compressed, sessionId, session.project);
+ 			if (!response || !response.trim()) {
+ 				const latencyMs = Date.now() - startMs;
+ 				if (metricsStore) await metricsStore.record("mem::summarize", latencyMs, false);
+@@ -5227,11 +5236,23 @@
+ 					error: "empty_provider_response"
+ 				};
+ 			}
+-			const summary = parseSummaryXml(response, sessionId, session.project, compressed.length);
++			let summary = null;
++			for (let attempt = 1; attempt <= 2; attempt++) {
++				summary = parseSummaryXml(response, sessionId, session.project, compressed.length);
++				if (summary) break;
++				logger.warn("Failed to parse summary XML", { sessionId, attempt });
++				if (attempt === 1) {
++					const retryResult = await produceSummaryXml(provider, compressed, sessionId, session.project);
++					response = retryResult.response;
++					mode = retryResult.mode;
++					chunks = retryResult.chunks;
++					if (!response || !response.trim()) break;
++				}
++			}
+ 			if (!summary) {
+ 				const latencyMs = Date.now() - startMs;
+ 				if (metricsStore) await metricsStore.record("mem::summarize", latencyMs, false);
+-				logger.warn("Failed to parse summary XML", { sessionId });
++				logger.warn("Failed to parse summary XML after retry", { sessionId });
+ 				return {
+ 					success: false,
+ 					error: "parse_failed"

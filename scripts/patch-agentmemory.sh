@@ -8,6 +8,14 @@
 # Reference: docs/notes/agentmemory-port3113-hotfix.md
 # Patch file: patches/agentmemory-viewer-bind.patch
 #
+# CRITICAL — src-B8J9Exum.mjs is the REAL runtime file:
+#   cli.mjs imports src-B8J9Exum.mjs, NOT index.mjs.
+#   index.mjs is dead code. BOTH files must be patched with identical
+#   changes, or just src-B8J9Exum.mjs. This script correctly patches both.
+#
+# For ALL patches (viewer-bind, triggerVoid, summary-XML-parse, etc.):
+#   sudo bash patches/agentmemory-merged.patch
+#
 # Run after: npm install -g @agentmemory/agentmemory (upgrade overwrites patch)
 
 set -euo pipefail

@@ -2,9 +2,9 @@
 
 ## Status
 
-Proposed
+Accepted
 
-**Phase:** Phase 1 (Awareness) — this ADR defines the overall migration approach before any implementation begins.
+> All 5 migration phases completed. ICM fully replaced by agentmemory across all agents, scripts, and references.
 
 ## Context
 

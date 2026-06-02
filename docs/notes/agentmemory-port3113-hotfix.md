@@ -41,6 +41,23 @@ bash scripts/patch-agentmemory.sh
 systemctl --user restart agentmemory
 ```
 
+## Critical Finding (2026-06-02)
+
+The agentmemory CLI (`/usr/local/bin/agentmemory` → `cli.mjs`) imports
+**`src-B8J9Exum.mjs` at runtime**, NOT `index.mjs`. The `index.mjs` file is
+effectively dead code. Both files exist in the dist directory with duplicated
+code from the bundler, but only `src-B8J9Exum.mjs` is loaded by the running
+service.
+
+**Impact:** Patches targeting only `index.mjs` have NO EFFECT. All patch
+scripts and the merged patch (`patches/agentmemory-merged.patch`) now target
+both files, or specifically `src-B8J9Exum.mjs`.
+
+See `patches/README.md` for the full file map and patch guide.
+
 ### Files
-- **Script:** `scripts/patch-agentmemory.sh` — apply/reapply the fix
+- **Script:** `scripts/patch-agentmemory.sh` — apply/reapply the viewer-bind fix
 - **Patch:** `patches/agentmemory-viewer-bind.patch` — reference diff (for documentation)
+- **Patch:** `patches/agentmemory-summary-xml-parse-src.patch` — summary XML fix (REAL target)
+- **Merged:** `patches/agentmemory-merged.patch` — ALL patches in one script
+- **Docs:** `patches/README.md` — file architecture map

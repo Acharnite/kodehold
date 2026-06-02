@@ -12,6 +12,7 @@ index="docs/adr/README.md"
 
 # Every ADR file must be listed in the index
 for f in docs/adr/ADR-*.md; do
+  [[ "$f" == *.original.md ]] && continue
   adr_name=$(basename "$f" .md)
   grep -q "$adr_name" "$index" \
     && pass "$adr_name: indexed" \

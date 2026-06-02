@@ -2,9 +2,9 @@
 
 ## Status
 
-Proposed
+Superseded
 
-**Phase:** Phase 5 (Crystals + Signals) — builds on Phases 3-4's action model to enable event-driven inter-agent coordination.
+> Superseded by ADR-0033 (Crystals + Signals for KodeHold). Signals implemented via agentmemory's native signal system.
 
 ## Context
 

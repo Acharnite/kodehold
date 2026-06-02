@@ -5,6 +5,13 @@
 #   1. Viewer bind: 127.0.0.1 -> 0.0.0.0
 #   2. triggerVoid -> trigger() + TriggerAction.Void()
 #   3. agentmemory-capture plugin: project detection fix
+#   4. Summary XML parsing: strip markdown fences + retry loop (index.mjs)
+#   5. Summary XML parsing: strip markdown fences + retry loop (src-B8J9Exum.mjs)
+#
+# CRITICAL: cli.mjs imports src-B8J9Exum.mjs at runtime, NOT index.mjs.
+# The index.mjs patch (section 4) is kept for completeness but ONLY
+# src-B8J9Exum.mjs (section 5) is the real runtime target. Both patches
+# carry identical changes.
 #
 # Anvend:
 #   sudo bash patches/agentmemory-merged.patch
@@ -287,3 +294,121 @@ cat <<'EOF_PLUGIN' | patch -p1 $FLAGS -d "$PLUGIN_DIR"
          // cache the context returned at session/start so the
          // chat.system.transform hook injects it without a second fetch.
 EOF_PLUGIN
+
+# === 5. dist/index.mjs (summary XML parse — markdown fence stripping + retry) ===
+cat <<'EOF_XML' | patch -p1 $FLAGS -d "$DIST_DIR"
+--- a/index.mjs
++++ b/index.mjs
+@@ -5168,6 +5168,11 @@
+ 	};
+ }
+ function parseSummaryXml(xml, sessionId, project, obsCount) {
++	// Strip markdown code fences if present (```xml ... ``` or ``` ... ```)
++	xml = xml.replace(/```xml\n?/gi, "").replace(/```\n?/g, "").trim();
++	// If extra text exists before/after the XML root element, extract just the XML
++	const rootMatch = xml.match(/(<[a-zA-Z_][a-zA-Z0-9_-]*>[\s\S]*<\/[a-zA-Z_][a-zA-Z0-9_-]*>)/);
++	if (rootMatch) xml = rootMatch[1].trim();
+ 	const title = getXmlTag(xml, "title");
+ 	if (!title) return null;
+ 	return {
+@@ -5215,7 +5220,7 @@
+ 			};
+ 		}
+ 		try {
+-			const { response, mode, chunks } = await produceSummaryXml(provider, compressed, sessionId, session.project);
++			let { response, mode, chunks } = await produceSummaryXml(provider, compressed, sessionId, session.project);
+ 			if (!response || !response.trim()) {
+ 				const latencyMs = Date.now() - startMs;
+ 				if (metricsStore) await metricsStore.record("mem::summarize", latencyMs, false);
+@@ -5231,11 +5236,23 @@
+ 					error: "empty_provider_response"
+ 				};
+ 			}
+-			const summary = parseSummaryXml(response, sessionId, session.project, compressed.length);
++			let summary = null;
++			for (let attempt = 1; attempt <= 2; attempt++) {
++				summary = parseSummaryXml(response, sessionId, session.project, compressed.length);
++				if (summary) break;
++				logger.warn("Failed to parse summary XML", { sessionId, attempt });
++				if (attempt === 1) {
++					const retryResult = await produceSummaryXml(provider, compressed, sessionId, session.project);
++					response = retryResult.response;
++					mode = retryResult.mode;
++					chunks = retryResult.chunks;
++					if (!response || !response.trim()) break;
++				}
++			}
+  			if (!summary) {
+  				const latencyMs = Date.now() - startMs;
+  				if (metricsStore) await metricsStore.record("mem::summarize", latencyMs, false);
+ -				logger.warn("Failed to parse summary XML", { sessionId });
+ +				logger.warn("Failed to parse summary XML after retry", { sessionId });
+  				return {
+  					success: false,
+  					error: "parse_failed"
+ EOF_XML
+
+# === 6. dist/src-B8J9Exum.mjs (summary XML parse — markdown fence stripping + retry) ===
+cat <<'EOF_XML_SRC' | patch -p1 $FLAGS -d "$DIST_DIR"
+--- a/src-B8J9Exum.mjs
++++ b/src-B8J9Exum.mjs
+@@ -4679,6 +4683,11 @@
+ 	};
+ }
+ function parseSummaryXml(xml, sessionId, project, obsCount) {
++	// Strip markdown code fences if present (```xml ... ``` or ``` ... ```)
++	xml = xml.replace(/```xml\n?/gi, "").replace(/```\n?/g, "").trim();
++	// If extra text exists before/after the XML root element, extract just the XML
++	const rootMatch = xml.match(/(<[a-zA-Z_][a-zA-Z0-9_-]*>[\s\S]*<\/[a-zA-Z_][a-zA-Z0-9_-]*>)/);
++	if (rootMatch) xml = rootMatch[1].trim();
+ 	const title = getXmlTag(xml, "title");
+ 	if (!title) return null;
+ 	return {
+@@ -4726,7 +4735,7 @@
+ 		};
+ 		}
+ 		try {
+-			const { response, mode, chunks } = await produceSummaryXml(provider, compressed, sessionId, session.project);
++			let { response, mode, chunks } = await produceSummaryXml(provider, compressed, sessionId, session.project);
+ 			if (!response || !response.trim()) {
+ 				const latencyMs = Date.now() - startMs;
+ 				if (metricsStore) await metricsStore.record("mem::summarize", latencyMs, false);
+@@ -4742,16 +4751,28 @@
+ 				};
+ 			}
+-			const summary = parseSummaryXml(response, sessionId, session.project, compressed.length);
+-			if (!summary) {
+-				const latencyMs = Date.now() - startMs;
+-				if (metricsStore) await metricsStore.record("mem::summarize", latencyMs, false);
+-				logger.warn("Failed to parse summary XML", { sessionId });
+-				return {
+-					success: false,
+-					error: "parse_failed"
+-				};
+-			}
++		let summary = null;
++		for (let attempt = 1; attempt <= 2; attempt++) {
++			summary = parseSummaryXml(response, sessionId, session.project, compressed.length);
++			if (summary) break;
++			logger.warn("Failed to parse summary XML", { sessionId, attempt });
++			if (attempt === 1) {
++				const retryResult = await produceSummaryXml(provider, compressed, sessionId, session.project);
++				response = retryResult.response;
++				mode = retryResult.mode;
++				chunks = retryResult.chunks;
++				if (!response || !response.trim()) break;
++			}
++		}
++		if (!summary) {
++			const latencyMs = Date.now() - startMs;
++			if (metricsStore) await metricsStore.record("mem::summarize", latencyMs, false);
++			logger.warn("Failed to parse summary XML after retry", { sessionId });
++			return {
++				success: false,
++				error: "parse_failed"
++			};
++		}
+ 			const summaryForValidation = {
+ 				title: summary.title,
+ 				narrative: summary.narrative,
+EOF_XML_SRC

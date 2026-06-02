@@ -1,6 +1,6 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.10.0  
+**Version:** 1.10.1  
 **Status:** Active  
 **Last Updated:** 2026-06-02
 
@@ -202,30 +202,30 @@ Consequences: Trade-offs and follow-ups
 | ADR-0001 | KodeHold Foundation and Principles | Accepted |
 | ADR-0002 | Organizational Structure — Director + Teams | Accepted |
 | ADR-0003 | Design Document Lifecycle | Accepted |
-| ADR-0004 | ICM and RTK Integration Strategy | Accepted |
+| ADR-0004 | ICM and RTK Integration Strategy | Deprecated |
 | ADR-0005 | LLM Support and Light Mode | Accepted |
 | ADR-0006 | Second Opinion Protocol | Accepted |
 | ADR-0007 | Token Optimization Strategy | Accepted |
 | ADR-0008 | Project Lifecycle and Reopening | Accepted |
-| ADR-0009 | ICM MCP Integration | Accepted |
+| ADR-0009 | ICM MCP Integration | Deprecated |
 | ADR-0010 | FLS — Front Line Support Team | Accepted |
 | ADR-0011 | Team Meeting — Collective Project Review | Accepted |
 | ADR-0012 | Adopted Projects — Existing Codebases in KodeHold | Accepted |
 | ADR-0013 | Investigate Skill — Systematic Debugging | Accepted |
-| ADR-0014 | Status Dashboard — Project Overview | Proposed |
+| ADR-0014 | Status Dashboard — Project Overview | Superseded |
 | ADR-0015 | Director Delegation Enforcement via Tool Permissions | Accepted |
 | ADR-0016 | Early Review Gates in ACTIVE Phase | Accepted |
 | ADR-0017 | Reviewers as Gatekeeper + Mandatory Second Opinion | Accepted |
 | ADR-0018 | Centralize All Documentation Under Scribes | Accepted |
-| ADR-0019 | Session Context Compression via Periodic ICM Summaries | Accepted |
+| ADR-0019 | Session Context Compression via Periodic ICM Summaries | Superseded |
 | ADR-0020 | Hierarchical Memory (Hot/Warm/Cold) | Superseded |
-| ADR-0021 | Prospective Memory (Task Queue & Scheduler) | Accepted |
+| ADR-0021 | Prospective Memory (Task Queue & Scheduler) | Superseded |
 | ADR-0022 | Automated Episodic Extraction | Superseded |
 | ADR-0023 | Semantic Memory Automation | Superseded |
 | ADR-0024 | Shared Memory (Multi-Agent Alignment) | Deprecated |
 | ADR-0025 | A2A Protocol (Agent-to-Agent Coordination) | Deprecated |
-| ADR-0026 | Second Opinion Same-Model Bias Enforcement | Proposed |
-| ADR-0027 | ICM Knowledge Flow Invocation Modes | Proposed |
+| ADR-0026 | Second Opinion Same-Model Bias Enforcement | Superseded |
+| ADR-0027 | ICM Knowledge Flow Invocation Modes | Deprecated |
 | ADR-0028 | Agentmemory Project Detection Strategy | Accepted |
 | ADR-0029 | ICM → Agentmemory Migration Strategy | Accepted |
 | ADR-0030 | Agentmemory Knowledge Flow | Accepted |
@@ -665,6 +665,7 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.10.1 (2026-06-02):** ADR status audit and sync — corrected 7 ADR statuses across design doc table and ADR README index (ADR-0004, ADR-0009 → Deprecated; ADR-0014, ADR-0019, ADR-0021, ADR-0026 → Superseded; ADR-0027 → Deprecated; ADR-0028, ADR-0029 → Accepted). Updated ADR-0026 file status to Superseded with note on cross-provider second opinion subagent. Updated ADR-0029 file status to Accepted noting all 5 migration phases complete. Updated ADR-0033 inter-agent-signals-sentinels file status to Superseded noting ADR-0033 (Crystals + Signals) as replacement.
 - **v1.10.0 (2026-06-02):** Added ADR-0035 (Custom KodeHold Viewer) to ADR index — standalone interactive HTML viewer with Frontier, Routines, and Signals tabs plus project filter for Actions. Also added ADR-0034 (Workflow Monitor Interface, Accepted) to ADR index.
 - **v1.9.0 (2026-06-02):** Phase 2 ICM→Agentmemory migration — replaced all ~28 ICM references throughout the design document with agentmemory equivalents. Updated Section 2 (Principle 4), Section 3 (Scribes box + 3.6), Section 6 (lifecycle states, reopening, commit protection), Section 7.2 (full rewrite describing agentmemory as the active memory system), Section 7.4 (skill reference), Section 7.5 (session context compression), Section 7.7 (prospective memory), Section 8.2 (light mode), Section 9 (token optimization), and Section 10 (file layout). Updated ADR-0030 status to Accepted in file header and ADR index. Synced ADR-0031 and ADR-0032 statuses in ADR index.
 - **v1.8.0 (2026-06-01):** Token report tool — added `--serve`, `--port`, `--host`, `--refresh` CLI options for headless HTTP server mode with auto-regeneration. Updated Section 9.2 (Token Usage Reporting).
