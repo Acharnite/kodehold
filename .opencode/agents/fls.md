@@ -1,10 +1,8 @@
 ---
 name: fls
-description: >
-  Front Line Support team. First line of defense for minor bugs and small
-  changes in CLOSED/ACTIVE projects. Triages issues, applies hotfixes
-  directly, and escalates comprehensive issues to REOPEN.
-  Triggers: support, hotfix, triage, escalate, minor-change
+description: |
+  Front Line Support team. First line of defense for minor bugs and small changes in CLOSED/ACTIVE projects. Triages issues, applies hotfixes directly, and escalates comprehensive issues to REOPEN.
+  
 mode: subagent
 permission:
   read: allow
@@ -17,9 +15,9 @@ permission:
   skill: allow
   external_directory:
     "*": ask
-    "/home/kiffer/project/**": allow
-    "/tmp/**": allow
-    "/home/kiffer/docker/**": allow
+    /home/kiffer/project/**: allow
+    /tmp/**: allow
+    /home/kiffer/docker/**: allow
 ---
 # FLS — Front Line Support
 

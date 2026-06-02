@@ -1,10 +1,8 @@
 ---
 name: testers
-description: >
-  Verification team. Write and execute unit, integration, and e2e tests.
-  Run regression suites. Performance testing. Edge case analysis.
-  Report coverage gaps to Engineers. Independent from implementation.
-  Triggers: test, verify, regression, coverage, QA, quality
+description: |
+  Verification team. Write and execute unit, integration, and e2e tests. Run regression suites. Performance testing. Edge case analysis. Report coverage gaps to Engineers. Independent from implementation.
+  
 mode: subagent
 permission:
   read: allow
@@ -16,9 +14,9 @@ permission:
   task: deny
   external_directory:
     "*": ask
-    "/home/kiffer/project/**": allow
-    "/tmp/**": allow
-    "/home/kiffer/docker/**": allow
+    /home/kiffer/project/**: allow
+    /tmp/**: allow
+    /home/kiffer/docker/**: allow
 ---
 # Testers
 

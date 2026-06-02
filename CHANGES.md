@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.12.0 — 2026-06-02
+
+### Added
+- **YAML-based agent & task configuration** (Issue #34, ADR-0037)
+  - Phase 1: `config/agents.yaml` (8 agents), `config/agents.schema.json`, `config/tasks.yaml` (4 workflows, 5 gates)
+  - Phase 1: `scripts/validate-config.sh`, `scripts/sync-agent-config.sh`
+  - Phase 4: `tests/init/test_yaml_config.py` (46 tests)
+
 ## 0.19.2 — 2026-06-02
 
 ### Added

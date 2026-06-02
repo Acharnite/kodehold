@@ -1,6 +1,6 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.10.2  
+**Version:** 1.12.0  
 **Status:** Active  
 **Last Updated:** 2026-06-02
 
@@ -235,6 +235,7 @@ Consequences: Trade-offs and follow-ups
 | ADR-0034 | Workflow Monitor Interface | Accepted |
 | ADR-0035 | Custom KodeHold Viewer | Accepted |
 | ADR-0036 | Project Slug Convention — Stable Canonical Identifiers | Proposed |
+| ADR-0037 | YAML-Based Agent and Task Configuration | Accepted |
 
 See `docs/adr/README.md` for full details.
 
@@ -620,12 +621,14 @@ kodehold/
 ├── .opencode/                     # OpenCode agent/subagent configs
 │   ├── opencode.json              # Local overrides
 │   ├── agents/
-│   │   ├── architects.md          # Design authority
-│   │   ├── engineers.md           # Implementation team
-│   │   ├── fls.md                 # Front Line Support
-│   │   ├── reviewers.md           # Code/design review
-│   │   ├── testers.md             # Verification team
-│   │   └── scribes.md             # Memory and documentation
+│   │   ├── architects.md          # Design authority (+ deprecated YAML frontmatter)
+│   │   ├── engineers.md           # Implementation team (+ deprecated YAML frontmatter)
+│   │   ├── fls.md                 # Front Line Support (+ deprecated YAML frontmatter)
+│   │   ├── reviewers.md           # Code/design review (+ deprecated YAML frontmatter)
+│   │   ├── testers.md             # Verification team (+ deprecated YAML frontmatter)
+│   │   ├── scribes.md             # Memory and documentation (+ deprecated YAML frontmatter)
+│   │   ├── director.md            # Orchestrator (+ deprecated YAML frontmatter)
+│   │   └── second-opinion.md      # Cross-model review (+ deprecated YAML frontmatter)
 │   ├── references/
 │   │   └── kodehold-protocol.md   # Shared protocol reference
 │   └── skills/                    # Reusable skills
@@ -636,6 +639,10 @@ kodehold/
 │       │   └── SKILL.md           # Systematic debugging protocol (4 phases)
 │       └── state-awareness/
 │           └── SKILL.md           # Lifecycle state checking + mismatch protocol
+├── config/                        # YAML-based configuration (ADR-0037)
+│   ├── agents.yaml                # Agent configuration — all 8 agents
+│   ├── agents.schema.json         # JSON Schema for agents.yaml validation
+│   └── tasks.yaml                 # Workflow and gate definitions
 ├── docs/
 │   ├── design/
 │   │   └── README.md              # This file — main design document
@@ -643,11 +650,17 @@ kodehold/
 │   │   ├── README.md              # ADR index
 │   │   ├── ADR-0001-*.md
 │   │   └── ...
+│   ├── dashboard/
+│   │   └── index.html             # Token usage dashboard
 │   └── decisions/                 # Working notes, options analysis
 ├── .github/workflows/
 │   └── kodehold-ci.yml            # CI pipeline (smoke, init, integration)
 ├── scripts/
-│   └── ship.sh                    # Shipping gate checklist automation
+│   ├── ship.sh                    # Shipping gate checklist automation
+│   ├── validate-config.sh         # Validates config/agents.yaml against schema
+│   ├── sync-agent-config.sh       # Syncs frontmatter between .md and agents.yaml
+│   ├── token-usage.sh             # Token consumption tracking
+│   └── token-report.py            # Rich token usage HTML report
 ├── tests/
 │   ├── run.sh                     # Test suite runner
 │   ├── smoke/                     # Structure validation
@@ -666,6 +679,8 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.12.0 (2026-06-02):** Implemented Issue #34 — YAML-based agent & task configuration. Phase 1-4 complete: `config/agents.yaml`, `config/agents.schema.json`, `config/tasks.yaml`, `validate-config.sh`, `sync-agent-config.sh`, schema validation tests (46 tests). ADR-0037 promoted from Proposed → Accepted.
+- **v1.11.0 (2026-06-02):** Added ADR-0037 (YAML-Based Agent and Task Configuration, Proposed) — YAML-based config schema with `config/agents.yaml`, `config/tasks.yaml`, and `config/agents.schema.json`. Updated §10 (File Layout) to include `config/` directory, §5 ADR index table with ADR-0037. The ADR defines the YAML schema, JSON Schema validation, trigger extraction, migration strategy from `.md` frontmatter, and backwards-compatible overlay pattern.
 - **v1.10.2 (2026-06-02):** Added ADR-0036 (Project Slug Convention — Stable Canonical Identifiers, Proposed) to ADR Index table. The ADR defines a formal lowercase kebab-case `[a-z][a-z0-9-]*` slug format for agentmemory `project` identifiers, superseding ADR-0028 Section 6's full-filesystem-path approach.
 - **v1.10.1 (2026-06-02):** ADR status audit and sync — corrected 7 ADR statuses across design doc table and ADR README index (ADR-0004, ADR-0009 → Deprecated; ADR-0014, ADR-0019, ADR-0021, ADR-0026 → Superseded; ADR-0027 → Deprecated; ADR-0028, ADR-0029 → Accepted). Updated ADR-0026 file status to Superseded with note on cross-provider second opinion subagent. Updated ADR-0029 file status to Accepted noting all 5 migration phases complete. Updated ADR-0033 inter-agent-signals-sentinels file status to Superseded noting ADR-0033 (Crystals + Signals) as replacement.
 - **v1.10.0 (2026-06-02):** Added ADR-0035 (Custom KodeHold Viewer) to ADR index — standalone interactive HTML viewer with Frontier, Routines, and Signals tabs plus project filter for Actions. Also added ADR-0034 (Workflow Monitor Interface, Accepted) to ADR index.

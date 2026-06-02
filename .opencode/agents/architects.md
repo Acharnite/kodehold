@@ -1,10 +1,8 @@
 ---
 name: architects
-description: >
-  Design authority for KodeHold projects. Author and maintain design documents,
-  write Architecture Decision Records (ADRs), evaluate technology choices,
-  review all design changes before implementation.
-  Triggers: design, ADR, architecture, technology choice, design review
+description: |
+  Design authority for KodeHold projects. Author and maintain design documents, write Architecture Decision Records (ADRs), evaluate technology choices, review all design changes before implementation.
+  
 mode: subagent
 permission:
   read: allow
@@ -18,9 +16,9 @@ permission:
   task: deny
   external_directory:
     "*": ask
-    "/home/kiffer/project/**": allow
-    "/tmp/**": allow
-    "/home/kiffer/docker/**": allow
+    /home/kiffer/project/**: allow
+    /tmp/**: allow
+    /home/kiffer/docker/**: allow
 ---
 # Architects
 

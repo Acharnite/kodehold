@@ -2,6 +2,14 @@
 
 ## Completed
 
+- [x] **Issue #34: YAML-Based Agent & Task Configuration (ADR-0037)** — Phase 1-4 complete:
+  - [x] `config/agents.yaml` — all 8 agents defined with name, role, model, and delegations
+  - [x] `config/agents.schema.json` — JSON Schema for validating agents.yaml
+  - [x] `config/tasks.yaml` — 4 workflows (adr-flow, implement-flow, bugfix-flow, ship-gate) + 5 gates
+  - [x] `scripts/validate-config.sh` — validates config/agent.yaml against JSON Schema
+  - [x] `scripts/sync-agent-config.sh` — syncs frontmatter between .md agent files and agents.yaml
+  - [x] `tests/init/test_yaml_config.py` — 46 schema validation tests
+  - [x] ADR-0037 promoted from Proposed → Accepted
 - [x] **ICM → Agentmemory Migration Complete** — Phases 1-5 (ADR-0029): ADR-0030 through ADR-0033, Action Frontier Protocol, routine templates, auto-crystallize, inter-agent signaling. Complete replacement of ICM with agentmemory across all agents, scripts, and references.
 - [x] ADR-0030: Agentmemory Knowledge Flow Skill — unified knowledge flow via agentmemory replacing ICM Knowledge Flow
 - [x] ADR-0031: Action Frontier + Crystals — action dependency frontier with automatic crystallization of completed chains

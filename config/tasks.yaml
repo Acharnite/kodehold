@@ -1,0 +1,120 @@
+# tasks.yaml — KodeHold Task and Workflow Configuration
+# Version: 1.0
+
+workflows:
+  - id: implement-flow
+    name: "Standard Implementation Flow"
+    description: "Feature implementation from design through testing"
+    steps:
+      - id: design
+        team: architects
+        description: "Create/update design doc and ADRs"
+      - id: design-review
+        team: reviewers
+        gate: design_review
+        description: "Review design quality"
+      - id: implement
+        team: engineers
+        description: "Implement per design doc specification"
+      - id: code-review
+        team: reviewers
+        gate: code_review
+        description: "Review implementation against design"
+      - id: test
+        team: testers
+        gate: tests_pass
+        description: "Write and execute tests"
+      - id: comprehensive-review
+        team: reviewers
+        gate: comprehensive_review
+        description: "Final review before state transition"
+
+  - id: adr-flow
+    name: "ADR Creation Flow"
+    description: "Create and validate an Architecture Decision Record"
+    steps:
+      - id: write-adr
+        team: architects
+        description: "Author ADR following Nygard format"
+      - id: review-adr
+        team: reviewers
+        description: "Review ADR for completeness and consistency"
+      - id: second-opinion
+        team: second-opinion
+        description: "Cross-model validation of ADR"
+
+  - id: bugfix-flow
+    name: "Bug Fix Flow"
+    description: "Triage, fix, and verify a bug"
+    steps:
+      - id: triage
+        team: fls
+        description: "Determine if minor (fix) or major (escalate)"
+      - id: fix
+        team: engineers
+        requires: [triage]
+        description: "Apply the fix"
+      - id: verify
+        team: testers
+        requires: [fix]
+        description: "Verify the fix works"
+
+  - id: ship-gate
+    name: "Shipping Gate"
+    description: "Pre-release verification and release steps"
+    steps:
+      - id: team-meeting
+        type: manual
+        description: "All 6 teams review and sign off"
+      - id: pre-ship-verification
+        type: automated
+        script: scripts/ship.sh
+        description: "Automated pre-ship checks"
+      - id: version-bump
+        team: scribes
+        description: "Bump VERSION.md"
+      - id: changelog
+        team: scribes
+        description: "Update CHANGES.md"
+      - id: commit-and-tag
+        type: automated
+        description: "Commit, tag, and push release"
+
+gates:
+  - id: design_review
+    marker: .design_reviewed
+    description: "Design quality approved by Reviewers"
+    checks:
+      - design_doc_sections_complete
+      - adrs_written
+      - second_opinion_obtained
+
+  - id: code_review
+    marker: .code_reviewed
+    description: "Code reviewed against design doc"
+    checks:
+      - matches_design_spec
+      - no_security_issues
+      - follows_conventions
+
+  - id: tests_pass
+    marker: .testers_done
+    description: "Tests written and passing"
+    checks:
+      - unit_tests_pass
+      - integration_tests_pass
+      - no_regressions
+
+  - id: comprehensive_review
+    marker: .testers_done
+    description: "Final gate before ACTIVE -> REVIEW"
+    checks:
+      - all_gates_pass
+      - design_doc_current
+
+  - id: impact_analysis
+    marker: .impact_analysis_done
+    description: "Architects completed impact assessment"
+    checks:
+      - design_doc_updated
+      - adrs_written

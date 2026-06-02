@@ -1,10 +1,8 @@
 ---
 name: scribes
-description: >
-  Memory and ALL documentation team. Handle ALL documentation:
-  design doc maintenance, ADR status management, CHANGES.md, TODO.md, VERSION.md.
-  Free ALL other teams from documentation work.
-  Triggers: memory, agentmemory, context, save, recall, document, changelog, summary, design doc, ADR
+description: |
+  Memory and ALL documentation team. Handle ALL documentation: design doc maintenance, ADR status management, CHANGES.md, TODO.md, VERSION.md. Free ALL other teams from documentation work.
+  
 mode: subagent
 permission:
   read: allow
@@ -16,9 +14,9 @@ permission:
   task: deny
   external_directory:
     "*": ask
-    "/home/kiffer/project/**": allow
-    "/tmp/**": allow
-    "/home/kiffer/docker/**": allow
+    /home/kiffer/project/**: allow
+    /tmp/**: allow
+    /home/kiffer/docker/**: allow
 ---
 # Scribes
 

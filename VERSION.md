@@ -1,9 +1,10 @@
-# Version 0.19.2 — ADR-0036 Project Slug Convention
+# Version 1.12.0 — YAML-Based Agent & Task Configuration
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 1.12.0 | 2026-06-02 | YAML-based agent & task configuration (Issue #34, ADR-0037) — config/agents.yaml, agents.schema.json, tasks.yaml, validate-config.sh, sync-agent-config.sh, 46 schema validation tests |
 | 0.19.2 | 2026-06-02 | ADR-0036 slug convention, custom viewer server, Slots tab, Director protocol slug update, workspace validation |
 | 0.19.1 | 2026-06-02 | CI fixes: ADR format test SIGPIPE antipatch resolved, agentmemory health check warns (not fails) in CI, obsolete ICM setup steps removed from CI workflow. |
 | 0.18.0 | 2026-06-01 | Token report tool (`scripts/token-report.py`): self-contained HTML report at `docs/dashboard/index.html` with cost/token charts, per-model/per-team/per-provider tables, OpenRouter billing integration. 5 chart types (daily cost trend, daily tokens, cost by provider/model/team), dark-themed responsive UI. |
@@ -41,6 +42,8 @@
 - **PATCH**: Documentation updates, refinements, bug fixes
 
 ## Current
+
+**1.12.0** — YAML-based agent & task configuration (Issue #34, ADR-0037). Phase 1-4 complete: `config/agents.yaml` defining all 8 agents, `config/agents.schema.json` for JSON Schema validation, `config/tasks.yaml` defining 4 workflows and 5 gates, `scripts/validate-config.sh` for schema validation, `scripts/sync-agent-config.sh` for frontmatter synchronization, and `tests/init/test_yaml_config.py` with 46 schema validation tests. ADR-0037 promoted from Proposed to Accepted.
 
 **0.19.2** — Project slug convention (ADR-0036): project identifiers migrated from filesystem paths to stable slugs across Director protocol, workspace scripts, and design docs. New custom KodeHold viewer server (`tools/viewer/serve.mjs`, port 3115) with Slots tab. Director protocol updated to use stable slug `project` field. Workspace scripts validate project names as slugs; catalog uses `project: name` field.
 

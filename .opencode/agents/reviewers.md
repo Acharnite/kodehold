@@ -1,10 +1,8 @@
 ---
 name: reviewers
-description: >
-  Quality assurance through review. Code review against design doc and standards.
-  Design review and feedback. Verify ADR compliance. Coordinate second opinion
-  requests with Director. Do not write implementation code.
-  Triggers: review, code review, design review, standards
+description: |
+  Quality assurance through review. Code review against design doc and standards. Design review and feedback. Verify ADR compliance. Coordinate second opinion requests with Director. Do not write implementation code.
+  
 mode: subagent
 permission:
   read: allow
@@ -17,9 +15,9 @@ permission:
   skill: allow
   external_directory:
     "*": ask
-    "/home/kiffer/project/**": allow
-    "/tmp/**": allow
-    "/home/kiffer/docker/**": allow
+    /home/kiffer/project/**: allow
+    /tmp/**: allow
+    /home/kiffer/docker/**: allow
 ---
 # Reviewers
 

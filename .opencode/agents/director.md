@@ -1,9 +1,8 @@
 ---
 name: director
 description: |
-  Top-level orchestrator for KodeHold projects. Manages full project lifecycle,
-  assigns work to specialist teams via the Task tool, enforces quality gates,
-  manages token budgets, and ensures the design document is single source of truth.
+  Top-level orchestrator for KodeHold projects. Manages full project lifecycle, assigns work to specialist teams via the Task tool, enforces quality gates, manages token budgets, and ensures the design document is single source of truth.
+  
 mode: all
 permission:
   read: allow
@@ -18,9 +17,9 @@ permission:
   websearch: allow
   external_directory:
     "*": ask
-    "/home/kiffer/project/**": allow
-    "/tmp/**": allow
-    "/home/kiffer/docker/**": allow
+    /home/kiffer/project/**: allow
+    /tmp/**: allow
+    /home/kiffer/docker/**: allow
 ---
 # KodeHold Director
 

@@ -1,10 +1,8 @@
 ---
 name: engineers
-description: >
-  Implementation team. Generate code from design document specifications,
-  refactor existing code, fix bugs. Always work with reference to specific
-  design document section. Do not review own code.
-  Triggers: implement, code, feature, bugfix, refactor, build
+description: |
+  Implementation team. Generate code from design document specifications, refactor existing code, fix bugs. Always work with reference to specific design document section. Do not review own code.
+  
 mode: subagent
 permission:
   read: allow
@@ -17,9 +15,9 @@ permission:
   skill: allow
   external_directory:
     "*": ask
-    "/home/kiffer/project/**": allow
-    "/tmp/**": allow
-    "/home/kiffer/docker/**": allow
+    /home/kiffer/project/**: allow
+    /tmp/**: allow
+    /home/kiffer/docker/**: allow
 ---
 # Engineers
 

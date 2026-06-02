@@ -1,10 +1,8 @@
 ---
 name: second-opinion
-description: >
-  Cross-provider second opinion. Reviews critical decisions using a
-  different model/provider than the primary. Invoked by Director for
-  ADRs, security-critical code, ambiguous designs.
-  Triggers: second opinion, cross-model review, independent validation
+description: |
+  Cross-provider second opinion. Reviews critical decisions using a different model/provider than the primary. Invoked by Director for ADRs, security-critical code, ambiguous designs.
+  
 mode: subagent
 hidden: true
 model: openrouter/google/gemma-3-12b-it
@@ -19,11 +17,10 @@ permission:
   skill: allow
   external_directory:
     "*": ask
-    "/home/kiffer/project/**": allow
-    "/tmp/**": allow
-    "/home/kiffer/docker/**": allow
+    /home/kiffer/project/**: allow
+    /tmp/**: allow
+    /home/kiffer/docker/**: allow
 ---
-
 ## References
 - ADR-0006: Second Opinion Protocol (Accepted)
 - ADR-0026: Same-Model Bias Enforcement (Proposed)
