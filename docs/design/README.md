@@ -1,6 +1,6 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.10.1  
+**Version:** 1.10.2  
 **Status:** Active  
 **Last Updated:** 2026-06-02
 
@@ -234,6 +234,7 @@ Consequences: Trade-offs and follow-ups
 | ADR-0033 | Crystals + Signals for KodeHold | Accepted |
 | ADR-0034 | Workflow Monitor Interface | Accepted |
 | ADR-0035 | Custom KodeHold Viewer | Accepted |
+| ADR-0036 | Project Slug Convention — Stable Canonical Identifiers | Proposed |
 
 See `docs/adr/README.md` for full details.
 
@@ -665,6 +666,7 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.10.2 (2026-06-02):** Added ADR-0036 (Project Slug Convention — Stable Canonical Identifiers, Proposed) to ADR Index table. The ADR defines a formal lowercase kebab-case `[a-z][a-z0-9-]*` slug format for agentmemory `project` identifiers, superseding ADR-0028 Section 6's full-filesystem-path approach.
 - **v1.10.1 (2026-06-02):** ADR status audit and sync — corrected 7 ADR statuses across design doc table and ADR README index (ADR-0004, ADR-0009 → Deprecated; ADR-0014, ADR-0019, ADR-0021, ADR-0026 → Superseded; ADR-0027 → Deprecated; ADR-0028, ADR-0029 → Accepted). Updated ADR-0026 file status to Superseded with note on cross-provider second opinion subagent. Updated ADR-0029 file status to Accepted noting all 5 migration phases complete. Updated ADR-0033 inter-agent-signals-sentinels file status to Superseded noting ADR-0033 (Crystals + Signals) as replacement.
 - **v1.10.0 (2026-06-02):** Added ADR-0035 (Custom KodeHold Viewer) to ADR index — standalone interactive HTML viewer with Frontier, Routines, and Signals tabs plus project filter for Actions. Also added ADR-0034 (Workflow Monitor Interface, Accepted) to ADR index.
 - **v1.9.0 (2026-06-02):** Phase 2 ICM→Agentmemory migration — replaced all ~28 ICM references throughout the design document with agentmemory equivalents. Updated Section 2 (Principle 4), Section 3 (Scribes box + 3.6), Section 6 (lifecycle states, reopening, commit protection), Section 7.2 (full rewrite describing agentmemory as the active memory system), Section 7.4 (skill reference), Section 7.5 (session context compression), Section 7.7 (prospective memory), Section 8.2 (light mode), Section 9 (token optimization), and Section 10 (file layout). Updated ADR-0030 status to Accepted in file header and ADR index. Synced ADR-0031 and ADR-0032 statuses in ADR index.

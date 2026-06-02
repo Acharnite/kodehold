@@ -44,3 +44,4 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0033b](ADR-0033-inter-agent-signals-sentinels.md) | Inter-Agent Signals + Sentinels (Superseded by ADR-0033) | Superseded | 2026-05-31 |
 | [ADR-0034](ADR-0034-workflow-monitor-interface.md) | Workflow Monitor Interface | Accepted | 2026-06-01 |
 | [ADR-0035](ADR-0035-custom-kodehold-viewer.md) | Custom KodeHold Viewer | Accepted | 2026-06-02 |
+| [ADR-0036](ADR-0036-project-slug-convention.md) | Project Slug Convention — Stable Canonical Identifiers | Accepted | 2026-06-02 |

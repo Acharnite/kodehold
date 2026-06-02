@@ -1,9 +1,10 @@
-# Version 0.19.1 — CI Stability Fixes
+# Version 0.19.2 — ADR-0036 Project Slug Convention
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.19.2 | 2026-06-02 | ADR-0036 slug convention, custom viewer server, Slots tab, Director protocol slug update, workspace validation |
 | 0.19.1 | 2026-06-02 | CI fixes: ADR format test SIGPIPE antipatch resolved, agentmemory health check warns (not fails) in CI, obsolete ICM setup steps removed from CI workflow. |
 | 0.18.0 | 2026-06-01 | Token report tool (`scripts/token-report.py`): self-contained HTML report at `docs/dashboard/index.html` with cost/token charts, per-model/per-team/per-provider tables, OpenRouter billing integration. 5 chart types (daily cost trend, daily tokens, cost by provider/model/team), dark-themed responsive UI. |
 | 0.17.1 | 2026-06-01 | CodeRabbitAI review fix: added runtime validation for `info?.directory` in agentmemory-capture.ts (replaces type assertion with `typeof` + length check per PR #749). ADR-0028 updated with finalized date and validation details. |
@@ -40,6 +41,8 @@
 - **PATCH**: Documentation updates, refinements, bug fixes
 
 ## Current
+
+**0.19.2** — Project slug convention (ADR-0036): project identifiers migrated from filesystem paths to stable slugs across Director protocol, workspace scripts, and design docs. New custom KodeHold viewer server (`tools/viewer/serve.mjs`, port 3115) with Slots tab. Director protocol updated to use stable slug `project` field. Workspace scripts validate project names as slugs; catalog uses `project: name` field.
 
 **0.19.1** — CI stability fixes: ADR format smoke test SIGPIPE antipatch resolved (direct `grep -q` instead of piped `echo`), agentmemory health check warns instead of failing when daemon unreachable (three-way logic: connection refused → WARN, 2xx → PASS, 4xx/5xx → FAIL), obsolete ICM setup steps removed from CI workflow.
 

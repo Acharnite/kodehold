@@ -26,9 +26,20 @@ catalog_write() {
   echo "$1" > "$CATALOG"
 }
 
+# Validate a slug per ADR-0036 format: /^[a-z][a-z0-9-]{0,49}$/
+validate_slug() {
+  local slug="$1"
+  [ -z "$slug" ] && return 1
+  [[ "$slug" =~ ^[a-z][a-z0-9-]{0,49}$ ]]
+}
+
 ws_init() {
   local name="$1"
   local ws_dir="$WORKSPACE_ROOT/$name"
+
+  if ! validate_slug "$name"; then
+    fail "Invalid workspace name '$name' — must match slug pattern: ^[a-z][a-z0-9-]{0,49}$"
+  fi
 
   if [ -d "$ws_dir" ]; then
     fail "Workspace '$name' already exists at $ws_dir"
@@ -83,13 +94,12 @@ EOF
 __pycache__/
 .venv/" > "$ws_dir/.gitignore"
 
-  # Register in catalog
+  # Register in catalog with slug as project identifier (per ADR-0036)
   local catalog
   catalog=$(catalog_read)
   catalog=$(echo "$catalog" | jq \
     --arg n "$name" \
-    --arg p "$ws_dir" \
-    '. + {($n): {"created": now | strftime("%Y-%m-%d"), "path": $p}}')
+    '. + {($n): {"created": now | strftime("%Y-%m-%d"), "project": $n}}')
   catalog_write "$catalog"
 
   pass "Workspace '$name' created at $ws_dir"
@@ -102,6 +112,10 @@ ws_adopt() {
 
   if [ -z "$name" ] || [ -z "$target_path" ]; then
     fail "Usage: bash scripts/workspace.sh adopt <name> <path-to-existing-project>"
+  fi
+
+  if ! validate_slug "$name"; then
+    fail "Invalid workspace name '$name' — must match slug pattern: ^[a-z][a-z0-9-]{0,49}$"
   fi
 
   if [ -e "$ws_dir" ]; then
@@ -231,14 +245,13 @@ EOF
 
   info "Project scan complete: $lang, $commit_count commits"
 
-  # Register in catalog
+  # Register in catalog with slug as project identifier (per ADR-0036)
   local catalog
   catalog=$(catalog_read)
   catalog=$(echo "$catalog" | jq \
     --arg n "$name" \
-    --arg p "$ws_dir" \
     --arg r "$target_path" \
-    '. + {($n): {"created": now | strftime("%Y-%m-%d"), "path": $p, "origin": "adopted", "real_path": $r}}')
+    '. + {($n): {"created": now | strftime("%Y-%m-%d"), "project": $n, "origin": "adopted", "real_path": $r}}')
   catalog_write "$catalog"
 
   pass "Adopted '$name' from $target_path"
@@ -268,17 +281,19 @@ ws_list() {
   printf "  %-20s %-12s %-14s %s\n" "NAME" "STATE" "UPDATED" "PATH"
   echo "  $(printf '%0.s─' {1..75})"
 
-  echo "$catalog" | jq -r 'to_entries[] | [.key, .value.created, .value.path] | @tsv' |
-  while IFS=$'\t' read -r name created path; do
+  # Derive filesystem path from workspace name (path = workspaces/<slug>)
+  echo "$catalog" | jq -r 'to_entries[] | [.key, .value.created] | @tsv' |
+  while IFS=$'\t' read -r name created; do
+    local ws_dir="$WORKSPACE_ROOT/$name"
     # Read state from .kodehold-state file (source of truth)
     local state="N/A"
-    if [ -f "$path/.kodehold-state" ]; then
-      state=$(grep "^STATE=" "$path/.kodehold-state" 2>/dev/null | cut -d= -f2)
+    if [ -f "$ws_dir/.kodehold-state" ]; then
+      state=$(grep "^STATE=" "$ws_dir/.kodehold-state" 2>/dev/null | cut -d= -f2)
       state="${state:-N/A}"
     fi
 
-    if [ -d "$path" ]; then
-      printf "  %-20s %-12s %-14s %s\n" "$name" "$state" "$created" "$path"
+    if [ -d "$ws_dir" ]; then
+      printf "  %-20s %-12s %-14s %s\n" "$name" "$state" "$created" "$ws_dir"
     else
       printf "  %-20s %-12s %-14s %s\n" "$name" "$state" "$created" "${YELLOW}MISSING${NC}"
     fi

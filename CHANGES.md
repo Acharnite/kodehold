@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.19.2 — 2026-06-02
+
+### Added
+- **ADR-0036: Project Slug Convention** (Accepted) — project identifiers migrated from filesystem paths to stable slugs. Director protocol, workspace scripts, and design docs updated.
+- **Custom KodeHold viewer server** — `tools/viewer/serve.mjs` binds port 3115, serves custom viewer HTML + proxies agentmemory API.
+- **Slots tab** — added to custom KodeHold viewer (pending_items, session_patterns, project_context).
+- **`scripts/migrate-project-slugs.sh`** — data migration for path-style → slug project identifiers.
+- **`scripts/validate-slugs.sh`** — slug validation script, referenced in ADR-0036 for CI integration.
+
+### Changed
+- **Director protocol** — `project` field now uses stable slug instead of `process.cwd()`/filesystem path.
+- **Workspace scripts** — `workspace.sh` validates project names as slugs; catalog uses `project: name` instead of `path: filesystem_path`.
+- **Design doc** — updated to v1.10.2 with ADR-0036 entry.
+- **Viewer** — Slots tab added (pending_items, session_patterns, project_context).
+- **`.opencode/agents/director.md`** — project parameter changed to slug.
+- **`scripts/workspace.sh`** — added `validate_slug()`, catalog now uses `project` field.
+- **`docs/design/README.md`** — ADR-0036 entry + changelog v1.10.2.
+- **`docs/adr/README.md`** — ADR-0036 entry.
+- **`tools/viewer/index.html`** — Slots tab.
+
 ## 0.19.1 — 2026-06-02
 
 ### Fixed

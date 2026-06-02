@@ -91,7 +91,7 @@ The Director's primary delegation mechanism uses agentmemory's action orchestrat
    - title: "<type>(<scope>): <brief description>"
    - description: "Context + team assigned"
    - priority: from table
-   - project: process.cwd() or the project path
+   - project: "<project-slug>" (stable kebab-case slug per ADR-0036, e.g. "kodehold", "bob")
    - requires: comma-separated action IDs of prerequisites
    - tags: "<team>, <domain>"
 2. memory_frontier: Get the single most important next action:
@@ -351,7 +351,7 @@ When the Director receives an approval from the second-opinion subagent:
 3. The Director creates the `.second_opinion_done` marker:
    `bash: touch /home/kiffer/project/kodehold/.second_opinion_done`
 4. The Director stores the second-opinion result in agentmemory:
-   `agentmemory_memory_save(content="Second opinion approved: <summary>", type="decision", project="/home/kiffer/project/kodehold", concepts="second-opinion, gate-validation")`
+   `agentmemory_memory_save(content="Second opinion approved: <summary>", type="decision", project="kodehold", concepts="second-opinion, gate-validation")`
 5. If second-opinion does NOT approve → do NOT create marker. Delegate fixes to appropriate team, then re-request second opinion.
 
 **Rationale:** The second-opinion subagent is read-only by design (no file access). The Director acts as its proxy for filesystem operations, ensuring the marker is only created on genuine approval while maintaining the audit trail.

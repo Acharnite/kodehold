@@ -963,6 +963,7 @@
     <button data-tab="frontier">Frontier</button>
     <button data-tab="routines">Routines</button>
     <button data-tab="signals">Signals</button>
+    <button data-tab="slots">Slots</button>
   </div>
 
   <div id="flag-banners" class="flag-banners"></div>
@@ -982,6 +983,7 @@
   <div id="view-frontier" class="view"></div>
   <div id="view-routines" class="view"></div>
   <div id="view-signals" class="view"></div>
+  <div id="view-slots" class="view"></div>
 
   <div id="modal-overlay" class="modal-overlay">
     <div class="modal" id="modal"></div>
@@ -1070,7 +1072,7 @@
       task: '&#9745;', other: '&#128196;'
     };
     var CB_STATE_COLORS = { closed: 'badge-green', open: 'badge-red', 'half-open': 'badge-yellow' };
-    var TAB_IDS = ['dashboard', 'graph', 'memories', 'timeline', 'sessions', 'lessons', 'actions', 'crystals', 'audit', 'activity', 'profile', 'replay', 'frontier', 'routines', 'signals'];
+    var TAB_IDS = ['dashboard', 'graph', 'memories', 'timeline', 'sessions', 'lessons', 'actions', 'crystals', 'audit', 'activity', 'profile', 'replay', 'frontier', 'routines', 'signals', 'slots'];
 
     var state = {
       activeTab: 'dashboard',
@@ -1086,6 +1088,7 @@
       frontier: { loaded: false, items: [], search: '', projectFilter: '', statusFilter: '' },
       routines: { loaded: false, items: [], expandedId: null },
       signals: { loaded: false, items: [], selectedAgent: 'director', typeFilter: '', unreadOnly: false },
+      slots: { loaded: false, items: [], expandedLabel: null },
       crystals: { loaded: false, items: [], search: '', lessonMap: {} },
       profile: { loaded: false, projects: [], selectedProject: '', data: null },
       replay: { loaded: false, sessions: [], selectedId: '', timeline: null, cursor: 0, playing: false, speed: 1, timer: null, startAt: 0, offsetAt: 0 },
@@ -1269,6 +1272,7 @@
         case 'frontier': if (!state.frontier.loaded) await loadFrontier(); break;
         case 'routines': if (!state.routines.loaded) await loadRoutines(); break;
         case 'signals': if (!state.signals.loaded) await loadSignals(); break;
+        case 'slots': if (!state.slots.loaded) await loadSlots(); break;
       }
     }
 
@@ -4299,6 +4303,74 @@
       if (__sa) __sa.addEventListener('change', function(){ state.signals.selectedAgent = this.value; state.signals.loaded = false; loadSignals(); });
       if (__st) __st.addEventListener('change', function(){ state.signals.typeFilter = this.value; renderSignals(); });
       if (__su) __su.addEventListener('change', function(){ state.signals.unreadOnly = this.checked; renderSignals(); });
+    }
+
+    // ── Slots Tab ────────────────────────────────────────────────────────────
+
+    async function loadSlots() {
+      var el = document.getElementById('view-slots');
+      el.innerHTML = '<div class="loading">Loading slots...</div>';
+      try {
+        var data = await apiGet('slots');
+        state.slots.items = data.slots || [];
+        state.slots.loaded = true;
+      } catch(e) { state.slots.items = []; }
+      renderSlots();
+    }
+
+    function renderSlots() {
+      var el = document.getElementById('view-slots');
+      var items = state.slots.items;
+
+      if (!items.length) {
+        el.innerHTML = '<div class="empty-state"><p>No slots found. Slots are created by agentmemory when AGENTMEMORY_SLOTS=true and AGENTMEMORY_REFLECT=true are enabled.</p></div>';
+        return;
+      }
+
+      var html = '<div style="display:flex;flex-direction:column;gap:12px;padding:8px 0;">';
+
+      items.forEach(function(slot) {
+        var label = slot.label || slot.name || 'unnamed';
+        var content = slot.content || '';
+        var description = slot.description || '';
+        var isExpanded = state.slots.expandedLabel === label;
+        var sizeLimit = slot.sizeLimit || slot.maxSize || '-';
+        var isPinned = slot.pinned;
+        var isReadOnly = slot.readOnly;
+        var scope = slot.scope || 'project';
+        var updatedAt = slot.updatedAt || '';
+
+        html += '<div class="card" style="border:1px solid var(--border);background:var(--bg);">';
+        // Header row — clickable
+        html += '<div style="padding:12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="state.slots.expandedLabel=state.slots.expandedLabel===\'' + esc(label) + '\'?null:\'' + esc(label) + '\';renderSlots();">';
+        html += '<div><strong style="font-family:var(--font-mono);font-size:13px;">' + esc(label) + '</strong>';
+        if (isPinned) html += ' <span class="badge badge-green">pinned</span>';
+        if (isReadOnly) html += ' <span class="badge badge-red">read-only</span>';
+        if (description) html += '<br><span style="font-size:11px;color:var(--ink-muted);">' + esc(description) + '</span>';
+        html += '<br><span style="font-size:10px;color:var(--ink-faint);">scope: ' + esc(scope) + ' · limit: ' + sizeLimit + ' · ' + content.length + ' chars</span></div>';
+        if (updatedAt) html += '<span style="font-size:10px;color:var(--ink-faint);">updated: ' + shortTime(updatedAt) + '</span>';
+        html += '<span style="font-size:14px;">' + (isExpanded ? '▼' : '▶') + '</span>';
+        html += '</div>';
+
+        // Expanded content
+        if (isExpanded) {
+          html += '<div style="padding:0 12px 12px 12px;border-top:1px solid var(--border-light);">';
+          html += '<pre style="background:var(--bg-alt);padding:12px;font-family:var(--font-mono);font-size:12px;white-space:pre-wrap;word-break:break-word;max-height:400px;overflow-y:auto;border:1px solid var(--border-light);margin-top:8px;">' + esc(content || '(empty)') + '</pre>';
+          html += '<div style="margin-top:8px;font-size:10px;color:var(--ink-faint);font-family:var(--font-mono);">';
+          html += 'label: ' + esc(label) + ' · sizeLimit: ' + sizeLimit + ' · used: ' + content.length + ' chars · scope: ' + esc(scope);
+          html += ' · pinned: ' + (isPinned ? 'yes' : 'no') + ' · readOnly: ' + (isReadOnly ? 'yes' : 'no');
+          if (slot.createdAt) html += ' · created: ' + formatTime(slot.createdAt);
+          if (updatedAt) html += ' · updated: ' + formatTime(updatedAt);
+          html += '</div></div>';
+        }
+
+        html += '</div>';
+      });
+
+      html += '</div>';
+      html += '<div style="text-align:center;margin-top:12px;"><button class="btn" data-action="refresh-slots">↻ Refresh</button></div>';
+
+      el.innerHTML = html;
     }
 
     switchTab(tabFromRoute(), { replaceRoute: true });
