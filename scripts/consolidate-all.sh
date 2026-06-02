@@ -4,6 +4,10 @@
 # no longer needed. The agentmemory daemon handles consolidation automatically.
 # This script is preserved for reference but should not be executed.
 # =============================================================================
+
+echo "WARNING: This script is deprecated. Agentmemory auto-consolidates via its 4-tier pipeline."
+echo "Run agentmemory doctor for agentmemory diagnostics instead."
+exit 0
 # KodeHold ICM Consolidation — automatically consolidate ICM topics with too many entries
 set -euo pipefail
 

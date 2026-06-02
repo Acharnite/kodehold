@@ -4,6 +4,12 @@
 # benchmarking CLI. Metrics are now collected via agentmemory_memory_diagnose() and
 # token-usage.sh. This script is preserved for reference but should not be used.
 # =============================================================================
+
+# DEPRECATED — This benchmark uses the old ICM system which has been replaced by agentmemory.
+# Agentmemory benchmarks are tracked in docs/benchmarks/.
+echo "ERROR: This script is deprecated. Use agentmemory benchmarks instead." >&2
+echo "See docs/benchmarks/ for current benchmarks." >&2
+exit 1
 # KodeHold ICM Performance Benchmarks
 # Measures real-world ICM operation speeds and reports results as a table.
 # Usage: bash scripts/benchmark.sh [--quick] [--full] [--topic <name>]

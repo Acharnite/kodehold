@@ -17,6 +17,11 @@ permission:
   bash: deny
   task: deny
   skill: allow
+  external_directory:
+    "*": ask
+    "/home/kiffer/project/**": allow
+    "/tmp/**": allow
+    "/home/kiffer/docker/**": allow
 ---
 
 ## References
@@ -54,10 +59,4 @@ Return a structured response:
 
 You operate during ACTIVE and REVIEW phases. You are read-only — you cannot modify files or transition states.
 
-## Agentmemory Knowledge Flow (Post-task Mode)
 
-Follow the Agentmemory Knowledge Flow skill protocol in **Post-task mode**:
-1. Reflect on what was learned from this review
-2. Consolidate check — if topic has >7 entries, consolidate via `agentmemory_memory_consolidate`
-3. Store learnings via Director using `agentmemory_memory_lesson_save`
-4. Refine concepts for recurring patterns via `agentmemory_memory_reflect`

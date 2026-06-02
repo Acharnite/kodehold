@@ -107,13 +107,13 @@
   
 <div class="header">
   <h1>KodeHold Token Usage</h1>
-  <div class="ts">Generated: 2026-06-01 21:27 UTC</div>
+  <div class="ts">Generated: 2026-06-02 01:21 UTC</div>
 </div>
 <div class="summary-bar">
-  <div class="summary-item"><div class="value">2153</div><div class="label">Sessions</div></div>
-  <div class="summary-item"><div class="value">235.32M</div><div class="label">Input Tokens</div></div>
-  <div class="summary-item"><div class="value">15.08M</div><div class="label">Output Tokens</div></div>
-  <div class="summary-item"><div class="value">9.12M</div><div class="label">Reasoning Tokens</div></div>
+  <div class="summary-item"><div class="value">2224</div><div class="label">Sessions</div></div>
+  <div class="summary-item"><div class="value">244.34M</div><div class="label">Input Tokens</div></div>
+  <div class="summary-item"><div class="value">15.45M</div><div class="label">Output Tokens</div></div>
+  <div class="summary-item"><div class="value">9.42M</div><div class="label">Reasoning Tokens</div></div>
   <div class="summary-item"><div class="value">95.1%</div><div class="label">Cache Hit Rate</div></div>
 </div>
   
@@ -121,7 +121,7 @@
   <div class="chart-card">
     <h2>Daily Token Trend (Cost)</h2>
     <div class="chart-container"><canvas id="dailyCostChart"></canvas></div>
-    <div class="note">39 days of data</div>
+    <div class="note">40 days of data</div>
   </div>
   <div class="chart-card">
     <h2>Daily Token Volume</h2>
@@ -142,14 +142,14 @@
   <h2>Per Model</h2>
   <table>
     <thead><tr><th>Model</th><th>Provider</th><th>Cost</th><th>Input Tokens</th><th>Output Tokens</th><th>Sessions</th></tr></thead>
-    <tbody><tr><td>deepseek-v4-flash</td><td>opencode-go <span class="sub-badge">(Subscription)</span></td><td><span class="sub-badge">Subscription</span></td><td>126.41M</td><td>8.49M</td><td>1005</td></tr><tr><td>deepseek-v4-pro</td><td>opencode-go <span class="sub-badge">(Subscription)</span></td><td><span class="sub-badge">Subscription</span></td><td>3.19M</td><td>310.1K</td><td>45</td></tr><tr><td>gpt-5.3-codex</td><td>opencode</td><td>$5.14</td><td>1.63M</td><td>130.2K</td><td>16</td></tr><tr><td>xiaomi/mimo-v2.5</td><td>openrouter</td><td>$2.14</td><td>10.86M</td><td>861.7K</td><td>227</td></tr><tr><td>deepseek-v4-flash-free</td><td>opencode</td><td>$0.31</td><td>24.09M</td><td>1.42M</td><td>219</td></tr><tr><td>google/gemma-3-12b-it</td><td>openrouter</td><td>$0.01</td><td>183.3K</td><td>4.5K</td><td>6</td></tr></tbody>
+    <tbody><tr><td>deepseek-v4-flash</td><td>opencode-go <span class="sub-badge">(Subscription)</span></td><td><span class="sub-badge">Subscription</span></td><td>135.34M</td><td>8.87M</td><td>1064</td></tr><tr><td>deepseek-v4-pro</td><td>opencode-go <span class="sub-badge">(Subscription)</span></td><td><span class="sub-badge">Subscription</span></td><td>3.19M</td><td>310.1K</td><td>45</td></tr><tr><td>gpt-5.3-codex</td><td>opencode</td><td>$5.14</td><td>1.63M</td><td>130.2K</td><td>16</td></tr><tr><td>xiaomi/mimo-v2.5</td><td>openrouter</td><td>$2.14</td><td>10.86M</td><td>861.7K</td><td>227</td></tr><tr><td>deepseek-v4-flash-free</td><td>opencode</td><td>$0.31</td><td>24.09M</td><td>1.42M</td><td>219</td></tr><tr><td>google/gemma-3-12b-it</td><td>openrouter</td><td>$0.01</td><td>279.6K</td><td>5.0K</td><td>9</td></tr></tbody>
   </table>
 </div>
 <div class="table-card">
   <h2>Per Provider</h2>
   <table>
     <thead><tr><th>Provider</th><th>Cost</th><th>Tokens</th><th>Sessions</th></tr></thead>
-    <tbody><tr><td>opencode-go <span class="sub-badge">(Subscription)</span></td><td><span class="sub-badge">Subscription</span></td><td>138.40M</td><td>1050</td></tr><tr><td>opencode</td><td>$5.45</td><td>29.21M</td><td>281</td></tr><tr><td>openrouter</td><td>$2.15</td><td>12.19M</td><td>238</td></tr></tbody>
+    <tbody><tr><td>opencode-go <span class="sub-badge">(Subscription)</span></td><td><span class="sub-badge">Subscription</span></td><td>147.71M</td><td>1109</td></tr><tr><td>opencode</td><td>$5.45</td><td>29.21M</td><td>281</td></tr><tr><td>openrouter</td><td>$2.16</td><td>12.29M</td><td>241</td></tr></tbody>
   </table>
 </div>
 </div>
@@ -167,8 +167,8 @@ document.addEventListener('DOMContentLoaded', function () {
   Chart.defaults.borderColor = '#30363d';
 
   // ── Daily Cost Chart ──
-  const dailyCostData = [0.0, 0.0, 0.0, 0.0, 0.0, 1.55, 4.45, 8.13, 4.21, 6.45, 7.14, 4.44, 2.66, 7.39, 5.73, 0.01, 0.82, 0.94, 3.87, 5.06, 2.58, 1.5, 2.07, 1.42, 1.89, 1.41, 1.4, 1.5, 1.04, 2.35, 0.69, 1.17, 0.72, 5.51, 0.6, 1.41, 1.82, 3.18, 2.51];
-  const dailyDates = ["2026-04-22", "2026-04-24", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07", "2026-05-08", "2026-05-09", "2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-16", "2026-05-17", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-23", "2026-05-24", "2026-05-25", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-05-30", "2026-05-31", "2026-06-01"];
+  const dailyCostData = [0.0, 0.0, 0.0, 0.0, 0.0, 1.55, 4.45, 8.13, 4.21, 6.45, 7.14, 4.44, 2.66, 7.39, 5.73, 0.01, 0.82, 0.94, 3.87, 5.06, 2.58, 1.5, 2.07, 1.42, 1.89, 1.41, 1.4, 1.5, 1.04, 2.35, 0.69, 1.17, 0.72, 5.51, 0.6, 1.41, 1.82, 3.18, 3.99, 0.29];
+  const dailyDates = ["2026-04-22", "2026-04-24", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07", "2026-05-08", "2026-05-09", "2026-05-10", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-16", "2026-05-17", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-23", "2026-05-24", "2026-05-25", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-05-30", "2026-05-31", "2026-06-01", "2026-06-02"];
   if (document.getElementById('dailyCostChart') && dailyCostData.length > 0) {
     new Chart('dailyCostChart', {
       type: 'line',
@@ -198,8 +198,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // ── Daily Token Chart ──
-  const dailyInput = [6615639, 2239556, 1169148, 800706, 13367375, 1269793, 2185108, 3663069, 2085894, 2825540, 2729169, 2298412, 2653120, 5531896, 5253925, 4622335, 5521347, 4743237, 5806794, 7711205, 6396116, 6299226, 6456635, 6846476, 7093056, 9156280, 8508544, 8349087, 6288395, 14906326, 5232493, 6064504, 2608182, 3750780, 5267783, 9331922, 8119036, 16529269, 15023805];
-  const dailyOutput = [219639, 107894, 67704, 63921, 548202, 107853, 168554, 181052, 62524, 190215, 275011, 175315, 194081, 304529, 359589, 268947, 325775, 321392, 534874, 636335, 355114, 411401, 529694, 509320, 563757, 501447, 503277, 620210, 448620, 768047, 357277, 523531, 187891, 346950, 345579, 691855, 658856, 806114, 833800];
+  const dailyInput = [6615639, 2239556, 1169148, 800706, 13367375, 1269793, 2185108, 3663069, 2085894, 2825540, 2729169, 2298412, 2653120, 5531896, 5253925, 4622335, 5521347, 4743237, 5806794, 7711205, 6396116, 6299226, 6456635, 6846476, 7093056, 9156280, 8508544, 8349087, 6288395, 14681520, 5199725, 6064504, 2608182, 3750780, 5267783, 9331922, 8119036, 16529269, 22482782, 1818181];
+  const dailyOutput = [219639, 107894, 67704, 63921, 548202, 107853, 168554, 181052, 62524, 190215, 275011, 175315, 194081, 304529, 359589, 268947, 325775, 321392, 534874, 636335, 355114, 411401, 529694, 509320, 563757, 501447, 503277, 620210, 448620, 765144, 357006, 523531, 187891, 346950, 345579, 691855, 658856, 806114, 1138124, 75616];
   if (document.getElementById('dailyTokenChart') && dailyInput.length > 0) {
     new Chart('dailyTokenChart', {
       type: 'bar',
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ── Provider Doughnut (by Sessions) ──
   const providerNames = ["opencode", "openrouter"];
-  const providerSessions = [281, 238];
+  const providerSessions = [281, 241];
   if (document.getElementById('providerChart') && providerNames.length > 0) {
     new Chart('providerChart', {
       type: 'doughnut',
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ── Model Horizontal Bar (by Tokens) ──
   const modelNames = ["deepseek-v4-flash-free", "xiaomi/mimo-v2.5", "gpt-5.3-codex", "google/gemma-3-12b-it"];
-  const modelTokens = [25507401, 11726517, 1756123, 187778];
+  const modelTokens = [25507401, 11726517, 1756123, 284625];
   if (document.getElementById('modelChart') && modelNames.length > 0) {
     new Chart('modelChart', {
       type: 'bar',

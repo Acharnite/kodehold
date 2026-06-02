@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.8.0  
+**Version:** 1.10.0  
 **Status:** Active  
-**Last Updated:** 2026-06-01
+**Last Updated:** 2026-06-02
 
 ---
 
@@ -21,7 +21,7 @@ The orchestrator is design-document-centric: every project begins with a design 
 | 1 | **Design-First** | Every project starts with and revolves around a living design document |
 | 2 | **Separation of Concerns** | Distinct teams handle design, implementation, review, testing, and memory |
 | 3 | **Token-Conscious** | Every operation is evaluated for token cost; RTK is used for efficient output |
-| 4 | **Persistent Memory** | ICM stores all project context, decisions, and rationale across sessions |
+| 4 | **Persistent Memory** | Agentmemory stores all project context, decisions, and rationale across sessions |
 | 5 | **LLM-Agnostic** | Core works with any LLM; Ollama is primary; second-opinion cross-check supported |
 | 6 | **Traceable Decisions** | All architectural decisions are recorded as ADRs in git |
 | 7 | **Project Lifecycle** | Projects can be opened, closed, and reopened without losing context |
@@ -42,7 +42,7 @@ The orchestrator is design-document-centric: every project begins with a design 
 ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
 │ARCHITECTS│  │ENGINEERS │  │REVIEWERS │  │ TESTERS  │  │ SCRIBES  │  │   FLS    │
 ├──────────┤  ├──────────┤  ├──────────┤  ├──────────┤  ├──────────┤  ├──────────┤
-│Design    │  │Implement │  │Code      │  │Write     │  │ICM       │  │Triage    │
+│Design    │  │Implement │  │Code      │  │Write     │  │Agent     │  │Triage    │
 │Documents │  │Features  │  │Review    │  │Tests     │  │Memory    │  │Hotfix    │
 │ADRs      │  │Refactor  │  │Design    │  │Verify    │  │Doc       │  │Escalate  │
 │Tech      │  │Bugfixes  │  │Review    │  │Regression│  │Changelog │  │Support   │
@@ -94,7 +94,7 @@ Verification team. Responsibilities:
 ### 3.6 Scribes
 
 Memory and documentation team. Responsibilities:
-- Manage ICM persistent memory (store/retrieve project context)
+- Manage agentmemory persistent memory (store/retrieve project context)
 - Generate and update project documentation
 - Maintain CHANGELOG
 - Extract knowledge from completed work for future reuse
@@ -232,6 +232,8 @@ Consequences: Trade-offs and follow-ups
 | ADR-0031 | Actions + Crystals for Director Delegation | Accepted |
 | ADR-0032 | Routine Templates for Standard Flows | Accepted |
 | ADR-0033 | Crystals + Signals for KodeHold | Accepted |
+| ADR-0034 | Workflow Monitor Interface | Accepted |
+| ADR-0035 | Custom KodeHold Viewer | Accepted |
 
 See `docs/adr/README.md` for full details.
 
@@ -250,7 +252,7 @@ INIT → ACTIVE → REVIEW → CLOSED → (REOPEN → ACTIVE)
 | INIT | Design doc created, ADRs drafted, project scoped |
 | ACTIVE | Implementation in progress, teams working |
 | REVIEW | All work completed, Team Meeting review, testing |
-| CLOSED | Project complete, context stored in ICM |
+| CLOSED | Project complete, context stored in agentmemory |
 | REOPEN | Project resurrected for new feature or bugfix |
 
 ### 6.2 Quality Gates (Markers)
@@ -281,7 +283,7 @@ See ADR-0016 for the full early review gate specification.
 ### 6.3 Reopening
 
 When a project is reopened:
-1. Director loads project context from ICM
+1. Director loads project context from agentmemory
 2. Design doc is updated with new requirements
 3. Impact analysis is performed by Architects → `.impact_analysis_done`
 4. New ADRs are written for significant changes
@@ -298,7 +300,7 @@ To prevent data loss (inspired by ADR-0015 through ADR-0019 being lost when sess
   - `docs(adr): ADR-00XX - <title>` for new ADR files
   - `docs(design): <description>` for design document changes
   - `config: <description>` for agent configuration changes
-- If the user declines, the Director logs the warning in ICM and continues — data loss risk is acknowledged
+- If the user declines, the Director logs the warning in agentmemory and continues — data loss risk is acknowledged
 - Scribes verify file persistence before storing pre-transition context and escalate untracked files to the Director
 
 ---
@@ -309,19 +311,21 @@ To prevent data loss (inspired by ADR-0015 through ADR-0019 being lost when sess
 
 KodeHold runs as an OpenCode agent or set of agents. All interaction with the file system, LLM, and tools happens through OpenCode's standard interfaces. Configuration is done via `opencode.json` / `opencode.jsonc`.
 
-### 7.2 ICM (Infinite Context Memory)
+### 7.2 Agentmemory (Persistent Memory)
 
-ICM provides persistent, queryable memory across sessions:
-- Project context, design decisions, and rationale stored as memories
-- Concept extraction for knowledge reuse across projects
+Agentmemory provides persistent, queryable memory across sessions:
+- Project context, design decisions, and rationale stored as typed memories (fact, decision, architecture, pattern, etc.)
+- Semantic and keyword search for hybrid retrieval
 - Session tracking for audit and continuity
-- Vector embeddings for semantic retrieval
+- Knowledge graph traversal for relationship discovery
+- Lesson system with confidence scoring and auto-strengthening
+- 4-tier consolidation pipeline (working → episodic → semantic → procedural)
 
-KodeHold maintains a **central** `.icm/` directory at the project root for all persistent memory. Workspace projects (`workspaces/<name>/`) and adopted projects do **not** receive their own `.icm/` — they share the central store. Each project's memories are scoped via topic prefixes (`kodehold-<project>-*`) for isolation while keeping a single queryable database.
+KodeHold uses a **shared** agentmemory database scoped by project identifier. Each project's memories are isolated via the `project` parameter while keeping a single queryable store. This replaces the legacy `.icm/` directory approach.
 
-> **Agentmemory binding config:** The `iii` daemon that serves ICM listens on `0.0.0.0` (all interfaces) instead of the default `127.0.0.1` (loopback). This is configured via `~/.agentmemory/iii-config.yaml`, which overrides the dist/ defaults for the HTTP worker (port 3111), stream worker (port 3112), and their CORS allowed origins. The custom config path takes precedence in agentmemory's `findIiiConfig()` discovery and survives npm updates.
+> **Agentmemory binding config:** The `iii` daemon that serves agentmemory listens on `0.0.0.0` (all interfaces) instead of the default `127.0.0.1` (loopback). This is configured via `~/.agentmemory/iii-config.yaml`, which overrides the dist/ defaults for the HTTP worker (port 3111), stream worker (port 3112), and their CORS allowed origins. The custom config path takes precedence in agentmemory's `findIiiConfig()` discovery and survives npm updates.
 
-**ICM Knowledge Flow** — the 8-step protocol governing how every team searches, captures, and refines knowledge — is implemented in `.opencode/skills/icm-knowledge-flow/SKILL.md` with team-specific parameters and lifecycle integration documented in `docs/adr/ADR-0027-icm-knowledge-flow-invocation-modes.md`. All 6 team agents parameterize this protocol with team-specific queries, memoir names, and topic namespaces.
+**Agentmemory Knowledge Flow** — the protocol governing how every team searches, captures, and refines knowledge — is implemented in `.opencode/skills/agentmemory-knowledge-flow/SKILL.md` with team-specific parameters and lifecycle integration documented in `docs/adr/ADR-0030-agentmemory-knowledge-flow.md`. All 6 team agents parameterize this protocol with team-specific queries and concept namespaces.
 
 ### 7.3 RTK (Runtime Toolkit)
 
@@ -339,7 +343,7 @@ via the `skill` tool with zero token cost until invoked.
 
 | Skill | Purpose | Used by |
 |-------|---------|---------|
-| `icm-knowledge-flow` | 7-step ICM memory protocol (search, reflect, store, distill) with 3 invocation modes | All 6 team subagents |
+| `agentmemory-knowledge-flow` | Agentmemory knowledge protocol with 3 invocation modes (pre-task, post-task, full) | All 6 team subagents |
 | `state-awareness` | Lifecycle state check preamble and mismatch reporting | All 6 team subagents |
 | `investigate` | 4-phase systematic debugging (Iron Law, pattern analysis, 3-strike rule) | FLS, Engineers, Reviewers, Director |
 
@@ -347,7 +351,7 @@ See `docs/adr/ADR-0013-investigate-skill.md` for the full ADR on the investigate
 
 ### 7.5 Session Context Compression
 
-On small-context models (Ollama 32K), chat history grows with every delegation round and eventually overflows. Session context compression periodically compresses the running chat into structured ICM summaries, reducing context window pressure.
+On small-context models (Ollama 32K), chat history grows with every delegation round and eventually overflows. Session context compression periodically compresses the running chat into structured agentmemory summaries, reducing context window pressure.
 
 **Compression triggers:**
 | Trigger | Frequency | Rationale |
@@ -356,7 +360,7 @@ On small-context models (Ollama 32K), chat history grows with every delegation r
 | State transitions | After every gate passes | Natural summary point |
 | Explicit request | User says "compress" / "summarize" | Manual override |
 
-**Summary structure:** Each summary is a 200-400 token document covering: completed work, in-progress items, decisions made, files changed, team assignments, blockers, and context carry-forward. Stored in ICM topic `kodehold-<project>-session-summary` with importance `high`.
+**Summary structure:** Each summary is a 200-400 token document covering: completed work, in-progress items, decisions made, files changed, team assignments, blockers, and context carry-forward. Stored in agentmemory with concepts `session-summary, <project>` and type `fact`.
 
 **Relationship to checkpoints:**
 | Aspect | Summary | Checkpoint |
@@ -366,9 +370,9 @@ On small-context models (Ollama 32K), chat history grows with every delegation r
 | Content | Decisions, changes, assignments | Full state: completed, in-progress, next |
 | Importance | `high` | `critical` |
 
-**Wake-up integration:** Session start loads the latest summary via `icm_memory_recall` after the standard `icm_wake_up`, providing immediate "what happened last time" context.
+**Wake-up integration:** Session start loads the latest summary via `agentmemory_memory_recall` after standard context loading, providing immediate "what happened last time" context.
 
-**Consolidation:** When `session-summary` topic exceeds 10 entries, oldest 5 are consolidated into a single "session history" entry.
+**Consolidation:** When `session-summary` entries exceed 10, oldest 5 are consolidated into a single "session history" entry.
 
 See ADR-0019 for the full specification.
 
@@ -396,7 +400,7 @@ When KodeHold adopts an existing project, `workspace.sh adopt` creates a **symli
 
 ### 7.7 Prospective Memory (ADR-0021)
 
-Prospective memory enables deferred actions, recurring tasks, and future intentions that survive session boundaries. Instead of losing "I should check X next time" when a session ends, tasks are stored in ICM and checked at session start.
+Prospective memory enables deferred actions, recurring tasks, and future intentions that survive session boundaries. Instead of losing "I should check X next time" when a session ends, tasks are stored in agentmemory and checked at session start.
 
 **Scope (v1):**
 - Deferred tasks — execute after a timestamp
@@ -407,7 +411,7 @@ Prospective memory enables deferred actions, recurring tasks, and future intenti
 
 #### Storage Format
 
-Tasks are stored as ICM memories in topic `kodehold-<project>-prospective`. The content field uses a structured format that ICM's hybrid search can query:
+Tasks are stored as agentmemory memories with concepts `prospective, <project>`. The content field uses a structured format that agentmemory's hybrid search can query:
 
 ```
 [PROSPECTIVE-TASK]
@@ -422,9 +426,9 @@ created_at: <ISO 8601 timestamp>
 status: pending
 ```
 
-**ICM parameters per task:**
-- Topic: `kodehold-<project>-prospective`
-- Importance: maps from priority (critical→critical, high→high, medium→medium, low→low)
+**Agentmemory parameters per task:**
+- Concepts: `prospective, task-type:<type>, status:pending`
+- Type: `fact`
 - Keywords: `["prospective", "task-type:<type>", "status:pending"]`
 
 #### Task Types
@@ -436,17 +440,17 @@ status: pending
 
 #### Session-Start Integration
 
-Add a new step in Director's session lifecycle (section "Session Lifecycle" in director.md), between step 1 (ICM context) and step 2 (session summary):
+Add a new step in Director's session lifecycle (section "Session Lifecycle" in director.md), between step 1 (agentmemory context) and step 2 (session summary):
 
 ```
 1.5. Check prospective tasks:
-     icm_memory_recall(topic="kodehold-<project>-prospective", limit=10)
-     Filter: status=pending AND execute_after <= now()
+     agentmemory_memory_recall(query="prospective:status:pending <project>", limit=10)
+     Filter: execute_after <= now()
      If due tasks found → present to user as "Pending tasks:"
      User decides: execute now / skip / dismiss
 ```
 
-This is a lightweight check — one ICM query, filtered in-context. No new scripts or tools.
+This is a lightweight check — one agentmemory query, filtered in-context. No new scripts or tools.
 
 #### Task Lifecycle
 
@@ -456,10 +460,10 @@ Created → Pending → [Due] → Executing → Completed
                                Re-created (recurring) or forgotten (deferred)
 ```
 
-- **Created:** Scribes stores via `icm_memory_store` with status=pending
+- **Created:** Scribes stores via `agentmemory_memory_save` with status=pending
 - **Due:** Session-start check finds `execute_after <= now()` — presented to Director
 - **Executing:** Director delegates to appropriate team
-- **Completed:** Scribes updates status via `icm_memory_update` or forgets via `icm_memory_forget`
+- **Completed:** Scribes updates status via `agentmemory_memory_action_update` or deletes via `agentmemory_memory_governance_delete`
 - **Recurring re-create:** After completion, Scribes stores new task with `execute_after = now + interval`
 
 #### Token Budget
@@ -479,7 +483,7 @@ Prospective tasks are **separate** from TODO.md. TODO.md tracks "what we're buil
 
 ```markdown
 ## Prospective Tasks
-- 3 deferred tasks in ICM (next due: 2026-06-01)
+- 3 deferred tasks in agentmemory (next due: 2026-06-01)
 ```
 
 Scribes updates this line when creating/expiring tasks.
@@ -498,7 +502,7 @@ Ollama is available as an optional local provider for users who want private inf
 
 An optional execution mode for users who want to run KodeHold on a local LLM with at least 32k context. Activated by `KODEHOLD_LIGHT=1`:
 - Aggressive RTK usage for all tool output
-- ICM summaries instead of full context loading
+- Agentmemory summaries instead of full context loading
 - Chunked processing for large files
 - Minimal prompt templates
 - 28k token budget per operation
@@ -527,7 +531,7 @@ Protocol:
 | Technique | Application | Est. Savings |
 |-----------|------------|--------------|
 | RTK compact output | All CLI commands | 40-60% |
-| ICM summaries | Context loading | 30-50% |
+| Agentmemory summaries | Context loading | 30-50% |
 | Session context compression | Running chat history | 60-80% per cycle |
 | Minimal prompts | All agent messages | 20-30% |
 | Chunked processing | Large file handling | 50-70% |
@@ -542,7 +546,7 @@ Token budget tracking is implemented via a lightweight protocol:
 
 2. **Director's warning protocol**: Before each delegation, Director runs the token-usage script and compares usage against per-phase budgets (ADR-0007). If any team exceeds 80% of its phase budget, a warning is issued; if exceeds 100%, the user is alerted and suggested to compress context.
 
-3. **Session compression logging**: During session compression, Scribes runs the token-usage script and includes per-team token consumption in the ICM summary (field `TokenUsage`). This provides a historical record of token usage across sessions.
+3. **Session compression logging**: During session compression, Scribes runs the token-usage script and includes per-team token consumption in the agentmemory summary (field `TokenUsage`). This provides a historical record of token usage across sessions.
 
 4. **Checkpoint token usage**: Session checkpoints also include token usage per team, enabling quick assessment when resuming.
 
@@ -609,7 +613,7 @@ python3 scripts/token-report.py --serve --port 8080 --refresh 120
 
 ```
 kodehold/
-├── .icm/                          # ICM persistent memory store
+├── .agentmemory/                  # Agentmemory local configuration
 │   ├── config.toml
 │   └── memories.db
 ├── .opencode/                     # OpenCode agent/subagent configs
@@ -625,8 +629,8 @@ kodehold/
 │   │   └── kodehold-protocol.md   # Shared protocol reference
 │   └── skills/                    # Reusable skills
 │       ├── README.md              # Skill index
-│       ├── icm-knowledge-flow/
-│       │   └── SKILL.md           # 8-step ICM knowledge flow
+│       ├── agentmemory-knowledge-flow/
+│       │   └── SKILL.md           # Agentmemory knowledge flow protocol
 │       ├── investigate/
 │       │   └── SKILL.md           # Systematic debugging protocol (4 phases)
 │       └── state-awareness/
@@ -661,6 +665,8 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.10.0 (2026-06-02):** Added ADR-0035 (Custom KodeHold Viewer) to ADR index — standalone interactive HTML viewer with Frontier, Routines, and Signals tabs plus project filter for Actions. Also added ADR-0034 (Workflow Monitor Interface, Accepted) to ADR index.
+- **v1.9.0 (2026-06-02):** Phase 2 ICM→Agentmemory migration — replaced all ~28 ICM references throughout the design document with agentmemory equivalents. Updated Section 2 (Principle 4), Section 3 (Scribes box + 3.6), Section 6 (lifecycle states, reopening, commit protection), Section 7.2 (full rewrite describing agentmemory as the active memory system), Section 7.4 (skill reference), Section 7.5 (session context compression), Section 7.7 (prospective memory), Section 8.2 (light mode), Section 9 (token optimization), and Section 10 (file layout). Updated ADR-0030 status to Accepted in file header and ADR index. Synced ADR-0031 and ADR-0032 statuses in ADR index.
 - **v1.8.0 (2026-06-01):** Token report tool — added `--serve`, `--port`, `--host`, `--refresh` CLI options for headless HTTP server mode with auto-regeneration. Updated Section 9.2 (Token Usage Reporting).
 - **v1.7.0 (2026-06-01):** Token report tool (`scripts/token-report.py`) — self-contained HTML report at `docs/dashboard/index.html` with 5 chart types, per-model/per-team/per-provider tables, and OpenRouter billing integration. Added Section 9.2 (Token Usage Reporting).
 - **v1.5.0 (2026-05-31):** ADR-0028: Agentmemory Project Detection Strategy — three-stage `resolveProject()` in OpenCode plugin. Replaces single-line project path assignment with env var / git toplevel / fallback resolution.

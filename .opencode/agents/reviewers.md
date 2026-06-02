@@ -15,6 +15,11 @@ permission:
   bash: allow
   task: deny
   skill: allow
+  external_directory:
+    "*": ask
+    "/home/kiffer/project/**": allow
+    "/tmp/**": allow
+    "/home/kiffer/docker/**": allow
 ---
 # Reviewers
 
@@ -64,8 +69,6 @@ touch .design_reviewed
 Follow the Agentmemory Knowledge Flow skill protocol in **Pre-task mode**:
 1. Search `kodehold-learnings` for relevant patterns via `agentmemory_memory_lesson_recall` before starting work
 2. Search `kodehold-teams` for team-specific review patterns via `agentmemory_memory_lesson_recall` before starting work
-
-Post-task steps (Reflect, Consolidate, Store, Refine) are handled by Director after task completion.
 
 ## Post-Task Protocol
 

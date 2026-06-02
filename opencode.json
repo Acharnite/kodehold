@@ -72,7 +72,13 @@
         "task": "allow",
         "skill": "allow",
         "webfetch": "allow",
-        "websearch": "allow"
+        "websearch": "allow",
+        "external_directory": {
+          "*": "ask",
+          "/home/kiffer/project/**": "allow",
+          "/tmp/**": "allow",
+          "/home/kiffer/docker/**": "allow"
+        }
       }
     },
     "fls": {
@@ -84,17 +90,23 @@
         "edit": "allow",
         "glob": "allow",
         "grep": "allow",
-        "bash": "allow"
+        "bash": "allow",
+        "external_directory": {
+          "*": "ask",
+          "/home/kiffer/project/**": "allow",
+          "/tmp/**": "allow",
+          "/home/kiffer/docker/**": "allow"
+        }
       }
     }
   },
   "permission": {
     "bash": "allow",
     "external_directory": {
+      "*": "ask",
       "/home/kiffer/project/**": "allow",
       "/tmp/**": "allow",
-      "/home/kiffer/docker/**": "allow",
-      "*": "ask"
+      "/home/kiffer/docker/**": "allow"
     }
   }
 }

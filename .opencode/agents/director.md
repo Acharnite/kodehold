@@ -16,6 +16,11 @@ permission:
   skill: allow
   webfetch: allow
   websearch: allow
+  external_directory:
+    "*": ask
+    "/home/kiffer/project/**": allow
+    "/tmp/**": allow
+    "/home/kiffer/docker/**": allow
 ---
 # KodeHold Director
 
@@ -128,15 +133,15 @@ For standard multi-step workflows, use `memory_routine_run` to instantiate the e
 
 | Template ID | Flow | Steps | When to Use |
 |-------------|------|-------|-------------|
-| `kodehold-adr-flow` | ADR creation + review | 6 | New ADR request |
-| `kodehold-implement-flow` | Feature implementation | 6 | Feature request from approved design |
-| `kodehold-bugfix-flow` | Bug triage + hotfix | 5 | Bug report, minor fix |
-| `kodehold-ship-gate` | Shipping gate | 7 | Release readiness |
+| `rtn_mpvsldrl_79e7da1aef5d` (kodehold-adr-flow) | ADR creation + review | 6 | New ADR request |
+| `rtn_mpvslsrx_8614822e9e59` (kodehold-implement-flow) | Feature implementation | 6 | Feature request from approved design |
+| `rtn_mpvslr32_54b0cd8b8951` (kodehold-bugfix-flow) | Bug triage + hotfix | 4 | Bug report, minor fix |
+| `rtn_mpvrjs4r_d0fe2b6c6580` (kodehold-ship-gate) | Shipping gate | 7 | Release readiness |
 
 **Usage:**
 ```
 # Instead of creating 6 actions manually:
-memory_routine_run(routine_id="kodehold-adr-flow", project="<project>")
+memory_routine_run(routineId="rtn_mpvsldrl_79e7da1aef5d", project="<project>")
 
 # The routine creates all actions with correct dependencies.
 # Director then uses memory_frontier to pick up the first unblocked action.
@@ -146,10 +151,10 @@ memory_routine_run(routine_id="kodehold-adr-flow", project="<project>")
 
 | User says | Routine to offer |
 |-----------|-----------------|
-| "New ADR: ..." / "ADR for ..." / "Write an ADR" | `kodehold-adr-flow` |
-| "Implement ..." / "Build feature ..." | `kodehold-implement-flow` |
-| "Bug in ..." / "Der er en fejl" / "Fix this" | `kodehold-bugfix-flow` |
-| "Ship it" / "Release" / "Deploy" | `kodehold-ship-gate` |
+| "New ADR: ..." / "ADR for ..." / "Write an ADR" | `kodehold-adr-flow` (`rtn_mpvsldrl_79e7da1aef5d`) |
+| "Implement ..." / "Build feature ..." | `kodehold-implement-flow` (`rtn_mpvslsrx_8614822e9e59`) |
+| "Bug in ..." / "Der er en fejl" / "Fix this" | `kodehold-bugfix-flow` (`rtn_mpvslr32_54b0cd8b8951`) |
+| "Ship it" / "Release" / "Deploy" | `kodehold-ship-gate` (`rtn_mpvrjs4r_d0fe2b6c6580`) |
 
 **Fallback:** If `memory_routine_run` returns an error (template not found, version mismatch), fall back to manual action creation via the standard Action Frontier Protocol delegation flow.
 

@@ -21,7 +21,7 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0011](ADR-0011-team-meeting.md) | Team Meeting — Collective Project Review | Accepted | 2026-05-27 |
 | [ADR-0012](ADR-0012-adopted-projects.md) | Adopted Projects — Existing Codebases in KodeHold | Accepted | 2026-05-27 |
 | [ADR-0013](ADR-0013-investigate-skill.md) | Investigate Skill — Systematic Debugging | Accepted | 2026-05-27 |
-| [ADR-0014](ADR-0014-status-dashboard.md) | Status Dashboard — Project Overview | Proposed | 2026-05-27 |
+| [ADR-0014](ADR-0014-status-dashboard.md) | Status Dashboard — Project Overview | Superseded | 2026-05-27 |
 | [ADR-0015](ADR-0015-director-delegation-enforcement.md) | Director Delegation Enforcement via Tool Permissions | Accepted | 2026-05-28 |
 | [ADR-0016](ADR-0016-early-review-gates.md) | Early Review Gates in ACTIVE Phase | Accepted | 2026-05-28 |
 | [ADR-0017](ADR-0017-reviewers-gatekeeper-and-mandatory-second-opinion.md) | Reviewers as Gatekeeper + Mandatory Second Opinion | Accepted | 2026-05-28 |
@@ -37,8 +37,10 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0027](ADR-0027-icm-knowledge-flow-invocation-modes.md) | ICM Knowledge Flow Invocation Modes | Proposed | 2026-05-29 |
 | [ADR-0028](ADR-0028-agentmemory-project-detection.md) | Agentmemory Project Detection Strategy | Proposed | 2026-05-31 |
 | [ADR-0029](ADR-0029-agentmemory-migration-strategy.md) | ICM → Agentmemory Migration Strategy | Proposed | 2026-05-31 |
-| [ADR-0030](ADR-0030-agentmemory-knowledge-flow.md) | Agentmemory Knowledge Flow | Proposed | 2026-05-31 |
-| [ADR-0031](ADR-0031-actions-crystals-integration.md) | Actions + Crystals for Director Delegation | Proposed | 2026-05-31 |
-| [ADR-0032](ADR-0032-routine-templates.md) | Routine Templates for Standard Flows | Proposed | 2026-05-31 |
+| [ADR-0030](ADR-0030-agentmemory-knowledge-flow.md) | Agentmemory Knowledge Flow | Accepted | 2026-05-31 |
+| [ADR-0031](ADR-0031-actions-crystals-integration.md) | Actions + Crystals for Director Delegation | Accepted | 2026-05-31 |
+| [ADR-0032](ADR-0032-routine-templates.md) | Routine Templates for Standard Flows | Accepted | 2026-05-31 |
 | [ADR-0033](ADR-0033-crystals-signals.md) | Crystals + Signals for KodeHold | Accepted | 2026-06-01 |
 | [ADR-0033b](ADR-0033-inter-agent-signals-sentinels.md) | Inter-Agent Signals + Sentinels (Superseded by ADR-0033) | Superseded | 2026-05-31 |
+| [ADR-0034](ADR-0034-workflow-monitor-interface.md) | Workflow Monitor Interface | Accepted | 2026-06-01 |
+| [ADR-0035](ADR-0035-custom-kodehold-viewer.md) | Custom KodeHold Viewer | Accepted | 2026-06-02 |

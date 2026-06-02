@@ -14,6 +14,11 @@ permission:
   grep: allow
   bash: allow
   task: deny
+  external_directory:
+    "*": ask
+    "/home/kiffer/project/**": allow
+    "/tmp/**": allow
+    "/home/kiffer/docker/**": allow
 ---
 # Scribes
 
@@ -82,15 +87,9 @@ For every workspace project, ensure these files exist and are up to date:
 | `TODO.md` | Completed checklist + future roadmap | After each feature/fix |
 | `VERSION.md` | Current version declaration | Per Shipping Gate |
 
-## Agentmemory Knowledge Flow (Post-task Only)
+## Memory Consolidation
 
-Follow the `agentmemory-knowledge-flow` skill protocol in **Post-task mode only**:
-1. **Reflect** — identify what was learned from this delegation
-2. **Consolidate check** — if topic has >7 entries, consolidate via `agentmemory_memory_consolidate`
-3. **Store learnings** — `agentmemory_memory_save` to store concepts learned
-4. **Refine concepts** — `agentmemory_memory_reflect` for recurring patterns (2+ occurrences)
-
-**IMPORTANT:** Do NOT run pre-task search steps (1-2). As Scribes, you are always invoked post-task. Searching before execution is not applicable.
+Agentmemory's 4-tier consolidation pipeline (working → episodic → semantic → procedural) handles reflection, consolidation, and pattern extraction automatically. No manual post-task knowledge flow is needed.
 
 ## Signal Handling
 

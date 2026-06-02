@@ -15,6 +15,11 @@ permission:
   bash: allow
   task: deny
   skill: allow
+  external_directory:
+    "*": ask
+    "/home/kiffer/project/**": allow
+    "/tmp/**": allow
+    "/home/kiffer/docker/**": allow
 ---
 # Engineers
 
@@ -43,8 +48,6 @@ Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these tea
 Follow the Agentmemory Knowledge Flow skill protocol in **Pre-task mode**:
 1. Search `kodehold-learnings` for relevant patterns via `agentmemory_memory_lesson_recall` before starting work
 2. Search `kodehold-teams` for team-specific engineering patterns via `agentmemory_memory_lesson_recall` before starting work
-
-Post-task steps (Reflect, Consolidate, Store, Refine) are handled by Director after task completion.
 
 ## Adopted Projects — Symlink Awareness
 
