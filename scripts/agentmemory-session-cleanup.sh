@@ -32,10 +32,10 @@ echo ""
 export IDLE_MIN
 export DRY_RUN="$DRY_RUN"
 export AM_URL="$URL"
-export SESSIONS_JSON=$(curl -s "${URL}/agentmemory/sessions" 2>/dev/null) || {
+if ! curl -s "${URL}/agentmemory/sessions" >/dev/null 2>&1; then
   echo "ERROR: Cannot reach agentmemory at $URL"
   exit 1
-}
+fi
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 exec python3 "${DIR}/agentmemory-session-cleanup.py"

@@ -4,12 +4,18 @@ import json, os, sys
 from datetime import datetime, timezone
 from urllib.request import Request, urlopen
 
-data = json.loads(os.environ.get('SESSIONS_JSON', '{}'))
-sessions = data.get('sessions', data if isinstance(data, list) else [])
+url = os.environ.get('AM_URL', 'http://localhost:3111')
+
+def fetch_sessions(url):
+    req = Request(f'{url}/agentmemory/sessions', method='GET')
+    with urlopen(req, timeout=10) as resp:
+        data = json.loads(resp.read())
+    return data.get('sessions', data if isinstance(data, list) else [])
+
+sessions = fetch_sessions(url)
 now = datetime.now(timezone.utc)
 idle_min = float(os.environ.get('IDLE_MIN', '30'))
 dry_run = os.environ.get('DRY_RUN', 'true') == 'true'
-url = os.environ.get('AM_URL', 'http://localhost:3111')
 
 active = [s for s in sessions if s.get('status') == 'active']
 stale = []
