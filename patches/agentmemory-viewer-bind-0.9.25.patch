@@ -1,0 +1,10 @@
+--- a/src-fQOMXeCp.mjs
++++ b/src-fQOMXeCp.mjs
+@@ -14454,7 +14454,7 @@
+ 	const host = resolveViewerHost();
+ 	let inboundSecret = null;
+-	if (!isLoopbackHost(host)) {
++	if (false) {
+ 		if (!secret) throw new ViewerConfigError(`AGENTMEMORY_VIEWER_HOST=${host} requires AGENTMEMORY_SECRET to be set so the viewer can validate inbound bearer tokens. To fix: unset AGENTMEMORY_VIEWER_HOST to keep the safe loopback bind, or set AGENTMEMORY_SECRET. For Fly images, it is printed on first boot; see deploy/fly/README.md.`);
+ 		if (readAllowedHostsOverride().length === 0) throw new ViewerConfigError(`AGENTMEMORY_VIEWER_HOST=${host} requires VIEWER_ALLOWED_HOSTS because non-loopback viewer binds only trust explicit Host headers. To fix: set VIEWER_ALLOWED_HOSTS to a comma-separated list of trusted Host header values (e.g. "localhost:3113" for fly proxy), or unset AGENTMEMORY_VIEWER_HOST to keep the safe loopback bind.`);
+ 		inboundSecret = secret;

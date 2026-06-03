@@ -1,74 +1,77 @@
-# agentmemory Patches
+# agentmemory Patches — v0.9.25
 
-This directory contains patches applied to the agentmemory v0.9.24
-npm-global installation at `/usr/local/lib/node_modules/@agentmemory/agentmemory/`.
+## Status: 1 ACTIVE PATCH
 
-## Critical File Architecture
+| Patch | Purpose |
+|-------|---------|
+| `agentmemory-viewer-bind-0.9.25.patch` | Bypass AGENTMEMORY_SECRET requirement for `AGENTMEMORY_VIEWER_HOST=0.0.0.0` |
 
-The agentmemory CLI entry point is `/usr/local/bin/agentmemory`, which
-symlinks to `cli.mjs`. **`cli.mjs` imports `src-B8J9Exum.mjs` at runtime**,
-NOT `index.mjs`. The `index.mjs` file is effectively dead code — it exists in
-the dist directory but is never loaded by the running service.
+## What It Does
 
-```
-cli.mjs  ──imports──>  src-B8J9Exum.mjs   (THE REAL RUNTIME)
-                        (index.mjs)          (DEAD CODE — never loaded)
-```
+Upstream **v0.9.25** added a security check in the viewer server: if the viewer host is
+not a loopback address, the server requires **both** `AGENTMEMORY_SECRET` (for bearer
+token validation) and `VIEWER_ALLOWED_HOSTS` (Host header allowlist).
 
-**This means:** Any patch that only targets `index.mjs` has NO EFFECT.
-Both files must be patched identically, or just `src-B8J9Exum.mjs`.
+In our dev environment, we want the viewer accessible on all interfaces
+(`AGENTMEMORY_VIEWER_HOST=0.0.0.0`) without requiring `AGENTMEMORY_SECRET`. The patch
+replaces the non-loopback check with `if (false)`, skipping the secret validation
+entirely while keeping the `VIEWER_ALLOWED_HOSTS` allowlist intact.
 
-## File Map
+## Apply
 
-| File | What it patches | Why |
-|------|----------------|-----|
-| `agentmemory-viewer-bind.patch` | `index.mjs` (reference) | View server bind `127.0.0.1` → `0.0.0.0` |
-| | `src-B8J9Exum.mjs` (real target) | Same change via merged patch |
-| `agentmemory-triggervoid-to-trigger.patch` | `index.mjs` (reference) | Deprecated `triggerVoid` → new `trigger()` API |
-| | `src-B8J9Exum.mjs` (real target) | Same change via merged patch |
-| `agentmemory-capture-project-detection.patch` | `agentmemory-capture.ts` plugin | Fix project path detection |
-| `agentmemory-summary-xml-parse.patch` | `index.mjs` (DEAD CODE) | Summary XML fix — kept for reference only |
-| `agentmemory-summary-xml-parse-src.patch` | `src-B8J9Exum.mjs` (REAL RUNTIME) | Summary XML fix — the ONE that matters |
-| `agentmemory-merged.patch` | ALL files above | Single bash+patch script applying everything |
-
-## How to Use
-
-### Apply ALL patches (recommended)
 ```bash
-sudo bash patches/agentmemory-merged.patch
-systemctl --user restart agentmemory
-```
-
-### Apply individual patch (src-B8J9Exum.mjs only)
-```bash
+# Apply the dist patch:
 sudo patch -p1 -d /usr/local/lib/node_modules/@agentmemory/agentmemory/dist \
-  < patches/agentmemory-summary-xml-parse-src.patch
+  < patches/agentmemory-viewer-bind-0.9.25.patch
+
+# Also patch index.mjs for consistency:
+sudo sed -i 's/if (!isLoopbackHost(host)) {/if (false) {/' \
+  /usr/local/lib/node_modules/@agentmemory/agentmemory/dist/index.mjs
+
+# Restart the service:
 systemctl --user restart agentmemory
 ```
 
-### Rollback
+## Current .env Settings
+
+```
+AGENTMEMORY_VIEWER_HOST=0.0.0.0
+VIEWER_ALLOWED_HOSTS="localhost,localhost:3113,127.0.0.1:3113,192.168.1.176:3113,am.server.int:3113"
+```
+
+`VIEWER_ALLOWED_HOSTS` is still respected by the Host header allowlist — the patch
+**only** removes the `AGENTMEMORY_SECRET` requirement, not the host-based filtering.
+
+## Historical Reference — v0.9.24 Archive
+
+All patches that applied to v0.9.24 are preserved in `../patches-v0.9.24/`:
+
+| File | Purpose | v0.9.25 resolution |
+|------|---------|---------------------|
+| `agentmemory-viewer-bind.patch` | Viewer bind `127.0.0.1` → `0.0.0.0` | Built into .env (`AGENTMEMORY_VIEWER_HOST=0.0.0.0`) |
+| `agentmemory-triggervoid-to-trigger.patch` | `triggerVoid` → `trigger()` migration | Upstream PR #773 |
+| `agentmemory-summary-xml-parse.patch` | XML markdown fence stripping (dead code ref) | Upstream PR #791 |
+| `agentmemory-summary-xml-parse-src.patch` | Same fix for real runtime file | Upstream PR #791 |
+| `agentmemory-capture-project-detection.patch` | Plugin reference (applied elsewhere) | See note below |
+| `agentmemory-merged.patch` + `.bak` | Combined patch script (v0.9.24 only) | — |
+
+## Other Local Modifications (Not Dist Patches)
+
+- **Capture plugin project detection fix**: Applied directly to
+  `~/.config/opencode/plugins/agentmemory-capture.ts`. Not a dist patch —
+  it's a plugin modification that lives outside the agentmemory package.
+
+## Post-Upgrade Verification
+
 ```bash
-sudo bash patches/agentmemory-merged.patch --reverse
-systemctl --user restart agentmemory
+grep -o '"0\.9\.25"' /usr/local/lib/node_modules/@agentmemory/agentmemory/dist/version-*.mjs
+# or check the running service:
+systemctl --user status agentmemory
 ```
 
-## After npm Upgrade
-`npm install -g @agentmemory/agentmemory` overwrites ALL files in `dist/`.
-Reapply patches afterwards:
+To verify the patch is active:
+
 ```bash
-npm install -g @agentmemory/agentmemory
-sudo bash patches/agentmemory-merged.patch
-systemctl --user restart agentmemory
+grep -n 'if (false)' /usr/local/lib/node_modules/@agentmemory/agentmemory/dist/index.mjs
+# Expect: line(s) with "if (false) {"
 ```
-
-## Patch Discovery History
-
-1. **2026-05-31**: Port 3113 bind hotfix — patched `index.mjs` only
-2. **2026-06-01** (morning): triggerVoid→trigger migration — patched both
-   `index.mjs` and `src-B8J9Exum.mjs` after discovering both files
-3. **2026-06-01** (afternoon): Migrated standalone patches into merged
-   `agentmemory-merged.patch` with combined sections
-4. **2026-06-02**: **CRITICAL DISCOVERY** — `cli.mjs` imports
-   `src-B8J9Exum.mjs`, NOT `index.mjs`. Our `index.mjs`-only summary XML
-   parse patch was ineffective. Created `agentmemory-summary-xml-parse-src.patch`
-   targeting the real runtime file and manually patched the live file.

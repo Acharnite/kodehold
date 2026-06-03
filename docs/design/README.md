@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.12.0  
+**Version:** 1.12.1  
 **Status:** Active  
-**Last Updated:** 2026-06-02
+**Last Updated:** 2026-06-03
 
 ---
 
@@ -679,6 +679,7 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.12.1 (2026-06-03):** Agentmemory v0.9.25 upgrade. 5 obsolete patches removed, archived to patches-v0.9.24/. Viewer bind via AGENTMEMORY_VIEWER_HOST env var. All upstream bug fixes from our GitHub reports now included.
 - **v1.12.0 (2026-06-02):** Implemented Issue #34 — YAML-based agent & task configuration. Phase 1-4 complete: `config/agents.yaml`, `config/agents.schema.json`, `config/tasks.yaml`, `validate-config.sh`, `sync-agent-config.sh`, schema validation tests (46 tests). ADR-0037 promoted from Proposed → Accepted.
 - **v1.11.0 (2026-06-02):** Added ADR-0037 (YAML-Based Agent and Task Configuration, Proposed) — YAML-based config schema with `config/agents.yaml`, `config/tasks.yaml`, and `config/agents.schema.json`. Updated §10 (File Layout) to include `config/` directory, §5 ADR index table with ADR-0037. The ADR defines the YAML schema, JSON Schema validation, trigger extraction, migration strategy from `.md` frontmatter, and backwards-compatible overlay pattern.
 - **v1.10.2 (2026-06-02):** Added ADR-0036 (Project Slug Convention — Stable Canonical Identifiers, Proposed) to ADR Index table. The ADR defines a formal lowercase kebab-case `[a-z][a-z0-9-]*` slug format for agentmemory `project` identifiers, superseding ADR-0028 Section 6's full-filesystem-path approach.

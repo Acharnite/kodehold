@@ -1,10 +1,10 @@
-# Version 1.12.0 — YAML-Based Agent & Task Configuration
+# Version 1.12.1 — Agentmemory v0.9.25 upgrade + patch cleanup
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
-| 1.12.0 | 2026-06-02 | YAML-based agent & task configuration (Issue #34, ADR-0037) — config/agents.yaml, agents.schema.json, tasks.yaml, validate-config.sh, sync-agent-config.sh, 46 schema validation tests |
+| 1.12.1 | 2026-06-03 | Agentmemory v0.9.25 upgrade + patch cleanup — 5 obsolete patches removed, viewer bind via env var, all upstream bug fixes from our reports included
 | 0.19.2 | 2026-06-02 | ADR-0036 slug convention, custom viewer server, Slots tab, Director protocol slug update, workspace validation |
 | 0.19.1 | 2026-06-02 | CI fixes: ADR format test SIGPIPE antipatch resolved, agentmemory health check warns (not fails) in CI, obsolete ICM setup steps removed from CI workflow. |
 | 0.18.0 | 2026-06-01 | Token report tool (`scripts/token-report.py`): self-contained HTML report at `docs/dashboard/index.html` with cost/token charts, per-model/per-team/per-provider tables, OpenRouter billing integration. 5 chart types (daily cost trend, daily tokens, cost by provider/model/team), dark-themed responsive UI. |
@@ -43,7 +43,7 @@
 
 ## Current
 
-**1.12.0** — YAML-based agent & task configuration (Issue #34, ADR-0037). Phase 1-4 complete: `config/agents.yaml` defining all 8 agents, `config/agents.schema.json` for JSON Schema validation, `config/tasks.yaml` defining 4 workflows and 5 gates, `scripts/validate-config.sh` for schema validation, `scripts/sync-agent-config.sh` for frontmatter synchronization, and `tests/init/test_yaml_config.py` with 46 schema validation tests. ADR-0037 promoted from Proposed to Accepted.
+**1.12.1** — Agentmemory v0.9.25 upgrade. 5 obsolete patches removed (triggerVoid, summary XML parse, viewer-bind, merged patch, summary XML parse src) and archived to `patches-v0.9.24/`. New minimal `patches/agentmemory-viewer-bind-0.9.25.patch` bypasses AGENTMEMORY_SECRET requirement for non-loopback viewer binds. Viewer bind now via `AGENTMEMORY_VIEWER_HOST=0.0.0.0` env var. systemd service updated to v0.9.25. All upstream bug fixes from our reports now included: triggerVoid migration (PR #773), summary XML markdown fence parsing (PR #791), graph pagination, sharded index persistence, smart-search diagnostics, cross-project memory leakage fix, consolidation auto-enable, and 0 npm audit vulnerabilities.
 
 **0.19.2** — Project slug convention (ADR-0036): project identifiers migrated from filesystem paths to stable slugs across Director protocol, workspace scripts, and design docs. New custom KodeHold viewer server (`tools/viewer/serve.mjs`, port 3115) with Slots tab. Director protocol updated to use stable slug `project` field. Workspace scripts validate project names as slugs; catalog uses `project: name` field.
 

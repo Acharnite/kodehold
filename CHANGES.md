@@ -1,6 +1,17 @@
 # Changelog
 
-## v1.12.0 — 2026-06-02
+
+## 1.12.1 — 2026-06-03
+
+### Changed
+- **Agentmemory upgraded v0.9.24 → v0.9.25** — 5 obsolete patches removed (triggerVoid, summary XML parse, viewer-bind, merged). All upstream bug fixes from our reports now included: triggerVoid migration (PR #773), summary XML markdown fence parsing (PR #791), graph pagination, sharded index persistence, smart-search diagnostics, cross-project memory leakage fix, consolidation auto-enable, and 0 npm audit vulnerabilities.
+- **Viewer bind** — now via `AGENTMEMORY_VIEWER_HOST=0.0.0.0` env var instead of direct dist patch. New minimal `agentmemory-viewer-bind-0.9.25.patch` bypasses upstream AGENTMEMORY_SECRET requirement for non-loopback binds.
+- **Patches archived** — old v0.9.24 patches moved to `patches-v0.9.24/` for historical reference.
+
+### Fixed
+- **CHANGES.md format** — removed `v` prefix from version headers to match ship.sh parsing.
+
+## 1.12.0 — 2026-06-02
 
 ### Added
 - **YAML-based agent & task configuration** (Issue #34, ADR-0037)
