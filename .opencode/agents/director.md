@@ -100,7 +100,35 @@ The Director's primary delegation mechanism uses agentmemory's action orchestrat
 3. memory_lease(action_id, "director"): Acquire exclusive lock
    - Prevents double-delegation — no other agent can claim this action
    - TTL ensures auto-release if Director crashes mid-delegation
-4. Delegate to team via Task tool
+4a. **Pre-flight knowledge recall** — run before writing the Task prompt:
+    ```
+    agentmemory_memory_lesson_recall(query="<delegation-topic> <team>", limit=5, project="<project>")
+    agentmemory_memory_recall(query="<delegation-topic>", limit=3)
+    ```
+    Capture the output. This is NOT optional — it is a numbered step of the flow.
+    
+    **Error handling:** If recall fails (timeout/error), log a warning, skip pre-flight, and continue. Never block delegation on recall failure.
+    
+    **Context length guard:** If recall results exceed ~800 chars, truncate the `Relevant Context` section.
+    
+    **Hotfix exemption:** For P0/emergency situations, pre-flight may be skipped with explicit user approval and logged reason.
+
+4b. **Delegate to team via Task tool** — the prompt MUST include a `Relevant Context` section:
+    Task tool:
+      subagent_type: <team>
+      prompt: |
+        Context:
+        - Design doc section: <ref>
+        - Relevant files: <paths>
+        - Relevant Context from agentmemory:
+          Lessons: <results from step 4a>
+          Recent decisions: <results from step 4a>
+        - Current state: <done so far>
+        Task: <specific task>
+        Deliverables: <what to return>
+
+    **IMPORTANT:** If the Task prompt lacks a `Relevant Context` section, the pre-flight recall was skipped — STOP and re-run step 4a.
+
 5. After delegation completes:
    memory_action_update(actionId, status="done", result="brief summary")
 6. memory_crystallize(completed_chain_ids): Auto-compress completed chains
@@ -348,7 +376,7 @@ When the Director receives an approval from the second-opinion subagent:
 1. The second-opinion subagent returns `Recommendation: proceed` (or equivalent approval)
 2. The Director verifies the recommendation is approval (not revise/redesign)
 3. The Director creates the `.second_opinion_done` marker:
-   `bash: touch /home/kiffer/project/kodehold/.second_opinion_done`
+   `bash: touch .second_opinion_done`
 4. The Director stores the second-opinion result in agentmemory:
    `agentmemory_memory_save(content="Second opinion approved: <summary>", type="decision", project="kodehold", concepts="second-opinion, gate-validation")`
 5. If second-opinion does NOT approve → do NOT create marker. Delegate fixes to appropriate team, then re-request second opinion.

@@ -235,7 +235,7 @@ Memory is stored in **agentmemory** (single source). Use these MCP tools:
 
 ```
 # Save a memory
-agentmemory_memory_save(content="<content>", type="<fact|decision|workflow|pattern>", project="<project-slug>")
+agentmemory_memory_save(content="<content>", type="<fact|decision|workflow|pattern>", project="kodehold")
 
 # Recall memories — hybrid semantic+keyword search
 agentmemory_memory_recall(query="<search terms>", limit=10)
@@ -247,13 +247,13 @@ agentmemory_memory_smart_search(query="<search terms>")
 agentmemory_memory_graph_query(query="<node>")
 
 # Save a lesson (auto-strengthens duplicates)
-agentmemory_memory_lesson_save(content="<lesson>", confidence=0.5, project="<project-slug>")
+agentmemory_memory_lesson_save(content="<lesson>", confidence=0.5, project="kodehold")
 
 # Consolidate memories (4-tier: working → episodic → semantic → procedural)
 agentmemory_memory_consolidate(tier="episodic")
 
 # Reflect — synthesize higher-order insights from knowledge graph
-agentmemory_memory_reflect(project="<project-slug>")
+agentmemory_memory_reflect(project="kodehold")
 ```
 
 | Scenario | Tool |
@@ -305,7 +305,7 @@ When the Director delegates with a checkpoint request, store via agentmemory:
 agentmemory_memory_save(
   content="Project: <name>\nState: <INIT|ACTIVE|REVIEW|CLOSED|REOPEN>\nCompleted: <...>\nInProgress: <...>\nNextSteps: <...>\nDecisions: <...>\nDesignDocVersion: <...>\nADRCount: <...>\nTokenUsage: <...>",
   type="fact",
-  project="<project-slug>",
+  project="kodehold",
   concepts="checkpoint, session, <project>"
 )
 ```
@@ -325,7 +325,7 @@ When storing checkpoints or session summaries, also persist token usage metrics 
 1. **Query token usage**: Run `bash scripts/token-usage.sh --project kodehold --minutes 60` to get current per-team token counts
 2. **Parse the output** for per-team totals
 3. **Store each team's token usage** via:
-   `agentmemory_memory_save(content="<json-blob>", type="metric", project="/home/kiffer/project/kodehold", concepts="token-usage, <team>")`
+   `agentmemory_memory_save(content="<json-blob>", type="metric", project="kodehold", concepts="token-usage, <team>")`
 
    Store the JSON blob with this structure:
    ```
@@ -339,7 +339,7 @@ When storing checkpoints or session summaries, also persist token usage metrics 
    ```
 
 4. **Store a grand total**:
-   `agentmemory_memory_save(content="<json-blob>", type="metric", project="/home/kiffer/project/kodehold", concepts="token-usage, total")`
+   `agentmemory_memory_save(content="<json-blob>", type="metric", project="kodehold", concepts="token-usage, total")`
 
 5. **Historical querying**: Use `agentmemory_memory_recall(query="token-usage", limit=20)` to view trends over time.
 
@@ -362,7 +362,7 @@ Run `scripts/token-usage.sh --project <project> --minutes 60` to get approximate
 agentmemory_memory_save(
   content="<summary content>",
   type="fact",
-  project="<project-slug>"
+  project="kodehold"
 )
 ```
 
@@ -409,7 +409,7 @@ When a project is reopened:
 1. Query agentmemory: `agentmemory_memory_recall(query="<project>", limit=20)`
 2. Load memories with high importance first
 3. Read the design doc, all ADRs, and project files
-4. Search for patterns via agentmemory: `agentmemory_memory_reflect(project="<project-slug>")`
+4. Search for patterns via agentmemory: `agentmemory_memory_reflect(project="kodehold")`
 5. Summarize context for the Director
 6. Store reopen event via `agentmemory_memory_save`
 
@@ -429,19 +429,19 @@ fi
 ### Distillation Protocol
 
 1. **List available knowledge sources**:
-   - `agentmemory_memory_insight_list(project="<project-slug>")` — check existing insights
+   - `agentmemory_memory_insight_list(project="kodehold")` — check existing insights
 
 2. **Recall project memories**:
    - `agentmemory_memory_recall(query="<project>", limit=20)`
 
 3. **Extract patterns**:
-   - `agentmemory_memory_patterns(project="<project-slug>")` or `agentmemory_memory_reflect(project="<project-slug>")`
+   - `agentmemory_memory_patterns(project="kodehold")` or `agentmemory_memory_reflect(project="kodehold")`
 
 4. **Create/refine concepts**:
-   - `agentmemory_memory_save(type="pattern", project="<project-slug>")` — store extracted patterns as permanent memories
+   - `agentmemory_memory_save(type="pattern", project="kodehold")` — store extracted patterns as permanent memories
    - `agentmemory_memory_lesson_save(content="<lesson>", tags="<comma-separated>")` — store lessons
 
-5. **Document distillation**: Store summary of what was distilled via `agentmemory_memory_save(content="distillation summary", type="fact", project="<project-slug>")`
+5. **Document distillation**: Store summary of what was distilled via `agentmemory_memory_save(content="distillation summary", type="fact", project="kodehold")`
 
 6. **Remove marker**: `rm .distill_needed`
 
@@ -483,7 +483,7 @@ agentmemory_memory_save(
   content="[PROSPECTIVE-TASK]\nid: <4-char-random>\ntype: deferred|recurring\naction: <what to do>\nexecute_after: <ISO 8601>\nrecurring_interval: <duration, recurring only>\npriority: <critical|high|medium|low>\ncontext: <additional context>\ncreated_at: <now ISO 8601>\nstatus: pending",
   type="fact",
   concepts="prospective, task-type:<type>, status:pending",
-  project="<project-slug>"
+  project="kodehold"
 )
 ```
 
