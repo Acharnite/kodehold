@@ -65,7 +65,7 @@ Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these tea
 
 Follow the Agentmemory Knowledge Flow skill protocol in **Pre-task mode**:
 1. Search `kodehold-learnings` for relevant patterns via `agentmemory_memory_lesson_recall` before starting work
-2. Search `kodehold-teams` for team-specific hotfix patterns via `agentmemory_memory_lesson_recall` before starting work
+2. Search for team-specific hotfix patterns via `agentmemory_memory_lesson_recall` before starting work
 
 **If the user mentions a specific project** (e.g. lib-validate, my-project), also recall that project's full memory history before executing:
 ```
@@ -93,7 +93,7 @@ agentmemory_memory_recall(query="kodehold-<project-name>", limit=10)
          agentmemory_memory_recall(query="kodehold-<project>", limit=10)
          agentmemory_memory_recall(query="kodehold-<project>-fls", limit=10)
          ```
-      c. Search `kodehold-teams` for similar past fixes (FLS-related concepts)
+      c. Search for similar past fixes (FLS-related concepts) via `agentmemory_memory_lesson_recall`
       d. **If root cause is unclear,** load the `.opencode/skills/investigate/SKILL.md` skill and run its 4-phase debugging protocol before implementing
       e. Implement the fix
       f. Verify: run relevant tests using KodeHold root `.venv/bin/pytest`

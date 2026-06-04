@@ -46,3 +46,8 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0035](ADR-0035-custom-kodehold-viewer.md) | Custom KodeHold Viewer | Accepted | 2026-06-02 |
 | [ADR-0036](ADR-0036-project-slug-convention.md) | Project Slug Convention — Stable Canonical Identifiers | Accepted | 2026-06-02 |
 | [ADR-0037](ADR-0037-yaml-configuration.md) | YAML-Based Agent and Task Configuration | Accepted | 2026-06-02 |
+| [ADR-0038](ADR-0038-knowledge-recall.md) | Knowledge Recall Protocol | Accepted | 2026-06-03 |
+| [ADR-0039](ADR-0039-pre-flight-enforcement.md) | Pre-Flight Knowledge Check Enforcement | Accepted | 2026-06-03 |
+| [ADR-0040](ADR-0040-headroom-integration.md) | Headroom Integration — Context Compression Layer | Proposed | 2026-06-04 |
+| [ADR-0041](ADR-0041-procedural-consolidation-fix.md) | Procedural Consolidation Tier — Bridge Pattern Detection to Pipeline | Accepted | 2026-06-04 |
+

@@ -142,7 +142,7 @@ Save the investigation results so future sessions can find them:
 agentmemory_memory_save(
   content="[Structured debug report]",
   type="bug",
-  project="<project-slug>",
+  project="kodehold",
   concepts="investigations, <component>, <error-type>"
 )
 ```

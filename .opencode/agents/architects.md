@@ -75,7 +75,7 @@ Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these tea
 
 Follow the Agentmemory Knowledge Flow skill protocol in **Pre-task mode**:
 1. Search `kodehold-learnings` for relevant patterns via `agentmemory_memory_lesson_recall` before starting work
-2. Search `kodehold-teams` for team-specific architectural patterns via `agentmemory_memory_lesson_recall` before starting work
+2. Search for team-specific architectural patterns via `agentmemory_memory_lesson_recall` before starting work
 
 ## Workflow
 

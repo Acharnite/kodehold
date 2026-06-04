@@ -1,0 +1,36 @@
+--- a/src-fQOMXeCp.mjs
++++ b/src-fQOMXeCp.mjs
+@@ -18265,6 +18265,7 @@
+ 		function_id: "event::observation",
+ 		config: { topic: "agentmemory.observation" }
+ 	});
++	const extractionLocks = /* @__PURE__ */ new Set();
+ 	sdk.registerFunction("event::session::stopped", async (data) => {
+ 		const summary = await sdk.trigger({
+ 			function_id: "mem::summarize",
+@@ -18283,12 +18284,19 @@
+ 			});
+ 		}
+ 		if (isGraphExtractionEnabled()) try {
+-			const compressed = (await kv.list(KV.observations(data.sessionId))).filter((o) => o.title);
+-			if (compressed.length > 0) sdk.trigger({
+-				function_id: "mem::graph-extract",
+-				payload: { observations: compressed },
+-				action: TriggerAction.Void()
+-			});
++			const lockKey = `graph-extract-${data.sessionId}`;
++			if (extractionLocks.has(lockKey)) return summary;
++			extractionLocks.add(lockKey);
++			try {
++				const compressed = (await kv.list(KV.observations(data.sessionId))).filter((o) => o.title);
++				if (compressed.length > 0) sdk.trigger({
++					function_id: "mem::graph-extract",
++					payload: { observations: compressed },
++					action: TriggerAction.Void()
++				});
++			} finally {
++				extractionLocks.delete(lockKey);
++			}
+ 		} catch (err) {
+ 			logger.warn("graph-extract trigger failed", {
+ 				sessionId: data.sessionId,

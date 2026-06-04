@@ -105,6 +105,22 @@ The Director's primary delegation mechanism uses agentmemory's action orchestrat
     agentmemory_memory_lesson_recall(query="<delegation-topic> <team>", limit=5, project="<project>")
     agentmemory_memory_recall(query="<delegation-topic>", limit=3)
     ```
+    
+    **Also query relevant procedural memories** — fetch from the procedural store:
+    ```
+    RELEVANT_PROCS=$(curl -s http://localhost:3111/agentmemory/procedural | python3 -c "
+    import json, sys
+    topic = sys.argv[1].lower() if len(sys.argv) > 1 else ''
+    data = json.load(sys.stdin).get('procedural', [])
+    matches = [p for p in data if topic in p.get('name', '').lower() or topic in p.get('triggerCondition', '').lower()]
+    for p in matches[:3]:
+        print(f\"- {p['name']}: {p['triggerCondition']}\")
+        for s in p.get('steps', []):
+            print(f\"  1. {s}\")
+    " "${topic}")
+    ```
+    Include the output in the `Relevant Context` section of the Task prompt.
+    
     Capture the output. This is NOT optional — it is a numbered step of the flow.
     
     **Error handling:** If recall fails (timeout/error), log a warning, skip pre-flight, and continue. Never block delegation on recall failure.
