@@ -1,9 +1,11 @@
-# Version 1.12.1 — Agentmemory v0.9.25 upgrade + patch cleanup
+# Version 1.12.3 — Project slug migration (Phase 4, ADR-0036)
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 1.12.3 | 2026-06-04 | Project slug migration — migrated 366 sessions, 6,552 observations, and 3 profiles from full filesystem paths to canonical slugs. Used Python iii-sdk via WebSocket to iii-engine. ADR-0036 Phase 4 complete. |
+| 1.12.2 | 2026-06-03 | Summarization quality pipeline fixes — prompt-leakage anti-pattern detection, qualityScore -80 penalty, session summary deduplication. All in agentmemory source code. |
 | 1.12.1 | 2026-06-03 | Agentmemory v0.9.25 upgrade + patch cleanup — 5 obsolete patches removed, viewer bind via env var, all upstream bug fixes from our reports included
 | 0.19.2 | 2026-06-02 | ADR-0036 slug convention, custom viewer server, Slots tab, Director protocol slug update, workspace validation |
 | 0.19.1 | 2026-06-02 | CI fixes: ADR format test SIGPIPE antipatch resolved, agentmemory health check warns (not fails) in CI, obsolete ICM setup steps removed from CI workflow. |
@@ -42,6 +44,8 @@
 - **PATCH**: Documentation updates, refinements, bug fixes
 
 ## Current
+
+**1.12.3** — Project slug migration (Phase 4, ADR-0036). All 366 sessions, 6,552 observations, and 3 profiles migrated from full filesystem paths to canonical slugs via Python iii-sdk. ADR-0036 promoted from Proposed to Accepted. Three improvements: (1) `isPromptLeakage()` anti-pattern detection in `parseSummaryXml` catches 6 prompt-regurgitation patterns and triggers retry loop, (2) `scoreSummary()` applies -80 penalty for prompt-leaked titles (clamped to 0), (3) `registerSummarizeFunction` checks `KV.summaries` for existing summary before running LLM — prevents 5-6x redundant summarization per session. Build: 0 errors, 1366/1379 tests pass.
 
 **1.12.1** — Agentmemory v0.9.25 upgrade. 5 obsolete patches removed (triggerVoid, summary XML parse, viewer-bind, merged patch, summary XML parse src) and archived to `patches-v0.9.24/`. New minimal `patches/agentmemory-viewer-bind-0.9.25.patch` bypasses AGENTMEMORY_SECRET requirement for non-loopback viewer binds. Viewer bind now via `AGENTMEMORY_VIEWER_HOST=0.0.0.0` env var. systemd service updated to v0.9.25. All upstream bug fixes from our reports now included: triggerVoid migration (PR #773), summary XML markdown fence parsing (PR #791), graph pagination, sharded index persistence, smart-search diagnostics, cross-project memory leakage fix, consolidation auto-enable, and 0 npm audit vulnerabilities.
 

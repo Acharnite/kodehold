@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.12.1  
+**Version:** 1.12.3  
 **Status:** Active  
-**Last Updated:** 2026-06-03
+**Last Updated:** 2026-06-04
 
 ---
 
@@ -234,8 +234,10 @@ Consequences: Trade-offs and follow-ups
 | ADR-0033 | Crystals + Signals for KodeHold | Accepted |
 | ADR-0034 | Workflow Monitor Interface | Accepted |
 | ADR-0035 | Custom KodeHold Viewer | Accepted |
-| ADR-0036 | Project Slug Convention — Stable Canonical Identifiers | Proposed |
+| ADR-0036 | Project Slug Convention — Stable Canonical Identifiers | Accepted |
 | ADR-0037 | YAML-Based Agent and Task Configuration | Accepted |
+| ADR-0038 | Knowledge Recall Protocol | Accepted |
+
 
 See `docs/adr/README.md` for full details.
 
@@ -328,6 +330,24 @@ KodeHold uses a **shared** agentmemory database scoped by project identifier. Ea
 > **Agentmemory binding config:** The `iii` daemon that serves agentmemory listens on `0.0.0.0` (all interfaces) instead of the default `127.0.0.1` (loopback). This is configured via `~/.agentmemory/iii-config.yaml`, which overrides the dist/ defaults for the HTTP worker (port 3111), stream worker (port 3112), and their CORS allowed origins. The custom config path takes precedence in agentmemory's `findIiiConfig()` discovery and survives npm updates.
 
 **Agentmemory Knowledge Flow** — the protocol governing how every team searches, captures, and refines knowledge — is implemented in `.opencode/skills/agentmemory-knowledge-flow/SKILL.md` with team-specific parameters and lifecycle integration documented in `docs/adr/ADR-0030-agentmemory-knowledge-flow.md`. All 6 team agents parameterize this protocol with team-specific queries and concept namespaces.
+
+The **Knowledge Recall Protocol** (ADR-0038) fixes the recall path by adding project scoping, increasing limits, and batch-tagging existing lessons. See the [Knowledge Recall design doc](knowledge-recall.md) for full details.
+
+#### Project Slug Migration (2026-06-04)
+
+All agentmemory project identifiers have been migrated from full filesystem paths to canonical slugs (per ADR-0036). The migration used the Python `iii-sdk` to connect directly to the iii-engine's WebSocket and call `state::set`/`state::get`/`state::list` for each record, ensuring correct binary serialization.
+
+**Scope:**
+| Item | Count |
+|------|-------|
+| Sessions migrated | 366 (project + cwd fields updated) |
+| Observations migrated | 6,552 (recursive path replacement in structured data) |
+| Profiles merged | 3 (old absolute-path entries merged into slug entries) |
+| Corrupted entries cleaned | 5 (orphaned keys, markdown in project field, empty project) |
+
+**Key discovery:** Observations are stored in a separate scope (`mem:obs:<session_id>`) from session metadata (`mem:sessions`). Direct `.bin` file manipulation corrupts the binary footer — always use the engine's native API.
+
+See `scripts/migrations/slug-migration-20260604.log` for the full audit trail.
 
 ### 7.3 RTK (Runtime Toolkit)
 
@@ -679,6 +699,7 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.12.2 (2026-06-03):** Knowledge Recall Protocol implementation — fixed broken lesson recall by adding project scoping (`project="kodehold"`), increasing limit to 10, using team-prefixed query format, adding fallback step. Batch-tagged 122 existing lessons with companion lessons. Created ADR-0038 and design doc `docs/design/knowledge-recall.md`.
 - **v1.12.1 (2026-06-03):** Agentmemory v0.9.25 upgrade. 5 obsolete patches removed, archived to patches-v0.9.24/. Viewer bind via AGENTMEMORY_VIEWER_HOST env var. All upstream bug fixes from our GitHub reports now included.
 - **v1.12.0 (2026-06-02):** Implemented Issue #34 — YAML-based agent & task configuration. Phase 1-4 complete: `config/agents.yaml`, `config/agents.schema.json`, `config/tasks.yaml`, `validate-config.sh`, `sync-agent-config.sh`, schema validation tests (46 tests). ADR-0037 promoted from Proposed → Accepted.
 - **v1.11.0 (2026-06-02):** Added ADR-0037 (YAML-Based Agent and Task Configuration, Proposed) — YAML-based config schema with `config/agents.yaml`, `config/tasks.yaml`, and `config/agents.schema.json`. Updated §10 (File Layout) to include `config/` directory, §5 ADR index table with ADR-0037. The ADR defines the YAML schema, JSON Schema validation, trigger extraction, migration strategy from `.md` frontmatter, and backwards-compatible overlay pattern.

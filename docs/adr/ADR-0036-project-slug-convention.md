@@ -12,8 +12,9 @@ Accepted
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-06-02 | Initial proposal |
+| 1.2 | 2026-06-04 | Phase 4 (Historical Data Migration) completed — 366 sessions, 6,552 observations migrated via Python iii-sdk |
 | 1.1 | 2026-06-02 | Accepted after review and second opinion |
+| 1.0 | 2026-06-02 | Initial proposal |
 
 ## Context
 
@@ -246,11 +247,11 @@ For the transition period, the following mapping defines how existing records un
 
 | Current Path | Target Slug | Status |
 |-------------|-------------|--------|
-| `/home/kiffer/project/kodehold` | `kodehold` | Active — primary project |
-| `/home/kiffer/project/bob` | `bob` | Active — bob project |
-| `/home/kiffer/project/bob-ollama` | `bob-ollama` | Active — bob-ollama project |
-| `/home/kiffer/project` (workspace root) | `orphaned-workspace-root` | Orphaned — 63 sessions can't be assigned to a sub-project |
-| `/tmp/agentmemory-demo` | `agentmemory-demo` | Temporary — test sessions |
+| `/home/kiffer/project/kodehold` | `kodehold` | ✅ Migrated — 317 sessions |
+| `/home/kiffer/project/bob` | `bob` | ✅ Migrated — 120 sessions |
+| `/home/kiffer/project/bob-ollama` | `bob-ollama` | ✅ Migrated — 2 sessions |
+| `/home/kiffer/project` (workspace root) | `kodehold` | ✅ Migrated — 63 sessions reassigned to kodehold |
+| `/tmp/agentmemory-demo` | `kodehold` | ✅ Migrated — 3 demo sessions reassigned to kodehold |
 | Any other full path | `basename(path)` → toSlug() | Dynamic mapping |
 
 #### From Already-Slug or Relative Path
@@ -332,7 +333,7 @@ What changed: agentmemory itself now ships `resolveProject()` hooks (at `/usr/lo
 
 2. **Normalization loss.** Directory names like `Bob-Ollama` normalize to `bob-ollama`. If the directory is later renamed to `BobOllama`, the slug changes to `bobollama`. Mitigation: use `AGENTMEMORY_PROJECT_NAME` to pin the slug regardless of directory name.
 
-3. **Historical data under full paths is not automatically migrated.** Sessions stored under `/home/kiffer/project/kodehold` remain under that full-path key until explicitly re-queried or migrated. A dual-query strategy (query both full path and slug) is needed during the transition.
+3. **Historical data under full paths has been migrated.** Sessions stored under `/home/kiffer/project/kodehold` were migrated to `kodehold` via the Phase 4 migration script (2026-06-04). A dual-query strategy is no longer needed.
 
 4. **Orphaned workspace-root sessions.** 63 sessions under `/home/kiffer/project` cannot be assigned to a sub-project. They survive under `orphaned-workspace-root` but are not scoped to any active project. This is a permanent loss of project scoping for those sessions.
 
@@ -360,8 +361,8 @@ What changed: agentmemory itself now ships `resolveProject()` hooks (at `/usr/lo
 - [ ] Document the slug convention in `docs/design/README.md` Section 7.2 (Project Scoping)
 - [ ] Add slug format reference to `docs/adr/README.md` ADR index
 - [ ] Consider adding `AGENTMEMORY_PROJECT_NAME` to `.env.example` for new project setup
-- [ ] Create migration script `scripts/migrate-project-slugs.sh` for one-time batch update of existing agentmemory records
-- [ ] Create `scripts/validate-slugs.sh` CI check for hardcoded project values in agent definitions and skill files
+- [x] Create migration script `scripts/migrate-project-slugs.sh` for one-time batch update of existing agentmemory records — executed via Python iii-sdk (see scripts/migrations/slug-migration-20260604.log)
+- [ ] Create `scripts/validate-slugs.sh` CI check for hardcoded project values in agent definitions and skill files (remaining)
 - [ ] Add `toSlug()` normalization utility to `scripts/` for reuse across validation and migration tools
 
 ## Migration Plan

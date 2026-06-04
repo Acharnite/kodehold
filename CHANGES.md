@@ -1,6 +1,37 @@
 # Changelog
 
 
+## 1.12.3 — 2026-06-04
+
+### Added
+- **Project slug migration (Phase 4, ADR-0036):** All agentmemory records migrated from full filesystem paths to canonical slugs. Used Python `iii-sdk` to connect directly to iii-engine WebSocket — ensures correct binary serialization of `.bin` files.
+- **Migration audit log:** `scripts/migrations/slug-migration-20260604.log` documents every change.
+
+### Changed
+- **366 session metadata entries** updated (`project` + `cwd` fields from `/home/kiffer/project/<slug>` → `<slug>`)
+- **6,552 observations** recursively migrated (path references in structured data fields)
+- **3 profiles merged** (old absolute-path entries merged into slug entries, old entries deleted)
+- **5 corrupted entries cleaned** (orphaned keys, markdown in project field, empty projects)
+
+### Fixed
+- ***does_not_exist*** orphaned session entry removed from state store
+- Session with corrupted project name (markdown output captured as identifier) corrected to `bob`
+- Profiler profiles for irrelevant projects deleted (`/tmp/agentmemory-demo`, `/home/kiffer/project`, `.agentmemory-last-project`)
+
+### Architecture
+- Discovery: agentmemory stores observations in separate scope `mem:obs:<session_id>` from session metadata (`mem:sessions`)
+- Discovery: Direct `.bin` file manipulation corrupts 9-byte binary footer — always use `state::set` via iii-sdk
+- ADR-0036 promoted to Accepted (Phase 4 complete)
+
+## 1.12.2 — 2026-06-03
+
+### Added
+- **Summarization quality pipeline fixes** — 3 fixes to agentmemory source code (`/home/kiffer/project/agentmemory/src/`):
+  - **Anti-pattern detection (prompt-leakage)** — `isPromptLeakage()` function in `src/functions/summarize.ts` detects 6 patterns where the LLM regurgitates prompt text instead of generating content (e.g., "Short session title", "max 100 chars", backtick-prefixed titles, structural keyword overloading). `parseSummaryXml` calls this before returning — if leakage is detected, returns `null` to trigger the retry loop.
+  - **QualityScore penalty** — `scoreSummary()` in `src/eval/quality.ts` applies -80 penalty for prompt-leaked titles, clamped to 0. Previously, prompt-regurgitated summaries scored 95-100 because only structural checks (length, non-empty arrays) were performed.
+  - **Deduplication** — `registerSummarizeFunction` in `src/functions/summarize.ts` checks `KV.summaries` for an existing summary before running the LLM. Prevents the same session from being summarized 5-6 times due to three independent triggers (idle, compacted, stopped).
+- **Build verification** — `npm run build` passed with 0 errors; 1366/1379 tests passing (13 pre-existing failures, unrelated).
+
 ## 1.12.1 — 2026-06-03
 
 ### Changed
