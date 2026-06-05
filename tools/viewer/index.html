@@ -950,6 +950,26 @@
     .kanban-card .kcard-phases { font-size: 10px; color: var(--ink-muted); font-family: var(--font-ui); }
     .kanban-card .kcard-phase-dot { display: inline-block; width: 6px; height: 6px; margin-right: 4px; }
     .kanban-card .kcard-empty { padding: 20px; text-align: center; color: var(--ink-faint); font-size: 12px; font-style: italic; }
+      .proj-filter-btn {
+      padding: 4px 10px;
+      font-size: 11px;
+      font-family: var(--font-ui);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg);
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .proj-filter-btn:hover {
+      border-color: var(--accent);
+      color: var(--ink);
+    }
+    .proj-filter-btn.proj-filter-active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
   </style>
 </head>
 <body>
@@ -1109,7 +1129,7 @@
       routines: { loaded: false, items: [], expandedId: null },
       signals: { loaded: false, items: [], selectedAgent: 'director', typeFilter: '', unreadOnly: false },
       slots: { loaded: false, items: [], expandedLabel: null },
-      adrPhases: { loaded: false, items: [], updatedAt: '' },
+      adrPhases: { loaded: false, items: [], updatedAt: '', projectFilter: '' },
       crystals: { loaded: false, items: [], search: '', lessonMap: {} },
       profile: { loaded: false, projects: [], selectedProject: '', data: null },
       replay: { loaded: false, sessions: [], selectedId: '', timeline: null, cursor: 0, playing: false, speed: 1, timer: null, startAt: 0, offsetAt: 0 },
@@ -4407,6 +4427,7 @@
         state.adrPhases.items = data.adrs || [];
         state.adrPhases.updatedAt = data.updatedAt;
         state.adrPhases.loaded = true;
+        state.adrPhases.projectFilter = '';
         renderAdrPhases();
       } catch (err) {
         view.innerHTML = '<div class="empty">&#9888; ADR index not found. Run <code>scripts/sync-adr-index.sh</code> first.</div>';
@@ -4422,11 +4443,26 @@
         return;
       }
 
+      // Project filter
+      var projects = [];
+      items.forEach(function(a) {
+        if (projects.indexOf(a.project) < 0) projects.push(a.project);
+      });
+      projects.sort();
+      if (state.adrPhases.projectFilter) {
+        items = items.filter(function(a) { return a.project === state.adrPhases.projectFilter; });
+      }
+
       function isComplete(a) {
         if (a.status === 'Deprecated' || a.status === 'Superseded') return true;
         if (a.status === 'Accepted') {
           if (!a.phase) return true;
-          if (a.phase.current >= a.phase.total && a.phase.status && a.phase.status[a.phase.total] === 'done') return true;
+          if (a.phase.status) {
+            // Complete if the last phase is marked done (works for legacy current:0, single-phase, and multi-phase)
+            if (a.phase.status[a.phase.total] === 'done') return true;
+            // Also check if current meets or exceeds total
+            if (a.phase.current >= a.phase.total) return true;
+          }
         }
         return false;
       }
@@ -4467,9 +4503,28 @@
 
       html += '</div>';
 
-      html += '<div style="padding:8px 0;font-size:10px;color:var(--ink-faint);font-family:var(--font-mono);">Index updated: ' + (state.adrPhases.updatedAt || 'unknown') + '</div>';
+      // Project filter bar
+      html += '<div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px 0;align-items:center;">';
+      html += '<span style="font-size:11px;color:var(--ink-muted);font-family:var(--font-ui);text-transform:uppercase;letter-spacing:0.08em;">Project:</span>';
+      var allActive = !state.adrPhases.projectFilter;
+      html += '<button class="proj-filter-btn' + (allActive ? ' proj-filter-active' : '') + '" data-proj="">All</button>';
+      projects.forEach(function(p) {
+        var active = state.adrPhases.projectFilter === p;
+        html += '<button class="proj-filter-btn' + (active ? ' proj-filter-active' : '') + '" data-proj="' + esc(p) + '">' + esc(p) + '</button>';
+      });
+      html += '</div>';
+
+      html += '<div style="padding:4px 0;font-size:10px;color:var(--ink-faint);font-family:var(--font-mono);">Index updated: ' + (state.adrPhases.updatedAt || 'unknown') + '</div>';
 
       view.innerHTML = html;
+
+      // Bind project filter clicks
+      view.querySelectorAll('.proj-filter-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          state.adrPhases.projectFilter = this.dataset.proj;
+          renderAdrPhases();
+        });
+      });
     }
 
     function renderAdrCard(adr) {
@@ -4477,9 +4532,13 @@
       var progress = hasPhase ? Math.round((adr.phase.current / adr.phase.total) * 100) : 100;
       var statusBadge = adr.status === 'Accepted' ? 'badge-green' : adr.status === 'Proposed' ? 'badge-yellow' : 'badge-muted';
 
-      var html = '<div class="kanban-card" onclick="window.open(\'../../docs/adr/' + esc(adr.id) + '.md\', \'_blank\')">';
+      var adrPath = adr.project === 'kodehold' ? '../../docs/adr/' : '../../workspaces/' + esc(adr.project) + '/docs/adr/';
+      var html = '<div class="kanban-card" onclick="window.open(\'' + adrPath + esc(adr.id) + '.md\', \'_blank\')">';
       html += '<div class="kcard-head">';
       html += '<span class="kcard-id">' + esc(adr.id) + '</span>';
+      if (adr.project && adr.project !== 'kodehold') {
+        html += '<span class="badge badge-muted" style="font-size:8px;padding:1px 6px;margin-left:4px;">' + esc(adr.project) + '</span>';
+      }
       html += '<span class="badge ' + statusBadge + '" style="font-size:8px;padding:1px 6px;">' + esc(adr.status) + '</span>';
       html += '</div>';
       html += '<div class="kcard-title" title="' + esc(adr.title) + '">' + esc(adr.title) + '</div>';

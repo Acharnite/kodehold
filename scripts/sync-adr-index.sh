@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # sync-adr-index.sh — generate tools/viewer/adr-index.json from ADR YAML frontmatter
 #
+# Scans both root docs/adr/ and workspaces/*/docs/adr/.
 # Uses bash+yq as primary implementation. Falls back to Python3 if yq is not
 # available. Requires either (yq + jq) or python3 (with PyYAML).
 set -euo pipefail
@@ -15,13 +16,26 @@ if command -v yq &> /dev/null && command -v jq &> /dev/null; then
   echo '  "adrs": [' >> "$OUTPUT"
 
   FIRST=true
+
+  # Collect all ADR files from root + workspaces
+  ADR_FILES=()
   for f in docs/adr/ADR-*.md; do
-    # Skip .original.md backup files created by memory_compress_file
     [[ "$(basename "$f")" == *.original.md ]] && continue
+    ADR_FILES+=("kodehold:$f")
+  done
+  for f in workspaces/*/docs/adr/ADR-*.md; do
+    [ -f "$f" ] || continue
+    [[ "$(basename "$f")" == *.original.md ]] && continue
+    ws=$(echo "$f" | cut -d/ -f2)
+    ADR_FILES+=("$ws:$f")
+  done
+
+  for entry in "${ADR_FILES[@]}"; do
+    project="${entry%%:*}"
+    f="${entry#*:}"
 
     $FIRST || echo ',' >> "$OUTPUT"
     FIRST=false
-    # Try frontmatter id first, fall back to filename extraction
 
     # Try frontmatter id first, fall back to filename extraction
     fm_id=$(sed -n '/^---$/,/^---$/p' "$f" | sed '1d;$d' | yq eval '.id // ""' - 2>/dev/null || echo "")
@@ -45,6 +59,7 @@ if command -v yq &> /dev/null && command -v jq &> /dev/null; then
       "id": "$id",
       "title": $(echo "$title" | jq -R -s '.'),
       "status": "$status",
+      "project": "$project",
       "phase": $phase_json
     }
 ENTRY
@@ -53,7 +68,7 @@ ENTRY
   echo '  ]' >> "$OUTPUT"
   echo '}' >> "$OUTPUT"
 
-  echo "Written: $OUTPUT ($(jq '.adrs | length' "$OUTPUT") ADRs)"
+  echo "Written: $OUTPUT ($(jq '.adrs | length' "$OUTPUT") ADRs across $(jq '[.adrs[].project] | unique | length' "$OUTPUT") projects)"
   exit 0
 fi
 
@@ -64,44 +79,65 @@ import json, re, sys, yaml
 from datetime import datetime, timezone
 from pathlib import Path
 
-ADRS_DIR = Path("docs/adr")
 OUTPUT = Path("tools/viewer/adr-index.json")
 
 adrs = []
-for f in sorted(ADRS_DIR.glob("ADR-*.md")):
-    if f.name.endswith('.original.md'):
-        continue
 
-    text = f.read_text()
-    m = re.match(r'^---\n(.*?)\n---', text, re.DOTALL)
-    try:
-        frontmatter = yaml.safe_load(m.group(1)) if m else {}
-    except yaml.YAMLError:
-        frontmatter = {}
+def scan_adrs(adr_dir, project):
+    """Scan a directory for ADR-*.md files and return parsed entries."""
+    results = []
+    if not adr_dir.exists():
+        return results
+    for f in sorted(adr_dir.glob("ADR-*.md")):
+        if f.name.endswith('.original.md'):
+            continue
 
-    # Try frontmatter id first, fall back to filename extraction
-    id = frontmatter.get("id") if frontmatter else None
-    if not id:
-        id_match = re.match(r'(ADR-\d{4}[a-z]*)', f.stem)
-        id = id_match.group(1) if id_match else f.stem
-    title_match = re.search(r'^# (.+)$', text, re.MULTILINE)
-    status_match = re.search(r'^(Proposed|Accepted|Deprecated|Superseded)$', text, re.MULTILINE)
+        text = f.read_text()
+        m = re.match(r'^---\n(.*?)\n---', text, re.DOTALL)
+        try:
+            frontmatter = yaml.safe_load(m.group(1)) if m else {}
+        except yaml.YAMLError:
+            frontmatter = {}
 
-    phase = frontmatter.get("phase")
-    if not phase:
-        phase = {"current": 0, "total": 1, "status": {"1": "done"}}
+        # Try frontmatter id first, fall back to filename extraction
+        adr_id = frontmatter.get("id") if frontmatter else None
+        if not adr_id:
+            id_match = re.match(r'(ADR-\d{4}[a-z]*)', f.stem)
+            adr_id = id_match.group(1) if id_match else f.stem
 
-    adrs.append({
-        "id": id,
-        "title": title_match.group(1) if title_match else f.stem,
-        "status": status_match.group(1) if status_match else "Proposed",
-        "phase": phase
-    })
+        title_match = re.search(r'^# (.+)$', text, re.MULTILINE)
+        status_match = re.search(r'^(Proposed|Accepted|Deprecated|Superseded)$', text, re.MULTILINE)
 
-output_json = {"updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "adrs": adrs}
+        phase = frontmatter.get("phase")
+        if not phase:
+            phase = {"current": 0, "total": 1, "status": {"1": "done"}}
+
+        results.append({
+            "id": adr_id,
+            "title": title_match.group(1) if title_match else f.stem,
+            "status": status_match.group(1) if status_match else "Proposed",
+            "project": project,
+            "phase": phase
+        })
+    return results
+
+# Scan root project
+adrs.extend(scan_adrs(Path("docs/adr"), "kodehold"))
+
+# Scan workspace projects
+for ws_dir in sorted(Path("workspaces").iterdir()):
+    if ws_dir.is_dir():
+        adrs.extend(scan_adrs(ws_dir / "docs" / "adr", ws_dir.name))
+
+output_json = {
+    "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+    "adrs": adrs
+}
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 OUTPUT.write_text(json.dumps(output_json, indent=2))
-print(f"Written: {OUTPUT} ({len(adrs)} ADRs)")
+
+projects = set(a["project"] for a in adrs)
+print(f"Written: {OUTPUT} ({len(adrs)} ADRs across {len(projects)} projects)")
 PYEOF
 fi
 
