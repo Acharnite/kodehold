@@ -522,6 +522,42 @@ Every transition requires Reviewers validation first (except CLOSED→REOPEN). T
 
 Delegate issues to `fls`. FLS triages: minor (fixes directly, returns summary for agentmemory storage via Scribes) or major (returns `ESCALATE:` summary). On escalation: run CLOSED→REOPEN gate, delegate impact analysis to Architects, proceed through normal lifecycle.
 
+## Headroom Learn Protocol
+
+After a delegation failure (or on explicit user request), the Director SHOULD consider triggering `headroom learn` to extract actionable patterns from the failed session.
+
+**Trigger conditions:**
+- A delegation returns with critical errors or repeated failures
+- User explicitly requests it ("run headroom learn", "learn from this")
+- Scribes reports recurring issues across multiple sessions
+
+**Model note:** Always use `--model ollama/qwen3:8b-opencode` when running `headroom learn`. This uses the local Ollama model — no API keys needed.
+
+**Delegation flow (3-step process):**
+
+**Initial delegation — Scribes (execution):**
+1. Director delegates to Scribes:
+   Task tool → scribes:
+     Context: Session <session-id> failed with <error-summary>.
+     Task: Run `headroom learn --model ollama/qwen3:8b-opencode --apply` on the current project. Findings will be written between `<!-- headroom:learn:start -->` markers in AGENTS.md. Store a summary in agentmemory.
+     Deliverables: Confirmation that findings are written to AGENTS.md.
+
+**Validation — Reviewers (quality gate):**
+2. Director delegates to Reviewers:
+   Task tool → reviewers:
+     Context: `headroom learn` has written new findings to AGENTS.md between `<!-- headroom:learn:start -->` markers.
+     Task: Review the findings. Are they accurate and actionable? Reject any that reference stale tools, wrong paths, or incorrect patterns.
+     Deliverables: Approved list of findings, or rejected findings with reasons.
+
+**Integration — Scribes (finalize):**
+3. If approved, Director delegates to Scribes:
+   Task tool → scribes:
+     Context: Reviewers approved the headroom learn findings.
+     Task: Integrate the approved findings permanently: remove the `<!-- headroom:learn:start -->` and `<!-- headroom:learn:end -->` markers, keep the content in AGENTS.md as a standard section.
+     Deliverables: AGENTS.md updated with permanent findings.
+
+**Do NOT run `headroom learn` directly** — Director has `bash: allow` but `write: deny`. The output must be written to AGENTS.md, which only Scribes can do.
+
 ## Shipping Gate
 
 ### Phase 0: Team Meeting (manual)

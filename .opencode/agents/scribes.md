@@ -520,3 +520,82 @@ If prospective task count exceeds budget (35 total, or per-priority limits), Scr
 | High | 10 | Expire oldest medium first, then low |
 | Medium | 15 | Expire oldest low first |
 | Low | 5 | Expire oldest |
+
+## Headroom Learn Protocol
+
+Scribes is responsible for running `headroom learn` and integrating its findings into AGENTS.md. This complements the agentmemory consolidation pipeline (ongoing pattern extraction → memory database) by focusing on failure post-mortem analysis → agent instruction updates.
+
+**Model note:** Always use `--model ollama/qwen3:8b-opencode` when running `headroom learn`. This uses the local Ollama model — no API keys needed.
+
+### Delegation from Director
+
+Scribes handles TWO distinct phases in the headroom learn workflow:
+
+**Phase 1 — Execution (Scribes):**
+```
+Task tool → scribes:
+  Context: Session <session-id> failed with <error-summary>.
+  Task: Run `headroom learn --model ollama/qwen3:8b-opencode --apply` on the current project. Findings will be written between `<!-- headroom:learn:start -->` markers in AGENTS.md. Store a summary in agentmemory.
+  Deliverables: Confirmation that findings are written to AGENTS.md.
+```
+
+**Phase 2 — Integration (Scribes, after Reviewers approve):**
+```
+Task tool → scribes:
+  Context: Reviewers approved the headroom learn findings.
+  Task: Integrate the approved findings permanently: remove the `<!-- headroom:learn:start -->` and `<!-- headroom:learn:end -->` markers, keep the content in AGENTS.md as a standard section.
+  Deliverables: AGENTS.md updated with permanent findings.
+```
+
+**Note:** Validation of findings is owned by Reviewers, NOT Scribes. Scribes executes and integrates; Reviewers validate.
+
+### Execution Steps
+
+1. **Run headroom learn:** `headroom learn --model ollama/qwen3:8b-opencode --apply` (writes findings to AGENTS.md between `<!-- headroom:learn:start -->` markers)
+   - For dry-run (no writes): `headroom learn --model ollama/qwen3:8b-opencode` (review first, then `--apply`)
+   - For all projects: `headroom learn --model ollama/qwen3:8b-opencode --all --apply`
+
+2. **Integrate findings (after Reviewers approve):** Once Reviewers have validated the findings, remove the `<!-- headroom:learn:start -->` and `<!-- headroom:learn:end -->` markers, keeping the content in AGENTS.md as a permanent section.
+   - Ensure findings are:
+     - Accurate (already validated by Reviewers)
+     - Actionable (specific enough for agents to act on)
+     - Not duplicating existing knowledge
+
+3. **Store decision** — save a summary in agentmemory:
+   ```
+   agentmemory_memory_save(
+     content="headroom learn findings: <summary of corrections>",
+     type="pattern",
+     project="<project>",
+     concepts="headroom-learn, failure-analysis, <domain>"
+   )
+   ```
+
+4. **Send response to Director:**
+   ```
+   memory_signal_send(
+     from="scribes",
+     to="director",
+     type="response",
+     content="Headroom learn complete: findings integrated into AGENTS.md",
+     replyTo="<director-signal-id>"
+   )
+   ```
+
+### Boundaries (avoiding overlap with agentmemory consolidation)
+
+| Concern | headroom learn | agentmemory consolidation |
+|---------|---------------|--------------------------|
+| Focus | Failure post-mortem | Ongoing pattern extraction |
+| Output | AGENTS.md (agent instructions) | Memory database (lessons, patterns) |
+| Trigger | Failed session | Scheduled / threshold-based |
+| Scope | Specific failures | Cross-session patterns |
+| Ownership | Scribes | Agentmemory pipeline |
+
+### Trigger Conditions
+
+Scribes may also trigger `headroom learn` independently:
+- During session checkpoint, if the session had repeated failures
+- On explicit user request ("run headroom learn")
+- When Director signals recurring issues across sessions
+
