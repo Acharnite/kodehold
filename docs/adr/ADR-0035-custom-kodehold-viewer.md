@@ -1,3 +1,23 @@
+---
+phase:
+  current: 6
+  total: 6
+  names:
+    1: "Research & planning"
+    2: "Frontier tab implementation"
+    3: "Routines tab implementation"
+    4: "Signals tab implementation"
+    5: "Actions project filter"
+    6: "Review and polish"
+  status:
+    1: done
+    2: done
+    3: done
+    4: done
+    5: done
+    6: done
+---
+
 # ADR-0035: Custom KodeHold Viewer
 
 ## Status

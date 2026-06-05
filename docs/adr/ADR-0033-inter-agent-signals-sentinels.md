@@ -1,3 +1,12 @@
+---
+id: ADR-0033b
+phase:
+  current: 1
+  total: 1
+  status:
+    1: done
+---
+
 # ADR-0033: Inter-Agent Signals + Sentinels
 
 ## Status

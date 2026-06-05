@@ -1,3 +1,11 @@
+---
+phase:
+  current: 1
+  total: 1
+  status:
+    1: done
+---
+
 # ADR-0017: Reviewers as Gatekeeper + Mandatory Second Opinion
 
 ## Status

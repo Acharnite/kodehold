@@ -1,3 +1,23 @@
+---
+phase:
+  current: 6
+  total: 6
+  names:
+    1: "Awareness — dual-write ICM+agentmemory"
+    2: "Infrastructure — replace ICM tools"
+    3: "Frontier — replace todowrite"
+    4: "Routines — standard flow templates"
+    5: "Crystals + Signals — auto-crystallize"
+    6: "Cleanup — remove legacy references"
+  status:
+    1: done
+    2: done
+    3: done
+    4: done
+    5: done
+    6: done
+---
+
 # ADR-0029: ICM → Agentmemory Migration Strategy
 
 ## Status

@@ -1,3 +1,11 @@
+---
+phase:
+  current: 1
+  total: 1
+  status:
+    1: done
+---
+
 # ADR-0041: Procedural Consolidation Tier — Bridge Pattern Detection to Pipeline
 
 ## Status

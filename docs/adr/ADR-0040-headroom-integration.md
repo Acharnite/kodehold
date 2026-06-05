@@ -1,3 +1,19 @@
+---
+phase:
+  current: 1
+  total: 4
+  names:
+    1: "headroom learn integration"
+    2: "MCP tools registration"
+    3: "Controlled evaluation on workspace project"
+    4: "Full proxy integration"
+  status:
+    1: not-started
+    2: not-started
+    3: not-started
+    4: not-started
+---
+
 # ADR-0040: Headroom Integration — Context Compression Layer
 
 ## Status

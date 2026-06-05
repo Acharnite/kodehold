@@ -1,3 +1,11 @@
+---
+phase:
+  current: 1
+  total: 1
+  status:
+    1: done
+---
+
 # ADR-0025: A2A Protocol (Agent-to-Agent Coordination)
 
 ## Status

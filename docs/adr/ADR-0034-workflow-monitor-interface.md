@@ -1,3 +1,13 @@
+---
+phase:
+  current: 1
+  total: 1
+  names:
+    1: "Implement workflow monitor"
+  status:
+    1: not-started
+---
+
 # ADR-0034: Workflow Monitor Interface
 
 ## Status

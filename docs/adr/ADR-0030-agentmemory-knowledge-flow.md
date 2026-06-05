@@ -1,3 +1,11 @@
+---
+phase:
+  current: 1
+  total: 1
+  status:
+    1: done
+---
+
 # ADR-0030: Agentmemory Knowledge Flow
 
 ## Status

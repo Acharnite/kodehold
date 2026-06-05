@@ -50,4 +50,5 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0039](ADR-0039-pre-flight-enforcement.md) | Pre-Flight Knowledge Check Enforcement | Accepted | 2026-06-03 |
 | [ADR-0040](ADR-0040-headroom-integration.md) | Headroom Integration — Context Compression Layer | Proposed | 2026-06-04 |
 | [ADR-0041](ADR-0041-procedural-consolidation-fix.md) | Procedural Consolidation Tier — Bridge Pattern Detection to Pipeline | Accepted | 2026-06-04 |
+| [ADR-0042](ADR-0042-adr-implementation-phase-board.md) | ADR Implementation Phase Board | Accepted | 2026-06-05 |
 
