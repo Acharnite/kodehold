@@ -1,0 +1,566 @@
+{
+  "updatedAt": "2026-06-05T12:52:49Z",
+  "adrs": [
+    {
+      "id": "ADR-0001",
+      "title": "ADR-0001: KodeHold Foundation and Principles",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0002",
+      "title": "ADR-0002: Organizational Structure \u2014 Director and Teams",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0003",
+      "title": "ADR-0003: Design Document Lifecycle",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0004",
+      "title": "ADR-0004: ICM and RTK Integration Strategy",
+      "status": "Proposed",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0005",
+      "title": "ADR-0005: LLM Support and Light Mode",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0006",
+      "title": "ADR-0006: Second Opinion Protocol",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0007",
+      "title": "ADR-0007: Token Optimization Strategy",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0008",
+      "title": "ADR-0008: Project Lifecycle and Reopening",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0009",
+      "title": "ADR-0009: ICM MCP Integration",
+      "status": "Proposed",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0010",
+      "title": "ADR-0010: FLS \u2014 Front Line Support Team",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0011",
+      "title": "ADR-0011: Team Meeting \u2014 Collective Project Review",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0012",
+      "title": "ADR-0012: Adopted Projects \u2014 Existing Codebases in KodeHold",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0013",
+      "title": "ADR-0013: Investigate Skill \u2014 Systematic Debugging",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0014",
+      "title": "ADR-0014: Status Dashboard \u2014 KodeHold Project Overview",
+      "status": "Proposed",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0015",
+      "title": "ADR-0015: Director Delegation Enforcement via Tool Permissions",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0016",
+      "title": "ADR-0016: Early Review Gates in ACTIVE Phase",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0017",
+      "title": "ADR-0017: Reviewers as Gatekeeper + Mandatory Second Opinion",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0018",
+      "title": "ADR-0018: Centralize All Documentation Work Under Scribes",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0019",
+      "title": "ADR-0019: Session Context Compression via Periodic ICM Summaries",
+      "status": "Proposed",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0020",
+      "title": "ADR-0020: Hierarchical Memory (Hot/Warm/Cold)",
+      "status": "Proposed",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0021",
+      "title": "ADR-0021: Prospective Memory (Task Queue & Scheduler)",
+      "status": "Proposed",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0022",
+      "title": "ADR-0022: Automated Episodic Extraction",
+      "status": "Proposed",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0023",
+      "title": "ADR-0023: Semantic Memory Automation",
+      "status": "Proposed",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0024",
+      "title": "ADR-0024: Shared Memory (Multi-Agent Alignment)",
+      "status": "Proposed",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0025",
+      "title": "ADR-0025: A2A Protocol (Agent-to-Agent Coordination)",
+      "status": "Proposed",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0026",
+      "title": "ADR-0026: Second Opinion Same-Model Bias Enforcement",
+      "status": "Superseded",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0027",
+      "title": "ADR-0027: ICM Knowledge Flow Invocation Modes",
+      "status": "Proposed",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0028",
+      "title": "ADR-0028: Agentmemory Project Detection Strategy",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0029",
+      "title": "ADR-0029: ICM \u2192 Agentmemory Migration Strategy",
+      "status": "Accepted",
+      "phase": {
+        "current": 6,
+        "total": 6,
+        "names": {
+          "1": "Awareness \u2014 dual-write ICM+agentmemory",
+          "2": "Infrastructure \u2014 replace ICM tools",
+          "3": "Frontier \u2014 replace todowrite",
+          "4": "Routines \u2014 standard flow templates",
+          "5": "Crystals + Signals \u2014 auto-crystallize",
+          "6": "Cleanup \u2014 remove legacy references"
+        },
+        "status": {
+          "1": "done",
+          "2": "done",
+          "3": "done",
+          "4": "done",
+          "5": "done",
+          "6": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0030",
+      "title": "ADR-0030: Agentmemory Knowledge Flow",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0031",
+      "title": "ADR-0031: Actions + Crystals for Director Delegation",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0032",
+      "title": "ADR-0032: Routine Templates for KodeHold",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0033",
+      "title": "ADR-0033: Crystals + Signals for KodeHold",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0033b",
+      "title": "ADR-0033: Inter-Agent Signals + Sentinels",
+      "status": "Superseded",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0034",
+      "title": "ADR-0034: Workflow Monitor Interface",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "names": {
+          "1": "Implement workflow monitor"
+        },
+        "status": {
+          "1": "not-started"
+        }
+      }
+    },
+    {
+      "id": "ADR-0035",
+      "title": "ADR-0035: Custom KodeHold Viewer",
+      "status": "Accepted",
+      "phase": {
+        "current": 6,
+        "total": 6,
+        "names": {
+          "1": "Research & planning",
+          "2": "Frontier tab implementation",
+          "3": "Routines tab implementation",
+          "4": "Signals tab implementation",
+          "5": "Actions project filter",
+          "6": "Review and polish"
+        },
+        "status": {
+          "1": "done",
+          "2": "done",
+          "3": "done",
+          "4": "done",
+          "5": "done",
+          "6": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0036",
+      "title": "ADR-0036: Project Slug Convention \u2014 Stable Canonical Identifiers",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0037",
+      "title": "ADR-0037: YAML-Based Agent and Task Configuration",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0038",
+      "title": "ADR-0038: Knowledge Recall Protocol",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0039",
+      "title": "ADR-0039: Pre-Flight Knowledge Check Enforcement",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0040",
+      "title": "ADR-0040: Headroom Integration \u2014 Context Compression Layer",
+      "status": "Proposed",
+      "phase": {
+        "current": 1,
+        "total": 4,
+        "names": {
+          "1": "headroom learn integration",
+          "2": "MCP tools registration",
+          "3": "Controlled evaluation on workspace project",
+          "4": "Full proxy integration"
+        },
+        "status": {
+          "1": "not-started",
+          "2": "not-started",
+          "3": "not-started",
+          "4": "not-started"
+        }
+      }
+    },
+    {
+      "id": "ADR-0041",
+      "title": "ADR-0041: Procedural Consolidation Tier \u2014 Bridge Pattern Detection to Pipeline",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0042",
+      "title": "ADR-0042: ADR Implementation Phase Board",
+      "status": "Accepted",
+      "phase": {
+        "current": 1,
+        "total": 3,
+        "names": {
+          "1": "Viewer tab MVP (read-only)",
+          "2": "Interactive phase transitions",
+          "3": "Standalone drag-and-drop board"
+        },
+        "status": {
+          "1": "in-progress",
+          "2": "not-started",
+          "3": "not-started"
+        }
+      }
+    }
+  ]
+}

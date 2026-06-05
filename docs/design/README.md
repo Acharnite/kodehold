@@ -237,6 +237,10 @@ Consequences: Trade-offs and follow-ups
 | ADR-0036 | Project Slug Convention — Stable Canonical Identifiers | Accepted |
 | ADR-0037 | YAML-Based Agent and Task Configuration | Accepted |
 | ADR-0038 | Knowledge Recall Protocol | Accepted |
+| ADR-0039 | Pre-Flight Knowledge Check Enforcement | Accepted |
+| ADR-0040 | Headroom Integration — Context Compression Layer | Proposed |
+| ADR-0041 | Procedural Consolidation Tier — Bridge Pattern Detection to Pipeline | Accepted |
+| ADR-0042 | ADR Implementation Phase Board | Accepted |
 
 
 See `docs/adr/README.md` for full details.

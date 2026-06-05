@@ -4,11 +4,40 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const VIEWER_FILE = path.join(__dirname, 'index.html');
+const VIEWER_DIR = __dirname;
 const AM_HOST = '127.0.0.1';
 const AM_PORT = 3111;
 const BIND_PORT = 3115;
 const BIND_HOST = '0.0.0.0';
+
+const MIME_TYPES = {
+  '.html': 'text/html; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.js':   'application/javascript; charset=utf-8',
+  '.css':  'text/css; charset=utf-8',
+  '.svg':  'image/svg+xml',
+  '.png':  'image/png',
+  '.ico':  'image/x-icon',
+};
+
+function serveStatic(res, filePath) {
+  const ext = path.extname(filePath);
+  const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.end('Not found: ' + path.basename(filePath));
+      return;
+    }
+    res.writeHead(200, {
+      'Content-Type': contentType,
+      'Access-Control-Allow-Origin': '*',
+      'Cache-Control': 'no-cache',
+    });
+    res.end(data);
+  });
+}
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -24,7 +53,6 @@ const server = http.createServer((req, res) => {
     };
 
     const proxy = http.request(opts, (proxyRes) => {
-      // Add CORS headers for flexibility
       res.writeHead(proxyRes.statusCode, {
         ...proxyRes.headers,
         'Access-Control-Allow-Origin': '*',
@@ -55,18 +83,27 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Serve custom viewer
-  fs.readFile(VIEWER_FILE, 'utf-8', (err, data) => {
-    if (err) {
-      res.writeHead(500, { 'Content-Type': 'text/plain' });
-      res.end('Failed to load viewer: ' + err.message);
-      return;
-    }
-    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-    res.end(data);
-  });
+  // Serve static files from VIEWER_DIR
+  let requestPath = url.pathname;
+  if (requestPath === '/' || requestPath === '') {
+    requestPath = '/index.html';
+  }
+  // Strip leading slash for safe join
+  const safePath = requestPath.replace(/^\/+/, '');
+  const filePath = path.join(VIEWER_DIR, safePath);
+
+  // Prevent directory traversal
+  if (!filePath.startsWith(VIEWER_DIR)) {
+    res.writeHead(403, { 'Content-Type': 'text/plain' });
+    res.end('Forbidden');
+    return;
+  }
+
+  serveStatic(res, filePath);
 });
 
 server.listen(BIND_PORT, BIND_HOST, () => {
   console.log(`KodeHold custom viewer at http://${BIND_HOST}:${BIND_PORT}`);
+  console.log(`  Serving: ${VIEWER_DIR}`);
+  console.log(`  Agentmemory API proxy: http://${AM_HOST}:${AM_PORT}`);
 });

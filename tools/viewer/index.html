@@ -932,6 +932,24 @@
     .activity-feed-body { flex: 1; min-width: 0; }
     .activity-feed-title { font-weight: 600; color: var(--ink); font-family: var(--font-display); font-size: 13px; }
     .activity-feed-meta { font-size: 10px; color: var(--ink-faint); font-family: var(--font-mono); margin-top: 2px; }
+
+    /* ── ADR Phases Kanban Board ───────────────────────────────────── */
+    .kanban-board { display: flex; gap: 12px; overflow-x: auto; min-height: calc(100vh - 180px); padding: 4px 0; }
+    .kanban-column { min-width: 280px; max-width: 320px; flex: 1; display: flex; flex-direction: column; background: var(--bg-subtle); border: 1px solid var(--border-light); }
+    .kanban-column-header { padding: 10px 12px; border-bottom: 1px solid var(--border-light); font-family: var(--font-ui); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; }
+    .kanban-column-body { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 8px; max-height: calc(100vh - 220px); }
+    .kanban-card { background: var(--bg); border: 1px solid var(--border); padding: 10px 12px; cursor: pointer; transition: box-shadow 0.15s; }
+    .kanban-card:hover { box-shadow: 2px 2px 0px 0px var(--border); }
+    .kanban-card .kcard-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .kanban-card .kcard-id { font-size: 10px; color: var(--ink-faint); font-family: var(--font-mono); font-weight: 500; }
+    .kanban-card .kcard-title { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 6px; font-family: var(--font-display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .kanban-card .kcard-progress { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+    .kanban-card .kcard-progress-track { flex: 1; height: 4px; background: var(--bg-inset); overflow: hidden; }
+    .kanban-card .kcard-progress-fill { height: 100%; background: var(--green); transition: width 0.3s; }
+    .kanban-card .kcard-progress-label { font-size: 10px; color: var(--ink-muted); font-family: var(--font-mono); }
+    .kanban-card .kcard-phases { font-size: 10px; color: var(--ink-muted); font-family: var(--font-ui); }
+    .kanban-card .kcard-phase-dot { display: inline-block; width: 6px; height: 6px; margin-right: 4px; }
+    .kanban-card .kcard-empty { padding: 20px; text-align: center; color: var(--ink-faint); font-size: 12px; font-style: italic; }
   </style>
 </head>
 <body>
@@ -964,6 +982,7 @@
     <button data-tab="routines">Routines</button>
     <button data-tab="signals">Signals</button>
     <button data-tab="slots">Slots</button>
+    <button data-tab="adr-phases">ADR Phases</button>
   </div>
 
   <div id="flag-banners" class="flag-banners"></div>
@@ -984,6 +1003,7 @@
   <div id="view-routines" class="view"></div>
   <div id="view-signals" class="view"></div>
   <div id="view-slots" class="view"></div>
+  <div id="view-adr-phases" class="view"></div>
 
   <div id="modal-overlay" class="modal-overlay">
     <div class="modal" id="modal"></div>
@@ -1072,7 +1092,7 @@
       task: '&#9745;', other: '&#128196;'
     };
     var CB_STATE_COLORS = { closed: 'badge-green', open: 'badge-red', 'half-open': 'badge-yellow' };
-    var TAB_IDS = ['dashboard', 'graph', 'memories', 'timeline', 'sessions', 'lessons', 'actions', 'crystals', 'audit', 'activity', 'profile', 'replay', 'frontier', 'routines', 'signals', 'slots'];
+    var TAB_IDS = ['dashboard', 'graph', 'memories', 'timeline', 'sessions', 'lessons', 'actions', 'crystals', 'audit', 'activity', 'profile', 'replay', 'frontier', 'routines', 'signals', 'slots', 'adr-phases'];
 
     var state = {
       activeTab: 'dashboard',
@@ -1089,6 +1109,7 @@
       routines: { loaded: false, items: [], expandedId: null },
       signals: { loaded: false, items: [], selectedAgent: 'director', typeFilter: '', unreadOnly: false },
       slots: { loaded: false, items: [], expandedLabel: null },
+      adrPhases: { loaded: false, items: [], updatedAt: '' },
       crystals: { loaded: false, items: [], search: '', lessonMap: {} },
       profile: { loaded: false, projects: [], selectedProject: '', data: null },
       replay: { loaded: false, sessions: [], selectedId: '', timeline: null, cursor: 0, playing: false, speed: 1, timer: null, startAt: 0, offsetAt: 0 },
@@ -1273,6 +1294,7 @@
         case 'routines': if (!state.routines.loaded) await loadRoutines(); break;
         case 'signals': if (!state.signals.loaded) await loadSignals(); break;
         case 'slots': if (!state.slots.loaded) await loadSlots(); break;
+        case 'adr-phases': if (!state.adrPhases.loaded) await loadAdrPhases(); break;
       }
     }
 
@@ -4371,6 +4393,118 @@
       html += '<div style="text-align:center;margin-top:12px;"><button class="btn" data-action="refresh-slots">↻ Refresh</button></div>';
 
       el.innerHTML = html;
+    }
+
+    // ── ADR Phases Tab ──────────────────────────────────────────────────────────
+
+    async function loadAdrPhases() {
+      var view = document.getElementById('view-adr-phases');
+      view.innerHTML = '<div class="loading">Loading ADR phases...</div>';
+      try {
+        var res = await fetch('./adr-index.json');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var data = await res.json();
+        state.adrPhases.items = data.adrs || [];
+        state.adrPhases.updatedAt = data.updatedAt;
+        state.adrPhases.loaded = true;
+        renderAdrPhases();
+      } catch (err) {
+        view.innerHTML = '<div class="empty">&#9888; ADR index not found. Run <code>scripts/sync-adr-index.sh</code> first.</div>';
+      }
+    }
+
+    function renderAdrPhases() {
+      var view = document.getElementById('view-adr-phases');
+      var items = state.adrPhases.items;
+
+      if (!items.length) {
+        view.innerHTML = '<div class="empty">No ADRs found in index.</div>';
+        return;
+      }
+
+      function isComplete(a) {
+        if (a.status === 'Deprecated' || a.status === 'Superseded') return true;
+        if (a.status === 'Accepted') {
+          if (!a.phase) return true;
+          if (a.phase.current >= a.phase.total && a.phase.status && a.phase.status[a.phase.total] === 'done') return true;
+        }
+        return false;
+      }
+      var columns = [
+        { id: 'proposed', label: 'Proposed', filter: function(a) {
+            return a.status === 'Proposed';
+          } },
+        { id: 'phase1', label: 'Phase 1', filter: function(a) {
+            return a.status === 'Accepted' && a.phase && a.phase.current === 1 && !isComplete(a);
+          } },
+        { id: 'phase2', label: 'Phase 2', filter: function(a) {
+            return a.status === 'Accepted' && a.phase && a.phase.current === 2 && !isComplete(a);
+          } },
+        { id: 'phase3', label: 'Phase 3', filter: function(a) {
+            return a.status === 'Accepted' && a.phase && a.phase.current >= 3 && !isComplete(a);
+          } },
+        { id: 'complete', label: 'Complete', filter: function(a) { return isComplete(a); } }
+      ];
+
+      var html = '<div class="kanban-board">';
+
+      columns.forEach(function(col) {
+        var cards = items.filter(col.filter);
+        html += '<div class="kanban-column">';
+        html += '<div class="kanban-column-header">' + esc(col.label) + ' <span style="color:var(--ink-faint);font-weight:400;">(' + cards.length + ')</span></div>';
+        html += '<div class="kanban-column-body">';
+
+        cards.forEach(function(adr) {
+          html += renderAdrCard(adr);
+        });
+
+        if (!cards.length) {
+          html += '<div class="kcard-empty">No ADRs</div>';
+        }
+
+        html += '</div></div>';
+      });
+
+      html += '</div>';
+
+      html += '<div style="padding:8px 0;font-size:10px;color:var(--ink-faint);font-family:var(--font-mono);">Index updated: ' + (state.adrPhases.updatedAt || 'unknown') + '</div>';
+
+      view.innerHTML = html;
+    }
+
+    function renderAdrCard(adr) {
+      var hasPhase = adr.phase && adr.phase.total > 0;
+      var progress = hasPhase ? Math.round((adr.phase.current / adr.phase.total) * 100) : 100;
+      var statusBadge = adr.status === 'Accepted' ? 'badge-green' : adr.status === 'Proposed' ? 'badge-yellow' : 'badge-muted';
+
+      var html = '<div class="kanban-card" onclick="window.open(\'../../docs/adr/' + esc(adr.id) + '.md\', \'_blank\')">';
+      html += '<div class="kcard-head">';
+      html += '<span class="kcard-id">' + esc(adr.id) + '</span>';
+      html += '<span class="badge ' + statusBadge + '" style="font-size:8px;padding:1px 6px;">' + esc(adr.status) + '</span>';
+      html += '</div>';
+      html += '<div class="kcard-title" title="' + esc(adr.title) + '">' + esc(adr.title) + '</div>';
+
+      if (hasPhase) {
+        html += '<div class="kcard-progress">';
+        html += '<div class="kcard-progress-track"><div class="kcard-progress-fill" style="width:' + progress + '%;"></div></div>';
+        html += '<span class="kcard-progress-label">' + adr.phase.current + '/' + adr.phase.total + '</span>';
+        html += '</div>';
+
+        if (adr.phase.names) {
+          html += '<div class="kcard-phases">';
+          for (var p = 1; p <= adr.phase.total; p++) {
+            var status = adr.phase.status && adr.phase.status[p];
+            var dotColor = status === 'done' ? 'var(--green)' : status === 'in-progress' ? 'var(--yellow)' : 'var(--ink-faint)';
+            var dot = status === 'done' ? '●' : status === 'in-progress' ? '◉' : '○';
+            var name = adr.phase.names[p] || 'Phase ' + p;
+            html += '<div style="color:' + dotColor + ';">' + dot + ' ' + esc(name) + '</div>';
+          }
+          html += '</div>';
+        }
+      }
+
+      html += '</div>';
+      return html;
     }
 
     switchTab(tabFromRoute(), { replaceRoute: true });
