@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-05T12:57:54Z",
+  "updatedAt": "2026-06-05T18:26:48Z",
   "adrs": [
     {
       "id": "ADR-0001",
@@ -689,10 +689,17 @@
       "status": "Accepted",
       "project": "bob",
       "phase": {
-        "current": 0,
-        "total": 1,
+        "current": 1,
+        "total": 3,
+        "names": {
+          "1": "Query elimination (~15 min)",
+          "2": "Config conversion (~45 min)",
+          "3": "Verification (~15 min)"
+        },
         "status": {
-          "1": "done"
+          "1": "not-started",
+          "2": "not-started",
+          "3": "not-started"
         }
       }
     },
@@ -754,10 +761,19 @@
       "status": "Accepted",
       "project": "bob",
       "phase": {
-        "current": 0,
-        "total": 1,
+        "current": 2,
+        "total": 4,
+        "names": {
+          "1": "Export ICM Data (Pre-Migration)",
+          "2": "Atomic Cutover (Single PR)",
+          "3": "Verification",
+          "4": "Cleanup (Post-Migration)"
+        },
         "status": {
-          "1": "done"
+          "1": "done",
+          "2": "in-progress",
+          "3": "not-started",
+          "4": "not-started"
         }
       }
     },

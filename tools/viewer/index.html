@@ -4457,12 +4457,10 @@
         if (a.status === 'Deprecated' || a.status === 'Superseded') return true;
         if (a.status === 'Accepted') {
           if (!a.phase) return true;
-          if (a.phase.status) {
-            // Complete if the last phase is marked done (works for legacy current:0, single-phase, and multi-phase)
-            if (a.phase.status[a.phase.total] === 'done') return true;
-            // Also check if current meets or exceeds total
-            if (a.phase.current >= a.phase.total) return true;
-          }
+          // Legacy ADR (current: 0, no phase tracking) without status block
+          if (!a.phase.status) return false;
+          // Complete if and only if the last phase is marked done
+          if (a.phase.status[a.phase.total] === 'done') return true;
         }
         return false;
       }
