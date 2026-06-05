@@ -19,6 +19,7 @@ const MIME_TYPES = {
   '.svg':  'image/svg+xml',
   '.png':  'image/png',
   '.ico':  'image/x-icon',
+  '.md':   'text/markdown; charset=utf-8',
 };
 
 function serveStatic(res, filePath) {
