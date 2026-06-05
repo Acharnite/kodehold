@@ -1,4 +1,6 @@
 ---
+status: Superseded
+superseded-by: agentmemory (native memory_crystallize / memory_checkpoint / memory_consolidate)
 phase:
   current: 1
   total: 1
@@ -10,7 +12,9 @@ phase:
 
 ## Status
 
-Superseded — replaced by agentmemory's native checkpoint and crystalization features. memory_checkpoint provides structured checkpoints, memory_crystallize auto-compresses completed action chains, and memory_consolidate handles multi-tier compression automatically.
+Superseded
+
+Replaced by agentmemory's native checkpoint and crystallization features. memory_checkpoint provides structured checkpoints, memory_crystallize auto-compresses completed action chains, and memory_consolidate handles multi-tier compression automatically.
 
 ## Context
 

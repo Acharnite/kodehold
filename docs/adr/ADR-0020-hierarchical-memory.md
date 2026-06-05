@@ -1,4 +1,6 @@
 ---
+status: Superseded
+superseded-by: agentmemory (memory_consolidate tier system)
 phase:
   current: 1
   total: 1
@@ -10,7 +12,9 @@ phase:
 
 ## Status
 
-Superseded by agentmemory's memory_consolidate tier system and memory_save importance field. Agentmemory provides working→episodic→semantic→procedural consolidation tiers, importance-based priority (via the importance parameter), auto-dedup, and health monitoring. GitHub issue #26 closed.
+Superseded
+
+Replaced by agentmemory's memory_consolidate tier system and memory_save importance field. Agentmemory provides working→episodic→semantic→procedural consolidation tiers, importance-based priority (via the importance parameter), auto-dedup, and health monitoring. GitHub issue #26 closed.
 
 ## Context
 
@@ -105,4 +109,4 @@ promoted_at: <timestamp>
 - Negative: Demotion may occasionally remove memories that are still relevant but rarely accessed
 - Negative: Requires tracking access metadata (last_accessed, access_count) on all memories
 - Neutral: Tier thresholds (3 accesses, 14 days) may need tuning based on actual usage patterns
-- Resolved: ICM's decay system (importance tiers + access-aware decay + auto-pruning) covers ~90% of this ADR. No separate hierarchical memory layer needed.
+- Note: agentmemory's memory_consolidate (working→episodic→semantic→procedural) and importance-based tiering cover this completely. No separate hierarchical memory layer needed.

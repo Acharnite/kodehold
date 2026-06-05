@@ -1,4 +1,6 @@
 ---
+status: Superseded
+superseded-by: agentmemory (memory_graph_query / memory_reflect / memory_insight_list)
 phase:
   current: 1
   total: 1
@@ -10,7 +12,9 @@ phase:
 
 ## Status
 
-Superseded by ICM OpenCode plugin (`~/.config/opencode/plugins/icm.ts`) — Layer 3 (chat.system.transform) implements automated semantic recall. ICM memoir system (concepts, links, extract_patterns) provides the knowledge graph. GitHub issue #29 closed.
+Superseded
+
+Replaced by agentmemory (memory_graph_query, memory_reflect, memory_insight_list) — Layer 3 (chat.system.transform) implements automated semantic recall. ICM memoir system (concepts, links, extract_patterns) provides the knowledge graph. GitHub issue #29 closed.
 
 ## Context
 
@@ -120,4 +124,4 @@ Before creating a new concept:
 - Negative: Extraction adds overhead to ADR creation (~100-200 tokens)
 - Negative: Knowledge graph maintenance requires periodic sweeps
 - Neutral: Deduplication thresholds (0.5, 0.8) may need tuning
-- Resolved: Semantic automation implemented via ICM plugin hooks + memoir system. No further work needed.
+- Note: agentmemory's knowledge graph (memory_graph_query + memory_reflect + memory_insight_list) provides this functionality.

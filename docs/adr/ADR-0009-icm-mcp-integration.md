@@ -1,4 +1,6 @@
 ---
+status: Superseded
+superseded-by: ADR-0029
 phase:
   current: 1
   total: 1
@@ -10,7 +12,9 @@ phase:
 
 ## Status
 
-Deprecated — ICM MCP tools replaced by agentmemory memory_* tools per ADR-0029 (ICM → Agentmemory Migration Strategy).
+Superseded
+
+Superseded by ADR-0029 (ICM → Agentmemory Migration Strategy).
 
 ## Context
 

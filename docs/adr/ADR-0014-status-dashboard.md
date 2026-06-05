@@ -1,4 +1,6 @@
 ---
+status: Superseded
+superseded-by: ADR-0034
 phase:
   current: 1
   total: 1
@@ -10,7 +12,9 @@ phase:
 
 ## Status
 
-Superseded — replaced by ADR-0034 (Workflow Monitor Interface). The agentmemory-driven workflow monitor supersedes the filesystem-based project dashboard approach. Agentmemory API (localhost:3111) provides richer live state data than filesystem state files.
+Superseded
+
+Replaced by ADR-0034 (Workflow Monitor Interface). The agentmemory-driven workflow monitor supersedes the filesystem-based project dashboard approach. Agentmemory API (localhost:3111) provides richer live state data than filesystem state files.
 
 **Replaced by:** [ADR-0034](ADR-0034-workflow-monitor-interface.md)
 

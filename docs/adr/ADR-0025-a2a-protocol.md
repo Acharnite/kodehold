@@ -1,4 +1,6 @@
 ---
+status: Superseded
+superseded-by: agentmemory (memory_signal with handoff type)
 phase:
   current: 1
   total: 1
@@ -10,7 +12,9 @@ phase:
 
 ## Status
 
-Deprecated — Director already serves as coordinator. Task tool provides structured handoff. Sequential pipeline + Team Meeting implement the relevant workflow patterns. Parallel execution and specialized roles are over-engineering for current needs. GitHub issue #31 closed as over-engineering.
+Superseded
+
+Replaced by agentmemory memory_signal (handoff/request/response types) + Director coordination. Task tool provides structured handoff. Sequential pipeline + Team Meeting implement the relevant workflow patterns. Parallel execution and specialized roles are over-engineering for current needs. GitHub issue #31 closed as over-engineering.
 
 ## Context
 
@@ -137,4 +141,4 @@ requires_response: true|false
 - Negative: Debugging multi-agent workflows is harder than sequential delegation
 - Negative: Risk of context drift in long agent chains
 - Neutral: Parallel execution benefits may be limited by sequential gate requirements
-- Resolved: Not needed. Existing Director coordination + Task tool handoff covers the required patterns. Deprecated as over-engineering.
+- Note: agentmemory memory_signal provides structured inter-agent communication (handoff, request, response, alert types).

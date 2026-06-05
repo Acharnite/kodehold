@@ -1,4 +1,6 @@
 ---
+status: Superseded
+superseded-by: agentmemory (agentmemory-capture.ts plugin)
 phase:
   current: 1
   total: 1
@@ -10,7 +12,9 @@ phase:
 
 ## Status
 
-Superseded by agentmemory-capture.ts plugin (agentmemory's OpenCode integration) — tool.execute.after hooks capture observations automatically. Agentmemory's memory_recall and memory_smart_search provide structured retrieval without manual extraction.
+Superseded
+
+Replaced by agentmemory-capture.ts plugin (automatic observation capture via tool.execute.after hooks) — tool.execute.after hooks capture observations automatically. Agentmemory's memory_recall and memory_smart_search provide structured retrieval without manual extraction.
 
 ## Context
 
@@ -113,4 +117,4 @@ Not every event becomes an episodic memory. Filtering criteria:
 - Negative: Extraction overhead adds tokens to each delegation round (~50-100 tokens)
 - Negative: ICM storage grows faster with automated extraction
 - Neutral: Filtering thresholds may need adjustment based on actual project patterns
-- Resolved: Automated extraction implemented via ICM plugin hooks (icm.ts Layer 0 + Layer 1). No further work needed.
+- Note: Automated extraction now handled by agentmemory-capture.ts plugin.

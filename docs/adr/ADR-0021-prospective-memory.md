@@ -1,4 +1,6 @@
 ---
+status: Superseded
+superseded-by: ADR-0031
 phase:
   current: 1
   total: 1
@@ -10,7 +12,9 @@ phase:
 
 ## Status
 
-Superseded — replaced by agentmemory Actions + Frontier per ADR-0031 (Actions + Crystals for Director Delegation). Task queues are now handled via memory_action_create with requires dependency chains and memory_frontier for priority-based task selection.
+Superseded
+
+Replaced by agentmemory Actions + Frontier per ADR-0031 (Actions + Crystals for Director Delegation). Task queues are now handled via memory_action_create with requires dependency chains and memory_frontier for priority-based task selection.
 
 ## Context
 

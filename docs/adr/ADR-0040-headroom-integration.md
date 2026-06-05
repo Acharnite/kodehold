@@ -1,4 +1,5 @@
 ---
+status: Accepted
 phase:
   current: 1
   total: 4
@@ -8,7 +9,7 @@ phase:
     3: "Controlled evaluation on workspace project"
     4: "Full proxy integration"
   status:
-    1: not-started
+    1: done
     2: not-started
     3: not-started
     4: not-started
@@ -18,7 +19,7 @@ phase:
 
 ## Status
 
-Proposed
+Accepted
 
 **Version:** 1.9
 **Last Updated:** 2026-06-05

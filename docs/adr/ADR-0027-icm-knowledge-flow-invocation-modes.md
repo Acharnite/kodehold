@@ -1,4 +1,6 @@
 ---
+status: Superseded
+superseded-by: ADR-0030
 phase:
   current: 1
   total: 1
@@ -10,7 +12,9 @@ phase:
 
 ## Status
 
-Deprecated — replaced by ADR-0030 (Agentmemory Knowledge Flow).
+Superseded
+
+Superseded by ADR-0030 (Agentmemory Knowledge Flow).
 
 **Replaced by:** [ADR-0030](ADR-0030-agentmemory-knowledge-flow.md)
 

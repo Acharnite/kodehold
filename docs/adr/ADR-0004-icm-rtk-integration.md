@@ -1,4 +1,5 @@
 ---
+status: Deprecated
 phase:
   current: 1
   total: 1
@@ -10,7 +11,9 @@ phase:
 
 ## Status
 
-Deprecated — ICM replaced by agentmemory per ADR-0029 (ICM → Agentmemory Migration Strategy). RTK token optimization remains valid independently.
+Deprecated
+
+ICM replaced by agentmemory per ADR-0029 (ICM → Agentmemory Migration Strategy). RTK token optimization remains valid independently.
 
 ## Context
 
