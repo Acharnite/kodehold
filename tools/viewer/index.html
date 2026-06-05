@@ -4531,7 +4531,7 @@
       var statusBadge = adr.status === 'Accepted' ? 'badge-green' : adr.status === 'Proposed' ? 'badge-yellow' : 'badge-muted';
 
       var adrPath = adr.project === 'kodehold' ? '/adr/' : '/adr/' + esc(adr.project) + '/';
-      var html = '<div class="kanban-card" onclick="window.open(\'/adr-viewer.html?file=\' + adrPath + esc(adr.id) + '.md\', \'_blank\')">';
+      var html = '<div class="kanban-card" onclick="window.open(\'/adr-viewer.html?file=' + adrPath + esc(adr.id) + '.md\', \'_blank\')">';
       html += '<div class="kcard-head">';
       html += '<span class="kcard-id">' + esc(adr.id) + '</span>';
       if (adr.project && adr.project !== 'kodehold') {
