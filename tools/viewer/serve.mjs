@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const VIEWER_DIR = __dirname;
+const KODEHOLD_ROOT = path.resolve(__dirname, '../..');
 const AM_HOST = '127.0.0.1';
 const AM_PORT = 3111;
 const BIND_PORT = 3115;
@@ -80,6 +81,38 @@ const server = http.createServer((req, res) => {
       'Access-Control-Max-Age': '86400'
     });
     res.end();
+    return;
+  }
+
+  // Serve ADR files from root or workspace docs/adr/
+  const adrMatch = url.pathname.match(/^\/adr\/(?:(bob|lib-validate|qbit-migrate|radarr-lang-router)\/)?(ADR-.+\.md)$/);
+  if (adrMatch) {
+    const project = adrMatch[1];
+    const fileName = adrMatch[2];
+    let adrDir;
+    if (project) {
+      adrDir = path.join(KODEHOLD_ROOT, 'workspaces', project, 'docs', 'adr');
+    } else {
+      adrDir = path.join(KODEHOLD_ROOT, 'docs', 'adr');
+    }
+    // Try exact filename first, then glob for filename starting with the ADR ID
+    const exactPath = path.join(adrDir, fileName);
+    if (fs.existsSync(exactPath)) {
+      serveStatic(res, exactPath);
+      return;
+    }
+    // Fallback: find first file in adrDir that starts with the ADR ID
+    const adrId = fileName.replace(/\.md$/, '');
+    try {
+      const files = fs.readdirSync(adrDir);
+      const match = files.find(f => f.startsWith(adrId) && f.endsWith('.md') && !f.endsWith('.original.md'));
+      if (match) {
+        serveStatic(res, path.join(adrDir, match));
+        return;
+      }
+    } catch (_) {}
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('ADR not found: ' + fileName);
     return;
   }
 

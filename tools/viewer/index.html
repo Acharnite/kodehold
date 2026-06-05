@@ -4530,7 +4530,7 @@
       var progress = hasPhase ? Math.round((adr.phase.current / adr.phase.total) * 100) : 100;
       var statusBadge = adr.status === 'Accepted' ? 'badge-green' : adr.status === 'Proposed' ? 'badge-yellow' : 'badge-muted';
 
-      var adrPath = adr.project === 'kodehold' ? '../../docs/adr/' : '../../workspaces/' + esc(adr.project) + '/docs/adr/';
+      var adrPath = adr.project === 'kodehold' ? '/adr/' : '/adr/' + esc(adr.project) + '/';
       var html = '<div class="kanban-card" onclick="window.open(\'' + adrPath + esc(adr.id) + '.md\', \'_blank\')">';
       html += '<div class="kcard-head">';
       html += '<span class="kcard-id">' + esc(adr.id) + '</span>';
