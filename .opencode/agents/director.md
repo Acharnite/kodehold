@@ -106,20 +106,26 @@ The Director's primary delegation mechanism uses agentmemory's action orchestrat
     agentmemory_memory_recall(query="<delegation-topic>", limit=3)
     ```
     
-    **Also query relevant procedural memories** — fetch from the procedural store:
-    ```
-    RELEVANT_PROCS=$(curl -s http://localhost:3111/agentmemory/procedural | python3 -c "
-    import json, sys
-    topic = sys.argv[1].lower() if len(sys.argv) > 1 else ''
-    data = json.load(sys.stdin).get('procedural', [])
-    matches = [p for p in data if topic in p.get('name', '').lower() or topic in p.get('triggerCondition', '').lower()]
-    for p in matches[:3]:
-        print(f\"- {p['name']}: {p['triggerCondition']}\")
-        for s in p.get('steps', []):
-            print(f\"  1. {s}\")
-    " "${topic}")
-    ```
+    **Also query relevant procedural memories** — search with the MCP tool:
+    agentmemory_memory_procedural_list(query="<delegation-topic> <team>", limit=3)
+    
+    Parse the `procedural` array from the result. For each match, include:
+    - The procedure name and trigger condition
+    - The steps (indented as a checklist)
+    
     Include the output in the `Relevant Context` section of the Task prompt.
+
+    **Context length guard:** If recall results exceed ~800 chars, truncate the `Relevant Context` section by including only the top-2 procedures.
+
+    **When delegation topic contains these keywords, always query with the primary topic first:**
+    | Task keyword | Query with |
+    |--------------|------------|
+    | "agent" / "agents" / "config" | `agent` |
+    | "design" / "doc" / "readme" | `design` |
+    | "adr" | `adr` |
+    | "version" / "release" / "changelog" | `version` |
+    | "plugin" / "capture" | `plugin` |
+    | "deploy" / "ship" / "gate" | `release` |
     
     Capture the output. This is NOT optional — it is a numbered step of the flow.
     
@@ -176,15 +182,15 @@ For standard multi-step workflows, use `memory_routine_run` to instantiate the e
 
 | Template ID | Flow | Steps | When to Use |
 |-------------|------|-------|-------------|
-| `rtn_mpvsldrl_79e7da1aef5d` (kodehold-adr-flow) | ADR creation + review | 6 | New ADR request |
-| `rtn_mpvslsrx_8614822e9e59` (kodehold-implement-flow) | Feature implementation | 6 | Feature request from approved design |
-| `rtn_mpvslr32_54b0cd8b8951` (kodehold-bugfix-flow) | Bug triage + hotfix | 4 | Bug report, minor fix |
-| `rtn_mpvrjs4r_d0fe2b6c6580` (kodehold-ship-gate) | Shipping gate | 7 | Release readiness |
+| `rtn_mq1b0oxe_e64c394e1890` (kodehold-adr-flow-v3) | ADR creation + review | 6 | New ADR request |
+| `rtn_mq1b0f4v_86477e3e6b49` (kodehold-implement-flow-v3) | Feature implementation | 6 | Feature request from approved design |
+| `rtn_mq1b3vzj_ec3dae260a03` (kodehold-bugfix-flow-v3) | Bug triage + hotfix | 4 | Bug report, minor fix |
+| `rtn_mq1b0kml_2092069aeb6b` (kodehold-ship-gate-v3) | Shipping gate | 8 | Release readiness |
 
 **Usage:**
 ```
 # Instead of creating 6 actions manually:
-memory_routine_run(routineId="rtn_mpvsldrl_79e7da1aef5d", project="<project>")
+memory_routine_run(routineId="rtn_mq1b0oxe_e64c394e1890", project="<project>")
 
 # The routine creates all actions with correct dependencies.
 # Director then uses memory_frontier to pick up the first unblocked action.
@@ -194,10 +200,10 @@ memory_routine_run(routineId="rtn_mpvsldrl_79e7da1aef5d", project="<project>")
 
 | User says | Routine to offer |
 |-----------|-----------------|
-| "New ADR: ..." / "ADR for ..." / "Write an ADR" | `kodehold-adr-flow` (`rtn_mpvsldrl_79e7da1aef5d`) |
-| "Implement ..." / "Build feature ..." | `kodehold-implement-flow` (`rtn_mpvslsrx_8614822e9e59`) |
-| "Bug in ..." / "Der er en fejl" / "Fix this" | `kodehold-bugfix-flow` (`rtn_mpvslr32_54b0cd8b8951`) |
-| "Ship it" / "Release" / "Deploy" | `kodehold-ship-gate` (`rtn_mpvrjs4r_d0fe2b6c6580`) |
+| "New ADR: ..." / "ADR for ..." / "Write an ADR" | `kodehold-adr-flow-v3` (`rtn_mq1b0oxe_e64c394e1890`) |
+| "Implement ..." / "Build feature ..." | `kodehold-implement-flow-v3` (`rtn_mq1b0f4v_86477e3e6b49`) |
+| "Bug in ..." / "Der er en fejl" / "Fix this" | `kodehold-bugfix-flow-v3` (`rtn_mq1b3vzj_ec3dae260a03`) |
+| "Ship it" / "Release" / "Deploy" | `kodehold-ship-gate-v3` (`rtn_mq1b0kml_2092069aeb6b`) |
 
 **Fallback:** If `memory_routine_run` returns an error (template not found, version mismatch), fall back to manual action creation via the standard Action Frontier Protocol delegation flow.
 
