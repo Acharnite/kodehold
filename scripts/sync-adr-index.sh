@@ -54,12 +54,15 @@ if command -v yq &> /dev/null && command -v jq &> /dev/null; then
       phase_json='{"current":0,"total":1,"status":{"1":"done"}}'
     fi
 
+    mtime=$(stat -c %Y "$f" 2>/dev/null || echo "0")
+
     cat >> "$OUTPUT" << ENTRY
     {
       "id": "$id",
       "title": $(echo "$title" | jq -R -s '.'),
       "status": "$status",
       "project": "$project",
+      "mtime": $mtime,
       "phase": $phase_json
     }
 ENTRY
@@ -117,6 +120,7 @@ def scan_adrs(adr_dir, project):
             "title": title_match.group(1) if title_match else f.stem,
             "status": status_match.group(1) if status_match else "Proposed",
             "project": project,
+            "mtime": int(f.stat().st_mtime),
             "phase": phase
         })
     return results

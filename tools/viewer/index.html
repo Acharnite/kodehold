@@ -965,6 +965,18 @@
       border-color: var(--accent);
       color: var(--ink);
     }
+    .archive-toggle {
+      font-size: 10px; font-family: var(--font-ui); background: var(--bg);
+      border: 1px solid var(--border); border-radius: 4px;
+      padding: 2px 10px; cursor: pointer; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.05em;
+      transition: 0.15s;
+    }
+    .archive-toggle:hover { background: var(--bg-alt); }
+    .archive-toggle.archive-active {
+      background: var(--accent); color: var(--accent-text, #fff);
+      border-color: var(--accent);
+    }
     .proj-filter-btn.proj-filter-active {
       background: var(--accent);
       color: white;
@@ -1129,7 +1141,7 @@
       routines: { loaded: false, items: [], expandedId: null },
       signals: { loaded: false, items: [], selectedAgent: 'director', typeFilter: '', unreadOnly: false },
       slots: { loaded: false, items: [], expandedLabel: null },
-      adrPhases: { loaded: false, items: [], updatedAt: '', projectFilter: '' },
+      adrPhases: { loaded: false, items: [], updatedAt: '', projectFilter: '', hideArchived: true },
       crystals: { loaded: false, items: [], search: '', lessonMap: {} },
       profile: { loaded: false, projects: [], selectedProject: '', data: null },
       replay: { loaded: false, sessions: [], selectedId: '', timeline: null, cursor: 0, playing: false, speed: 1, timer: null, startAt: 0, offsetAt: 0 },
@@ -4452,6 +4464,22 @@
       if (state.adrPhases.projectFilter) {
         items = items.filter(function(a) { return a.project === state.adrPhases.projectFilter; });
       }
+      // Hide archived (complete/deprecated/superseded + older than 7 days)
+      if (state.adrPhases.hideArchived) {
+        var cutoff = Date.now() / 1000 - 7 * 86400;
+        items = items.filter(function(a) {
+          if (a.status !== 'Accepted' && a.status !== 'Proposed' && a.status !== 'Superseded') return true; // show non-terminal
+          if (a.status === 'Superseded' || a.status === 'Deprecated') {
+            // Hide if mtime is set and older than 7 days
+            if (a.mtime && a.mtime > 0 && a.mtime < cutoff) return false;
+          }
+          if (a.phase && a.phase.status) {
+            var lastPhase = a.phase.status[a.phase.total];
+            if (lastPhase === 'done' && a.mtime && a.mtime > 0 && a.mtime < cutoff) return false;
+          }
+          return true;
+        });
+      }
 
       function isComplete(a) {
         if (a.status === 'Deprecated' || a.status === 'Superseded') return true;
@@ -4512,6 +4540,15 @@
       });
       html += '</div>';
 
+      // Archive toggle
+      var archived = state.adrPhases.hideArchived;
+      html += '<div style="display:flex;gap:6px;padding:4px 0;align-items:center;">';
+      html += '<span style="font-size:11px;color:var(--ink-muted);font-family:var(--font-ui);text-transform:uppercase;letter-spacing:0.08em;">Archive:</span>';
+      html += '<button class="archive-toggle' + (archived ? ' archive-active' : '') + '" data-archived="true">Hide >7d</button>';
+      html += '<button class="archive-toggle' + (!archived ? ' archive-active' : '') + '" data-archived="false">Show all</button>';
+      html += '<span style="font-size:10px;color:var(--ink-faint);font-family:var(--font-mono);margin-left:4px;">(completed/deprecated/superseded >7 days old)</span>';
+      html += '</div>';
+
       html += '<div style="padding:4px 0;font-size:10px;color:var(--ink-faint);font-family:var(--font-mono);">Index updated: ' + (state.adrPhases.updatedAt || 'unknown') + '</div>';
 
       view.innerHTML = html;
@@ -4520,6 +4557,13 @@
       view.querySelectorAll('.proj-filter-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
           state.adrPhases.projectFilter = this.dataset.proj;
+          renderAdrPhases();
+        });
+      });
+      // Bind archive toggle clicks
+      view.querySelectorAll('.archive-toggle').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          state.adrPhases.hideArchived = this.dataset.archived === 'true';
           renderAdrPhases();
         });
       });
