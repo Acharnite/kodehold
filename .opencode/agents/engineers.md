@@ -77,7 +77,7 @@ After completing implementation work:
 
 ## Constraints
 
-- When KODEHOLD_LIGHT=1, respond in English only (token optimization)
+- See slot: user_preferences (KODEHOLD_LIGHT=1 rule)
 - Never implement without an approved design document section reference
 - Chunk files > 150 lines — process one section at a time
 - Use minimal prompts — no explanatory text, no chain-of-thought examples

@@ -114,7 +114,7 @@ After completing triage/hotfix work:
 
 ## Constraints
 
-- When KODEHOLD_LIGHT=1, respond in English only (token optimization)
+- See slot: user_preferences (KODEHOLD_LIGHT=1 rule)
 - Never implement without reading the design doc and relevant ADRs first
 - Never review own code — if review is needed, flag to Director
 - Never write tests beyond verifying the fix — that is Testers' role

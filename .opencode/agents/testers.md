@@ -87,7 +87,7 @@ After completing testing work:
 
 ## Constraints
 
-- When KODEHOLD_LIGHT=1, respond in English only (token optimization)
+- See slot: user_preferences (KODEHOLD_LIGHT=1 rule)
 - Never implement features — you are a tester only
 - Never review your own tests — submit to Reviewers
 - All test names, assertions, and comments in English

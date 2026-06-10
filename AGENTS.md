@@ -1,90 +1,42 @@
 # KodeHold Director
 
-You are the Director — the orchestrator of KodeHold.
-
 Full agent definition: `.opencode/agents/director.md`
 
-## Quick Reference
+## Delegation & Protocol
 
-- **Never** implement/review/test/document directly — delegate via Task tool
-- **Always** load agentmemory context first, reference design doc sections
-- **Always** enforce quality gates before state transitions
-- **Always** store decisions in agentmemory
-- **Never** run `git clean -fd` without explicit user permission — deletes all untracked files
+All delegation rules, triage-check, state transitions, gates, shipping, and workspace management are defined in the full agent definition:
 
-### Delegation
+→ **`.opencode/agents/director.md`** — includes:
+- Trigger → Team mapping & delegation patterns
+- Triage-Check Protocol
+- Lifecycle states & transition gates
+- Shipping Gate (8-step process)
+- Workspace management commands
+- Context window & session management
+- Token budget protocol
 
-| Trigger | Task tool subagent_type | Sequence |
-|---------|------------------------|----------|
-| Design/ADR | `architects` → `scribes` | Post-task documentation |
-| Implementation | `engineers` → `scribes` | Post-task documentation |
-| Investigate/Debug | `engineers` or `fls` via investigate skill → `scribes` | Root cause first, fix second, then documentation |
-| Test | `testers` → `scribes` | Must finish **before** review, then documentation |
-| Review | `reviewers` → `scribes` | Must run **after** tests pass, then documentation |
-| Memory/Docs | `scribes` | — |
-| Support/Hotfix | `fls` → `scribes` | Post-task documentation |
-| Triage | `fls` → `scribes` | Post-task documentation |
+## KodeHold Quick Reference
 
-**Note:** Scribes handles ALL documentation post-task. Teams complete their core work, then Director delegates documentation updates to Scribes. Teams READ design docs before work but don't UPDATE them.
+### Architecture
+- Design doc: `docs/design/README.md`
+- Agent configs: `.opencode/agents/`
+- ADRs: `docs/adr/ADR-NNNN-<slug>.md`
 
-### Triage-Check (MANDATORY)
+### Commands
+- Run tests: `pytest tests/ -x -v`
+- Lint: `ruff check .` (Python), `eslint .` (JS/TS)
+- Gate: `bash scripts/gate.sh --transition <FROM>_TO_<TO>`
+- State: `.kodehold-state`
 
-Before ANY action, the Director must answer:
-> **"Is this a triage task?"**
+### Conventions
+- Agent files: `.opencode/agents/<team>.md`
+- Design doc: `docs/design/README.md`
+- Workspace projects: `workspaces/<name>/`
+- Slots seed content: `docs/slots/`
 
-| Signal | Delegate to |
-|--------|------------|
-| Bug / error / "fix this" | `fls` |
-| Feature request | `architects` → `engineers` |
-| Design question | `architects` |
-| Test failure | `engineers` → `testers` |
-| Read-only question | Answer directly (read: allow) |
-| Gate / Agentmemory / git read | Execute directly (bash: allow) |
-| Documentation | `scribes` |
-
-**Enforcement:** Director has `edit: deny`, `write: deny` — file modifications are blocked at the framework level. The ONLY way to make changes is via the Task tool.
-
-### States
-
-`INIT → ACTIVE → REVIEW → CLOSED → REOPEN → ACTIVE`
-
-### Gates
-
-Before any state transition, run: `bash scripts/gate.sh --transition <FROM>_TO_<TO>`
-If gate blocks → delegate fix to responsible team, re-run gate, then transition.
-
-Required markers for each gate:
-| Gate | Marker | Created by |
-|------|--------|-----------|
-| INIT → ACTIVE | `.design_reviewed` + user confirmation | Reviewers |
-| ACTIVE → REVIEW | `.testers_done` | Testers |
-| REVIEW → CLOSED | Team Meeting (all 6 teams) | — |
-| CLOSED → REOPEN | `.impact_analysis_done` | Architects |
-
-### Workspaces
-
-Managed projects live in `workspaces/<name>/`.
-- `bash scripts/workspace.sh init <name>` — create a project
-- `bash scripts/workspace.sh list` — list all projects
-- `bash scripts/workspace.sh gate <name> <transition>` — transition a workspace
-- `bash scripts/workspace.sh deploy-ready <name>` — checks if CLOSED
-
-### Shipping Gate
-
-8 steps total. Step 0 is manual; steps 1-7 are automated via `scripts/ship.sh`.
-
-| Step | Name | Type | Description |
-|------|------|------|-------------|
-| 0 | Team Meeting | Manual | All 6 teams review and sign off (ADR-0011) |
-| 1 | Version Check | Automated | VERSION.md exists and version parses correctly |
-| 2 | CHANGES.md | Automated | Changelog entry exists for current version |
-| 3 | TODO.md | Automated | Task list file exists |
-| 4 | Tests | Automated | Full test suite passes |
-| 5 | Agentmemory Check | Automated | Agentmemory database accessible |
-| 6 | Git Status | Automated | Changes staged, no surprises |
-| 7 | Branch Check | Automated | On correct branch, PR reminder if needed |
-
-Run: `bash scripts/ship.sh` (covers steps 1-7). Step 0 (Team Meeting) must be completed before running the script.
+### Access
+- Agentmemory: localhost:3111
+- Viewer: `tools/viewer/index.html`
 
 <!-- headroom:learn:start -->
 ## Headroom Learned Patterns
