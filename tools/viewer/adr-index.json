@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-06-05T18:59:35Z",
+  "updatedAt": "2026-06-06T23:51:48Z",
   "adrs": [
     {
       "id": "ADR-0001",
       "title": "ADR-0001: KodeHold Foundation and Principles",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -20,7 +20,7 @@
       "title": "ADR-0002: Organizational Structure \u2014 Director and Teams",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -34,7 +34,7 @@
       "title": "ADR-0003: Design Document Lifecycle",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -48,7 +48,7 @@
       "title": "ADR-0004: ICM and RTK Integration Strategy",
       "status": "Deprecated",
       "project": "kodehold",
-      "mtime": 1780685522,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -62,7 +62,7 @@
       "title": "ADR-0005: LLM Support and Light Mode",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -76,7 +76,7 @@
       "title": "ADR-0006: Second Opinion Protocol",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -90,7 +90,7 @@
       "title": "ADR-0007: Token Optimization Strategy",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -104,7 +104,7 @@
       "title": "ADR-0008: Project Lifecycle and Reopening",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -118,7 +118,7 @@
       "title": "ADR-0009: ICM MCP Integration",
       "status": "Superseded",
       "project": "kodehold",
-      "mtime": 1780685817,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -132,7 +132,7 @@
       "title": "ADR-0010: FLS \u2014 Front Line Support Team",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -146,7 +146,7 @@
       "title": "ADR-0011: Team Meeting \u2014 Collective Project Review",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -160,7 +160,7 @@
       "title": "ADR-0012: Adopted Projects \u2014 Existing Codebases in KodeHold",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -174,7 +174,7 @@
       "title": "ADR-0013: Investigate Skill \u2014 Systematic Debugging",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -188,7 +188,7 @@
       "title": "ADR-0014: Status Dashboard \u2014 KodeHold Project Overview",
       "status": "Superseded",
       "project": "kodehold",
-      "mtime": 1780685571,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -202,7 +202,7 @@
       "title": "ADR-0015: Director Delegation Enforcement via Tool Permissions",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -216,7 +216,7 @@
       "title": "ADR-0016: Early Review Gates in ACTIVE Phase",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -230,7 +230,7 @@
       "title": "ADR-0017: Reviewers as Gatekeeper + Mandatory Second Opinion",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -244,7 +244,7 @@
       "title": "ADR-0018: Centralize All Documentation Work Under Scribes",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -258,7 +258,7 @@
       "title": "ADR-0019: Session Context Compression via Periodic ICM Summaries",
       "status": "Superseded",
       "project": "kodehold",
-      "mtime": 1780685585,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -272,7 +272,7 @@
       "title": "ADR-0020: Hierarchical Memory (Hot/Warm/Cold)",
       "status": "Superseded",
       "project": "kodehold",
-      "mtime": 1780685610,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -286,7 +286,7 @@
       "title": "ADR-0021: Prospective Memory (Task Queue & Scheduler)",
       "status": "Superseded",
       "project": "kodehold",
-      "mtime": 1780685624,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -300,7 +300,7 @@
       "title": "ADR-0022: Automated Episodic Extraction",
       "status": "Superseded",
       "project": "kodehold",
-      "mtime": 1780685659,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -314,7 +314,7 @@
       "title": "ADR-0023: Semantic Memory Automation",
       "status": "Superseded",
       "project": "kodehold",
-      "mtime": 1780685696,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -328,7 +328,7 @@
       "title": "ADR-0024: Shared Memory (Multi-Agent Alignment)",
       "status": "Superseded",
       "project": "kodehold",
-      "mtime": 1780685726,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -342,7 +342,7 @@
       "title": "ADR-0025: A2A Protocol (Agent-to-Agent Coordination)",
       "status": "Superseded",
       "project": "kodehold",
-      "mtime": 1780685745,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -356,7 +356,7 @@
       "title": "ADR-0026: Second Opinion Same-Model Bias Enforcement",
       "status": "Superseded",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -370,7 +370,7 @@
       "title": "ADR-0027: ICM Knowledge Flow Invocation Modes",
       "status": "Superseded",
       "project": "kodehold",
-      "mtime": 1780685766,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -384,7 +384,7 @@
       "title": "ADR-0028: Agentmemory Project Detection Strategy",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -398,7 +398,7 @@
       "title": "ADR-0029: ICM \u2192 Agentmemory Migration Strategy",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 6,
         "total": 6,
@@ -425,7 +425,7 @@
       "title": "ADR-0030: Agentmemory Knowledge Flow",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -439,7 +439,7 @@
       "title": "ADR-0031: Actions + Crystals for Director Delegation",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -453,7 +453,7 @@
       "title": "ADR-0032: Routine Templates for KodeHold",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -467,7 +467,7 @@
       "title": "ADR-0033: Crystals + Signals for KodeHold",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -481,7 +481,7 @@
       "title": "ADR-0033: Inter-Agent Signals + Sentinels",
       "status": "Superseded",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -495,7 +495,7 @@
       "title": "ADR-0034: Workflow Monitor Interface",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -512,7 +512,7 @@
       "title": "ADR-0035: Custom KodeHold Viewer",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780658746,
+      "mtime": 1780724315,
       "phase": {
         "current": 6,
         "total": 6,
@@ -539,7 +539,7 @@
       "title": "ADR-0036: Project Slug Convention \u2014 Stable Canonical Identifiers",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -553,7 +553,7 @@
       "title": "ADR-0037: YAML-Based Agent and Task Configuration",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -567,7 +567,7 @@
       "title": "ADR-0038: Knowledge Recall Protocol",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -581,7 +581,7 @@
       "title": "ADR-0039: Pre-Flight Knowledge Check Enforcement",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -595,7 +595,7 @@
       "title": "ADR-0040: Headroom Integration \u2014 Context Compression Layer",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780685793,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 4,
@@ -618,7 +618,7 @@
       "title": "ADR-0041: Procedural Consolidation Tier \u2014 Bridge Pattern Detection to Pipeline",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780663738,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 1,
@@ -632,7 +632,7 @@
       "title": "ADR-0042: ADR Implementation Phase Board",
       "status": "Accepted",
       "project": "kodehold",
-      "mtime": 1780658621,
+      "mtime": 1780686803,
       "phase": {
         "current": 1,
         "total": 3,
@@ -645,6 +645,85 @@
           "1": "in-progress",
           "2": "not-started",
           "3": "not-started"
+        }
+      }
+    },
+    {
+      "id": "ADR-0043",
+      "title": "ADR-0043: Agentmemory Slot Integration for KodeHold",
+      "status": "Accepted",
+      "project": "kodehold",
+      "mtime": 1780720602,
+      "phase": {
+        "current": 4,
+        "total": 4,
+        "names": {
+          "1": "Fill empty slots",
+          "2": "Restructure populated slots",
+          "3": "Update agent files \u2014 remove migrated boilerplate",
+          "4": "Let agentmemory auto-populate 3 slots"
+        },
+        "status": {
+          "1": "done",
+          "2": "done",
+          "3": "done",
+          "4": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0044",
+      "title": "ADR-0044: Automatic Session Lifecycle Management in agentmemory-capture Plugin",
+      "status": "Accepted",
+      "project": "kodehold",
+      "mtime": 1780723486,
+      "phase": {
+        "current": 0,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0045",
+      "title": "ADR-0045: Patch mem::remember to Create KV.relations Entry on Supersede",
+      "status": "Accepted",
+      "project": "kodehold",
+      "mtime": 1780727083,
+      "phase": {
+        "current": 0,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0001",
+      "title": "ADR-0001: Viewer Loopback Relaxation \u2014 Treat 0.0.0.0 as Loopback",
+      "status": "Accepted",
+      "project": "agentmemory",
+      "mtime": 1780691264,
+      "phase": {
+        "current": 0,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0002",
+      "title": "ADR-0002: Viewer Security Bypass for Local Development",
+      "status": "Accepted",
+      "project": "agentmemory",
+      "mtime": 1780691264,
+      "phase": {
+        "current": 0,
+        "total": 1,
+        "status": {
+          "1": "done"
         }
       }
     },
@@ -880,6 +959,48 @@
       "status": "Accepted",
       "project": "bob",
       "mtime": 1780421687,
+      "phase": {
+        "current": 0,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-1016",
+      "title": "ADR-1016: Bob Memory Server \u2014 Lightweight MCP Memory for Personal AI Assistant",
+      "status": "Accepted",
+      "project": "bob",
+      "mtime": 1780715894,
+      "phase": {
+        "current": 0,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-1017",
+      "title": "ADR-1017: opencode-mem \u2014 Semantic Memory Backend for Personal AI Assistant",
+      "status": "Accepted",
+      "project": "bob",
+      "mtime": 1780779439,
+      "phase": {
+        "current": 0,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-1018",
+      "title": "ADR-1018: Bob PKM Improvement Roadmap \u2014 2026 Trends-Driven Evolution",
+      "status": "Proposed",
+      "project": "bob",
+      "mtime": 1780789298,
       "phase": {
         "current": 0,
         "total": 1,

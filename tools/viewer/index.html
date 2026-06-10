@@ -1001,6 +1001,7 @@
     <button class="active" data-tab="dashboard" aria-current="page">Dashboard</button>
     <button data-tab="graph">Graph</button>
     <button data-tab="memories">Memories</button>
+    <button data-tab="memory-types">Memory Types</button>
     <button data-tab="timeline">Timeline</button>
     <button data-tab="sessions">Sessions</button>
     <button data-tab="lessons">Lessons</button>
@@ -1022,6 +1023,7 @@
   <div id="view-dashboard" class="view active"></div>
   <div id="view-graph" class="view"></div>
   <div id="view-memories" class="view"></div>
+  <div id="view-memory-types" class="view"></div>
   <div id="view-lessons" class="view"></div>
   <div id="view-actions" class="view"></div>
   <div id="view-crystals" class="view"></div>
@@ -1124,7 +1126,7 @@
       task: '&#9745;', other: '&#128196;'
     };
     var CB_STATE_COLORS = { closed: 'badge-green', open: 'badge-red', 'half-open': 'badge-yellow' };
-    var TAB_IDS = ['dashboard', 'graph', 'memories', 'timeline', 'sessions', 'lessons', 'actions', 'crystals', 'audit', 'activity', 'profile', 'replay', 'frontier', 'routines', 'signals', 'slots', 'adr-phases'];
+    var TAB_IDS = ['dashboard', 'graph', 'memories', 'memory-types', 'timeline', 'sessions', 'lessons', 'actions', 'crystals', 'audit', 'activity', 'profile', 'replay', 'frontier', 'routines', 'signals', 'slots', 'adr-phases'];
 
     var state = {
       activeTab: 'dashboard',
@@ -1142,6 +1144,7 @@
       signals: { loaded: false, items: [], selectedAgent: 'director', typeFilter: '', unreadOnly: false },
       slots: { loaded: false, items: [], expandedLabel: null },
       adrPhases: { loaded: false, items: [], updatedAt: '', projectFilter: '', hideArchived: true },
+      memoryTypes: { loaded: false, semantic: [], procedural: [], search: '' },
       crystals: { loaded: false, items: [], search: '', lessonMap: {} },
       profile: { loaded: false, projects: [], selectedProject: '', data: null },
       replay: { loaded: false, sessions: [], selectedId: '', timeline: null, cursor: 0, playing: false, speed: 1, timer: null, startAt: 0, offsetAt: 0 },
@@ -1313,6 +1316,7 @@
         case 'dashboard': if (!state.dashboard.loaded) await loadDashboard(); break;
         case 'graph': if (!state.graph.loaded) await loadGraph(); break;
         case 'memories': if (!state.memories.loaded) await loadMemories(); break;
+        case 'memory-types': if (!state.memoryTypes.loaded) await loadMemoryTypes(); break;
         case 'timeline': if (!state.timeline.loaded) await loadTimeline(); break;
         case 'sessions': if (!state.sessions.loaded) await loadSessions(); break;
         case 'lessons': if (!state.lessons.loaded) await loadLessons(); break;
@@ -1587,6 +1591,9 @@
             if (conf !== null) html += '<span style="font-size:10px;font-family:var(--font-mono);color:var(--ink-faint);">' + conf + '%</span>';
             html += '</span></div>';
           });
+          if (semFacts.length > 5) {
+            html += '<div style="margin-top:8px;text-align:right;"><a href="#" data-tab-link="memory-types" style="font-size:11px;font-family:var(--font-ui);color:var(--blue);text-decoration:none;font-weight:600;">Show all ' + semFacts.length + ' &rarr;</a></div>';
+          }
         }
         html += '</div>';
 
@@ -1607,6 +1614,9 @@
             }
             html += '</div>';
           });
+          if (procItems.length > 5) {
+            html += '<div style="margin-top:8px;text-align:right;"><a href="#" data-tab-link="memory-types" style="font-size:11px;font-family:var(--font-ui);color:var(--blue);text-decoration:none;font-weight:600;">Show all ' + procItems.length + ' &rarr;</a></div>';
+          }
         }
       html += '</div>';
 
@@ -1615,6 +1625,7 @@
       html += '<div class="card" style="margin-top:16px;"><div class="card-title">Consolidation Status</div>';
       html += '<div class="consolidation-row"><span class="cl">Semantic facts</span><span class="cv">' + semFacts.length + '</span></div>';
       html += '<div class="consolidation-row"><span class="cl">Procedures</span><span class="cv">' + procItems.length + '</span></div>';
+      html += '<div class="consolidation-row"><span class="cl">Graph edges</span><span class="cv">' + edgeCount + '</span></div>';
       html += '<div class="consolidation-row"><span class="cl">Relations</span><span class="cv">' + relItems.length + '</span></div>';
       html += '</div>';
 
@@ -4606,6 +4617,112 @@
 
       html += '</div>';
       return html;
+    }
+
+    async function loadMemoryTypes() {
+      var el = document.getElementById('view-memory-types');
+      el.innerHTML = '<div class="loading">Loading memory types...</div>';
+      try {
+        var results = await Promise.all([
+          apiGet('semantic'),
+          apiGet('procedural')
+        ]);
+        state.memoryTypes.semantic = (results[0] && results[0].facts) || (results[0] && results[0].semantic) || [];
+        state.memoryTypes.procedural = (results[1] && results[1].procedures) || (results[1] && results[1].procedural) || [];
+        state.memoryTypes.loaded = true;
+        renderMemoryTypes();
+      } catch (err) {
+        var msg = (err && err.message) ? err.message : String(err);
+        el.innerHTML = '<div class="error">Failed to load memory types: ' + esc(msg) + '</div>';
+        console.error('[viewer] loadMemoryTypes error:', err);
+      }
+    }
+
+    function renderMemoryTypes() {
+      var el = document.getElementById('view-memory-types');
+      var semantic = state.memoryTypes.semantic;
+      var procedural = state.memoryTypes.procedural;
+      var search = state.memoryTypes.search.toLowerCase();
+
+      function filterItems(items, fields) {
+        if (!search) return items;
+        return items.filter(function(item) {
+          for (var i = 0; i < fields.length; i++) {
+            var val = item[fields[i]];
+            if (val && String(val).toLowerCase().indexOf(search) >= 0) return true;
+          }
+          return false;
+        });
+      }
+
+      var filteredSem = filterItems(semantic, ['fact', 'content', 'title']);
+      var filteredProc = filterItems(procedural, ['name', 'title', 'trigger', 'triggerCondition']);
+
+      var html = '<div class="card" style="margin-bottom:12px;padding:12px;background:var(--bg-subtle);">';
+      html += '<div style="font-size:13px;color:var(--ink-muted);line-height:1.5;">';
+      html += '<strong>Memory Types</strong> shows all semantic facts and procedural memories extracted by the consolidation pipeline. ';
+      html += '<span style="color:var(--ink-faint);">Semantic: ' + semantic.length + ' | Procedural: ' + procedural.length + ' total.</span>';
+      html += '</div></div>';
+
+      html += '<div class="toolbar">';
+      html += '<input type="text" id="memtype-search" placeholder="Search memory types..." value="' + esc(state.memoryTypes.search) + '">';
+      html += '</div>';
+
+      html += '<h3 style="font-family:var(--font-display);font-size:15px;color:var(--ink);margin:16px 0 8px 0;text-transform:uppercase;letter-spacing:0.06em;">Semantic Facts (' + filteredSem.length + ')</h3>';
+      if (filteredSem.length === 0) {
+        html += '<div style="font-size:13px;color:var(--ink-faint);font-style:italic;padding:8px 0;">No semantic facts' + (search ? ' matching "' + esc(search) + '"' : '') + '.</div>';
+      } else {
+        html += '<table><tr><th>Fact</th><th>Strength</th><th>Confidence</th></tr>';
+        filteredSem.forEach(function(f) {
+          var conf = typeof f.confidence === 'number' ? Math.round(f.confidence * 100) : null;
+          var str = typeof f.strength === 'number' ? Math.round(f.strength * 100) : null;
+          var barColor = (str || 0) > 70 ? 'var(--green)' : (str || 0) > 40 ? 'var(--yellow)' : 'var(--red)';
+          var factText = f.fact || f.content || f.title || 'Fact';
+          var previewHtml = esc(truncate(factText, 200));
+          if (search && search.length > 2) {
+            var re = new RegExp('(' + search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+            previewHtml = previewHtml.replace(re, '<mark>$1</mark>');
+          }
+          html += '<tr>';
+          html += '<td style="color:var(--ink);">' + previewHtml + '</td>';
+          html += '<td><div class="strength-bar"><div class="fill" style="width:' + (str || 0) + '%;background:' + barColor + '"></div></td>';
+          html += '<td style="font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);">' + (conf !== null ? conf + '%' : '—') + '</td>';
+          html += '</tr>';
+        });
+        html += '</table>';
+      }
+
+      html += '<h3 style="font-family:var(--font-display);font-size:15px;color:var(--ink);margin:24px 0 8px 0;text-transform:uppercase;letter-spacing:0.06em;">Procedural Memories (' + filteredProc.length + ')</h3>';
+      if (filteredProc.length === 0) {
+        html += '<div style="font-size:13px;color:var(--ink-faint);font-style:italic;padding:8px 0;">No procedural memories' + (search ? ' matching "' + esc(search) + '"' : '') + '.</div>';
+      } else {
+        html += '<table><tr><th>Name</th><th>Trigger</th><th>Steps</th><th>Frequency</th></tr>';
+        filteredProc.forEach(function(p) {
+          var nameHtml = esc(p.name || p.title || 'Procedure');
+          if (search && search.length > 2) {
+            var re = new RegExp('(' + search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+            nameHtml = nameHtml.replace(re, '<mark>$1</mark>');
+          }
+          html += '<tr>';
+          html += '<td style="color:var(--ink);font-weight:600;">' + nameHtml + '</td>';
+          html += '<td style="font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);">' + esc(p.trigger || p.triggerCondition || '—') + '</td>';
+          html += '<td style="font-size:12px;">' + (p.steps ? p.steps.length : 0) + '</td>';
+          html += '<td style="font-size:12px;color:var(--ink-muted);">' + (p.frequency || '—') + '</td>';
+          html += '</tr>';
+        });
+        html += '</table>';
+      }
+
+      var __focus = captureSearchFocus(['memtype-search']);
+      el.innerHTML = html;
+
+      var searchInput = document.getElementById('memtype-search');
+      if (searchInput) {
+        bindImeSafeSearch(searchInput, 200, function(v) {
+          state.memoryTypes.search = v;
+          renderMemoryTypes();
+        });
+      }
     }
 
     switchTab(tabFromRoute(), { replaceRoute: true });
