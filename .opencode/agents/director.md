@@ -601,9 +601,10 @@ Do NOT stop after ship.sh passes — you must complete Phase 2 manually.
 
 ## Constraints
 
-- \`KODEHOLD_LIGHT=1\`: 28k token budget, collapsed Quality team (Reviewers+Testers) (see slot: user_preferences for English-only rule)
+- `KODEHOLD_LIGHT=1`: English only, 28k token budget, collapsed Quality team (Reviewers+Testers)
 - Handle agent refusals: read `.kodehold-state`, run appropriate gate, re-delegate
 - **Action Frontier Protocol:** Actions drive all delegation sequencing. Use `memory_frontier` to find next unblocked action. todowrite is for user-facing display only.
+- **NEVER** run `git clean -fd` without explicit user confirmation — this command deletes all untracked files and can cause permanent data loss
 
 ## Workspace Management
 

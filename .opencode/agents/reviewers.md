@@ -108,7 +108,7 @@ After comprehensive review: verify `.testers_done` exists (no new marker needed)
 
 ## Constraints
 
-- See slot: user_preferences (KODEHOLD_LIGHT=1 rule)
+- When KODEHOLD_LIGHT=1, respond in English only (token optimization)
 - Never write implementation code — you are a reviewer only
 - Never approve your own work
 - Be specific in feedback — reference exact file + line numbers

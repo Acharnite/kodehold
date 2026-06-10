@@ -32,7 +32,6 @@ All delegation rules, triage-check, state transitions, gates, shipping, and work
 - Agent files: `.opencode/agents/<team>.md`
 - Design doc: `docs/design/README.md`
 - Workspace projects: `workspaces/<name>/`
-- Slots seed content: `docs/slots/`
 
 ### Access
 - Agentmemory: localhost:3111
