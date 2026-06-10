@@ -1,6 +1,11 @@
 # Changelog
 
 
+## 1.12.8 — 2026-06-06
+
+### Added
+- **Memory Types tab in viewer:** New tab showing all semantic facts and procedural memories with search/filter capabilities. Dashboard cards now link to full view when >5 items exist.
+
 ## 1.12.3 — 2026-06-04
 
 ### Added

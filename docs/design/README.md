@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.12.3  
+**Version:** 1.12.9  
 **Status:** Active  
-**Last Updated:** 2026-06-04
+**Last Updated:** 2026-06-06
 
 ---
 
@@ -241,6 +241,9 @@ Consequences: Trade-offs and follow-ups
 | ADR-0040 | Headroom Integration — Context Compression Layer | Proposed |
 | ADR-0041 | Procedural Consolidation Tier — Bridge Pattern Detection to Pipeline | Accepted |
 | ADR-0042 | ADR Implementation Phase Board | Accepted |
+| ADR-0043 | Agentmemory Slot Integration | Proposed |
+| ADR-0044 | Automatic Session Lifecycle Management | Accepted |
+| ADR-0045 | Patch mem::remember to Create KV.relations Entry on Supersede | Accepted |
 
 
 See `docs/adr/README.md` for full details.
@@ -703,6 +706,12 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.12.9 (2026-06-06):** ADR-0045 promoted from Proposed → Accepted after Reviewers approval. Patch mem::remember to create KV.relations entry on supersede.
+- **v1.12.8 (2026-06-06):** Viewer: Added 'Memory Types' tab showing all semantic facts and procedural memories with search/filter. Dashboard cards now link to full view when >5 items exist.
+- **v1.12.7 (2026-06-06):** Archive detection tested — 25 unit tests added in `test/archive-detection.test.ts` covering happy path (archive detection fires `/session/end`), negative case (no `time.archived` → no action), and edge cases (missing session ID, null info, malformed time object). All tests pass. ADR-0044 Compliance table updated with unit test verification.
+- **v1.12.6 (2026-06-06):** ADR-0044 implementation — three in-plugin session lifecycle mechanisms deployed in agentmemory-capture.ts: archive detection (session.updated with time.archived), per-process 24-hour idle timer (resets on activity), and process exit handlers (SIGTERM/SIGINT). Removed cron-based cleanup scripts (`scripts/agentmemory-session-cleanup.sh`, `scripts/agentmemory-session-cleanup.py`). Updated ADR-0044 status remains Accepted.
+- **v1.12.5 (2026-06-06):** ADR-0044 promoted from Proposed → Accepted after Reviewers approval and second opinion. Updated ADR index table. ADR file updated with: clarified cron diagram, moved SIGKILL orphan to Deferred/Future Work, strengthened configurable timeout rationale, added v1.1 changelog entry.
+- **v1.12.4 (2026-06-06):** Added ADR-0044 (Automatic Session Lifecycle Management, Proposed) to ADR Index table. The ADR replaces cron-based session cleanup with three in-plugin mechanisms in the agentmemory-capture plugin: archive detection via session.updated, per-process 24-hour idle timer, and process exit handlers (SIGTERM/SIGINT).
 - **v1.12.2 (2026-06-03):** Knowledge Recall Protocol implementation — fixed broken lesson recall by adding project scoping (`project="kodehold"`), increasing limit to 10, using team-prefixed query format, adding fallback step. Batch-tagged 122 existing lessons with companion lessons. Created ADR-0038 and design doc `docs/design/knowledge-recall.md`.
 - **v1.12.1 (2026-06-03):** Agentmemory v0.9.25 upgrade. 5 obsolete patches removed, archived to patches-v0.9.24/. Viewer bind via AGENTMEMORY_VIEWER_HOST env var. All upstream bug fixes from our GitHub reports now included.
 - **v1.12.0 (2026-06-02):** Implemented Issue #34 — YAML-based agent & task configuration. Phase 1-4 complete: `config/agents.yaml`, `config/agents.schema.json`, `config/tasks.yaml`, `validate-config.sh`, `sync-agent-config.sh`, schema validation tests (46 tests). ADR-0037 promoted from Proposed → Accepted.

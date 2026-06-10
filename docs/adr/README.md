@@ -51,4 +51,7 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0040](ADR-0040-headroom-integration.md) | Headroom Integration — Context Compression Layer | Proposed | 2026-06-04 |
 | [ADR-0041](ADR-0041-procedural-consolidation-fix.md) | Procedural Consolidation Tier — Bridge Pattern Detection to Pipeline | Accepted | 2026-06-04 |
 | [ADR-0042](ADR-0042-adr-implementation-phase-board.md) | ADR Implementation Phase Board | Accepted | 2026-06-05 |
+| [ADR-0043](ADR-0043-agentmemory-slot-integration.md) | Agentmemory Slot Integration | Accepted | 2026-06-06 |
+| [ADR-0044](ADR-0044-automatic-session-lifecycle-management.md) | Automatic Session Lifecycle Management in agentmemory-capture Plugin | Accepted | 2026-06-06 |
+| [ADR-0045](ADR-0045-memory-remember-relations-patch.md) | Patch mem::remember to Create KV.relations Entry on Supersede | Accepted | 2026-06-06 |
 

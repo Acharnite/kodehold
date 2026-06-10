@@ -24,14 +24,15 @@ phase:
 
 Accepted
 
-**Version:** 2.0
-**Last Updated:** 2026-06-02
-**Phase:** Phase 6 (Observability) — builds on Phases 3–5 (Actions, Routines, Crystals + Signals) to add a dedicated interactive viewer with Frontier, Routines, and Signals views.
+**Version:** 2.1
+**Last Updated:** 2026-06-06
+**Phase:** Phase 6 (Observability) — builds on Phases 3–5 (Actions, Routines, Crystals + Signals) to add a dedicated interactive viewer with Frontier, Routines, Signals, and Memory Types views.
 
 ### Changelog
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-06-06 | Added Memory Types tab — fetches all semantic facts and procedural memories with search/filter. Dashboard cards link to full view when >5 items exist. |
 | 2.0 | 2026-06-02 | Addressed review blockers: signals agentId REQUIRED, frontier blockers clarified, input sanitization + CORS + error handling section added, Google Fonts removed, routines schema corrected, API query parameters documented |
 | 1.0 | — | Initial proposal |
 
@@ -104,13 +105,14 @@ Build a custom KodeHold viewer as a standalone single HTML file with embedded CS
 
 ### Viewer Tab Design
 
-The custom viewer adds 3 new tabs and enhances 1 existing tab, relative to the built-in viewer:
+The custom viewer adds 4 new tabs and enhances 2 existing tabs, relative to the built-in viewer:
 
 | Tab | Source | Description |
 |-----|--------|-------------|
-| **Dashboard** | Built-in viewer | Unchanged — shows stats overview |
+| **Dashboard** | Built-in viewer **+ enhanced** | Stats overview — Semantic Memory and Procedural Memory cards now show "Show all N →" links when >5 items exist, linking to the Memory Types tab |
 | **Graph** | Built-in viewer | Unchanged — knowledge graph visualization |
 | **Memories** | Built-in viewer | Unchanged — memory entries browser |
+| **Memory Types** | **New** | All semantic facts and procedural memories with search/filter |
 | **Timeline** | Built-in viewer | Unchanged — chronological observation view |
 | **Sessions** | Built-in viewer | Unchanged — session list |
 | **Lessons** | Built-in viewer | Unchanged — lessons table |
@@ -167,6 +169,16 @@ The custom viewer adds 3 new tabs and enhances 1 existing tab, relative to the b
   - Reply indicator (if `replyTo` is set, link to parent signal)
 - **Filter by:** Agent (from/to), type, unread only
 
+### Memory Types Tab Design
+
+- **Data source:** `GET /agentmemory/semantic` and `GET /agentmemory/procedural`
+- **Two sub-sections:**
+  - **Semantic Facts** — table of all semantic memories extracted by the consolidation pipeline, with columns: Content, Type, Concepts, Confidence, Created
+  - **Procedural Memories** — table of all procedural workflow routines extracted by the consolidation pipeline, with columns: Name, Trigger, Steps, Confidence, Created
+- **Search/filter:** Each sub-section has a search input that filters rows by text match
+- **Dashboard integration:** The Dashboard tab's Semantic Memory and Procedural Memory cards show "Show all N →" links when there are more than 5 items, linking directly to the Memory Types tab
+- **Empty state:** Shows "No semantic facts found" or "No procedural memories found" when the API returns empty results
+
 ### Actions Tab Enhancement
 
 - **Add project filter dropdown** above the table
@@ -183,6 +195,8 @@ The custom viewer adds 3 new tabs and enhances 1 existing tab, relative to the b
 | `/agentmemory/frontier` | GET | limit, project, agentId | `{ frontier: [{action, score, blockers, leased}] }` | Frontier tab |
 | `/agentmemory/routines` | GET | frozen | `{ routines: [{id, name, steps, frozen, ...}] }` | Routines tab |
 | `/agentmemory/signals?agentId=X` | GET | agentId (REQUIRED), unreadOnly, threadId, limit | `{ signals: [{id, from, to, type, content, threadId, ...}] }` | Signals tab |
+| `/agentmemory/semantic` | GET | (none) | `{ semantic: [{content, type, concepts, confidence, createdAt, ...}] }` | Memory Types tab |
+| `/agentmemory/procedural` | GET | (none) | `{ procedural: [{name, trigger, steps, confidence, createdAt, ...}] }` | Memory Types tab |
 | `/agentmemory/crystals` | GET | (none) | `{ crystals: [...] }` | (optional — matches built-in) |
 
 The viewer does **not** call any write endpoints. It is read-only.
@@ -264,7 +278,7 @@ The viewer is a single HTML file for maximum portability — matching the built-
 
 ### Positive
 
-1. **Three missing views, zero risk.** Frontier, Routines, and Signals become visible without touching agentmemory's files.
+1. **Four missing views, zero risk.** Frontier, Routines, Signals, and Memory Types become visible without touching agentmemory's files.
 2. **Project filter for Actions.** Reduces noise when monitoring specific workspaces.
 3. **Self-contained.** One HTML file — `scp` it anywhere, open it anywhere.
 4. **Complementary to ADR-0034.** The workflow monitor (Python, snapshot) and this viewer (JS, interactive) serve different use cases — one for Slack/email reports, one for interactive debugging.
@@ -292,11 +306,13 @@ The viewer is a single HTML file for maximum portability — matching the built-
 
 ### Follow-up
 
-- [ ] Create `tools/viewer/README.md` with quick-start instructions and CORS setup guide
-- [ ] Implement Frontier tab (table + project filter + score badges)
-- [ ] Implement Routines tab (card layout + expandable step DAGs)
-- [ ] Implement Signals tab (agent selector + threaded view + type badges)
-- [ ] Add project filter dropdown to Actions tab
+- [x] Create `tools/viewer/README.md` with quick-start instructions and CORS setup guide
+- [x] Implement Frontier tab (table + project filter + score badges)
+- [x] Implement Routines tab (card layout + expandable step DAGs)
+- [x] Implement Signals tab (agent selector + threaded view + type badges)
+- [x] Add project filter dropdown to Actions tab
+- [x] Add Memory Types tab (semantic facts + procedural memories with search/filter)
+- [x] Add "Show all N →" links from Dashboard to Memory Types tab
 - [ ] Add auto-refresh toggle (5s/10s/30s/off)
 - [ ] Test with agentmemory daemon running and stopped (degradation)
 - [ ] Register viewer path in opencode.json as optional Director tool reference
