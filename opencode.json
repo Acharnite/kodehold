@@ -10,6 +10,14 @@
       "environment": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "{env:GITHUB_PERSONAL_ACCESS_TOKEN}"
       }
+    },
+    "am": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@agentmemory/mcp"
+      ]
     }
   },
   "default_agent": "director",
