@@ -64,13 +64,13 @@ If test collection fails with path-related errors, always fall back to `realpath
 
 1. Read the Testing Strategy section of the design document
 2. Read the code under test to understand what needs verification
+2b. **Read API documentation** — for any external dependency whose API you are mocking, stubbing, or testing, read the relevant sections of its official documentation (per the ADR's Documentation section per ADR-0048). Ensure mocks/stubs match the documented request/response contracts, not assumptions from the implementation.
 3. Write tests before reporting — always provide test code
-4. Run existing test suite to verify no regressions
-    - Use the KodeHold root `.venv/bin/pytest` (always available — installed with pytest, pyyaml, requests)
-    - For workspace projects, pass the test directory: `.venv/bin/pytest workspaces/<project>/tests/`
-    - Set `PYTHONPATH=src` so the project's own modules resolve
-    - If a project needs additional packages, install them in the KodeHold root `.venv` with `.venv/bin/pip install <pkg>`
-    - Never use `rtk pytest` — rtk does not support pytest as a subcommand
+4. Run test suite following ADR-0047 (Universal Test Execution Standard):
+       - Use **full** mode (`-v --tb=short`) for the complete regression suite
+       - For symlinked workspace projects, follow Section 4 of ADR-0047 (realpath resolution)
+       - Never use `rtk pytest` — rtk does not support pytest as a subcommand
+       - Use `scripts/detect-test-framework.sh` for non-Python projects
 5. Report coverage gaps with specific file + line references
 6. Use RTK for all CLI operations
 7. **On completion** — when all tests pass, create `.testers_done` marker to signal gate:

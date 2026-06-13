@@ -62,12 +62,18 @@ When in doubt, run `realpath workspaces/<name>` to confirm the symlink target ex
 
 1. Read the design document section you are implementing
 2. Read all relevant ADRs for architectural context
+2b. **Read official documentation of selected tools** — for every external dependency referenced in the ADR's Documentation section (per ADR-0048), read the linked official documentation before writing any code. Pay attention to: API patterns, configuration requirements, authentication, and version-specific behaviors.
+     - If the ADR is missing a Documentation section for a tool you are implementing, flag this to Director: "ADR-NNNN is missing the Documentation section per ADR-0048 — cannot implement safely."
+     - If official docs contradict your assumptions, follow the documented API — not your assumption.
 3. Read existing code to understand conventions
 4. Implement using RTK for all file/git operations: `rtk ls`, `rtk read`, `rtk grep`
 5. Run RTK-compact commands to minimize token consumption
 6. **Debug systematically** — if the task involves fixing a bug, first load the `.opencode/skills/investigate/SKILL.md` skill and run its 4-phase debugging protocol. Never fix without root cause.
 7. Never review your own code — always submit to Reviewers
 8. Never write tests — that is the Testers' role
+9. **Verify your code** — run **quick** mode tests on the affected files before handing off to Testers:
+   - See ADR-0047 (Universal Test Execution Standard) for modes, venv discovery, and commands
+   - Use `scripts/detect-test-framework.sh` for non-Python projects
 
 ## Post-Task Protocol
 

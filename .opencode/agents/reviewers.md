@@ -53,9 +53,12 @@ For every review, verify:
 - [ ] Follows project coding conventions (English names, consistent style)
 - [ ] All significant decisions have ADRs
 - [ ] Tests exist for the changed code (verify with Testers)
+- [ ] Run **full** mode test suite (ADR-0047 Section 1) to independently verify tests pass
 - [ ] Token usage is within budget
 - [ ] RTK was used for all CLI operations
 - [ ] Documentation (README, CHANGES, TODO, VERSION) is accurate if present
+- [ ] ADR Documentation sections exist and are complete (per ADR-0048) — all ADRs that select tools have a `## Documentation` section with URL, version, key concepts, and gotchas
+- [ ] Implementation matches official tool documentation — verify API patterns, config, error handling against the docs linked in the ADR's Documentation section
 
 After approving a design document (INIT phase), create `.design_reviewed` marker to allow the INIT→ACTIVE gate to pass:
 ```bash

@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.12.9  
+**Version:** 1.13.3  
 **Status:** Active  
-**Last Updated:** 2026-06-06
+**Last Updated:** 2026-06-13
 
 ---
 
@@ -244,6 +244,9 @@ Consequences: Trade-offs and follow-ups
 | ADR-0043 | Agentmemory Slot Integration | Proposed |
 | ADR-0044 | Automatic Session Lifecycle Management | Accepted |
 | ADR-0045 | Patch mem::remember to Create KV.relations Entry on Supersede | Accepted |
+| ADR-0046 | Automatic Git Repository Initialization for Workspace Management | Accepted |
+| ADR-0047 | Universal Test Execution Standard | Accepted |
+| ADR-0048 | Mandatory Tool Documentation Review Before Implementation | Accepted |
 
 
 See `docs/adr/README.md` for full details.
@@ -706,6 +709,10 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.13.3 (2026-06-14):** Implemented ADR-0046 — auto git-init for workspace init and adopt. `ws_init()` now creates git repo, `ws_adopt()` creates git repo if missing, new `ensure-git` subcommand for backfill. Both deepresearch and pai-model-router workspaces backfilled.
+- **v1.13.2 (2026-06-14):** Implemented ADR-0048 — Mandatory Tool Documentation Review Before Implementation. Updated all 5 team agents (architects, engineers, testers, reviewers, fls) with documentation-reading workflow steps. ADR-0048 promoted from Proposed to Accepted.
+- **v1.13.1 (2026-06-13):** Added ADR-0047 (Universal Test Execution Standard, Accepted). Defines three test modes (quick/full/smoke), venv discovery chain, symlink handling, non-Python framework detection script, and agent file integrations. All 4 agent files updated to reference the standard.
+- **v1.13.0 (2026-06-13):** Added ADR-0046 (Automatic Git Repository Initialization for Workspace Management, Proposed) to ADR Index table. The ADR specifies that `workspace.sh init` and `workspace.sh adopt` should automatically initialize git repositories when none exist.
 - **v1.12.9 (2026-06-06):** ADR-0045 promoted from Proposed → Accepted after Reviewers approval. Patch mem::remember to create KV.relations entry on supersede.
 - **v1.12.8 (2026-06-06):** Viewer: Added 'Memory Types' tab showing all semantic facts and procedural memories with search/filter. Dashboard cards now link to full view when >5 items exist.
 - **v1.12.7 (2026-06-06):** Archive detection tested — 25 unit tests added in `test/archive-detection.test.ts` covering happy path (archive detection fires `/session/end`), negative case (no `time.archived` → no action), and edge cases (missing session ID, null info, malformed time object). All tests pass. ADR-0044 Compliance table updated with unit test verification.

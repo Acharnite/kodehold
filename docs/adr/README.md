@@ -54,4 +54,7 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0043](ADR-0043-agentmemory-slot-integration.md) | Agentmemory Slot Integration | Accepted | 2026-06-06 |
 | [ADR-0044](ADR-0044-automatic-session-lifecycle-management.md) | Automatic Session Lifecycle Management in agentmemory-capture Plugin | Accepted | 2026-06-06 |
 | [ADR-0045](ADR-0045-memory-remember-relations-patch.md) | Patch mem::remember to Create KV.relations Entry on Supersede | Accepted | 2026-06-06 |
+| [ADR-0046](ADR-0046-automatic-git-init-workspace.md) | Automatic Git Repository Initialization for Workspace Management | Accepted | 2026-06-13 |
+| [ADR-0047](ADR-0047-universal-test-execution-standard.md) | Universal Test Execution Standard | Accepted | 2026-06-13 |
+| [ADR-0048](ADR-0048-mandatory-documentation-review.md) | Mandatory Tool Documentation Review Before Implementation | Accepted | 2026-06-13 |
 

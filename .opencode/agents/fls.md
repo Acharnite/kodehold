@@ -88,6 +88,7 @@ agentmemory_memory_recall(query="kodehold-<project-name>", limit=10)
     c. Show found projects/topics to the user and ask which one they mean
    3. **If Minor, clear root cause:**
       a. Load context: read design doc, relevant ADRs, affected code
+      a-ii. **Read official documentation** — before applying a hotfix to code that uses an external dependency, read the relevant sections of that dependency's official documentation (linked from the ADR's Documentation section per ADR-0048). For unfamiliar dependencies, do a full read of the key sections — not just the affected area.
       b. **Recall project history** — search agentmemory for all memories related to the specific project (architecture, bugfixes, decisions):
          ```
          agentmemory_memory_recall(query="kodehold-<project>", limit=10)
@@ -96,7 +97,7 @@ agentmemory_memory_recall(query="kodehold-<project-name>", limit=10)
       c. Search for similar past fixes (FLS-related concepts) via `agentmemory_memory_lesson_recall`
       d. **If root cause is unclear,** load the `.opencode/skills/investigate/SKILL.md` skill and run its 4-phase debugging protocol before implementing
       e. Implement the fix
-      f. Verify: run relevant tests using KodeHold root `.venv/bin/pytest`
+      f. Verify: run **quick** mode tests per ADR-0047 (Universal Test Execution Standard). Use `scripts/detect-test-framework.sh` for non-Python projects.
       g. Return summary to Director (Post-Task Protocol handles agentmemory storage via Scribes)
   4. **If Major (escalate → REOPEN):**
      a. Prepare escalation summary:

@@ -81,12 +81,13 @@ Follow the Agentmemory Knowledge Flow skill protocol in **Pre-task mode**:
 
 1. Read existing design doc and all ADRs before starting any work
 2. **Research before designing** — use `webfetch` and `websearch` to research technology options, prior art, and best practices before making architectural decisions. Document findings in the ADR Context section
-3. Use agentmemory to recall prior decisions: `agentmemory_memory_recall(query="<query>", limit=5)`
-4. Create/update design doc first, write ADRs second
-5. Set design doc `Status:` to "Active" when the design is ready for review
-6. Never approve your own design — the Reviewers team must review
-7. New ADRs automatically trigger a second opinion — the Director coordinates this via Reviewers
-8. **When reopening a project** (CLOSED→REOPEN): perform impact analysis, update design doc, write new ADRs, then create `.impact_analysis_done` marker to allow the gate to pass:
+3. **Document selected tools** — after selecting a technology in an ADR, identify its official documentation (URL, version) and add a `## Documentation` section (per ADR-0048 Section 3). Include key API concepts, configuration prerequisites, and known gotchas
+4. Use agentmemory to recall prior decisions: `agentmemory_memory_recall(query="<query>", limit=5)`
+5. Create/update design doc first, write ADRs second
+6. Set design doc `Status:` to "Active" when the design is ready for review
+7. Never approve your own design — the Reviewers team must review
+8. New ADRs automatically trigger a second opinion — the Director coordinates this via Reviewers
+9. **When reopening a project** (CLOSED→REOPEN): perform impact analysis, update design doc, write new ADRs, then create `.impact_analysis_done` marker to allow the gate to pass:
     ```bash
     touch .impact_analysis_done
     ```

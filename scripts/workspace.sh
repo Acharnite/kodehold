@@ -6,6 +6,7 @@ RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC
 pass() { echo -e "  ${GREEN}✓${NC} $1"; }
 fail() { echo -e "  ${RED}✗${NC} $1"; exit 1; }
 info() { echo -e "  ${CYAN}i${NC} $1"; }
+warn() { echo -e "  ${YELLOW}w${NC} $1"; }
 
 WORKSPACE_ROOT="workspaces"
 CATALOG="$WORKSPACE_ROOT/.catalog"
@@ -94,6 +95,19 @@ EOF
 __pycache__/
 .venv/" > "$ws_dir/.gitignore"
 
+  # Initialize git repository for workspace isolation and lifecycle checks
+  if command -v git &>/dev/null; then
+    if git init "$ws_dir" >/dev/null 2>&1; then
+      git -C "$ws_dir" add -A >/dev/null 2>&1
+      git -C "$ws_dir" commit -m "Initial commit" >/dev/null 2>&1
+      pass "Git repository initialized at $ws_dir"
+    else
+      warn "git init failed — workspace will not have version control"
+    fi
+  else
+    warn "git not found — workspace will not have version control"
+  fi
+
   # Register in catalog with slug as project identifier (per ADR-0036)
   local catalog
   catalog=$(catalog_read)
@@ -179,6 +193,22 @@ EOF
   local commit_count=0
   if [ -d "$ws_dir/.git" ]; then
     commit_count=$(git -C "$ws_dir" log --oneline 2>/dev/null | wc -l)
+  fi
+
+  # Ensure git repository exists for lifecycle checks
+  if [ ! -d "$ws_dir/.git" ]; then
+    if command -v git &>/dev/null; then
+      if git init "$ws_dir" >/dev/null 2>&1; then
+        git -C "$ws_dir" add -A >/dev/null 2>&1
+        # Use identifiable message to distinguish KodeHold-created commits
+        git -C "$ws_dir" commit -m "Initial commit — adopted by KodeHold" >/dev/null 2>&1
+        pass "Git repository initialized at $ws_dir"
+      else
+        warn "git init failed — adopted project will not have version control"
+      fi
+    else
+      warn "git not found — adopted project will not have version control"
+    fi
   fi
 
   # Design doc template
@@ -376,6 +406,34 @@ ws_deploy_ready() {
   fi
 }
 
+ws_ensure_git() {
+  local name="$1"
+  local ws_dir="$WORKSPACE_ROOT/$name"
+
+  if [ ! -d "$ws_dir" ]; then
+    fail "Workspace '$name' not found"
+  fi
+
+  if [ -d "$ws_dir/.git" ]; then
+    pass "'$name' already has a git repository"
+    return 0
+  fi
+
+  if ! command -v git &>/dev/null; then
+    warn "git not available — cannot initialize '$name'"
+    return 1
+  fi
+
+  if git init "$ws_dir" >/dev/null 2>&1; then
+    git -C "$ws_dir" add -A >/dev/null 2>&1
+    git -C "$ws_dir" commit -m "Initial commit — backfilled by KodeHold" >/dev/null 2>&1
+    pass "Git repository initialized for '$name'"
+  else
+    warn "git init failed for '$name'"
+    return 1
+  fi
+}
+
 usage() {
   echo "KodeHold Workspace Manager"
   echo ""
@@ -388,6 +446,7 @@ usage() {
   echo "  state <name>        Show lifecycle state of a workspace"
   echo "  gate <name> <t>     Run a gate transition on a workspace"
   echo "  deploy-ready <name> Check if workspace is ready to deploy"
+  echo "  ensure-git <name>     Initialize git repo for an existing workspace (backfill)"
   echo ""
   echo "Transitions:"
   echo "  INIT_TO_ACTIVE, ACTIVE_TO_REVIEW, REVIEW_TO_CLOSED,"
@@ -423,6 +482,10 @@ case "${1:-}" in
   deploy-ready)
     [ -n "${2:-}" ] || usage
     ws_deploy_ready "$2"
+    ;;
+  ensure-git)
+    [ -n "${2:-}" ] || usage
+    ws_ensure_git "$2"
     ;;
   *) usage ;;
 esac
