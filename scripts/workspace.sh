@@ -8,6 +8,21 @@ fail() { echo -e "  ${RED}✗${NC} $1"; exit 1; }
 info() { echo -e "  ${CYAN}i${NC} $1"; }
 warn() { echo -e "  ${YELLOW}w${NC} $1"; }
 
+prompt_remote() {
+  local ws_dir="$1"
+  local label="${2:-Workspace}"
+  read -p "  ${CYAN}i${NC} Add a git remote for ${label}? (URL or empty to skip): " remote_url
+  if [ -n "$remote_url" ]; then
+    if git -C "$ws_dir" remote add origin "$remote_url" >/dev/null 2>&1; then
+      pass "Remote 'origin' added: $remote_url"
+    else
+      warn "Failed to add remote — check the URL"
+    fi
+  else
+    info "Skipped remote setup"
+  fi
+}
+
 WORKSPACE_ROOT="workspaces"
 CATALOG="$WORKSPACE_ROOT/.catalog"
 GATE_SCRIPT="scripts/gate.sh"
@@ -107,6 +122,8 @@ __pycache__/
   else
     warn "git not found — workspace will not have version control"
   fi
+
+  prompt_remote "$ws_dir" "$name"
 
   # Register in catalog with slug as project identifier (per ADR-0036)
   local catalog
@@ -209,6 +226,8 @@ EOF
     else
       warn "git not found — adopted project will not have version control"
     fi
+
+    prompt_remote "$ws_dir" "$name"
   fi
 
   # Design doc template
@@ -428,6 +447,7 @@ ws_ensure_git() {
     git -C "$ws_dir" add -A >/dev/null 2>&1
     git -C "$ws_dir" commit -m "Initial commit — backfilled by KodeHold" >/dev/null 2>&1
     pass "Git repository initialized for '$name'"
+    prompt_remote "$ws_dir" "$name"
   else
     warn "git init failed for '$name'"
     return 1
