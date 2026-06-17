@@ -96,10 +96,11 @@
 <script>
   var params = new URLSearchParams(window.location.search);
   var file = params.get('file');
+  var proj = params.get('project') || 'kodehold';
   if (!file) {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('error').style.display = 'block';
-    document.getElementById('error').textContent = 'No file parameter specified. Use ?file=/adr/ADR-XXXX.md';
+    document.getElementById('error').textContent = 'No file parameter specified. Use ?file=/adr/ADR-XXXX.md or ?file=/adr/PROJECT/ADR-XXXX.md';
   } else {
     fetch(file)
       .then(function(r) {
@@ -110,7 +111,8 @@
         document.getElementById('loading').style.display = 'none';
         var html = marked.parse(md);
         // Fix internal anchor links (ADR references like ADR-00XX)
-        html = html.replace(/ADR-(\d{4}[a-z]?)/g, '<a href="/adr-viewer.html?file=/adr/ADR-$1.md">ADR-$1</a>');
+        // Preserve project scope so links within workspace ADRs stay in the same project
+        html = html.replace(/ADR-(\d{4}[a-z]?)/g, '<a href="/adr-viewer.html?file=/adr/' + proj + '/ADR-$1.md&project=' + proj + '">ADR-$1</a>');
         // Fix phase frontmatter if present
         html = html.replace(/^---[\s\S]*?---\n/, '');
         document.getElementById('content').innerHTML = html;

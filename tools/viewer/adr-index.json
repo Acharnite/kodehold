@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-06T23:51:48Z",
+  "updatedAt": "2026-06-17T20:00:00Z",
   "adrs": [
     {
       "id": "ADR-0001",
@@ -1143,6 +1143,230 @@
       "mtime": 1779874199,
       "phase": {
         "current": 0,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0001",
+      "title": "ADR-0001: Multi-Agent Research Architecture",
+      "status": "Proposed",
+      "project": "deepresearch",
+      "mtime": 1781700253,
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0002",
+      "title": "ADR-0002: Agent Personality and Model Selection",
+      "status": "Proposed",
+      "project": "deepresearch",
+      "mtime": 1781700255,
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0003",
+      "title": "ADR-0003: Web Frontend and Multi-Session",
+      "status": "Proposed",
+      "project": "deepresearch",
+      "mtime": 1781700256,
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0004",
+      "title": "ADR-0004: Test Findings and Architecture Fixes",
+      "status": "Proposed",
+      "project": "deepresearch",
+      "mtime": 1781700259,
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0005",
+      "title": "ADR-0005: Auto-Install and Auto-Discover Local LLM Backends",
+      "status": "Proposed",
+      "project": "deepresearch",
+      "mtime": 1781700263,
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0006",
+      "title": "ADR-0006: Web Search and Tool Calling Integration",
+      "status": "Proposed",
+      "project": "deepresearch",
+      "mtime": 1781700264,
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0007",
+      "title": "ADR-0007: Clarification Protocol and Refinement Phase",
+      "status": "Proposed",
+      "project": "deepresearch",
+      "mtime": 1781544538,
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0008",
+      "title": "ADR-0008: Dashboard Enhancements",
+      "status": "Proposed",
+      "project": "deepresearch",
+      "mtime": 1781700266,
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0009",
+      "title": "ADR-0009: CI/CD Pipeline, npm Wrapper, and Docker Distribution",
+      "status": "Proposed",
+      "project": "deepresearch",
+      "mtime": 1781700268,
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0010",
+      "title": "ADR-0010: Dynamic Research Rounds",
+      "status": "Proposed",
+      "project": "deepresearch",
+      "mtime": 1781619261,
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0011",
+      "title": "ADR-0011: Concurrency Limits and Web Search Throttling",
+      "status": "Proposed",
+      "project": "deepresearch",
+      "mtime": 1781642408,
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0012",
+      "title": "ADR-0012: Replace DuckDuckGo with SearXNG for Web Search",
+      "status": "Proposed",
+      "project": "deepresearch",
+      "mtime": 1781644832,
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0013",
+      "title": "ADR-0013: SearXNG Engine Optimization",
+      "status": "Proposed",
+      "project": "deepresearch",
+      "mtime": 1781652151,
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0014",
+      "title": "ADR-0014: Enforce Time Budget and Correct UI Labels",
+      "status": "Proposed",
+      "project": "deepresearch",
+      "mtime": 1781699671,
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0015",
+      "title": "ADR-0015: Fix JSON Parsing and Topic Drift",
+      "status": "Proposed",
+      "project": "deepresearch",
+      "mtime": 1781703604,
+      "phase": {
+        "current": 1,
+        "total": 1,
+        "status": {
+          "1": "done"
+        }
+      }
+    },
+    {
+      "id": "ADR-0016",
+      "title": "ADR-0016: Epic Tracker — Code Review Handlingsplan (2026-06-17)",
+      "status": "Accepted",
+      "project": "deepresearch",
+      "mtime": 1781709760,
+      "phase": {
+        "current": 1,
         "total": 1,
         "status": {
           "1": "done"

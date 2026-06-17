@@ -86,7 +86,7 @@ const server = http.createServer((req, res) => {
   }
 
   // Serve ADR files from root or workspace docs/adr/
-  const adrMatch = url.pathname.match(/^\/adr\/(?:(bob|lib-validate|qbit-migrate|radarr-lang-router)\/)?(ADR-.+\.md)$/);
+  const adrMatch = url.pathname.match(/^\/adr\/(?:(bob|lib-validate|qbit-migrate|radarr-lang-router|deepresearch)\/)?(ADR-.+\.md)$/);
   if (adrMatch) {
     const project = adrMatch[1];
     const fileName = adrMatch[2];
