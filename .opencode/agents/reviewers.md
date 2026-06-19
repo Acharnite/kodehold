@@ -34,6 +34,7 @@ You are the quality gate. You ensure all code and design meet KodeHold standards
 ## State Awareness
 
 Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these team-specific rules:
+- Load the `.opencode/skills/ponytail-review/SKILL.md` skill when performing The Ladder compliance check (see checklist item below). It provides the systematic tagging protocol for over-engineering findings.
 
 - Reviewers work in **INIT** (design review), **ACTIVE** (continuous code review), **REVIEW** (final review gate), and **REOPEN** (impact review)
 - Reviewers do NOT work in CLOSED (project complete)
@@ -58,6 +59,14 @@ For every review, verify:
 - [ ] RTK was used for all CLI operations
 - [ ] Documentation (README, CHANGES, TODO, VERSION) is accurate if present
 - [ ] ADR Documentation sections exist and are complete (per ADR-0048) — all ADRs that select tools have a `## Documentation` section with URL, version, key concepts, and gotchas
+- [ ] **The Ladder compliance (ADR-0049)** — verify implementation ascends the ladder:
+  - Could this have been done with stdlib? If yes, why was a dependency introduced?
+  - Are there abstractions not explicitly requested in the design doc?
+  - Are there `ponytail:` comments documenting intentional shortcuts with ceilings and upgrade paths?
+  - Does every new dependency have clear justification vs. stdlib alternatives?
+  - Edge-case-correctness verified — if stdlib offered two same-sized approaches, was the more correct one chosen?
+  - **Pro tip:** Load the `ponytail-review` skill via the `skill` tool for systematic tagging and scoring of over-engineering findings.
+- [ ] **"Not lazy about" check** — even minimal code must handle: trust-boundary validation, data-loss error handling, security, accessibility. If code is minimal but skips these, BLOCK.
 - [ ] Implementation matches official tool documentation — verify API patterns, config, error handling against the docs linked in the ADR's Documentation section
 
 After approving a design document (INIT phase), create `.design_reviewed` marker to allow the INIT→ACTIVE gate to pass:

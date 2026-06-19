@@ -1,6 +1,6 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.13.3  
+**Version:** 1.14.0  
 **Status:** Active  
 **Last Updated:** 2026-06-13
 
@@ -247,6 +247,7 @@ Consequences: Trade-offs and follow-ups
 | ADR-0046 | Automatic Git Repository Initialization for Workspace Management | Accepted |
 | ADR-0047 | Universal Test Execution Standard | Accepted |
 | ADR-0048 | Mandatory Tool Documentation Review Before Implementation | Accepted |
+| ADR-0049 | Lazy Senior Dev Philosophy | Accepted |
 
 
 See `docs/adr/README.md` for full details.
@@ -709,6 +710,8 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.14.0 (2026-06-19):** Added ADR-0049 (Lazy Senior Dev Philosophy, Proposed) — adopts Ponytail's "The Ladder" as KodeHold's coding philosophy. Principle #9 added to design doc. Integration points: engineers.md (workflow step 2c), reviewers.md (checklist items), director.md (delegation reference).
+- **v1.14.1 (2026-06-19):** ADR-0049 promoted from Proposed → Accepted after Reviewers approval and second opinion pass. All indexes updated, `.second_opinion_done` marker cleaned.
 - **v1.13.3 (2026-06-14):** Implemented ADR-0046 — auto git-init for workspace init and adopt. `ws_init()` now creates git repo, `ws_adopt()` creates git repo if missing, new `ensure-git` subcommand for backfill. Both deepresearch and pai-model-router workspaces backfilled.
 - **v1.13.2 (2026-06-14):** Implemented ADR-0048 — Mandatory Tool Documentation Review Before Implementation. Updated all 5 team agents (architects, engineers, testers, reviewers, fls) with documentation-reading workflow steps. ADR-0048 promoted from Proposed to Accepted.
 - **v1.13.1 (2026-06-13):** Added ADR-0047 (Universal Test Execution Standard, Accepted). Defines three test modes (quick/full/smoke), venv discovery chain, symlink handling, non-Python framework detection script, and agent file integrations. All 4 agent files updated to reference the standard.

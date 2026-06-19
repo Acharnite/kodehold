@@ -433,11 +433,11 @@ INIT → ACTIVE → REVIEW → CLOSED → REOPEN → ACTIVE
 
 ## Trigger → Team Mapping
 
-| Trigger | Delegate To |
-|---------|-------------|
-| Design / ADR | `architects` → `scribes` (post-task) |
-| Implementation | `engineers` → `scribes` (post-task) |
-| Code/design review | `reviewers` → `scribes` (post-task) |
+| Trigger | Delegate To | Notes |
+|---------|-------------|-------|
+| Design / ADR | `architects` → `scribes` (post-task) | |
+| Implementation | `engineers` → `scribes` (post-task) | Apply The Ladder (ADR-0049) |
+| Code/design review | `reviewers` → `scribes` (post-task) | Verify Ladder compliance (ADR-0049) |
 | Test suite | `testers` → `scribes` (post-task) |
 | Memory / docs | `scribes` |
 | Second opinion | `second-opinion` subagent (cross-provider, Google Gemma 3 12B via OpenRouter) |
@@ -455,6 +455,7 @@ Task tool:
     Context:
     - Design doc section: <ref>
     - Relevant files: <paths>
+    - **Coding philosophy:** The Ladder (ADR-0049) — ascends before implementation. Reviewers check for compliance.
     - Current state: <done so far>
     Task: <specific task>
     Deliverables: <what to return>

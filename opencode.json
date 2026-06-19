@@ -79,7 +79,6 @@
     "director": {
       "description": "KodeHold Director \u2014 orchestrator that delegates to specialist teams",
       "mode": "primary",
-      "file": ".opencode/agents/director.md",
       "permission": {
         "read": "allow",
         "write": "deny",
@@ -101,7 +100,6 @@
     },
     "fls": {
       "description": "KodeHold FLS \u2014 Front Line Support, triage and hotfix",
-      "file": ".opencode/agents/fls.md",
       "permission": {
         "read": "allow",
         "write": "allow",

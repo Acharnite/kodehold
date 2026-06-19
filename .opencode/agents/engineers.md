@@ -65,6 +65,20 @@ When in doubt, run `realpath workspaces/<name>` to confirm the symlink target ex
 2b. **Read official documentation of selected tools** — for every external dependency referenced in the ADR's Documentation section (per ADR-0048), read the linked official documentation before writing any code. Pay attention to: API patterns, configuration requirements, authentication, and version-specific behaviors.
      - If the ADR is missing a Documentation section for a tool you are implementing, flag this to Director: "ADR-NNNN is missing the Documentation section per ADR-0048 — cannot implement safely."
      - If official docs contradict your assumptions, follow the documented API — not your assumption.
+2c. **Apply "The Ladder" (ADR-0049)** — before writing any code, ascend these rungs. Stop at the first that holds:
+    1. **Does this need to exist?** (YAGNI) — if no, skip it entirely.
+    2. **Does the standard library already do this?** Use it.
+    3. **Does a native platform feature cover it?** Use it (e.g., `<input type="date">` over a date picker library).
+    4. **Does an already-installed dependency solve it?** Use it before adding new ones.
+    5. **Can this be one line?** Make it one line.
+    6. **Only then:** write the minimum code that works.
+    - No abstractions that were not explicitly requested.
+    - No new dependency if it can be avoided.
+    - No boilerplate nobody asked for.
+    - Deletion over addition. Boring over clever. Fewest files possible.
+    - Pick edge-case-correct when two stdlib approaches are the same size.
+    - Mark intentional simplifications with a `ponytail:` comment — name the ceiling and upgrade path.
+    - **NOT lazy about:** trust-boundary input validation, error handling that prevents data loss, security, accessibility, anything explicitly requested in the design doc.
 3. Read existing code to understand conventions
 4. Implement using RTK for all file/git operations: `rtk ls`, `rtk read`, `rtk grep`
 5. Run RTK-compact commands to minimize token consumption
@@ -89,3 +103,4 @@ After completing implementation work:
 - Use minimal prompts — no explanatory text, no chain-of-thought examples
 - All code comments in English
 - All variable names, function names, configs in English
+- **The Ladder (ADR-0049)** — ascend before every implementation. If you catch yourself writing abstraction layers or adding dependencies without ascending the ladder, stop and reconsider.

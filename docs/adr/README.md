@@ -57,4 +57,5 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0046](ADR-0046-automatic-git-init-workspace.md) | Automatic Git Repository Initialization for Workspace Management | Accepted | 2026-06-13 |
 | [ADR-0047](ADR-0047-universal-test-execution-standard.md) | Universal Test Execution Standard | Accepted | 2026-06-13 |
 | [ADR-0048](ADR-0048-mandatory-documentation-review.md) | Mandatory Tool Documentation Review Before Implementation | Accepted | 2026-06-13 |
+| [ADR-0049](ADR-0049-lazy-senior-dev-philosophy.md) | Lazy Senior Dev Philosophy | Accepted | 2026-06-19 |
 
