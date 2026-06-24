@@ -176,18 +176,21 @@ The Director's primary delegation mechanism uses agentmemory's action orchestrat
 | **todowrite** | Informational display to user — visible progress tracking |
 | **todowrite** | When user explicitly asks for a todo list view |
 
-### Routine Templates (Standard Flows)
-
-For standard multi-step workflows, use `memory_routine_run` to instantiate the entire action chain with a single call.
-
 | Template ID | Flow | Steps | When to Use |
 |-------------|------|-------|-------------|
 | `rtn_mq1b0oxe_e64c394e1890` (kodehold-adr-flow-v3) | ADR creation + review | 6 | New ADR request |
 | `rtn_mq1b0f4v_86477e3e6b49` (kodehold-implement-flow-v3) | Feature implementation | 6 | Feature request from approved design |
 | `rtn_mq1b3vzj_ec3dae260a03` (kodehold-bugfix-flow-v3) | Bug triage + hotfix | 4 | Bug report, minor fix |
 | `rtn_mq1b0kml_2092069aeb6b` (kodehold-ship-gate-v3) | Shipping gate | 8 | Release readiness |
+| `rtn_mqsfwy3y_1ed3b2b75b02` (kodehold-github-pr-flow-v1) | GitHub PR creation + merge | 8 | GitHub PR request, create feature branch and PR |
 
 **Usage:**
+```
+# Instead of creating 6 actions manually:
+memory_routine_run(routineId="rtn_mq1b0oxe_e64c394e1890", project="<project>")
+
+# The routine creates all actions with correct dependencies.
+# Director then uses memory_frontier to pick up the first unblocked action.
 ```
 # Instead of creating 6 actions manually:
 memory_routine_run(routineId="rtn_mq1b0oxe_e64c394e1890", project="<project>")
@@ -204,16 +207,7 @@ memory_routine_run(routineId="rtn_mq1b0oxe_e64c394e1890", project="<project>")
 | "Implement ..." / "Build feature ..." | `kodehold-implement-flow-v3` (`rtn_mq1b0f4v_86477e3e6b49`) |
 | "Bug in ..." / "Der er en fejl" / "Fix this" | `kodehold-bugfix-flow-v3` (`rtn_mq1b3vzj_ec3dae260a03`) |
 | "Ship it" / "Release" / "Deploy" | `kodehold-ship-gate-v3` (`rtn_mq1b0kml_2092069aeb6b`) |
-
-**Fallback:** If `memory_routine_run` returns an error (template not found, version mismatch), fall back to manual action creation via the standard Action Frontier Protocol delegation flow.
-
-**Partial instantiation:** If a routine fails at step N (e.g., step 4 of 6), the Director cancels the remaining steps:
-```
-# Steps 1-3 completed, step 4 failed
-memory_action_update(actionId="step-4-id", status="cancelled", result="Template failed at step 4")
-# Then fix the issue and manually create remaining actions
-```
-
+| "Create PR" / "GitHub PR" / "Fork" / "GitHub Pull Request" | `kodehold-github-pr-flow-v1` (`rtn_mqsfwy3y_1ed3b2b75b02`) |
 ### Auto-Crystallize
 
 Crystals compress completed action chains into compact LLM-digested summaries. After `memory_action_update`, the Director checks if auto-crystallize should trigger.
