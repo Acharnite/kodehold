@@ -16,12 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Run smoke tests
-        run: |
-          for t in tests/smoke/*.sh; do
-            echo "--- Running $t ---"
-            bash "$t"
-            echo ""
-          done
+        run: bash tests/run.sh smoke
 
   init:
     name: Init Tests
@@ -32,18 +27,12 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      # Agentmemory daemon removed per ADR-0050.
-      # The old agentmemory setup was only needed for 02-icm-check.sh,
-      # which has been updated to not require a running daemon.
-      # Pre-task knowledge retrieval is now handled by OpenCode's built-in
-      # RAG tools (search_semantic, find_usages, get_file_skeleton, describe_image).
+      - name: Install Python deps
+        run: pip install pyyaml jsonschema
       - name: Run init tests
-        run: |
-          for t in tests/init/*.sh; do
-            echo "--- Running $t ---"
-            bash "$t"
-            echo ""
-          done
+        run: bash tests/run.sh init
+      - name: Run YAML config tests
+        run: bash tests/run.sh yaml
 
   integration:
     name: Integration Tests
@@ -51,9 +40,12 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Run integration tests
-        run: |
-          for t in tests/integration/*.sh; do
-            echo "--- Running $t ---"
-            bash "$t"
-            echo ""
-          done
+        run: bash tests/run.sh integration
+
+  validate-config:
+    name: Validate Config
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Run config validation
+        run: bash scripts/validate-config.sh
