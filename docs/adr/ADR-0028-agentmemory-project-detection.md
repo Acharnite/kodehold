@@ -10,7 +10,7 @@ phase:
 
 ## Status
 
-Accepted
+Deprecated
 
 **Finalized: 2026-06-01** — Accept the full filesystem path as the project name. This is the original plugin behavior (line 171 of agentmemory-capture.ts: `projectPath = ctx.worktree || ctx.project?.id || process.cwd()`). All prior fix attempts (Plugin-side resolveProject, Director-level getActiveProject, tool-call scanning) have been reverted. Fix 5 (per-session `info?.directory`) applied 2026-05-31 — confirmed working. The plugin uses `info?.directory` from the session.created event with fallback to the original project path. Runtime validation added per CodeRabbitAI review (PR #749, 2026-06-01): replaces `(info?.directory as string)` type assertion with `typeof` + length check on line 191.
 

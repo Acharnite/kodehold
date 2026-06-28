@@ -1,9 +1,11 @@
 # Design Document: Agentmemory Actions + Crystals Integration for KodeHold Director
 
 **Version:** 0.1  
-**Status:** Draft — saved for later implementation  
+**Status:** Deprecated — superseded by ADR-0050  
 **Design Authority:** Architects  
 **Last Updated:** 2026-05-31  
+
+> **Superseded by ADR-0050:** The agentmemory Actions + Crystals integration proposed in this document has been superseded by the simplified Delegation Protocol (direct `Task` tool delegation, `todowrite` tracking, no action queue/leases/signals). See ADR-0050 for details.
 
 > **Note:** This document was created on 2026-05-31 as a forward-looking design proposal.
 > It has been saved for future implementation. See the Executive Summary below for a quick overview.

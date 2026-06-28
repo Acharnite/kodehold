@@ -74,11 +74,13 @@ After approving a design document (INIT phase), create `.design_reviewed` marker
 touch .design_reviewed
 ```
 
-## Agentmemory Knowledge Flow (Pre-task Mode)
+## OpenCode RAG Knowledge Flow (Pre-task Mode)
 
-Follow the Agentmemory Knowledge Flow skill protocol in **Pre-task mode**:
-1. Search `kodehold-learnings` for relevant patterns via `agentmemory_memory_lesson_recall` before starting work
-2. Search for team-specific review patterns via `agentmemory_memory_lesson_recall` before starting work
+Follow the OpenCode RAG Knowledge Flow skill protocol in **Pre-task mode**:
+1. Search the indexed codebase for relevant patterns before starting work:
+   `search_semantic(query="reviewers patterns <task-keywords>", topK=5)`
+2. Search for team-specific documentation and ADRs before starting work:
+   `search_semantic(query="reviewers <task-keywords>", pathHints=["docs/"], topK=5)`
 
 ## Post-Task Protocol
 
@@ -106,7 +108,7 @@ Reviewers validate lifecycle transitions on behalf of the Director.
 ### When Reviewers Gate
 - INIT → ACTIVE: Reviewers validate design quality + ADR completeness + second opinion
 - ACTIVE → REVIEW: Reviewers validate tests pass + code reviewed + comprehensive review
-- REVIEW → CLOSED: Reviewers validate final review + tests green + agentmemory stored
+- REVIEW → CLOSED: Reviewers validate final review + tests green + documentation files stored
 - REOPEN → ACTIVE: Reviewers validate updated design + new ADRs + second opinion
 
 ### When Reviewers Do NOT Gate

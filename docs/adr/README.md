@@ -35,15 +35,15 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0025](ADR-0025-a2a-protocol.md) | A2A Protocol (Agent-to-Agent Coordination) | Deprecated | 2026-05-29 |
 | [ADR-0026](ADR-0026-second-opinion-same-model-bias.md) | Second Opinion Same-Model Bias Enforcement | Superseded | 2026-05-29 |
 | [ADR-0027](ADR-0027-icm-knowledge-flow-invocation-modes.md) | ICM Knowledge Flow Invocation Modes | Deprecated | 2026-05-29 |
-| [ADR-0028](ADR-0028-agentmemory-project-detection.md) | Agentmemory Project Detection Strategy | Accepted | 2026-05-31 |
-| [ADR-0029](ADR-0029-agentmemory-migration-strategy.md) | ICM → Agentmemory Migration Strategy | Accepted | 2026-05-31 |
-| [ADR-0030](ADR-0030-agentmemory-knowledge-flow.md) | Agentmemory Knowledge Flow | Accepted | 2026-05-31 |
-| [ADR-0031](ADR-0031-actions-crystals-integration.md) | Actions + Crystals for Director Delegation | Accepted | 2026-05-31 |
+| [ADR-0028](ADR-0028-agentmemory-project-detection.md) | Agentmemory Project Detection Strategy | **Deprecated** | 2026-05-31 |
+| [ADR-0029](ADR-0029-agentmemory-migration-strategy.md) | ICM → Agentmemory Migration Strategy | **Deprecated** | 2026-05-31 |
+| [ADR-0030](ADR-0030-agentmemory-knowledge-flow.md) | Agentmemory Knowledge Flow | **Deprecated** | 2026-05-31 |
+| [ADR-0031](ADR-0031-actions-crystals-integration.md) | Actions + Crystals for Director Delegation | **Deprecated** | 2026-05-31 |
 | [ADR-0032](ADR-0032-routine-templates.md) | Routine Templates for Standard Flows | Accepted | 2026-05-31 |
-| [ADR-0033](ADR-0033-crystals-signals.md) | Crystals + Signals for KodeHold | Accepted | 2026-06-01 |
+| [ADR-0033](ADR-0033-crystals-signals.md) | Crystals + Signals for KodeHold | **Deprecated** | 2026-06-01 |
 | [ADR-0033b](ADR-0033-inter-agent-signals-sentinels.md) | Inter-Agent Signals + Sentinels (Superseded by ADR-0033) | Superseded | 2026-05-31 |
 | [ADR-0034](ADR-0034-workflow-monitor-interface.md) | Workflow Monitor Interface | Accepted | 2026-06-01 |
-| [ADR-0035](ADR-0035-custom-kodehold-viewer.md) | Custom KodeHold Viewer | Accepted | 2026-06-02 |
+| [ADR-0035](ADR-0035-custom-kodehold-viewer.md) | Custom KodeHold Viewer | **Deprecated** | 2026-06-02 |
 | [ADR-0036](ADR-0036-project-slug-convention.md) | Project Slug Convention — Stable Canonical Identifiers | Accepted | 2026-06-02 |
 | [ADR-0037](ADR-0037-yaml-configuration.md) | YAML-Based Agent and Task Configuration | Accepted | 2026-06-02 |
 | [ADR-0038](ADR-0038-knowledge-recall.md) | Knowledge Recall Protocol | Accepted | 2026-06-03 |
@@ -51,11 +51,12 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0040](ADR-0040-headroom-integration.md) | Headroom Integration — Context Compression Layer | Proposed | 2026-06-04 |
 | [ADR-0041](ADR-0041-procedural-consolidation-fix.md) | Procedural Consolidation Tier — Bridge Pattern Detection to Pipeline | Accepted | 2026-06-04 |
 | [ADR-0042](ADR-0042-adr-implementation-phase-board.md) | ADR Implementation Phase Board | Accepted | 2026-06-05 |
-| [ADR-0043](ADR-0043-agentmemory-slot-integration.md) | Agentmemory Slot Integration | Accepted | 2026-06-06 |
-| [ADR-0044](ADR-0044-automatic-session-lifecycle-management.md) | Automatic Session Lifecycle Management in agentmemory-capture Plugin | Accepted | 2026-06-06 |
+| [ADR-0043](ADR-0043-agentmemory-slot-integration.md) | Agentmemory Slot Integration | **Deprecated** | 2026-06-06 |
+| [ADR-0044](ADR-0044-automatic-session-lifecycle-management.md) | Automatic Session Lifecycle Management in agentmemory-capture Plugin | **Deprecated** | 2026-06-06 |
 | [ADR-0045](ADR-0045-memory-remember-relations-patch.md) | Patch mem::remember to Create KV.relations Entry on Supersede | Accepted | 2026-06-06 |
 | [ADR-0046](ADR-0046-automatic-git-init-workspace.md) | Automatic Git Repository Initialization for Workspace Management | Accepted | 2026-06-13 |
 | [ADR-0047](ADR-0047-universal-test-execution-standard.md) | Universal Test Execution Standard | Accepted | 2026-06-13 |
 | [ADR-0048](ADR-0048-mandatory-documentation-review.md) | Mandatory Tool Documentation Review Before Implementation | Accepted | 2026-06-13 |
 | [ADR-0049](ADR-0049-lazy-senior-dev-philosophy.md) | Lazy Senior Dev Philosophy | Accepted | 2026-06-19 |
+| [ADR-0050](ADR-0050-agentmemory-to-opencode-rag-migration.md) | Agentmemory → OpenCode RAG Migration | Accepted | 2026-06-27 |
 

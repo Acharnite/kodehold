@@ -40,9 +40,9 @@ Gather context before forming any hypothesis.
 4. **Reproduce:** Can you trigger the bug deterministically? If not, gather
    more evidence before proceeding.
 
-5. **Check agentmemory for prior investigations:** Search for prior bug investigations
-   on the same area. Recurring bugs in the same module are an architectural
-   smell, not a coincidence.
+5. **Check `.opencode/memory/` for prior investigations:** Search for prior bug investigation
+   reports in `.opencode/memory/bugs/` or via `search_semantic`. Recurring bugs in the
+   same module are an architectural smell, not a coincidence.
 
 **Output:** A specific, testable hypothesis about what is wrong and why.
 
@@ -134,18 +134,22 @@ Status:          DONE | DONE_WITH_CONCERNS | BLOCKED
 ═════════════════════════════════════════
 ```
 
-### Store findings in agentmemory
+### Store findings in `.opencode/memory/`
 
-Save the investigation results so future sessions can find them:
+Save the investigation report so future sessions can find it:
 
+Write `.opencode/memory/bugs/<component>-<date>.md`:
 ```
-agentmemory_memory_save(
-  content="[Structured debug report]",
-  type="bug",
-  project="kodehold",
-  concepts="investigations, <component>, <error-type>"
-)
+---
+type: bug
+concepts: investigations, <component>, <error-type>
+date: <date>
+---
+
+[Full debug report content]
 ```
+
+Access via: `search_semantic(query="investigation <component>", topK=3)`
 
 ---
 
@@ -156,4 +160,4 @@ agentmemory_memory_save(
   do not ship it.
 - **Never say "this should fix it."** Verify and prove it. Run the tests.
 - **If fix touches >5 files → ask** about blast radius before proceeding.
-- **Document everything.** The next person debugging this code will thank you.
+- **Document everything.** Write findings to `.opencode/memory/bugs/`. The next person debugging this code will thank you.

@@ -5,7 +5,6 @@ RED='\033[0;31m'; GREEN='\033[0;32m'; NC='\033[0m'
 pass() { echo -e "  ${GREEN}PASS${NC} $1"; }
 fail() { echo -e "  ${RED}FAIL${NC} $1"; exit 1; }
 
-echo "--- Integration: Gate Marker Enforcement + Cleanup Timing ---"
 
 ROOT_DIR=$(pwd)
 TMP_ROOT=$(mktemp -d)
@@ -123,4 +122,3 @@ touch "$case_dir/.impact_analysis_done"
   && pass ".impact_analysis_done removed only after CLOSED_TO_REOPEN passed" \
   || fail ".impact_analysis_done not cleaned after successful CLOSED_TO_REOPEN"
 
-echo "--- Integration: Gate marker checks passed ---"

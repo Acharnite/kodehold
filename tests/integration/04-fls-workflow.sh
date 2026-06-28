@@ -17,7 +17,6 @@ fail() { echo -e "  ${RED}FAIL${NC} $1"; exit 1; }
 FLS=".opencode/agents/fls.md"
 [ -f "$FLS" ] || fail "fls.md not found at $FLS"
 
-echo "--- Integration: FLS Workflow ---"
 
 # ──────────────────────────────────────────────
 # Test 1: Triage criteria parsing
@@ -135,20 +134,20 @@ grep -q "root cause is unclear" "$FLS" \
   || fail "investigate skill not linked to 'root cause is unclear' condition"
 
 # ──────────────────────────────────────────────
-# Test 6: agentmemory documentation requirement
+# Test 6: Documentation routing requirement
 # ──────────────────────────────────────────────
-echo "  [6/7] agentmemory documentation requirements"
+echo "  [6/7] documentation routing requirements"
 
-# FLS routes agentmemory storage through Director → Scribes (per ADR-0010)
-# Verify FLS mentions Scribes in context of agentmemory documentation
-grep -qi "agentmemory.*Scribes\|Scribes.*agentmemory\|agentmemory storage via Scribes\|agentmemory via Scribes" "$FLS" \
-  && pass "agentmemory routing through Scribes documented" \
-  || fail "missing agentmemory routing through Scribes in FLS workflow"
+# FLS routes documentation through Director → Scribes (per ADR-0050)
+# Verify FLS mentions Scribes in context of documentation
+grep -qi "Scribes.*documentation\|documentation.*Scribes\|fixes.*documented\|\.opencode/memory" "$FLS" \
+  && pass "documentation routing through Scribes documented" \
+  || fail "missing documentation routing through Scribes in FLS workflow"
 
-# Verify FLS mentions Director in context of agentmemory/documentation
-grep -qi "Director.*agentmemory\|agentmemory.*Director\|Director.*Scribes\|Scribes.*Director" "$FLS" \
-  && pass "Director → Scribes agentmemory flow documented" \
-  || fail "missing Director → Scribes agentmemory flow in FLS workflow"
+# Verify FLS mentions Director in context of documentation
+grep -qi "Director.*documentation\|documentation.*Director\|Director.*Scribes\|Scribes.*Director" "$FLS" \
+  && pass "Director → Scribes documentation flow documented" \
+  || fail "missing Director → Scribes documentation flow in FLS workflow"
 
 # Verify documentation is mentioned in responsibilities
 grep -q "Document" "$FLS" \
@@ -176,4 +175,3 @@ grep -A10 "^permission:" "$FLS" | grep -q "skill:" \
   && pass "skill permission is within permission block" \
   || fail "skill: allow not under permission block in frontmatter"
 
-echo "--- Integration: All FLS workflow checks passed ---"

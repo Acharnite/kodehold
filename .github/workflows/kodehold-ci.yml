@@ -32,11 +32,11 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      # ICM removed after ADR-0029 agentmemory migration (ADR-0029).
-      # The old ICM setup + bootstrap was only needed for 02-icm-check.sh,
-      # which now warns (not fails) when no agentmemory daemon is present.
-      # If agentmemory daemon is ever run in CI, add an `npm install` +
-      # `agentmemory start` step here instead.
+      # Agentmemory daemon removed per ADR-0050.
+      # The old agentmemory setup was only needed for 02-icm-check.sh,
+      # which has been updated to not require a running daemon.
+      # Pre-task knowledge retrieval is now handled by OpenCode's built-in
+      # RAG tools (search_semantic, find_usages, get_file_skeleton, describe_image).
       - name: Run init tests
         run: |
           for t in tests/init/*.sh; do

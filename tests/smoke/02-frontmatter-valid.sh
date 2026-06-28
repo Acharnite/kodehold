@@ -5,7 +5,6 @@ RED='\033[0;31m'; GREEN='\033[0;32m'; NC='\033[0m'
 pass() { echo -e "  ${GREEN}PASS${NC} $1"; }
 fail() { echo -e "  ${RED}FAIL${NC} $1"; exit 1; }
 
-echo "--- Smoke: YAML Frontmatter ---"
 
 for f in .opencode/agents/*.md; do
   name=$(basename "$f" .md)
@@ -33,4 +32,3 @@ for f in .opencode/agents/*.md; do
   pass "$name: valid frontmatter"
 done
 
-echo "--- Smoke: All frontmatter checks passed ---"

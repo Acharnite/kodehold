@@ -29,7 +29,7 @@ rtk git log      # git log
 
 When `KODEHOLD_LIGHT=1` is set (user explicitly opts in):
 - Collapse Reviewers + Testers into single Quality team
-- Use agentmemory summaries, never full memories
+- Use `.opencode/memory/` checkpoints for persistence, never full file reads
 - Chunk files > 100 lines
 - 28k hard limit per operation
 - No redundant context between messages
@@ -46,17 +46,21 @@ Reason: <why this team is needed>
 Context: <what context to pass>
 ```
 
-## Agentmemory Topic Convention
+## Persistent Storage Convention
+
+All persistent state is stored in `.opencode/memory/` using structured markdown files:
 
 ```
-kodehold-<namespace>-<qualifier>
+.opencode/memory/
+├── decisions/      # Architectural decisions
+├── patterns/       # Recurring patterns
+├── lessons/        # Tagged lessons
+├── bugs/           # Bug investigation reports
+├── metrics/        # Token usage and audit data
+├── checkpoints/    # Session checkpoints
+├── prospective/    # Deferred/recurring task definitions
+└── releases/       # Release notes
 ```
-
-Examples:
-- `kodehold-project-overview`
-- `kodehold-teams`
-- `kodehold-principles`
-- `kodehold-current-state`
 
 ## Quality Gate Checklist
 
@@ -66,7 +70,7 @@ Before transitioning between lifecycle states, verify:
 - [ ] Code matches design doc specs
 - [ ] Tests exist and pass
 - [ ] Token budget is within limits
-- [ ] Agentmemory is up to date
+- [ ] `.opencode/memory/` is up to date
 
 ## Shipping Gate Checklist
 
@@ -75,7 +79,7 @@ Before every push, PR, or release, verify:
 - [ ] CHANGES.md entry added (version + date + structured changes)
 - [ ] TODO.md: completed items marked `[x]`, follow-ups added
 - [ ] Test suite green: `bash tests/run.sh` — all pass
-- [ ] Release summary stored via agentmemory
+- [ ] Release summary stored in `.opencode/memory/releases/`
 - [ ] Commit message follows `<type>(<scope>): <description>` format
 - [ ] PR created if on feature branch (`gh pr create`)
 - [ ] Tag applied for releases (`git tag v<version> && git push origin v<version>`)
@@ -86,4 +90,4 @@ Ship is BLOCKED if:
 - Any test fails (smoke / init / integration)
 - VERSION.md or CHANGES.md not updated
 - Design doc differs from implementation without an ADR
-- Agentmemory not written for the release
+- `.opencode/memory/releases/` missing for the release

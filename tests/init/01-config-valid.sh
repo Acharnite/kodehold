@@ -5,7 +5,6 @@ RED='\033[0;31m'; GREEN='\033[0;32m'; NC='\033[0m'
 pass() { echo -e "  ${GREEN}PASS${NC} $1"; }
 fail() { echo -e "  ${RED}FAIL${NC} $1"; exit 1; }
 
-echo "--- Init: Configuration Validation ---"
 
 # opencode.json must be valid JSON
 python3 -c "import json; json.load(open('opencode.json'))" 2>/dev/null \
@@ -33,4 +32,3 @@ for team in architects engineers reviewers testers scribes; do
   grep -qi "$team" AGENTS.md && pass "AGENTS.md: references $team" || fail "AGENTS.md: missing $team"
 done
 
-echo "--- Init: All config checks passed ---"

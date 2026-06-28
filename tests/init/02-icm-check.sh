@@ -6,30 +6,20 @@ pass() { echo -e "  ${GREEN}PASS${NC} $1"; }
 fail() { echo -e "  ${RED}FAIL${NC} $1"; exit 1; }
 warn() { echo -e "  ${YELLOW}WARN${NC} $1"; }
 
-echo "--- Init: Agentmemory Connectivity ---"
 
-# Agentmemory daemon should be reachable via HTTP health check
-# In CI (no daemon), this warns instead of failing.
-if command -v curl &>/dev/null; then
-  status=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 3 \
-    http://localhost:3111/agentmemory/health 2>/dev/null || true)
-  if [ "$status" = "000" ]; then
-    warn "agentmemory daemon not reachable (localhost:3111) — skipping in CI"
-  elif [ "$status" -ge 200 ] && [ "$status" -lt 300 ]; then
-    pass "agentmemory daemon accessible (localhost:3111)"
-  else
-    fail "agentmemory daemon returned HTTP $status"
-  fi
+# Verify .opencode/memory/ directory structure exists
+if [ -d .opencode/memory ]; then
+  pass ".opencode/memory/ directory exists"
 else
-  warn "curl not available — skip agentmemory health check"
+  warn ".opencode/memory/ not found — create with mkdir -p .opencode/memory/{decisions,patterns,lessons,metrics,checkpoints,prospective}"
 fi
 
-# Verify agentmemory MCP tools are accessible via the agent
-# Check that memory_save/memory_recall work
-if command -v node &>/dev/null; then
-  # Quick sanity: call agentmemory health via the agentmemory CLI if available
-  # Otherwise skip this check
-  warn "agentmemory functional check skipped (no CLI) — daemon health check passed"
-fi
+# Verify key subdirectories exist
+for dir in decisions patterns lessons metrics checkpoints prospective; do
+  if [ -d ".opencode/memory/$dir" ]; then
+    :
+  else
+    warn ".opencode/memory/$dir/ not found"
+  fi
+done
 
-echo "--- Init: All agentmemory checks passed ---"

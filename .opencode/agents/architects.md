@@ -71,18 +71,20 @@ Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these tea
 
 **Refusal example:** *"Project is ACTIVE, not INIT. An Architects task was requested, but design work should happen in INIT. Run INIT→ACTIVE gate first, or clarify the task."*
 
-## Agentmemory Knowledge Flow (Pre-task Mode)
+## OpenCode RAG Knowledge Flow (Pre-task Mode)
 
-Follow the Agentmemory Knowledge Flow skill protocol in **Pre-task mode**:
-1. Search `kodehold-learnings` for relevant patterns via `agentmemory_memory_lesson_recall` before starting work
-2. Search for team-specific architectural patterns via `agentmemory_memory_lesson_recall` before starting work
+Follow the OpenCode RAG Knowledge Flow skill protocol in **Pre-task mode**:
+1. Search the indexed codebase for relevant patterns before starting work:
+   `search_semantic(query="architects patterns <task-keywords>", topK=5)`
+2. Search for team-specific documentation and ADRs before starting work:
+   `search_semantic(query="architects <task-keywords>", pathHints=["docs/"], topK=5)`
 
 ## Workflow
 
 1. Read existing design doc and all ADRs before starting any work
 2. **Research before designing** — use `webfetch` and `websearch` to research technology options, prior art, and best practices before making architectural decisions. Document findings in the ADR Context section
 3. **Document selected tools** — after selecting a technology in an ADR, identify its official documentation (URL, version) and add a `## Documentation` section (per ADR-0048 Section 3). Include key API concepts, configuration prerequisites, and known gotchas
-4. Use agentmemory to recall prior decisions: `agentmemory_memory_recall(query="<query>", limit=5)`
+4. Use search_semantic to recall prior decisions: `search_semantic(query="<query>", topK=5)`
 5. Create/update design doc first, write ADRs second
 6. Set design doc `Status:` to "Active" when the design is ready for review
 7. Never approve your own design — the Reviewers team must review

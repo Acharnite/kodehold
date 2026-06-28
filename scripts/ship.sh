@@ -12,10 +12,8 @@
 #   convenience feature — you can still write entries manually.
 set -euo pipefail
 
-RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; NC='\033[0m'
-pass() { echo -e "  ${GREEN}✓${NC} $1"; }
+source "$(dirname "$0")/lib/output.sh"
 fail() { echo -e "  ${RED}✗${NC} $1"; exit 1; }
-warn() { echo -e "  ${YELLOW}⚠${NC} $1"; }
 
 # ── --generate-changes ──────────────────────────────────────────────────────
 
@@ -134,7 +132,6 @@ echo "=========================================="
 echo ""
 
 # 1. Version check
-echo "--- Step 1: Version Check ---"
 if [ ! -f VERSION.md ]; then
   fail "VERSION.md not found"
 fi
@@ -143,7 +140,6 @@ current_ver=$(grep -oP '(?<=^\| )\s*\d+\.\d+\.\d+\s*(?= \|)' VERSION.md | head -
 echo ""
 
 # 2. CHANGES.md check
-echo "--- Step 2: CHANGES.md ---"
 if [ ! -f CHANGES.md ]; then
   fail "CHANGES.md not found"
 fi
@@ -151,12 +147,10 @@ grep -q "^## $current_ver " CHANGES.md 2>/dev/null || fail "No entry for v$curre
 echo ""
 
 # 3. TODO.md check
-echo "--- Step 3: TODO.md ---"
 [ -f TODO.md ] && pass "TODO.md exists" || fail "TODO.md not found"
 echo ""
 
 # 4. Test suite
-echo "--- Step 4: Test Suite ---"
 if [ -f tests/run.sh ]; then
   if bash tests/run.sh; then
     pass "All tests pass"
@@ -169,18 +163,14 @@ fi
 echo ""
 
 # 5. Agentmemory store check
-echo "--- Step 5: Agentmemory Check ---"
 if command -v curl &>/dev/null; then
-  curl -sf http://localhost:3111/agentmemory/health >/dev/null 2>&1 \
     && pass "Agentmemory daemon accessible" \
     || warn "Agentmemory daemon not reachable — memories may not be stored"
 else
-  warn "curl not available — skip agentmemory health check"
 fi
 echo ""
 
 # 6. Git status
-echo "--- Step 6: Git Status ---"
 if git diff --stat --cached | grep -q .; then
   pass "Changes staged for commit"
 elif git diff --stat | grep -q .; then
@@ -194,7 +184,6 @@ fi
 echo ""
 
 # 7. PR check
-echo "--- Step 7: Branch Check ---"
 branch=$(git rev-parse --abbrev-ref HEAD)
 if [ "$branch" = "main" ]; then
   pass "On main branch — direct push"
@@ -210,7 +199,7 @@ echo ""
 echo "  Director: you must now manually execute:"
 echo "    1. Bump VERSION.md (MAJOR/MINOR/PATCH)"
 echo "    2. Update CHANGES.md with version + date + changes"
-echo "    3. Store release: agentmemory_memory_save(type=\"release\", project=\"<project>\")"
+echo "    3. Store release: Store release note in .opencode/memory/releases/
 echo "    4. Delegate structured commit to Scribes"
 echo "    5. Push: git push"
 echo "    6. Tag: git tag v<ver> && git push origin v<ver>"

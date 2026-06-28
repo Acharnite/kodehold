@@ -10,17 +10,19 @@
   - [x] `scripts/sync-agent-config.sh` — syncs frontmatter between .md agent files and agents.yaml
   - [x] `tests/init/test_yaml_config.py` — 46 schema validation tests
   - [x] ADR-0037 promoted from Proposed → Accepted
-- [x] **ICM → Agentmemory Migration Complete** — Phases 1-5 (ADR-0029): ADR-0030 through ADR-0033, Action Frontier Protocol, routine templates, auto-crystallize, inter-agent signaling. Complete replacement of ICM with agentmemory across all agents, scripts, and references.
-- [x] ADR-0030: Agentmemory Knowledge Flow Skill — unified knowledge flow via agentmemory replacing ICM Knowledge Flow
-- [x] ADR-0031: Action Frontier + Crystals — action dependency frontier with automatic crystallization of completed chains
-- [x] ADR-0032: Routine Templates — frozen workflow routines instantiable via agentmemory_routine_run
-- [x] ADR-0033: Inter-Agent Signals — typed messaging between agents via agentmemory signals
-- [x] **director.md Action Frontier Protocol** — agentmemory-driven action frontier with dependency resolution, sentinel gating, and auto-crystallization at delegation boundaries
-- [x] **scribes.md action management + signals** — Scribes manages actions via agentmemory (frontier, actions, leases, sentinels, crystals) and signals (typed messaging, threading, team feed)
-- [x] **gate.sh/ship.sh agentmemory update** — gate.sh and ship.sh updated to check agentmemory instead of ICM for pre-flight and readiness
-- [x] **agentmemory-knowledge-flow skill** — dedicated `.opencode/skills/agentmemory-knowledge-flow/SKILL.md` replacing old ICM Knowledge Flow
-- [x] **Auto-crystallize on delegation** — completed action chains auto-crystallized into compact digests with narrative, outcomes, and lessons
-- [x] **Inter-agent signal wiring** — all 6 teams wired with signal send/read for typed coordination via Director
+> **Historical (ADR-0050):** The ICM→agentmemory migration (ADR-0029) has been superseded by ADR-0050 (Agentmemory → OpenCode RAG Migration). The agentmemory daemon and its npm package have been removed. Pre-task knowledge retrieval is now handled by OpenCode's built-in RAG tools (`search_semantic`, `find_usages`, `get_file_skeleton`, `describe_image`) and file-based `.opencode/memory/` storage.
+
+- [x] **ICM → Agentmemory Migration Complete** — Phases 1-5 (ADR-0029): ADR-0030 through ADR-0033, Action Frontier Protocol, routine templates, auto-crystallize, inter-agent signaling. Complete replacement of ICM with agentmemory across all agents, scripts, and references. *(Superseded by ADR-0050)*
+- [x] ADR-0030: Agentmemory Knowledge Flow Skill — unified knowledge flow via agentmemory replacing ICM Knowledge Flow *(Superseded by ADR-0050)*
+- [x] ADR-0031: Action Frontier + Crystals — action dependency frontier with automatic crystallization of completed chains *(Superseded by ADR-0050)*
+- [x] ADR-0032: Routine Templates — frozen workflow routines instantiable via agentmemory_routine_run *(Superseded by ADR-0050)*
+- [x] ADR-0033: Inter-Agent Signals — typed messaging between agents via agentmemory signals *(Superseded by ADR-0050)*
+- [x] **director.md Action Frontier Protocol** — agentmemory-driven action frontier with dependency resolution, sentinel gating, and auto-crystallization at delegation boundaries *(Superseded by ADR-0050)*
+- [x] **scribes.md action management + signals** — Scribes manages actions via agentmemory (frontier, actions, leases, sentinels, crystals) and signals (typed messaging, threading, team feed) *(Superseded by ADR-0050)*
+- [x] **gate.sh/ship.sh agentmemory update** — gate.sh and ship.sh updated to check agentmemory instead of ICM for pre-flight and readiness *(Superseded by ADR-0050)*
+- [x] **agentmemory-knowledge-flow skill** — dedicated `.opencode/skills/agentmemory-knowledge-flow/SKILL.md` replacing old ICM Knowledge Flow *(Kept as archival, replaced by opencode-rag-knowledge-flow per ADR-0050)*
+- [x] **Auto-crystallize on delegation** — completed action chains auto-crystallized into compact digests with narrative, outcomes, and lessons *(Superseded by ADR-0050)*
+- [x] **Inter-agent signal wiring** — all 6 teams wired with signal send/read for typed coordination via Director *(Superseded by ADR-0050)*
 
 - [x] **Token report tool** — `scripts/token-report.py` generates self-contained HTML report at `docs/dashboard/index.html` with cost and token visualizations (5 chart types, per-model/per-team/per-provider tables, OpenRouter billing integration). Dark-themed responsive UI powered by Chart.js.
 - [x] ADR-0011: Team Meeting — Collective Project Review
@@ -131,17 +133,30 @@
 
 ## Known Infrastructure Patches
 
-The following patches are applied directly to globally installed npm packages. They will be overwritten by `npm update -g` and must be reapplied after upgrades.
+> **Obsolete (ADR-0050):** All `@agentmemory/agentmemory` patches below are no longer applicable — the agentmemory npm package has been removed per ADR-0050. Patches are retained for historical reference only.
 
-| Package | Patch | Location | Reapply |
-|---------|-------|----------|---------|
-| `@agentmemory/agentmemory` | Viewer bind `127.0.0.1` → `0.0.0.0` (port 3113) | `scripts/patch-agentmemory.sh` | After `npm update -g @agentmemory/agentmemory` |
-| `@agentmemory/agentmemory` | Summary XML parsing — strip markdown fences, add retry loop | Direct patch to `dist/index.mjs` | After `npm update -g @agentmemory/agentmemory` |
-| `@agentmemory/agentmemory` | `triggerVoid()` → `trigger()` + `TriggerAction.Void()` | `patches/agentmemory-merged.patch` | After `npm update -g @agentmemory/agentmemory` |
-| `@agentmemory/agentmemory` | Agentmemory-capture project detection fix | `patches/agentmemory-capture-project-detection.patch` | After `npm update -g @agentmemory/agentmemory` |
+| Package | Patch | Location | Status |
+|---------|-------|----------|--------|
+| `@agentmemory/agentmemory` | Viewer bind `127.0.0.1` → `0.0.0.0` (port 3113) | `scripts/patch-agentmemory.sh` | 🗑️ Obsolete per ADR-0050 |
+| `@agentmemory/agentmemory` | Summary XML parsing — strip markdown fences, add retry loop | Direct patch to `dist/index.mjs` | 🗑️ Obsolete per ADR-0050 |
+| `@agentmemory/agentmemory` | `triggerVoid()` → `trigger()` + `TriggerAction.Void()` | `patches/agentmemory-merged.patch` | 🗑️ Obsolete per ADR-0050 |
+| `@agentmemory/agentmemory` | Agentmemory-capture project detection fix | `patches/agentmemory-capture-project-detection.patch` | 🗑️ Obsolete per ADR-0050 |
 
-## Prospective Tasks (ICM-managed)
+## Prospective Tasks
 
-_This section is maintained by Scribes. Active deferred/recurring tasks live in ICM topic `kodehold-<project>-prospective`._
+_This section is maintained by Scribes. Active deferred/recurring tasks live in `.opencode/memory/prospective/` (see ADR-0021)._
 
-- 0 deferred tasks in ICM
+- 0 deferred tasks in `.opencode/memory/prospective/`
+
+## ADR-0050: Agentmemory → OpenCode RAG Migration
+
+> **Status:** Implementation complete (2026-06-28). The agentmemory daemon and npm package have been fully removed. Pre-task knowledge retrieval now uses OpenCode's built-in RAG tools (`search_semantic`, `find_usages`, `get_file_skeleton`, `describe_image`) and file-based `.opencode/memory/` storage.
+
+- [x] ADR-0050 written and Accepted
+- [x] Design doc updated (Section 7.2, Section 10, ADR index, Changelog)
+- [x] `.opencode/skills/agentmemory-knowledge-flow/SKILL.md` marked as deprecated (archival only)
+- [x] `opencode-rag-knowledge-flow` skill updated with full tool references
+- [x] Scripts and CI cleaned of agentmemory references
+- [x] All agent definitions and configs updated
+- [x] Memory files migrated to `.opencode/memory/` structure
+- [x] Remaining agentmemory references in non-ADR, non-design files cleaned up (this batch)

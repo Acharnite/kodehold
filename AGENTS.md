@@ -34,8 +34,9 @@ All delegation rules, triage-check, state transitions, gates, shipping, and work
 - Workspace projects: `workspaces/<name>/`
 
 ### Access
-- Agentmemory: localhost:3111
-- Viewer: `tools/viewer/index.html`
+- RAG tools: `search_semantic`, `find_usages`, `get_file_skeleton`, `describe_image`
+- Design doc: `docs/design/README.md`
+- Memory: `.opencode/memory/`
 
 <!-- headroom:learn:start -->
 ## Headroom Learned Patterns

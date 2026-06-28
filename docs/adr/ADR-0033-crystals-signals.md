@@ -10,7 +10,7 @@ phase:
 
 ## Status
 
-Accepted
+Deprecated
 
 **Phase:** Phase 5 (final) — Auto-crystallize triggers + inter-agent signaling.
 

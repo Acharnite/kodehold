@@ -22,7 +22,7 @@ phase:
 
 ## Status
 
-Accepted
+Deprecated
 
 > All 5 migration phases completed. ICM fully replaced by agentmemory across all agents, scripts, and references.
 

@@ -8,7 +8,7 @@
 # engineers:       implement, code, feature, bugfix, refactor, build
 # reviewers:       review, code review, design review, standards
 # testers:         test, verify, regression, coverage, QA, quality
-# scribes:         memory, agentmemory, context, save, recall, document, changelog, summary, design doc, ADR
+# scribes:         memory, opencode-rag, context, save, recall, document, changelog, summary, design doc, ADR
 # fls:             support, hotfix, triage, escalate, minor-change
 # second-opinion:  second opinion, cross-model review, independent validation
 # === END REGISTRY ===
@@ -120,7 +120,7 @@ agents:
       - memory
     triggers:
       - memory
-      - agentmemory
+      - opencode-rag
       - context
       - save
       - recall

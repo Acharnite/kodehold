@@ -15,6 +15,7 @@ echo ""
 echo -e "${YELLOW}━━━ SMOKE TESTS ━━━${NC}"
 for t in tests/smoke/*.sh; do
   total=$((total + 1))
+  echo "  Smoke: $(basename "$t" .sh)..."
   if bash "$t" 2>&1; then
     passed=$((passed + 1))
   else
@@ -27,6 +28,7 @@ done
 echo -e "${YELLOW}━━━ INIT TESTS ━━━${NC}"
 for t in tests/init/*.sh; do
   total=$((total + 1))
+  echo "  Init: $(basename "$t" .sh)..."
   if bash "$t" 2>&1; then
     passed=$((passed + 1))
   else
@@ -39,6 +41,7 @@ done
 echo -e "${YELLOW}━━━ INTEGRATION TESTS ━━━${NC}"
 for t in tests/integration/*.sh; do
   total=$((total + 1))
+  echo "  Integration: $(basename "$t" .sh)..."
   if bash "$t" 2>&1; then
     passed=$((passed + 1))
   else

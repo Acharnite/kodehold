@@ -12,6 +12,8 @@ phase:
 
 Accepted
 
+**Note (ADR-0050):** The knowledge recall protocol using `agentmemory_memory_lesson_recall` has been replaced by OpenCode's `search_semantic` tool. See ADR-0050 for details.
+
 **Version:** 1.0
 **Last Updated:** 2026-06-03
 

@@ -12,6 +12,8 @@ phase:
 
 Accepted
 
+**Note (ADR-0050):** The routines defined in this ADR are preserved but now stored as static template tables in `.opencode/agents/director.md` instead of agentmemory. See ADR-0050 for the migration.
+
 **Phase:** Phase 4 (Routine Templates) — builds on Phase 3's action model to define standard flow templates that can be instantiated with a single `memory_routine_run` call.
 
 ## Context

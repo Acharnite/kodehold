@@ -23,7 +23,7 @@ Usage: $(basename "$0") [--project <path>] [--limit <N>] [--json] [--help]
 --help             Show this help
 
 KodeHold Token Dashboard — displays per-team token usage vs budgets.
-Requires: scripts/token-usage.sh and agentmemory REST API (port 3111).
+Requires: scripts/token-usage.sh and metrics files in .opencode/memory/metrics/
 EOF
   exit 0
 }
@@ -98,19 +98,19 @@ else
   CURRENT_JSON='{"teams":{},"total":0,"window_minutes":60}'
 fi
 
-# ── Step 2: Query historical data from agentmemory ───────────────────────────
+# Step 2: Query historical metrics from .opencode/memory/metrics/
 HISTORICAL_JSON="[]"
 
-if ! curl -sf "$AM_URL/agentmemory/health" >/dev/null 2>&1; then
-  echo "Error: Agentmemory not available — run 'iii start' first" >&2
+if [ ! -d .opencode/memory/metrics ]; then
+  echo "Warning: .opencode/memory/metrics/ not found - running with current data" >&2
   exit 1
 fi
 
-SEARCH_RESULT=$(curl -s -X POST "$AM_URL/agentmemory/search" \
+# Metrics read from .opencode/memory/metrics/ files
   -H "Content-Type: application/json" \
   -d "{\"query\":\"token-usage\",\"limit\":$LIMIT,\"project\":\"$PROJECT_PATH\"}" 2>/dev/null || echo '{}')
 
-HISTORICAL_JSON=$(echo "$SEARCH_RESULT" | python3 -c '
+HISTORICAL_JSON=$(python3 -c '
 import sys, json
 
 try:

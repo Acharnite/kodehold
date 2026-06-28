@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.14.0  
+**Version:** 1.15.0  
 **Status:** Active  
-**Last Updated:** 2026-06-13
+**Last Updated:** 2026-06-27
 
 ---
 
@@ -94,7 +94,7 @@ Verification team. Responsibilities:
 ### 3.6 Scribes
 
 Memory and documentation team. Responsibilities:
-- Manage agentmemory persistent memory (store/retrieve project context)
+- Manage persistent memory and documentation (store/retrieve project context in `.opencode/memory/`)
 - Generate and update project documentation
 - Maintain CHANGELOG
 - Extract knowledge from completed work for future reuse
@@ -248,6 +248,7 @@ Consequences: Trade-offs and follow-ups
 | ADR-0047 | Universal Test Execution Standard | Accepted |
 | ADR-0048 | Mandatory Tool Documentation Review Before Implementation | Accepted |
 | ADR-0049 | Lazy Senior Dev Philosophy | Accepted |
+| ADR-0050 | Agentmemory → OpenCode RAG Migration | Accepted |
 
 
 See `docs/adr/README.md` for full details.
@@ -267,7 +268,7 @@ INIT → ACTIVE → REVIEW → CLOSED → (REOPEN → ACTIVE)
 | INIT | Design doc created, ADRs drafted, project scoped |
 | ACTIVE | Implementation in progress, teams working |
 | REVIEW | All work completed, Team Meeting review, testing |
-| CLOSED | Project complete, context stored in agentmemory |
+| CLOSED | Project complete, context archived in `.opencode/memory/` |
 | REOPEN | Project resurrected for new feature or bugfix |
 
 ### 6.2 Quality Gates (Markers)
@@ -298,7 +299,7 @@ See ADR-0016 for the full early review gate specification.
 ### 6.3 Reopening
 
 When a project is reopened:
-1. Director loads project context from agentmemory
+1. Director loads project context from `.opencode/memory/` and `search_semantic`
 2. Design doc is updated with new requirements
 3. Impact analysis is performed by Architects → `.impact_analysis_done`
 4. New ADRs are written for significant changes
@@ -315,7 +316,7 @@ To prevent data loss (inspired by ADR-0015 through ADR-0019 being lost when sess
   - `docs(adr): ADR-00XX - <title>` for new ADR files
   - `docs(design): <description>` for design document changes
   - `config: <description>` for agent configuration changes
-- If the user declines, the Director logs the warning in agentmemory and continues — data loss risk is acknowledged
+- If the user declines, the Director logs the warning in `.opencode/memory/` and continues — data loss risk is acknowledged
 - Scribes verify file persistence before storing pre-transition context and escalate untracked files to the Director
 
 ---
@@ -326,39 +327,31 @@ To prevent data loss (inspired by ADR-0015 through ADR-0019 being lost when sess
 
 KodeHold runs as an OpenCode agent or set of agents. All interaction with the file system, LLM, and tools happens through OpenCode's standard interfaces. Configuration is done via `opencode.json` / `opencode.jsonc`.
 
-### 7.2 Agentmemory (Persistent Memory)
+### 7.2 Persistent Memory & Knowledge Retrieval
 
-Agentmemory provides persistent, queryable memory across sessions:
-- Project context, design decisions, and rationale stored as typed memories (fact, decision, architecture, pattern, etc.)
-- Semantic and keyword search for hybrid retrieval
-- Session tracking for audit and continuity
-- Knowledge graph traversal for relationship discovery
-- Lesson system with confidence scoring and auto-strengthening
-- 4-tier consolidation pipeline (working → episodic → semantic → procedural)
+KodeHold uses **file-based persistent storage** in the `.opencode/memory/` directory for all cross-session knowledge, replacing the previous agentmemory daemon-based system. The directory is organized by type:
 
-KodeHold uses a **shared** agentmemory database scoped by project identifier. Each project's memories are isolated via the `project` parameter while keeping a single queryable store. This replaces the legacy `.icm/` directory approach.
+| Subdirectory | Purpose |
+|-------------|---------|
+| `decisions/` | Architectural and design decisions with rationale |
+| `patterns/` | Recurring patterns and extracted knowledge |
+| `lessons/` | Tagged lessons learned from completed work |
+| `metrics/` | Token usage and timing data |
+| `checkpoints/` | Session checkpoints for context preservation |
+| `prospective/` | Deferred and recurring task definitions |
 
-> **Agentmemory binding config:** The `iii` daemon that serves agentmemory listens on `0.0.0.0` (all interfaces) instead of the default `127.0.0.1` (loopback). This is configured via `~/.agentmemory/iii-config.yaml`, which overrides the dist/ defaults for the HTTP worker (port 3111), stream worker (port 3112), and their CORS allowed origins. The custom config path takes precedence in agentmemory's `findIiiConfig()` discovery and survives npm updates.
+This approach provides version-controlled, queryable, daemon-free persistent storage. Files use structured YAML frontmatter for metadata and free-form markdown for content. Directory listing via `ls` and content search via `grep`/`search_semantic` provide retrieval.
 
-**Agentmemory Knowledge Flow** — the protocol governing how every team searches, captures, and refines knowledge — is implemented in `.opencode/skills/agentmemory-knowledge-flow/SKILL.md` with team-specific parameters and lifecycle integration documented in `docs/adr/ADR-0030-agentmemory-knowledge-flow.md`. All 6 team agents parameterize this protocol with team-specific queries and concept namespaces.
+**OpenCode RAG Knowledge Flow** — the protocol governing how every team searches for relevant code and documentation before starting work — is implemented in `.opencode/skills/opencode-rag-knowledge-flow/SKILL.md`. The skill defines the pre-task retrieval protocol using:
 
-The **Knowledge Recall Protocol** (ADR-0038) fixes the recall path by adding project scoping, increasing limits, and batch-tagging existing lessons. See the [Knowledge Recall design doc](knowledge-recall.md) for full details.
+- `search_semantic` — semantic codebase and documentation search (replaces agentmemory's `memory_lesson_recall`, `memory_recall`, `memory_smart_search`)
+- `find_usages` — symbol reference tracking across the indexed codebase
+- `get_file_skeleton` — structural file overview before reading
+- `describe_image` — vision-model description of screenshots and diagrams
 
-#### Project Slug Migration (2026-06-04)
+All 6 team agents parameterize this protocol with team-specific search prefixes. The protocol is loaded via the `skill` tool with zero token cost until invoked.
 
-All agentmemory project identifiers have been migrated from full filesystem paths to canonical slugs (per ADR-0036). The migration used the Python `iii-sdk` to connect directly to the iii-engine's WebSocket and call `state::set`/`state::get`/`state::list` for each record, ensuring correct binary serialization.
-
-**Scope:**
-| Item | Count |
-|------|-------|
-| Sessions migrated | 366 (project + cwd fields updated) |
-| Observations migrated | 6,552 (recursive path replacement in structured data) |
-| Profiles merged | 3 (old absolute-path entries merged into slug entries) |
-| Corrupted entries cleaned | 5 (orphaned keys, markdown in project field, empty project) |
-
-**Key discovery:** Observations are stored in a separate scope (`mem:obs:<session_id>`) from session metadata (`mem:sessions`). Direct `.bin` file manipulation corrupts the binary footer — always use the engine's native API.
-
-See `scripts/migrations/slug-migration-20260604.log` for the full audit trail.
+> **Previous system:** The agentmemory-based system (external `iii` daemon on port 3111, `@agentmemory/agentmemory` npm package, REST API with WebSocket dependencies) has been fully replaced per ADR-0050. The file-based `.opencode/memory/` directory and OpenCode's built-in RAG tools provide equivalent or superior functionality without daemon management, health checks, or npm dependencies. See [ADR-0050](../adr/ADR-0050-agentmemory-to-opencode-rag-migration.md) for the full migration mapping.
 
 ### 7.3 RTK (Runtime Toolkit)
 
@@ -376,7 +369,7 @@ via the `skill` tool with zero token cost until invoked.
 
 | Skill | Purpose | Used by |
 |-------|---------|---------|
-| `agentmemory-knowledge-flow` | Agentmemory knowledge protocol with 3 invocation modes (pre-task, post-task, full) | All 6 team subagents |
+| `opencode-rag-knowledge-flow` | OpenCode RAG knowledge protocol with search_semantic, find_usages, and get_file_skeleton for pre-task context retrieval | All 6 team subagents |
 | `state-awareness` | Lifecycle state check preamble and mismatch reporting | All 6 team subagents |
 | `investigate` | 4-phase systematic debugging (Iron Law, pattern analysis, 3-strike rule) | FLS, Engineers, Reviewers, Director |
 
@@ -384,7 +377,7 @@ See `docs/adr/ADR-0013-investigate-skill.md` for the full ADR on the investigate
 
 ### 7.5 Session Context Compression
 
-On small-context models (Ollama 32K), chat history grows with every delegation round and eventually overflows. Session context compression periodically compresses the running chat into structured agentmemory summaries, reducing context window pressure.
+On small-context models (Ollama 32K), chat history grows with every delegation round and eventually overflows. Session context compression periodically compresses the running chat into structured checkpoint summaries, reducing context window pressure.
 
 **Compression triggers:**
 | Trigger | Frequency | Rationale |
@@ -393,7 +386,7 @@ On small-context models (Ollama 32K), chat history grows with every delegation r
 | State transitions | After every gate passes | Natural summary point |
 | Explicit request | User says "compress" / "summarize" | Manual override |
 
-**Summary structure:** Each summary is a 200-400 token document covering: completed work, in-progress items, decisions made, files changed, team assignments, blockers, and context carry-forward. Stored in agentmemory with concepts `session-summary, <project>` and type `fact`.
+**Summary structure:** Each summary is a 200-400 token document covering: completed work, in-progress items, decisions made, files changed, team assignments, blockers, and context carry-forward. Stored as structured markdown files in `.opencode/memory/checkpoints/` with YAML frontmatter.
 
 **Relationship to checkpoints:**
 | Aspect | Summary | Checkpoint |
@@ -403,7 +396,7 @@ On small-context models (Ollama 32K), chat history grows with every delegation r
 | Content | Decisions, changes, assignments | Full state: completed, in-progress, next |
 | Importance | `high` | `critical` |
 
-**Wake-up integration:** Session start loads the latest summary via `agentmemory_memory_recall` after standard context loading, providing immediate "what happened last time" context.
+**Wake-up integration:** Session start loads the latest summary from `.opencode/memory/checkpoints/` after standard context loading, providing immediate "what happened last time" context.
 
 **Consolidation:** When `session-summary` entries exceed 10, oldest 5 are consolidated into a single "session history" entry.
 
@@ -433,7 +426,7 @@ When KodeHold adopts an existing project, `workspace.sh adopt` creates a **symli
 
 ### 7.7 Prospective Memory (ADR-0021)
 
-Prospective memory enables deferred actions, recurring tasks, and future intentions that survive session boundaries. Instead of losing "I should check X next time" when a session ends, tasks are stored in agentmemory and checked at session start.
+Prospective memory enables deferred actions, recurring tasks, and future intentions that survive session boundaries. Instead of losing "I should check X next time" when a session ends, tasks are stored in `.opencode/memory/prospective/` and checked at session start.
 
 **Scope (v1):**
 - Deferred tasks — execute after a timestamp
@@ -444,7 +437,7 @@ Prospective memory enables deferred actions, recurring tasks, and future intenti
 
 #### Storage Format
 
-Tasks are stored as agentmemory memories with concepts `prospective, <project>`. The content field uses a structured format that agentmemory's hybrid search can query:
+Tasks are stored as structured markdown files in `.opencode/memory/prospective/` with YAML frontmatter. The content field uses a structured format:
 
 ```
 [PROSPECTIVE-TASK]
@@ -459,10 +452,9 @@ created_at: <ISO 8601 timestamp>
 status: pending
 ```
 
-**Agentmemory parameters per task:**
-- Concepts: `prospective, task-type:<type>, status:pending`
-- Type: `fact`
-- Keywords: `["prospective", "task-type:<type>", "status:pending"]`
+**File parameters per task:**
+- YAML type: `prospective`
+- Frontmatter fields: `id`, `type`, `action`, `execute_after`, `recurring_interval`, `priority`, `context`, `status`
 
 #### Task Types
 
@@ -473,17 +465,17 @@ status: pending
 
 #### Session-Start Integration
 
-Add a new step in Director's session lifecycle (section "Session Lifecycle" in director.md), between step 1 (agentmemory context) and step 2 (session summary):
+Add a new step in Director's session lifecycle (section "Session Lifecycle" in director.md), between step 1 (context loading) and step 2 (session summary):
 
 ```
 1.5. Check prospective tasks:
-     agentmemory_memory_recall(query="prospective:status:pending <project>", limit=10)
-     Filter: execute_after <= now()
+     ls .opencode/memory/prospective/*.md
+     Parse frontmatter for execute_after <= now()
      If due tasks found → present to user as "Pending tasks:"
      User decides: execute now / skip / dismiss
 ```
 
-This is a lightweight check — one agentmemory query, filtered in-context. No new scripts or tools.
+This is a lightweight check — one directory listing, parsed in-context. No new scripts or tools.
 
 #### Task Lifecycle
 
@@ -493,10 +485,10 @@ Created → Pending → [Due] → Executing → Completed
                                Re-created (recurring) or forgotten (deferred)
 ```
 
-- **Created:** Scribes stores via `agentmemory_memory_save` with status=pending
+- **Created:** Scribes writes `.opencode/memory/prospective/<id>-<slug>.md` with status=pending
 - **Due:** Session-start check finds `execute_after <= now()` — presented to Director
 - **Executing:** Director delegates to appropriate team
-- **Completed:** Scribes updates status via `agentmemory_memory_action_update` or deletes via `agentmemory_memory_governance_delete`
+- **Completed:** Scribes updates status in the file's frontmatter or removes the file
 - **Recurring re-create:** After completion, Scribes stores new task with `execute_after = now + interval`
 
 #### Token Budget
@@ -516,7 +508,7 @@ Prospective tasks are **separate** from TODO.md. TODO.md tracks "what we're buil
 
 ```markdown
 ## Prospective Tasks
-- 3 deferred tasks in agentmemory (next due: 2026-06-01)
+- 3 deferred tasks in `.opencode/memory/prospective/` (next due: 2026-06-01)
 ```
 
 Scribes updates this line when creating/expiring tasks.
@@ -579,7 +571,7 @@ Token budget tracking is implemented via a lightweight protocol:
 
 2. **Director's warning protocol**: Before each delegation, Director runs the token-usage script and compares usage against per-phase budgets (ADR-0007). If any team exceeds 80% of its phase budget, a warning is issued; if exceeds 100%, the user is alerted and suggested to compress context.
 
-3. **Session compression logging**: During session compression, Scribes runs the token-usage script and includes per-team token consumption in the agentmemory summary (field `TokenUsage`). This provides a historical record of token usage across sessions.
+3. **Session compression logging**: During session compression, Scribes runs the token-usage script and includes per-team token consumption in the checkpoint summary (field `TokenUsage`). This provides a historical record of token usage across sessions.
 
 4. **Checkpoint token usage**: Session checkpoints also include token usage per team, enabling quick assessment when resuming.
 
@@ -646,9 +638,7 @@ python3 scripts/token-report.py --serve --port 8080 --refresh 120
 
 ```
 kodehold/
-├── .agentmemory/                  # Agentmemory local configuration
-│   ├── config.toml
-│   └── memories.db
+├── .opencode/memory/              # File-based persistent memory (decisions, patterns, lessons, metrics, checkpoints, prospective)
 ├── .opencode/                     # OpenCode agent/subagent configs
 │   ├── opencode.json              # Local overrides
 │   ├── agents/
@@ -664,7 +654,8 @@ kodehold/
 │   │   └── kodehold-protocol.md   # Shared protocol reference
 │   └── skills/                    # Reusable skills
 │       ├── README.md              # Skill index
-│       ├── agentmemory-knowledge-flow/
+│       ├── opencode-rag-knowledge-flow/
+│       ├── agentmemory-knowledge-flow/    # (deprecated — replaced by opencode-rag-knowledge-flow per ADR-0050)
 │       │   └── SKILL.md           # Agentmemory knowledge flow protocol
 │       ├── investigate/
 │       │   └── SKILL.md           # Systematic debugging protocol (4 phases)
@@ -710,6 +701,9 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.15.2 (2026-06-28):** ADR-0050 implementation — replaced Section 7.2 (Agentmemory → Persistent Memory & Knowledge Retrieval), removed Project Slug Migration subsection, updated all remaining agentmemory references throughout design doc to reflect file-based `.opencode/memory/` storage and OpenCode RAG tools. See ADR-0050 for full migration mapping.
+- **v1.15.1 (2026-06-27):** ADR-0050 promoted from Proposed → Accepted after Reviewers approval. Second opinion skipped per user request. ADR status updated, `.design_reviewed` marker created.
+- **v1.15.0 (2026-06-27):** Registered ADR-0050 (Agentmemory → OpenCode RAG Migration, Proposed) — replaces agentmemory dependency with OpenCode's built-in RAG tools (search_semantic, find_usages, get_file_skeleton, describe_image). Updates Section 5 (ADR Index) and Section 7.4 (Skills table). See ADR-0050 for full migration plan.
 - **v1.14.0 (2026-06-19):** Added ADR-0049 (Lazy Senior Dev Philosophy, Proposed) — adopts Ponytail's "The Ladder" as KodeHold's coding philosophy. Principle #9 added to design doc. Integration points: engineers.md (workflow step 2c), reviewers.md (checklist items), director.md (delegation reference).
 - **v1.14.1 (2026-06-19):** ADR-0049 promoted from Proposed → Accepted after Reviewers approval and second opinion pass. All indexes updated, `.second_opinion_done` marker cleaned.
 - **v1.13.3 (2026-06-14):** Implemented ADR-0046 — auto git-init for workspace init and adopt. `ws_init()` now creates git repo, `ws_adopt()` creates git repo if missing, new `ensure-git` subcommand for backfill. Both deepresearch and pai-model-router workspaces backfilled.

@@ -1,9 +1,15 @@
 ---
 name: agentmemory-knowledge-flow
-description: Pre-task knowledge retrieval for agents. Search agentmemory for relevant patterns and team-specific learnings before starting work.
+description: DEPRECATED — replaced by opencode-rag-knowledge-flow. See ADR-0050.
 ---
 
-# Agentmemory Knowledge Flow
+# Agentmemory Knowledge Flow — DEPRECATED
+
+> **This skill is deprecated.** It has been replaced by [opencode-rag-knowledge-flow](../opencode-rag-knowledge-flow/SKILL.md) per ADR-0050 (Agentmemory → OpenCode RAG Migration).
+>
+> The agentmemory daemon (`iii`) and REST API (port 3111) are being removed. Using this skill will eventually fail when the daemon is decommissioned.
+>
+> **Do not use in new work.** Migrate existing agent files to reference `opencode-rag-knowledge-flow` instead.
 
 ## Invocation Modes
 
@@ -21,7 +27,6 @@ Run BEFORE starting work. For teams that execute tasks.
    )
    ```
    Replace `<team-name>` with your team tag (e.g., `engineers`, `reviewers`, `testers`, `architects`, `fls`, `scribes`).
-   > **Why two terms?** The term "lessons" helps bias the query toward structured lesson content, while "patterns" matches the pattern/extraction vocabulary used in the knowledge flow.
 
 2. **Search team learnings** — broader search for team-specific patterns (fallback):
    ```
@@ -31,8 +36,6 @@ Run BEFORE starting work. For teams that execute tasks.
      project="kodehold"
    )
    ```
-   Replace `<team-name>` with your team tag.
-   > **Why the fallback?** If the first query with "lessons patterns" is too narrow, dropping those terms broadens the search without losing the team scope.
 
 3. **Fallback** — if either query returns fewer than 3 results, re-query with broader terms:
     ```
@@ -57,7 +60,6 @@ Run BEFORE starting work. For teams that execute tasks.
        print(f\"    Steps: {len(p.get('steps',[]))}\")
    "
    ```
-   Replace `<relevant-keywords>` with relevant terms from your task. Skip this step if `curl` is not available.
 
 ## Mode Selection
 
@@ -71,6 +73,4 @@ Run BEFORE starting work. For teams that execute tasks.
 | Scribes | N/A | No knowledge flow needed | — |
 
 ## Important Notes
-- Steps 1-2 are SEARCH ONLY — no writes
-- Step 3 (Execute task) is NOT part of knowledge flow — it is the team's own workflow
-- Step 4 (Procedure recall) is optional — skip if the REST API is unavailable
+> **DEPRECATED.** This skill will be removed when agentmemory is decommissioned. Use `opencode-rag-knowledge-flow` instead.

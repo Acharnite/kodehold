@@ -1,8 +1,10 @@
 # Project: Knowledge Recall Protocol
 **Version:** 1.0
-**Status:** Active
+**Status:** Deprecated
 **Design Authority:** Architects
 **Last Reviewed:** 2026-06-03
+
+> **Deprecated (ADR-0050):** The agentmemory lesson recall protocol described in this document has been replaced by OpenCode's native `search_semantic` tool. See ADR-0050 for the full migration mapping. The file-based `.opencode/memory/` directory now serves as persistent storage for patterns, decisions, lessons, and checkpoint summaries.
 
 ---
 
@@ -416,4 +418,5 @@ For each team, verify the fallback path works when primary results <3:
 
 | Version | Date | Change |
 |---------|------|--------|
+| 1.1 | 2026-06-28 | Deprecated per ADR-0050 — agentmemory lesson recall replaced by OpenCode `search_semantic` and `.opencode/memory/` file-based storage |
 | 1.0 | 2026-06-03 | Initial design document — Knowledge Recall Protocol (recall-only scope) |

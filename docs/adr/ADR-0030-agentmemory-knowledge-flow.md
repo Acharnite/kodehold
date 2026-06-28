@@ -10,7 +10,7 @@ phase:
 
 ## Status
 
-Accepted
+Deprecated
 
 **Phase:** Phase 2 (Infrastructure Migration) — replaces ADR-0027 and the `icm-knowledge-flow` skill.
 

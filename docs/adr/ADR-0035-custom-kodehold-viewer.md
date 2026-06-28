@@ -22,7 +22,7 @@ phase:
 
 ## Status
 
-Accepted
+Deprecated
 
 **Version:** 2.1
 **Last Updated:** 2026-06-06

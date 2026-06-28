@@ -5,7 +5,6 @@ RED='\033[0;31m'; GREEN='\033[0;32m'; NC='\033[0m'
 pass() { echo -e "  ${GREEN}PASS${NC} $1"; }
 fail() { echo -e "  ${RED}FAIL${NC} $1"; exit 1; }
 
-echo "--- Integration: Design Doc Meets Implementation ---"
 
 # All ADRs must be referenced in the design doc
 for adr in docs/adr/ADR-*.md; do
@@ -29,4 +28,3 @@ for rule in "mode: subagent" "task: deny"; do
     || fail "agents: $rule missing from some agent files"
 done
 
-echo "--- Integration: Design-implementation alignment verified ---"

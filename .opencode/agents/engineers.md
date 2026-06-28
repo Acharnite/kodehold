@@ -41,11 +41,13 @@ Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these tea
 
 **Refusal example:** *"Project is INIT, not ACTIVE. Cannot implement code until design doc is approved and INIT→ACTIVE gate passes. Delegate to Architects first."*
 
-## Agentmemory Knowledge Flow (Pre-task Mode)
+## OpenCode RAG Knowledge Flow (Pre-task Mode)
 
-Follow the Agentmemory Knowledge Flow skill protocol in **Pre-task mode**:
-1. Search `kodehold-learnings` for relevant patterns via `agentmemory_memory_lesson_recall` before starting work
-2. Search for team-specific engineering patterns via `agentmemory_memory_lesson_recall` before starting work
+Follow the OpenCode RAG Knowledge Flow skill protocol in **Pre-task mode**:
+1. Search the indexed codebase for relevant patterns before starting work:
+   `search_semantic(query="engineers patterns <task-keywords>", topK=5)`
+2. Search for team-specific documentation and ADRs before starting work:
+   `search_semantic(query="engineers <task-keywords>", pathHints=["docs/"], topK=5)`
 
 ## Adopted Projects — Symlink Awareness
 

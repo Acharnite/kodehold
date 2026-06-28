@@ -5,7 +5,6 @@ RED='\033[0;31m'; GREEN='\033[0;32m'; NC='\033[0m'
 pass() { echo -e "  ${GREEN}PASS${NC} $1"; }
 fail() { echo -e "  ${RED}FAIL${NC} $1"; exit 1; }
 
-echo "--- Integration: Lifecycle State Machine ---"
 
 # Derive lifecycle states from ADRs + design doc
 # Expected: INIT -> ACTIVE -> REVIEW -> CLOSED -> REOPEN -> ACTIVE
@@ -34,4 +33,3 @@ grep -q "Project Lifecycle" docs/adr/ADR-0008-project-lifecycle.md \
 grep -q "REOPEN" docs/adr/ADR-0008-project-lifecycle.md \
   && pass "ADR-0008: reopen protocol" || fail "ADR-0008: missing reopen protocol"
 
-echo "--- Integration: Lifecycle state machine valid ---"

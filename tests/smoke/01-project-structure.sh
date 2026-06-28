@@ -5,7 +5,6 @@ RED='\033[0;31m'; GREEN='\033[0;32m'; NC='\033[0m'
 pass() { echo -e "  ${GREEN}PASS${NC} $1"; }
 fail() { echo -e "  ${RED}FAIL${NC} $1"; exit 1; }
 
-echo "--- Smoke: Project Structure ---"
 
 # Root files
 for f in opencode.json AGENTS.md README.md VERSION.md TODO.md CHANGES.md .gitignore; do
@@ -32,4 +31,3 @@ done
 # ICM
 [ -f .icm/config.toml ] && pass ".icm/config.toml exists" || fail ".icm/config.toml missing"
 
-echo "--- Smoke: All structure checks passed ---"

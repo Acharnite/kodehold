@@ -64,7 +64,7 @@ Load via `skill` tool when:
 | When used | During code review (ACTIVE) | Project health / pre-audit / debt tracking |
 | How findings found | Manual scan of diff | Systematic grep/search commands |
 | Score | `net: -<N> lines` | `net: -<N> lines, -<M> deps` |
-| Agentmemory | No | Optional (store debt report) |
+| File-based storage | No | Optional (write `.opencode/memory/metrics/` report) |
 | Frequency | Every PR/review | Per-project, or on-demand |
 
 ---
@@ -393,37 +393,41 @@ Do not count transitive dependencies.
 
 ---
 
-## Agentmemory Integration (Optional)
+## Persistent Storage (Optional)
 
-The calling agent may store the audit findings in agentmemory for debt tracking.
+The calling agent may write the audit findings to `.opencode/memory/metrics/` for debt tracking.
 This is **optional** — the caller decides whether to persist.
 
-### Store as metric
+### Store as file
 
-```python
-agentmemory_memory_save(
-  content="""ponytail-audit results for <project> on <date>:
+Write `.opencode/memory/metrics/ponytail-audit-<project>-<date>.md`:
+```
+---
+type: metric
+project: <project>
+concepts: ponytail-audit, debt, over-engineering, baseline
+date: <date>
+---
+
+# Ponytail Audit: <project>
 
 net: -<N> lines, -<M> deps possible.
 
 Findings:
 yagni: AbstractRepository... [src/repo/interfaces.py]
 stdlib: custom LRU cache... [src/cache/local.py]
-...""",
-  type="metric",
-  project="<project>",
-  concepts="ponytail-audit, debt, over-engineering, baseline"
-)
+...
 ```
 
 ### Recall previous audit
 
-```python
-agentmemory_memory_recall(
-  query="ponytail-audit <project>",
-  limit=3
-)
 ```
+search_semantic(query="ponytail-audit <project>", topK=3)
+```
+
+### Persist findings
+
+Write the report to `.opencode/memory/metrics/` so it can be recalled later.
 
 ---
 
@@ -438,7 +442,7 @@ agentmemory_memory_recall(
 - **Boring over clever.** Slightly more verbose but readable code is not a
   `shrink:` finding — it's The Ladder's tie-breaker in action.
 - **One-shot only.** Generates a report and stops. Applies nothing unless the
-  caller chooses to store in agentmemory.
+  caller chooses to persist findings.
 - **Rank by impact, not count.** A single 200-line file removal is worth more
   than five 3-line savings.
 

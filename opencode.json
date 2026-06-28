@@ -11,14 +11,6 @@
         "GITHUB_PERSONAL_ACCESS_TOKEN": "{env:GITHUB_PERSONAL_ACCESS_TOKEN}"
       }
     },
-    "am": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@agentmemory/mcp"
-      ]
-    },
     "chrome-devtools": {
       "type": "local",
       "command": [
@@ -31,28 +23,25 @@
     }
   },
   "default_agent": "director",
-"provider": {
-  "ollama": {
-    "npm": "@ai-sdk/openai-compatible",
-    "name": "Ollama (local)",
-    "options": {
-      "baseURL": "http://localhost:11434/v1"
-    },
-    "models": {
-      "coder": {
-        "name": "qwen3:14b-q4_K_M"
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
       },
-
-      "planner": {
-        "name": "qwen3:30b-a3b-q4_K_M"
-      },
-
-      "fast": {
-        "name": "gemma3:12b"
+      "models": {
+        "coder": {
+          "name": "qwen3:14b-q4_K_M"
+        },
+        "planner": {
+          "name": "qwen3:30b-a3b-q4_K_M"
+        },
+        "fast": {
+          "name": "gemma3:12b"
+        }
       }
-    }
-  },
-
+    },
     "openrouter": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "OpenRouter",
@@ -133,5 +122,6 @@
       "/tmp/**": "allow",
       "/home/kiffer/docker/**": "allow"
     }
-  }
+  },
+  "lsp": true
 }
