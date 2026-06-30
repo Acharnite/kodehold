@@ -12,6 +12,7 @@ gate_failed=0
 cleanup_markers=()
 validate_only=false
 reviewer_mode=false
+JSON_MODE=false
 PROJECT_PATH=""
 show_status=false
 declare -A check_results
@@ -30,6 +31,7 @@ record_check() {
   local name="$1"
   local result="$2"
   check_results["$name"]="$result"
+  json_add "$name" "$result"
 }
 
 cleanup_markers_on_pass() {
@@ -72,8 +74,8 @@ assert_dir() {
 
 init_to_active() {
   echo ""
-  echo "━━━ Gate: INIT → ACTIVE ━━━"
-  echo ""
+  [ "$JSON_MODE" = true ] || echo "━━━ Gate: INIT → ACTIVE ━━━"
+  [ "$JSON_MODE" = true ] || echo ""
 
   # Check if this is an adopted project (already has code, relaxed requirements)
   local adopted=false
@@ -177,8 +179,8 @@ init_to_active() {
 
 active_to_review() {
   echo ""
-  echo "━━━ Gate: ACTIVE → REVIEW ━━━"
-  echo ""
+  [ "$JSON_MODE" = true ] || echo "━━━ Gate: ACTIVE → REVIEW ━━━"
+  [ "$JSON_MODE" = true ] || echo ""
 
   # All features implemented — check TODO (optional for workspaces)
   if [ -f "TODO.md" ]; then
@@ -190,24 +192,46 @@ active_to_review() {
   # Tests pass (try tests/run.sh first, then pytest)
   tests_passed=false
   if [ -f "$TEST_RUNNER" ]; then
-    if bash "$TEST_RUNNER" 2>&1 | tail -5; then
-      pass "All tests pass ($TEST_RUNNER)"
-      tests_passed=true
+    if [ "$JSON_MODE" = true ]; then
+      # JSON mode: run silently
+      if bash "$TEST_RUNNER" 2>/dev/null >/dev/null; then
+        pass "All tests pass ($TEST_RUNNER)"
+        tests_passed=true
+      else
+        fail "Test suite has failures — fix before transition"
+        gate_failed=1
+      fi
     else
-      fail "Test suite has failures — fix before transition"
-      gate_failed=1
+      if bash "$TEST_RUNNER" 2>&1 | tail -5; then
+        pass "All tests pass ($TEST_RUNNER)"
+        tests_passed=true
+      else
+        fail "Test suite has failures — fix before transition"
+        gate_failed=1
+      fi
     fi
   elif [ -d "tests" ] && ls tests/test_*.py &>/dev/null 2>&1; then
     PYTEST_CMD="python3 -m pytest"
     [ -f ".venv/bin/pytest" ] && PYTEST_CMD=".venv/bin/pytest"
     PYTEST_ENV=""
     [ -d "src" ] && PYTEST_ENV="PYTHONPATH=src"
-    if env $PYTEST_ENV $PYTEST_CMD tests/ -q 2>&1 | tail -3; then
-      pass "All pytest tests pass"
-      tests_passed=true
+    if [ "$JSON_MODE" = true ]; then
+      # JSON mode: pytest output goes to /dev/null; only pass/fail status recorded
+      if env $PYTEST_ENV $PYTEST_CMD tests/ -q 2>/dev/null >/dev/null; then
+        pass "All pytest tests pass"
+        tests_passed=true
+      else
+        fail "Pytest suite has failures — fix before transition"
+        gate_failed=1
+      fi
     else
-      fail "Pytest suite has failures — fix before transition"
-      gate_failed=1
+      if env $PYTEST_ENV $PYTEST_CMD tests/ -q 2>&1 | tail -3; then
+        pass "All pytest tests pass"
+        tests_passed=true
+      else
+        fail "Pytest suite has failures — fix before transition"
+        gate_failed=1
+      fi
     fi
   else
     fail "No test suite found (tests/run.sh or tests/test_*.py)"
@@ -251,30 +275,50 @@ active_to_review() {
 
 review_to_closed() {
   echo ""
-  echo "━━━ Gate: REVIEW → CLOSED ━━━"
-  echo ""
+  [ "$JSON_MODE" = true ] || echo "━━━ Gate: REVIEW → CLOSED ━━━"
+  [ "$JSON_MODE" = true ] || echo ""
 
   # Test suite green (try tests/run.sh first, then pytest)
   tests_passed=false
   if [ -f "$TEST_RUNNER" ]; then
-    if bash "$TEST_RUNNER" 2>&1 | tail -5; then
-      pass "All tests pass ($TEST_RUNNER)"
-      tests_passed=true
+    if [ "$JSON_MODE" = true ]; then
+      if bash "$TEST_RUNNER" 2>/dev/null >/dev/null; then
+        pass "All tests pass ($TEST_RUNNER)"
+        tests_passed=true
+      else
+        fail "Test suite has failures"
+        gate_failed=1
+      fi
     else
-      fail "Test suite has failures"
-      gate_failed=1
+      if bash "$TEST_RUNNER" 2>&1 | tail -5; then
+        pass "All tests pass ($TEST_RUNNER)"
+        tests_passed=true
+      else
+        fail "Test suite has failures"
+        gate_failed=1
+      fi
     fi
   elif [ -d "tests" ] && ls tests/test_*.py &>/dev/null 2>&1; then
     PYTEST_CMD="python3 -m pytest"
     [ -f ".venv/bin/pytest" ] && PYTEST_CMD=".venv/bin/pytest"
     PYTEST_ENV=""
     [ -d "src" ] && PYTEST_ENV="PYTHONPATH=src"
-    if env $PYTEST_ENV $PYTEST_CMD tests/ -q 2>&1 | tail -3; then
-      pass "All pytest tests pass"
-      tests_passed=true
+    if [ "$JSON_MODE" = true ]; then
+      if env $PYTEST_ENV $PYTEST_CMD tests/ -q 2>/dev/null >/dev/null; then
+        pass "All pytest tests pass"
+        tests_passed=true
+      else
+        fail "Pytest suite has failures"
+        gate_failed=1
+      fi
     else
-      fail "Pytest suite has failures"
-      gate_failed=1
+      if env $PYTEST_ENV $PYTEST_CMD tests/ -q 2>&1 | tail -3; then
+        pass "All pytest tests pass"
+        tests_passed=true
+      else
+        fail "Pytest suite has failures"
+        gate_failed=1
+      fi
     fi
   else
     fail "No test suite found (tests/run.sh or tests/test_*.py)"
@@ -294,8 +338,301 @@ review_to_closed() {
     record_check "design_doc_exists" "FAIL"
   fi
 
-  # Agentmemory accessible (health check)
-  if command -v curl &>/dev/null; then
-      && pass "Agentmemory daemon accessible" \
-      || warn "Agentmemory daemon not reachable at localhost:3111"
+  # Git is clean (no uncommitted changes)
+  if git diff --quiet 2>/dev/null; then
+    pass "Working tree clean"
   else
+    warn "Uncommitted changes exist — should commit before CLOSED"
+  fi
+
+  # Clean up lifecycle markers — fresh state for next reopen
+  queue_cleanup_marker ".design_reviewed"
+  queue_cleanup_marker ".testers_done"
+  queue_cleanup_marker ".impact_analysis_done"
+  queue_cleanup_marker ".code_reviewed"
+  queue_cleanup_marker ".second_opinion_done"
+  queue_cleanup_marker ".team_meeting_done"
+
+  # User review stop — ask for confirmation before closing
+  if [ "$gate_failed" -eq 0 ] && ! is_noninteractive; then
+    echo ""
+    echo -e "  ${YELLOW}Proceed with REVIEW → CLOSED? (y/N)${NC} "
+    read -r confirm
+    case "$confirm" in
+      y|Y|yes|YES) pass "User approved — proceeding with transition" ;;
+      *) fail "User cancelled — REVIEW → CLOSED aborted" && gate_failed=1 ;;
+    esac
+  fi
+}
+
+closed_to_reopen() {
+  echo ""
+  [ "$JSON_MODE" = true ] || echo "━━━ Gate: CLOSED → REOPEN ━━━"
+  [ "$JSON_MODE" = true ] || echo ""
+
+  # Design doc exists and has been updated
+  assert_file "$DESIGN_DOC"
+  if [ -f "$DESIGN_DOC" ]; then
+    record_check "design_doc_exists" "PASS"
+  else
+    record_check "design_doc_exists" "FAIL"
+  fi
+  if grep -q "Last Updated:" "$DESIGN_DOC" 2>/dev/null; then
+    pass "Design doc has update timestamp"
+  fi
+
+  # Impact analysis — check docs/decisions or recent notes
+  if [ -d "docs/decisions" ] && ls docs/decisions/*.md &>/dev/null 2>&1; then
+    pass "Impact analysis notes found"
+  else
+    warn "No impact analysis in docs/decisions/ — manual check needed"
+  fi
+
+  # Impact analysis completed by Architects — ensures quality assessment before reopening
+  if [ -f ".impact_analysis_done" ]; then
+    pass "Impact analysis completed by Architects (sequence enforced)"
+    queue_cleanup_marker ".impact_analysis_done"
+    record_check "impact_analysis_done" "PASS"
+  else
+    fail "Impact analysis not completed — Architects must assess scope before CLOSED→REOPEN"
+    gate_failed=1
+    record_check "impact_analysis_done" "FAIL"
+  fi
+}
+
+reopen_to_active() {
+  echo ""
+  [ "$JSON_MODE" = true ] || echo "━━━ Gate: REOPEN → ACTIVE ━━━"
+  [ "$JSON_MODE" = true ] || echo ""
+
+  # Design doc approved
+  assert_file "$DESIGN_DOC"
+  if [ -f "$DESIGN_DOC" ]; then
+    record_check "design_doc_exists" "PASS"
+  else
+    record_check "design_doc_exists" "FAIL"
+  fi
+  if grep -q "Status.*Active" "$DESIGN_DOC" 2>/dev/null; then
+    pass "Design doc status is Active"
+  else
+    warn "Design doc status not set to Active"
+  fi
+
+  # New ADRs if needed
+  assert_dir "$ADR_DIR"
+  if [ -d "$ADR_DIR" ]; then
+    record_check "adr_dir_exists" "PASS"
+  else
+    record_check "adr_dir_exists" "FAIL"
+  fi
+
+  # Second opinion completed — mandatory before REOPEN→ACTIVE
+  if [ -f ".second_opinion_done" ]; then
+    pass "Second opinion completed for updated design"
+    queue_cleanup_marker ".second_opinion_done"
+    record_check "second_opinion_done" "PASS"
+  else
+    fail "Second opinion not completed — Reviewers must complete cross-model validation before REOPEN→ACTIVE"
+    gate_failed=1
+    record_check "second_opinion_done" "FAIL"
+  fi
+}
+
+usage() {
+  echo "Usage: $0 --transition <FROM>_TO_<TO> [OPTIONS]"
+  echo ""
+  echo "Transitions:"
+  echo "  INIT_TO_ACTIVE    — design doc complete, ADRs written"
+  echo "  ACTIVE_TO_REVIEW  — features implemented, tests pass, code reviewed"
+  echo "  REVIEW_TO_CLOSED  — final sign-off, tests green, memories stored"
+  echo "  CLOSED_TO_REOPEN  — impact analysis, design doc updated"
+  echo "  REOPEN_TO_ACTIVE  — design doc approved, new ADRs"
+  echo ""
+  echo "Options:"
+  echo "  --transition     The state transition to validate"
+  echo "  --project-path   Path to project directory (default: current dir)"
+  echo "  --validate-only  Run checks without executing transition (for Reviewers)"
+  echo "  --reviewer-mode  Output structured results for Reviewers (PASS/BLOCKED per check)"
+  echo "  --list           List all gates and their checks"
+  echo "  --status         Show current lifecycle state"
+  echo "  --yes            Skip interactive prompts (for CI/automation)"
+  echo ""
+  echo "Environment:"
+  echo "  OPENCODE_NONINTERACTIVE=true  Skip all interactive prompts"
+  echo ""
+  exit 1
+}
+
+if [ $# -eq 0 ]; then
+  usage
+fi
+
+# Parse flags — supports --transition with optional --validate-only and --reviewer-mode
+# Also supports shorthand: --validate-only ACTIVE_TO_REVIEW (without --transition)
+transition=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --transition)
+      shift
+      transition="${1:-}"
+      ;;
+    --validate-only)
+      validate_only=true
+      # If next arg is not a flag, treat it as the transition (shorthand syntax)
+      if [ $# -gt 1 ] && [[ ! "${2:-}" =~ ^-- ]]; then
+        shift
+        transition="${1:-}"
+      fi
+      ;;
+    --reviewer-mode)
+      reviewer_mode=true
+      # If next arg is not a flag, treat it as the transition (shorthand syntax)
+      if [ $# -gt 1 ] && [[ ! "${2:-}" =~ ^-- ]]; then
+        shift
+        transition="${1:-}"
+      fi
+      ;;
+    --json)
+      JSON_MODE=true
+      # If next arg is not a flag, treat it as the transition (shorthand syntax)
+      if [ $# -gt 1 ] && [[ ! "${2:-}" =~ ^-- ]]; then
+        shift
+        transition="${1:-}"
+      fi
+      ;;
+    --project-path)
+      shift
+      PROJECT_PATH="${1:-}"
+      ;;
+    --list)
+      echo "Available transitions:"
+      echo "  INIT_TO_ACTIVE"
+      echo "  ACTIVE_TO_REVIEW"
+      echo "  REVIEW_TO_CLOSED"
+      echo "  CLOSED_TO_REOPEN"
+      echo "  REOPEN_TO_ACTIVE"
+      exit 0
+      ;;
+    --status)
+      show_status=true
+      ;;
+    --yes)
+      OPENCODE_NONINTERACTIVE=true bash "$0" "${@:2}"
+      exit $?
+      ;;
+    *)
+      echo "Unknown option: $1"
+      usage
+      ;;
+  esac
+  shift
+done
+
+# Change to project path if specified (so all relative paths resolve correctly)
+if [ -n "$PROJECT_PATH" ]; then
+  if [ ! -d "$PROJECT_PATH" ]; then
+    echo "Error: Project path not found: $PROJECT_PATH"
+    echo "Usage: $0 --project-path <path> [--transition <transition>]"
+    echo "Example: $0 --project-path workspaces/my-project --status"
+    exit 1
+  fi
+  cd "$(realpath "$PROJECT_PATH" 2>/dev/null || echo "$PROJECT_PATH")"
+fi
+
+# Handle --status (deferred so --project-path is processed first)
+if [ "$show_status" = true ]; then
+  if [ -f "$STATE_FILE" ]; then
+    cat "$STATE_FILE"
+  else
+    echo "No state file found — project not initialized"
+  fi
+  exit 0
+fi
+
+if [ -z "$transition" ]; then
+  echo "Error: --transition is required"
+  usage
+fi
+
+case "$transition" in
+  INIT_TO_ACTIVE)    init_to_active ;;
+  ACTIVE_TO_REVIEW)  active_to_review ;;
+  REVIEW_TO_CLOSED)  review_to_closed ;;
+  CLOSED_TO_REOPEN)  closed_to_reopen ;;
+  REOPEN_TO_ACTIVE)  reopen_to_active ;;
+  *)                 echo "Unknown transition: $transition"; usage ;;
+esac
+
+echo ""
+if [ "$gate_failed" -eq 0 ]; then
+  if [ "$validate_only" = true ]; then
+    [ "$JSON_MODE" = true ] || echo -e "  ${GREEN}━━━ VALIDATION PASSED — transition is allowed ━━━${NC}"
+  else
+    [ "$JSON_MODE" = true ] || echo -e "  ${GREEN}━━━ GATE PASSED ━━━${NC}"
+  fi
+else
+  if [ "$validate_only" = true ]; then
+    [ "$JSON_MODE" = true ] || echo -e "  ${RED}━━━ VALIDATION BLOCKED — transition not allowed ━━━${NC}"
+  else
+    [ "$JSON_MODE" = true ] || echo -e "  ${RED}━━━ GATE BLOCKED — fix failures above ━━━${NC}"
+  fi
+fi
+[ "$JSON_MODE" = true ] || echo ""
+
+# Determine markers required for this transition (used by both modes)
+case "$transition" in
+  INIT_TO_ACTIVE) markers_required=".design_reviewed .second_opinion_done" ;;
+  ACTIVE_TO_REVIEW) markers_required=".code_reviewed .testers_done" ;;
+  REVIEW_TO_CLOSED) markers_required="" ;;
+  CLOSED_TO_REOPEN) markers_required="" ;;
+  REOPEN_TO_ACTIVE) markers_required=".second_opinion_done" ;;
+esac
+
+# JSON mode: emit structured JSON
+
+  if [ "$gate_failed" -eq 0 ]; then
+    json_emit "gate.sh" "PASS" "" "$transition"
+  else
+    json_emit "gate.sh" "BLOCKED" "" "$transition"
+  fi
+  exit "$gate_failed"
+
+# Reviewer mode: output structured results
+if [ "$reviewer_mode" = true ]; then
+  echo "─── Reviewer Mode Output ───"
+  if [ "$gate_failed" -eq 0 ]; then
+    echo "GATE_RESULT:PASS"
+  else
+    echo "GATE_RESULT:BLOCKED"
+  fi
+  echo "TRANSITION:$transition"
+  echo "VALIDATE_ONLY:$validate_only"
+  # Build CHECKS line
+  checks_line=""
+  for key in "${!check_results[@]}"; do
+    if [ -n "$checks_line" ]; then
+      checks_line+=","
+    fi
+    checks_line+="${key}:${check_results[$key]}"
+  done
+  echo "CHECKS:$checks_line"
+  echo "MARKERS_REQUIRED:$markers_required"
+  if [ "${#cleanup_markers[@]}" -gt 0 ]; then
+    echo "MARKERS_CLEANUP:${cleanup_markers[*]}"
+  fi
+  echo "────────────────────────────"
+fi
+
+# In validate-only mode, do NOT clean markers or modify state
+if [ "$validate_only" = false ] && [ "$gate_failed" -eq 0 ]; then
+  cleanup_markers_on_pass
+
+  # Trigger memoir distillation for Scribes (ADR-0009 phase 4)
+  # After CLOSED transition, Scribes should distill project memories into memoirs
+  if [ "$transition" = "REVIEW_TO_CLOSED" ]; then
+    touch .distill_needed
+    pass "Memoir distillation marker created (.distill_needed)"
+  fi
+fi
+
+exit "$gate_failed"
