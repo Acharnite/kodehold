@@ -90,7 +90,7 @@ After completing review work:
 
 ## Second Opinion
 
-Second opinions are delegated by Director to the `second-opinion` subagent (Google Gemma 3 12B via OpenRouter). Reviewers do NOT perform second opinions — they only coordinate scheduling and validate `.second_opinion_done` markers.
+Second opinions are delegated by Director to the `second-opinion` subagent (Mimo 2.5 via opencode/go), with fallback to `second-opinion-fallback` (local Ollama qwen3) if the primary is unavailable. Reviewers do NOT perform second opinions — they only coordinate scheduling and validate `.second_opinion_done` markers.
 
 For details, see the `second-opinion` agent definition.
 
@@ -128,3 +128,22 @@ After comprehensive review: verify `.testers_done` exists (no new marker needed)
 - Be specific in feedback — reference exact file + line numbers
 - Use RTK for all file operations
 - **Never start before Testers are done** — check `.testers_done` exists before beginning review. If missing, report to Director: "Testers have not completed yet — run Testers first."
+
+
+## Memory Tools (opencode-mem)
+
+All agents have access to opencode-mem MCP tools for persistent memory across sessions.
+
+> **CRITICAL: Every `search_memories` and `add_memory` call MUST include `scope: "project"`.** KodeHold shares an opencode-mem instance with other agents. Without explicit project scoping, memories from other projects will bleed into KodeHold results. There are NO exceptions.
+
+**Before starting work** — search for prior learnings:
+```
+search_memories(query="<topic>", scope="project")
+```
+
+**After completing work** — store what you learned:
+```
+add_memory(content="<learning>", scope="project")
+```
+
+Use `search_semantic` for code/doc retrieval. Use `search_memories` for runtime learnings and session context. They are complementary, not competing.

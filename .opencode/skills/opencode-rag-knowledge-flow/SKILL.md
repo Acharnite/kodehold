@@ -5,6 +5,8 @@ description: Pre-task knowledge retrieval for agents. Search the indexed codebas
 
 # OpenCode RAG Knowledge Flow
 
+> **MCP memory tools are available alongside RAG tools.** opencode-mem (`search_memories`, `add_memory`, etc.) provides persistent memory across sessions. Use RAG tools for code/doc retrieval; use memory tools for runtime learnings and session context. See ADR-0051 for details.
+
 ## Invocation Modes
 
 This skill has 1 mode:
@@ -54,6 +56,40 @@ Run BEFORE starting work. For all teams that execute tasks.
    )
    ```
 
+### Persistent Memory Recall
+
+> **CRITICAL: Always pass `scope: "project"` to ALL memory tool calls.** KodeHold shares an opencode-mem instance with other agents (e.g., Bob). Without explicit project scoping, `search_memories` and `add_memory` will return/write memories from ALL projects. Every `search_memories` and `add_memory` call MUST include `scope: "project"` to prevent cross-project memory bleed.
+
+opencode-mem MCP tools run **in parallel** with the RAG retrieval above. Use them to recall learnings, decisions, and session context that exist outside the codebase.
+
+1. **Search stored memories** — query the memory store for prior learnings:
+   ```
+   search_memories(query="<topic>", scope="project")
+   ```
+   Use this when asking "what did we learn about X?" or "what happened last time we touched this?"
+
+2. **Store learnings after work** — capture patterns, decisions, or fixes for future recall:
+   ```
+   add_memory(content="<learning or decision>", scope="project")
+   ```
+   Tag memories when possible (e.g., `"bugfix"`, `"pattern"`, `"decision"`) to make future retrieval more precise.
+
+3. **When to use memory vs RAG:**
+
+   | Question | Tool | Why |
+   |----------|------|-----|
+   | "What does this code do?" | `search_semantic` | Code is in the indexed workspace |
+   | "What ADR covers this?" | `search_semantic` | ADRs are indexed files |
+   | "What did we learn about this bug?" | `search_memories(scope="project")` | Learnings are stored as memories |
+   | "What triage pattern applies here?" | `search_memories(scope="project")` | Patterns are runtime knowledge |
+   | "What decision did we make last session?" | `search_memories(scope="project")` | Session context is in memory |
+   | "Where is this function used?" | `find_usages` | Symbol references are in the index |
+
+4. **Post-task memory capture** — after completing any work, store what you learned:
+   ```
+   add_memory(content="When fixing <bug>, the root cause was <X> and the solution was <Y>", scope="project")
+   ```
+
 ## Mode Selection
 
 | Team | Default Mode | Notes | Search Prefix |
@@ -66,8 +102,11 @@ Run BEFORE starting work. For all teams that execute tasks.
 | Scribes | N/A | No knowledge flow needed | — |
 
 ## Important Notes
-- Steps 1-2 are SEARCH ONLY — no writes.
+- **Memory scoping is MANDATORY.** Every `search_memories` and `add_memory` call MUST include `scope: "project"`. This prevents memories from other projects (e.g., Bob) from appearing in KodeHold results. There are NO exceptions to this rule.
+- RAG steps (1-5) are SEARCH ONLY — no writes. Memory steps (`add_memory`) are WRITE operations — use them after completing work, not during search phases.
 - `search_semantic` searches the indexed workspace files — not a runtime database. New or heavily modified content may not appear immediately if the index is stale. Re-run the search after a brief delay if results seem incomplete.
+- `search_memories` searches the opencode-mem memory store — runtime session context and agent learnings. It is independent of the codebase index.
 - `find_usages` requires index freshness. After renaming or deleting symbols, the index may briefly return stale results.
 - `get_file_skeleton` is MANDATORY before reading any file — it avoids token waste on irrelevant sections.
-- There is NO Post-task or Full mode. Knowledge is stored directly in files (ADRs, design docs, agent files, skill files). If you discover something worth preserving, document it in the appropriate file — do not rely on external memory.
+- RAG and memory are complementary: RAG for code/docs, memory for learnings/decisions. Use both in pre-task mode for full context.
+- There is NO Post-task or Full mode for RAG. For memory, use `add_memory` post-task to capture what you learned. If you discover something worth preserving in the codebase, document it in the appropriate file (ADRs, design docs) — memory is for ephemeral learnings, files are for permanent decisions.

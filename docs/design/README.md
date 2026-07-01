@@ -249,6 +249,8 @@ Consequences: Trade-offs and follow-ups
 | ADR-0048 | Mandatory Tool Documentation Review Before Implementation | Accepted |
 | ADR-0049 | Lazy Senior Dev Philosophy | Accepted |
 | ADR-0050 | Agentmemory → OpenCode RAG Migration | Accepted |
+| ADR-0051 | opencode-mem as KodeHold Persistent Memory Backend | Accepted |
+| ADR-0051b | Frontend Reactivity Strategy for DeepResearch | Proposed |
 
 
 See `docs/adr/README.md` for full details.
@@ -329,29 +331,46 @@ KodeHold runs as an OpenCode agent or set of agents. All interaction with the fi
 
 ### 7.2 Persistent Memory & Knowledge Retrieval
 
-KodeHold uses **file-based persistent storage** in the `.opencode/memory/` directory for all cross-session knowledge, replacing the previous agentmemory daemon-based system. The directory is organized by type:
+KodeHold uses **opencode-mem** as its persistent memory backend (per [ADR-0051](../adr/ADR-0051-opencode-mem-persistent-memory.md)), providing cross-session memory with semantic search, auto-capture, and automatic compaction. OpenCode RAG provides code and documentation search. The two systems are complementary and serve different purposes.
 
-| Subdirectory | Purpose |
-|-------------|---------|
-| `decisions/` | Architectural and design decisions with rationale |
-| `patterns/` | Recurring patterns and extracted knowledge |
-| `lessons/` | Tagged lessons learned from completed work |
-| `metrics/` | Token usage and timing data |
-| `checkpoints/` | Session checkpoints for context preservation |
-| `prospective/` | Deferred and recurring task definitions |
+**opencode-mem** — an MCP server providing persistent memory with:
+- Semantic search via vector embeddings (USearch backend, nomic-embed-text-v1 model)
+- Auto-capture of conversation context without explicit agent action
+- Project-scoped memory with configurable default scope
+- Compaction to manage memory limits automatically
+- Local-first storage at `~/.opencode-mem/data`
 
-This approach provides version-controlled, queryable, daemon-free persistent storage. Files use structured YAML frontmatter for metadata and free-form markdown for content. Directory listing via `ls` and content search via `grep`/`search_semantic` provide retrieval.
+MCP tools available to all agents:
 
-**OpenCode RAG Knowledge Flow** — the protocol governing how every team searches for relevant code and documentation before starting work — is implemented in `.opencode/skills/opencode-rag-knowledge-flow/SKILL.md`. The skill defines the pre-task retrieval protocol using:
+| Tool | Purpose |
+|------|---------|
+| `search_memories(query, scope?)` | Semantic search across stored memories |
+| `add_memory(content, scope?, tags?)` | Store a new memory |
+| `get_memory(id)` | Retrieve a specific memory by ID |
+| `list_memories(scope?, tags?)` | List memories with optional filters |
+| `update_memory(id, content)` | Update an existing memory |
+| `delete_memory(id)` | Remove a memory |
 
-- `search_semantic` — semantic codebase and documentation search (replaces agentmemory's `memory_lesson_recall`, `memory_recall`, `memory_smart_search`)
+> **Project scoping is MANDATORY.** Every `search_memories` and `add_memory` call MUST include `scope: "project"` to prevent cross-project memory bleed. KodeHold shares an opencode-mem instance with other agents. See [ADR-0051 §3b](../adr/ADR-0051-opencode-mem-persistent-memory.md) for details.
+
+**OpenCode RAG** — built-in tools for code and documentation search:
+- `search_semantic` — semantic search across indexed workspace files (source, docs, ADRs)
 - `find_usages` — symbol reference tracking across the indexed codebase
 - `get_file_skeleton` — structural file overview before reading
 - `describe_image` — vision-model description of screenshots and diagrams
 
-All 6 team agents parameterize this protocol with team-specific search prefixes. The protocol is loaded via the `skill` tool with zero token cost until invoked.
+**Relationship between opencode-mem and OpenCode RAG:**
 
-> **Previous system:** The agentmemory-based system (external `iii` daemon on port 3111, `@agentmemory/agentmemory` npm package, REST API with WebSocket dependencies) has been fully replaced per ADR-0050. The file-based `.opencode/memory/` directory and OpenCode's built-in RAG tools provide equivalent or superior functionality without daemon management, health checks, or npm dependencies. See [ADR-0050](../adr/ADR-0050-agentmemory-to-opencode-rag-migration.md) for the full migration mapping.
+| Aspect | OpenCode RAG | opencode-mem |
+|--------|-------------|--------------|
+| What it searches | Indexed workspace files (source, docs, ADRs) | Runtime memory (session context, agent learnings) |
+| When populated | At index time (file changes trigger re-indexing) | At runtime (auto-capture + explicit `add_memory`) |
+| Use case | "What does this code do?" "What ADR covers this?" | "What did we learn last session?" "What triage pattern applied?" |
+| Persistence | Tied to file system (files must exist) | Independent of files (memories persist across sessions) |
+
+Agents use OpenCode RAG for code/doc retrieval and opencode-mem for runtime memory. The `opencode-rag-knowledge-flow` skill handles RAG retrieval; a parallel memory recall step handles opencode-mem retrieval.
+
+> **Previous systems:** The agentmemory daemon (`iii`, port 3111) was removed per ADR-0050. The file-based `.opencode/memory/` storage proposed in ADR-0050 §5 was never implemented and is superseded by opencode-mem per ADR-0051. See [ADR-0050](../adr/ADR-0050-agentmemory-to-opencode-rag-migration.md) and [ADR-0051](../adr/ADR-0051-opencode-mem-persistent-memory.md).
 
 ### 7.3 RTK (Runtime Toolkit)
 
@@ -650,15 +669,27 @@ kodehold/
 │   │   ├── scribes.md             # Memory and documentation (+ deprecated YAML frontmatter)
 │   │   ├── director.md            # Orchestrator (+ deprecated YAML frontmatter)
 │   │   └── second-opinion.md      # Cross-model review (+ deprecated YAML frontmatter)
+│   ├── commands/
+│   │   ├── recall.md              # Knowledge recall command
+│   │   └── remember.md            # Memory persistence command
 │   ├── references/
 │   │   └── kodehold-protocol.md   # Shared protocol reference
+│   ├── plugins/
+│   │   ├── rag-plugin.js          # RAG index plugin
+│   │   └── rag-tui.js             # RAG TUI plugin
 │   └── skills/                    # Reusable skills
 │       ├── README.md              # Skill index
+│       ├── opencode-rag/
+│       │   └── SKILL.md           # OpenCode RAG skill
 │       ├── opencode-rag-knowledge-flow/
-│       ├── agentmemory-knowledge-flow/    # (deprecated — replaced by opencode-rag-knowledge-flow per ADR-0050)
-│       │   └── SKILL.md           # Agentmemory knowledge flow protocol
 │       ├── investigate/
 │       │   └── SKILL.md           # Systematic debugging protocol (4 phases)
+│       ├── ponytail-audit/
+│       │   └── SKILL.md           # Whole-repo over-engineering audit
+│       ├── ponytail-review/
+│       │   └── SKILL.md           # Diff-level over-engineering review
+│       ├── resume/
+│       │   └── SKILL.md           # Session resume from checkpoint
 │       └── state-awareness/
 │           └── SKILL.md           # Lifecycle state checking + mismatch protocol
 ├── config/                        # YAML-based configuration (ADR-0037)
@@ -672,17 +703,22 @@ kodehold/
 │   │   ├── README.md              # ADR index
 │   │   ├── ADR-0001-*.md
 │   │   └── ...
-│   ├── dashboard/
-│   │   └── index.html             # Token usage dashboard
 │   └── decisions/                 # Working notes, options analysis
 ├── .github/workflows/
 │   └── kodehold-ci.yml            # CI pipeline (smoke, init, integration)
 ├── scripts/
+│   ├── benchmark.sh               # Performance benchmarks
+│   ├── detect-test-framework.sh   # Non-Python test framework detection (ADR-0047)
+│   ├── gate.sh                    # Lifecycle state transition gate
+│   ├── lib/                       # Script helper library
+│   ├── migrations/                # Data/config migration scripts
 │   ├── ship.sh                    # Shipping gate checklist automation
-│   ├── validate-config.sh         # Validates config/agents.yaml against schema
 │   ├── sync-agent-config.sh       # Syncs frontmatter between .md and agents.yaml
+│   ├── token-dashboard.sh         # Token dashboard launcher
+│   ├── token-report.py            # Rich token usage HTML report
 │   ├── token-usage.sh             # Token consumption tracking
-│   └── token-report.py            # Rich token usage HTML report
+│   ├── validate-config.sh         # Validates config/agents.yaml against schema
+│   └── workspace.sh               # Workspace management (init, adopt)
 ├── tests/
 │   ├── run.sh                     # Test suite runner
 │   ├── smoke/                     # Structure validation
@@ -701,6 +737,7 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.16.0 (2026-07-01):** ADR-0051 integration — replaced Section 7.2 (Persistent Memory & Knowledge Retrieval) with opencode-mem as persistent memory backend and OpenCode RAG for code/doc search. Added ADR-0051 to ADR index. ADR-0050 §5 (File-Based Persistent Storage) superseded. See ADR-0051 for full rationale and configuration.
 - **v1.15.2 (2026-06-28):** ADR-0050 implementation — replaced Section 7.2 (Agentmemory → Persistent Memory & Knowledge Retrieval), removed Project Slug Migration subsection, updated all remaining agentmemory references throughout design doc to reflect file-based `.opencode/memory/` storage and OpenCode RAG tools. See ADR-0050 for full migration mapping.
 - **v1.15.1 (2026-06-27):** ADR-0050 promoted from Proposed → Accepted after Reviewers approval. Second opinion skipped per user request. ADR status updated, `.design_reviewed` marker created.
 - **v1.15.0 (2026-06-27):** Registered ADR-0050 (Agentmemory → OpenCode RAG Migration, Proposed) — replaces agentmemory dependency with OpenCode's built-in RAG tools (search_semantic, find_usages, get_file_skeleton, describe_image). Updates Section 5 (ADR Index) and Section 7.4 (Skills table). See ADR-0050 for full migration plan.

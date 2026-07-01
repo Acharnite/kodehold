@@ -159,6 +159,28 @@ Since there is no action queue, the Director manually ensures prerequisites:
 | "Bug in ..." / "Der er en fejl" / "Fix this" | `kodehold-bugfix-flow-v3` (`rtn_mq1b3vzj_ec3dae260a03`) |
 | "Ship it" / "Release" / "Deploy" | `kodehold-ship-gate-v3` (`rtn_mq1b0kml_2092069aeb6b`) |
 | "Create PR" / "GitHub PR" / "Fork" / "GitHub Pull Request" | `kodehold-github-pr-flow-v1` (`rtn_mqtzl3ud_6766b7c45449`) |
+
+### Routine Step Definitions
+
+Full step-by-step definitions for all routines live in the `kodehold-routines` skill.
+Load it when you need the detailed tables:
+
+```
+skill("kodehold-routines")
+```
+
+**Usage note:** The `kodehold-routines` skill contains all 5 routine tables with their full
+step sequences, footnotes, parameters, branching logic, and prerequisites. Load it on
+demand — it's intentionally descriptive since it's only loaded when a routine is needed.
+
+### How to Use a Routine
+
+1. User says a trigger phrase → identify routine from the trigger table above
+2. Load `skill("kodehold-routines")` for the full step table
+3. Delegate each step sequentially via the Task tool, respecting dependencies
+4. Track progress with `todowrite`
+5. For bugfix-flow: evaluate triage result at branch point (minor → hotfix path, major → REOPEN path)
+
 ### Completion Tracking
 After each delegation, update the active `todowrite` list. No auto-crystallization needed — the Director's workflow is self-documenting through the delegation sequence and file changes.
 
@@ -247,13 +269,21 @@ Director: search_semantic(query="kodehold myproject context", topK=5)
 
 When the Director receives an approval from the second-opinion subagent:
 
-1. The second-opinion subagent returns `Recommendation: proceed` (or equivalent approval)
+1. The second-opinion subagent (primary) returns `Recommendation: proceed` (or equivalent approval)
 2. The Director verifies the recommendation is approval (not revise/redesign)
 3. The Director creates the `.second_opinion_done` marker:
    `bash: touch .second_opinion_done`
 4. If second-opinion does NOT approve → do NOT create marker. Delegate fixes to appropriate team, then re-request second opinion.
 
-**Rationale:** The second-opinion subagent is read-only by design (no file access). The Director acts as its proxy for filesystem operations, ensuring the marker is only created on genuine approval while maintaining the audit trail.
+**Fallback protocol:** If the primary second-opinion subagent (`second-opinion`, opencode/go/Mimo 2.5) fails or is unavailable:
+1. Log the failure reason (timeout, rate limit, provider error)
+2. Retry with the fallback subagent: `Task tool → subagent_type: "second-opinion-fallback"` (local Ollama/qwen3)
+3. If fallback also fails → inform the user: "Second opinion unavailable — both primary (opencode/go/Mimo 2.5) and fallback (Ollama) providers failed."
+4. For non-critical triggers, proceed without second opinion. For critical triggers (security, architecture), block until user resolves the provider issue.
+
+**Marker creation:** Only the fallback subagent's approval creates the `.second_opinion_done` marker — same protocol as primary.
+
+**Rationale:** The second-opinion subagents are read-only by design (no file access). The Director acts as their proxy for filesystem operations, ensuring the marker is only created on genuine approval while maintaining the audit trail.
 
 ## Available Teams
 
@@ -263,7 +293,8 @@ When the Director receives an approval from the second-opinion subagent:
 | Engineers | `engineers` | Implementation, refactoring, bugfixes (core code only) |
 | Testers | `testers` | Tests, verification, regression (core testing only) |
 | Reviewers | `reviewers` | Code/design review, gate validation (core review only) |
-| Second Opinion | `second-opinion` | Cross-model validation via Google Gemma 3 12B (OpenRouter) |
+| Second Opinion (primary) | `second-opinion` | Cross-model validation via Mimo 2.5 (opencode/go) |
+| Second Opinion (fallback) | `second-opinion-fallback` | Local fallback via Ollama qwen3 when primary is unavailable |
 | Scribes | `scribes` | ALL documentation, changelog, design doc maintenance, `.opencode/memory/` storage |
 | FLS | `fls` | Triage, hotfix, escalate (core triage only) |
 
@@ -290,7 +321,7 @@ INIT → ACTIVE → REVIEW → CLOSED → REOPEN → ACTIVE
 | Code/design review | `reviewers` → `scribes` (post-task) | Verify Ladder compliance (ADR-0049) |
 | Test suite | `testers` → `scribes` (post-task) |
 | Memory / docs | `scribes` |
-| Second opinion | `second-opinion` subagent (cross-provider, Google Gemma 3 12B via OpenRouter) |
+| Second opinion | `second-opinion` subagent (opencode/go/Mimo 2.5), falls back to `second-opinion-fallback` (Ollama) if primary unavailable |
 | Investigate / root cause | `engineers` or `fls` via investigate skill → `scribes` (post-task) |
 | Bug / hotfix / triage | `fls` → `scribes` (post-task) |
 | FLS escalation | `architects` (via REOPEN gate) → `scribes` (post-task) |
@@ -378,42 +409,6 @@ Every transition requires Reviewers validation first (except CLOSED→REOPEN). T
 ## FLS Protocol
 
 Delegate issues to `fls`. FLS triages: minor (fixes directly, returns summary for documentation via Scribes) or major (returns `ESCALATE:` summary). On escalation: run CLOSED→REOPEN gate, delegate impact analysis to Architects, proceed through normal lifecycle.
-
-## Headroom Learn Protocol
-
-After a delegation failure (or on explicit user request), the Director SHOULD consider triggering `headroom learn` to extract actionable patterns from the failed session.
-
-**Trigger conditions:**
-- A delegation returns with critical errors or repeated failures
-- User explicitly requests it ("run headroom learn", "learn from this")
-- Scribes reports recurring issues across multiple sessions
-
-**Model note:** Always use `--model ollama/qwen3:8b-opencode` when running `headroom learn`. This uses the local Ollama model — no API keys needed.
-
-**Delegation flow (3-step process):**
-
-**Initial delegation — Scribes (execution):**
-1. Director delegates to Scribes:
-   Task tool → scribes:
-     Context: Session <session-id> failed with <error-summary>.
-     Task: Run `headroom learn --model ollama/qwen3:8b-opencode --apply` on the current project. Findings will be written between `<!-- headroom:learn:start -->` markers in AGENTS.md. Store a summary in `.opencode/memory/patterns/headroom-<date>.md`.
-     Deliverables: Confirmation that findings are written to AGENTS.md.
-
-**Validation — Reviewers (quality gate):**
-2. Director delegates to Reviewers:
-   Task tool → reviewers:
-     Context: `headroom learn` has written new findings to AGENTS.md between `<!-- headroom:learn:start -->` markers.
-     Task: Review the findings. Are they accurate and actionable? Reject any that reference stale tools, wrong paths, or incorrect patterns.
-     Deliverables: Approved list of findings, or rejected findings with reasons.
-
-**Integration — Scribes (finalize):**
-3. If approved, Director delegates to Scribes:
-   Task tool → scribes:
-     Context: Reviewers approved the headroom learn findings.
-     Task: Integrate the approved findings permanently: remove the `<!-- headroom:learn:start -->` and `<!-- headroom:learn:end -->` markers, keep the content in AGENTS.md as a standard section.
-     Deliverables: AGENTS.md updated with permanent findings.
-
-**Do NOT run `headroom learn` directly** — Director has `bash: allow` but `write: deny`. The output must be written to AGENTS.md, which only Scribes can do.
 
 ## Shipping Gate
 
@@ -556,3 +551,22 @@ Scribes stores a summary with this structure:
 - At 10 entries, Scribes consolidates oldest 5 into a single "session-history.md" entry
 
 ```
+
+
+## Memory Tools (opencode-mem)
+
+All agents have access to opencode-mem MCP tools for persistent memory across sessions.
+
+> **CRITICAL: Every `search_memories` and `add_memory` call MUST include `scope: "project"`.** KodeHold shares an opencode-mem instance with other agents. Without explicit project scoping, memories from other projects will bleed into KodeHold results. There are NO exceptions.
+
+**Before starting work** — search for prior learnings:
+```
+search_memories(query="<topic>", scope="project")
+```
+
+**After completing work** — store what you learned:
+```
+add_memory(content="<learning>", scope="project")
+```
+
+Use `search_semantic` for code/doc retrieval. Use `search_memories` for runtime learnings and session context. They are complementary, not competing.

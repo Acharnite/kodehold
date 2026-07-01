@@ -27,6 +27,7 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0017](ADR-0017-reviewers-gatekeeper-and-mandatory-second-opinion.md) | Reviewers as Gatekeeper + Mandatory Second Opinion | Accepted | 2026-05-28 |
 | [ADR-0018](ADR-0018-centralize-documentation-under-scribes.md) | Centralize All Documentation Work Under Scribes | Accepted | 2026-05-28 |
 | [ADR-0019](ADR-0019-session-context-compression.md) | Session Context Compression via Periodic ICM Summaries | Superseded | 2026-05-28 |
+| [ADR-0051](ADR-0051-frontend-reactivity-strategy.md) | Frontend Reactivity Strategy for DeepResearch | Proposed | 2026-06-24 |
 | [ADR-0020](ADR-0020-hierarchical-memory.md) | Hierarchical Memory (Hot/Warm/Cold) | Superseded | 2026-05-29 |
 | [ADR-0021](ADR-0021-prospective-memory.md) | Prospective Memory (Task Queue & Scheduler) | Superseded | 2026-05-29 |
 | [ADR-0022](ADR-0022-automated-episodic-extraction.md) | Automated Episodic Extraction | Superseded | 2026-05-29 |
@@ -41,14 +42,14 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0031](ADR-0031-actions-crystals-integration.md) | Actions + Crystals for Director Delegation | **Deprecated** | 2026-05-31 |
 | [ADR-0032](ADR-0032-routine-templates.md) | Routine Templates for Standard Flows | Accepted | 2026-05-31 |
 | [ADR-0033](ADR-0033-crystals-signals.md) | Crystals + Signals for KodeHold | **Deprecated** | 2026-06-01 |
-| [ADR-0033b](ADR-0033-inter-agent-signals-sentinels.md) | Inter-Agent Signals + Sentinels (Superseded by ADR-0033) | Superseded | 2026-05-31 |
+| [ADR-0033b](ADR-0033b-inter-agent-signals-sentinels.md) | Inter-Agent Signals + Sentinels (Superseded by ADR-0033) | Superseded | 2026-05-31 |
 | [ADR-0034](ADR-0034-workflow-monitor-interface.md) | Workflow Monitor Interface | Accepted | 2026-06-01 |
 | [ADR-0035](ADR-0035-custom-kodehold-viewer.md) | Custom KodeHold Viewer | **Deprecated** | 2026-06-02 |
 | [ADR-0036](ADR-0036-project-slug-convention.md) | Project Slug Convention — Stable Canonical Identifiers | Accepted | 2026-06-02 |
 | [ADR-0037](ADR-0037-yaml-configuration.md) | YAML-Based Agent and Task Configuration | Accepted | 2026-06-02 |
 | [ADR-0038](ADR-0038-knowledge-recall.md) | Knowledge Recall Protocol | Accepted | 2026-06-03 |
 | [ADR-0039](ADR-0039-pre-flight-enforcement.md) | Pre-Flight Knowledge Check Enforcement | Accepted | 2026-06-03 |
-| [ADR-0040](ADR-0040-headroom-integration.md) | Headroom Integration — Context Compression Layer | Proposed | 2026-06-04 |
+| [ADR-0040](ADR-0040-headroom-integration.md) | Headroom Integration — Context Compression Layer | **Deprecated** | 2026-06-30 |
 | [ADR-0041](ADR-0041-procedural-consolidation-fix.md) | Procedural Consolidation Tier — Bridge Pattern Detection to Pipeline | Accepted | 2026-06-04 |
 | [ADR-0042](ADR-0042-adr-implementation-phase-board.md) | ADR Implementation Phase Board | Accepted | 2026-06-05 |
 | [ADR-0043](ADR-0043-agentmemory-slot-integration.md) | Agentmemory Slot Integration | **Deprecated** | 2026-06-06 |
@@ -59,4 +60,5 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0048](ADR-0048-mandatory-documentation-review.md) | Mandatory Tool Documentation Review Before Implementation | Accepted | 2026-06-13 |
 | [ADR-0049](ADR-0049-lazy-senior-dev-philosophy.md) | Lazy Senior Dev Philosophy | Accepted | 2026-06-19 |
 | [ADR-0050](ADR-0050-agentmemory-to-opencode-rag-migration.md) | Agentmemory → OpenCode RAG Migration | Accepted | 2026-06-27 |
+| [ADR-0051](ADR-0051-opencode-mem-persistent-memory.md) | opencode-mem as KodeHold Persistent Memory Backend | Accepted | 2026-07-01 |
 

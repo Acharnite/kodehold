@@ -20,6 +20,13 @@
         "--browser-url",
         "http://localhost:9222"
       ]
+    },
+    "opencode-mem": {
+      "type": "local",
+      "command": ["npx", "-y", "opencode-mem"],
+      "environment": {
+        "OPENROUTER_API_KEY": "{env:OPENROUTER_API_KEY}"
+      }
     }
   },
   "default_agent": "director",
@@ -32,27 +39,7 @@
       },
       "models": {
         "coder": {
-          "name": "qwen3:14b-q4_K_M"
-        },
-        "planner": {
-          "name": "qwen3:30b-a3b-q4_K_M"
-        },
-        "fast": {
-          "name": "gemma3:12b"
-        }
-      }
-    },
-    "openrouter": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "OpenRouter",
-      "options": {
-        "baseURL": "https://openrouter.ai/api/v1",
-        "apiKey": "{env:OPENROUTER_API_KEY}"
-      },
-      "models": {
-        "google/gemma-3-12b-it": {
-          "name": "Gemma 3 12B",
-          "attachment": false
+          "name": "qwen2.5-coder:7b"
         }
       }
     }
@@ -60,22 +47,11 @@
   "compaction": {
     "auto": true,
     "prune": true,
-    "reserved": 7000
+    "reserved": 3000
   },
   "agent": {
-    "plan": {
-      "permission": {
-        "read": "allow",
-        "write": "allow",
-        "edit": "allow",
-        "glob": "allow",
-        "grep": "allow",
-        "bash": "allow",
-        "list": "allow"
-      }
-    },
     "director": {
-      "description": "KodeHold Director \u2014 orchestrator that delegates to specialist teams",
+      "description": "KodeHold Director \u2014 orchestrator that delegates tasks",
       "mode": "primary",
       "permission": {
         "read": "allow",
@@ -95,23 +71,6 @@
           "/home/kiffer/docker/**": "allow"
         }
       }
-    },
-    "fls": {
-      "description": "KodeHold FLS \u2014 Front Line Support, triage and hotfix",
-      "permission": {
-        "read": "allow",
-        "write": "allow",
-        "edit": "allow",
-        "glob": "allow",
-        "grep": "allow",
-        "bash": "allow",
-        "external_directory": {
-          "*": "ask",
-          "/home/kiffer/project/**": "allow",
-          "/tmp/**": "allow",
-          "/home/kiffer/docker/**": "allow"
-        }
-      }
     }
   },
   "permission": {
@@ -123,5 +82,9 @@
       "/home/kiffer/docker/**": "allow"
     }
   },
-  "lsp": true
+  "lsp": true,
+  "plugin": [
+    ".opencode/plugins/rag-plugin.js",
+    ".opencode/plugins/rag-tui.js"
+  ]
 }

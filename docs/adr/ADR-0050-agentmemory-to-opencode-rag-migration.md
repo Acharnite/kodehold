@@ -8,6 +8,8 @@ Accepted
 
 **Note:** Second opinion (Step 5) skipped per user request — cross-model validation provider not available at time of finalization.
 
+> **Superseded:** §5 (File-Based Persistent Storage) is superseded by [ADR-0051](ADR-0051-opencode-mem-persistent-memory.md) — opencode-mem replaces the file-based `.opencode/memory/` proposal. The file-based storage was never implemented; opencode-mem provides semantic search, auto-capture, and compaction. The rest of ADR-0050 (agentmemory removal, OpenCode RAG adoption) remains valid.
+
 ## Context
 
 ### The Problem

@@ -416,75 +416,26 @@ If prospective task count exceeds budget (35 total, or per-priority limits), Scr
 | Medium | 15 | Expire oldest low first |
 | Low | 5 | Expire oldest |
 
-## Headroom Learn Protocol
 
-Scribes is responsible for running `headroom learn` and integrating its findings into AGENTS.md. This complements the file-based documentation in `.opencode/memory/` by focusing on failure post-mortem analysis → agent instruction updates.
+## Persistent Memory (opencode-mem)
 
-**Model note:** Always use `--model ollama/qwen3:8b-opencode` when running `headroom learn`. This uses the local Ollama model — no API keys needed.
+In addition to file-based storage in `.opencode/memory/`, agents have access to opencode-mem MCP tools for semantic memory search and auto-capture.
 
-### Delegation from Director
+> **CRITICAL: Every `search_memories` and `add_memory` call MUST include `scope: "project"`.** KodeHold shares an opencode-mem instance with other agents. Without explicit project scoping, memories from other projects will bleed into KodeHold results. There are NO exceptions.
 
-Scribes handles TWO distinct phases in the headroom learn workflow:
-
-**Phase 1 — Execution (Scribes):**
+**Search stored memories:**
 ```
-Task tool → scribes:
-  Context: Session <session-id> failed with <error-summary>.
-  Task: Run `headroom learn --model ollama/qwen3:8b-opencode --apply` on the current project. Findings will be written between `<!-- headroom:learn:start -->` markers in AGENTS.md. Store a summary in `.opencode/memory/patterns/headroom-<date>.md`.
-  Deliverables: Confirmation that findings are written to AGENTS.md.
+search_memories(query="<topic>", scope="project")
 ```
 
-**Phase 2 — Integration (Scribes, after Reviewers approve):**
+**Store learnings:**
 ```
-Task tool → scribes:
-  Context: Reviewers approved the headroom learn findings.
-  Task: Integrate the approved findings permanently: remove the `<!-- headroom:learn:start -->` and `<!-- headroom:learn:end -->` markers, keep the content in AGENTS.md as a standard section.
-  Deliverables: AGENTS.md updated with permanent findings.
+add_memory(content="<learning>", scope="project")
 ```
 
-**Note:** Validation of findings is owned by Reviewers, NOT Scribes. Scribes executes and integrates; Reviewers validate.
-
-### Execution Steps
-
-1. **Run headroom learn:** `headroom learn --model ollama/qwen3:8b-opencode --apply` (writes findings to AGENTS.md between `<!-- headroom:learn:start -->` markers)
-   - For dry-run (no writes): `headroom learn --model ollama/qwen3:8b-opencode` (review first, then `--apply`)
-   - For all projects: `headroom learn --model ollama/qwen3:8b-opencode --all --apply`
-
-2. **Integrate findings (after Reviewers approve):** Once Reviewers have validated the findings, remove the `<!-- headroom:learn:start -->` and `<!-- headroom:learn:end -->` markers, keeping the content in AGENTS.md as a permanent section.
-   - Ensure findings are:
-     - Accurate (already validated by Reviewers)
-     - Actionable (specific enough for agents to act on)
-     - Not duplicating existing knowledge
-
-3. **Store decision** — save a summary in `.opencode/memory/patterns/headroom-<date>.md`:
-   ```
-   ---
-   type: pattern
-   project: <project>
-   concepts: headroom-learn, failure-analysis, <domain>
-   created: <ISO 8601>
-   ---
-
-   # Headroom Learn Findings: <date>
-
-   <summary of corrections>
-   ```
-
-4. **Send response to Director** confirming completion.
-
-### Boundaries (focused on file-based documentation)
-
-| Concern | headroom learn | `.opencode/memory/` storage |
-|---------|---------------|------------------------------|
-| Focus | Failure post-mortem | Ongoing knowledge documentation |
-| Output | AGENTS.md (agent instructions) | Structured files (patterns, decisions) |
-| Trigger | Failed session | After each delegation / session end |
-| Scope | Specific failures | Cross-session patterns |
-| Ownership | Scribes | Scribes |
-
-### Trigger Conditions
-
-Scribes may also trigger `headroom learn` independently:
-- During session checkpoint, if the session had repeated failures
-- On explicit user request ("run headroom learn")
-- When Director signals recurring issues across sessions
+**Scribes responsibilities for opencode-mem:**
+- Use `search_memories(scope="project")` to recall prior context when updating docs
+- Use `add_memory(scope="project")` to capture important decisions and patterns
+- File-based `.opencode/memory/` stores structured docs (ADRs, checkpoints, metrics)
+- opencode-mem stores runtime learnings and session context
+- Both systems complement each other
