@@ -148,11 +148,11 @@ agents:
 
   - name: second-opinion
     description: >
-      Cross-provider second opinion. Reviews critical decisions using a
-      different model/provider than the primary. Invoked by Director for
-      ADRs, security-critical code, ambiguous designs.
+      Cross-provider second opinion (Mimo 2.5 on opencode/go). Reviews
+      critical decisions using a different model/provider than the primary.
+      Invoked by Director for ADRs, security-critical code, ambiguous designs.
     hidden: true
-    model: openrouter/google/gemma-3-12b-it
+    model: opencode/go/mimo-v2.5
     tags:
       - validation
       - review
@@ -164,3 +164,23 @@ agents:
       write: deny
       edit: deny
       bash: deny
+
+  - name: second-opinion-fallback
+    description: >
+      Fallback cross-provider second opinion. Uses local Ollama model when
+      the primary second-opinion (opencode/go/Mimo 2.5) is unavailable. Invoked
+      by Director for ADRs, security-critical code, ambiguous designs when
+      primary second-opinion fails.
+    hidden: true
+    model: ollama/qwen3:8b-opencode
+    tags:
+      - validation
+      - review
+      - fallback
+    triggers:
+      - second opinion fallback
+      - fallback review
+      - offline validation
+    permission:
+      write: deny
+      edit: deny

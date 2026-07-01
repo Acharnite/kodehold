@@ -6,7 +6,7 @@
 #   3. State awareness restrictions per lifecycle state
 #   4. Reference to state-awareness skill
 #   5. Reference to investigate skill for unclear root cause
-#   6. ICM documentation requirements
+#   6. Documentation routing through Scribes
 #   7. Frontmatter permission: skill: allow
 set -euo pipefail
 

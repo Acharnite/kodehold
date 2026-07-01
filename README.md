@@ -14,7 +14,7 @@ KodeHold simulates a disciplined software organization where specialized AI agen
 - **Design-first** — no code without an approved design document
 - **Separation of concerns** — distinct teams for design, implementation, review, testing, memory, and front-line support
 - **Token-conscious** — every operation evaluated for token cost; RTK for compact CLI output
-- **Persistent memory** — full project context preserved across sessions via ICM (Infinite Context Memory)
+- **Persistent memory** — full project context preserved across sessions via file-based storage (`.opencode/memory/`) and OpenCode RAG (`search_semantic`, `find_usages`)
 - **Traceable decisions** — all architecture decisions recorded as ADRs (Nygaard format)
 - **LLM-agnostic** — bring your own model; second-opinion cross-check supported via different providers
 - **Gate-driven lifecycle** — every state transition validated by automated gates; no skipping steps
@@ -28,7 +28,7 @@ Director                        ← orchestrator, lifecycle gates, delegation, s
 ├── Engineers    — implementation, refactoring, bug fixes
 ├── Testers      — testing, verification, regression suites
 ├── Reviewers    — code review, design review, second opinion coordination
-├── Scribes      — ICM memory, documentation, knowledge extraction
+├── Scribes      — documentation, `.opencode/memory/`, knowledge extraction
 └── FLS          — front line support, triage, hotfix, escalation
 ```
 
@@ -43,7 +43,7 @@ INIT → ACTIVE → REVIEW → CLOSED ↔ REOPEN
 | INIT | Design doc created, ADRs drafted, project scoped |
 | ACTIVE | Implementation — Engineers → **Testers** → **Reviewers** (sequential, enforced) |
 | REVIEW | Final gate — Team Meeting reviews all work across all 6 teams |
-| CLOSED | Complete, context stored in ICM |
+| CLOSED | Complete, context stored in `.opencode/memory/` and design docs |
 | REOPEN | Resurrected for new features or bugfixes |
 
 Each transition runs automated gates via `scripts/gate.sh`. Agents check state before work and refuse if in the wrong phase. The ACTIVE→REVIEW gate enforces that Testers complete before Reviewers begin (`.testers_done` marker).
@@ -63,7 +63,7 @@ All agents follow **read-before, update-after**:
 | Engineers | Implementation, code, feature, bugfix, refactor | — |
 | Testers | Test, verify, regression, QA | Must finish before Reviewers |
 | Reviewers | Review, code review, design review | Must run after Tests pass |
-| Scribes | Memory, ICM, documentation, changelog | — |
+| Scribes | Memory (`.opencode/memory/`), documentation, changelog | — |
 | FLS | Support, hotfix, triage, minor change | — |
 
 ## Workspaces
@@ -81,7 +81,7 @@ For critical decisions, the Director can request a second opinion from a **diffe
 ## Quick Start
 
 ```bash
-# Prerequisites: OpenCode, ICM v0.10+, RTK v0.40+
+# Prerequisites: OpenCode, RTK v0.40+
 git clone https://github.com/Acharnite/kodehold.git
 cd kodehold
 opencode
@@ -99,14 +99,14 @@ The Director agent loads automatically as the default agent. Start by reading `A
 | `.opencode/agents/director.md` | Director agent — full orchestrator protocol |
 | `.opencode/agents/` | Team agent definitions (7 agents) |
 | `scripts/gate.sh` | Lifecycle gate automation (5 transitions) |
-| `scripts/ship.sh` | Shipping gate automation (9 steps: team-meeting → version → changelog → todo → tests → icm → commit → push → tag) |
+| `scripts/ship.sh` | Shipping gate automation (7 checks: version → changelog → todo → tests → git → branch) |
 | `scripts/workspace.sh` | Workspace project management |
 | `tests/run.sh` | Test suite — 12 tests across smoke, init, integration |
 
 ## Requirements
 
 - **OpenCode** — agent framework
-- **ICM** v0.10+ — persistent memory (`cargo install icm`)
+
 - **RTK** v0.40+ — token-optimized CLI (`pip install rtk`)
 - **Ollama** or another LLM provider
 

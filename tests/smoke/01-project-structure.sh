@@ -17,7 +17,7 @@ done
 
 # ADR files follow ADR-NNNN-*.md pattern
 for f in docs/adr/ADR-*.md; do
-  [[ "$f" =~ ADR-[0-9]{4}-.+\.md$ ]] && pass "$f matches ADR-NNNN-* pattern" || fail "$f does not match ADR-NNNN-* pattern"
+  [[ "$f" =~ ADR-[0-9]{4}[a-z]?-.+\.md$ ]] && pass "$f matches ADR-NNNN-* pattern" || fail "$f does not match ADR-NNNN-* pattern"
 done
 
 # Agent subagents
@@ -29,5 +29,5 @@ done
 [ -f .opencode/references/kodehold-protocol.md ] && pass "protocol reference exists" || fail "protocol reference missing"
 
 # ICM
-[ -f .icm/config.toml ] && pass ".icm/config.toml exists" || fail ".icm/config.toml missing"
+[ -f .kodehold-state ] && pass ".kodehold-state exists" || fail ".kodehold-state missing"
 

@@ -12,7 +12,7 @@ phase:
 
 ## Status
 
-Superseded
+Deprecated
 
 Superseded by ADR-0030 (Agentmemory Knowledge Flow).
 

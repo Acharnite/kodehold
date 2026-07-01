@@ -15,6 +15,8 @@ skills/
 │   └── SKILL.md            # [DEPRECATED] Pre-task agentmemory knowledge retrieval
 ├── investigate/
 │   └── SKILL.md            # Systematic debugging with root cause investigation
+├── kodehold-routines/
+│   └── SKILL.md            # Standard workflow routine definitions
 ├── resume/
 │   └── SKILL.md            # Resume interrupted sessions from .opencode/memory/checkpoints
 ├── ponytail-review/
@@ -35,4 +37,5 @@ skills/
 | [resume](resume/SKILL.md) | Resume interrupted sessions from .opencode/memory/checkpoints. Uses file reads and search_semantic for checkpoint recovery. |
 | [ponytail-review](ponytail-review/SKILL.md) | Over-engineering analysis for code review. Companion to The Ladder (ADR-0049). Tags diffs with delete:/stdlib:/native:/yagni:/shrink: tags. Loaded by Reviewers during Ladder compliance checks. |
 | [ponytail-audit](ponytail-audit/SKILL.md) | Whole-repo over-engineering audit. Scans entire codebase for complexity using 9 hunts. Produces ranked report with net line + dependency reduction. |
+| [kodehold-routines](kodehold-routines/SKILL.md) | Standard workflow routine step tables for ADR creation, implementation, bugfix, shipping gate, and GitHub PR flows. Load when the Director needs to instantiate a routine. |
 | [state-awareness](state-awareness/SKILL.md) | Lifecycle state check preamble and mismatch reporting protocol. Used by all team subagents. |

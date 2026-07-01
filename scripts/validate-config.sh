@@ -106,7 +106,7 @@ for i, agent in enumerate(agents):
 
 # Check agent count
 agent_names = [a.get("name") for a in agents if isinstance(a, dict)]
-expected_count = 8
+expected_count = 9
 if len(agent_names) != expected_count:
     err(f"Expected {expected_count} agents, found {len(agent_names)}: {agent_names}")
 

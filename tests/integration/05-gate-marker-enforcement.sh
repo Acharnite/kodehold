@@ -15,6 +15,8 @@ setup_project() {
 
   mkdir -p "$project_dir/scripts" "$project_dir/docs/design" "$project_dir/docs/adr"
   cp "$ROOT_DIR/scripts/gate.sh" "$project_dir/scripts/gate.sh"
+  mkdir -p "$project_dir/scripts/lib"
+  cp "$ROOT_DIR/scripts/lib/output.sh" "$project_dir/scripts/lib/output.sh"
 
   cat > "$project_dir/docs/design/README.md" <<'EOF'
 # Design

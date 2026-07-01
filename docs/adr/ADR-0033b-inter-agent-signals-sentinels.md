@@ -7,7 +7,7 @@ phase:
     1: done
 ---
 
-# ADR-0033: Inter-Agent Signals + Sentinels
+# ADR-0033b: Inter-Agent Signals + Sentinels
 
 ## Status
 

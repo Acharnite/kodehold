@@ -86,7 +86,9 @@
       "wasm",
       ".commandcode",
       ".agents",
-      "graphify-out"
+      "graphify-out",
+      "doc",
+      "docs"
     ],
     "chunkOverlap": 0,
     "minFileSizeBytes": 0,
@@ -97,8 +99,8 @@
     "path": "./.opencode/rag_db"
   },
   "retrieval": {
-    "topK": 20,
-    "minScore": 0.5,
+    "topK": 5,
+    "minScore": 0.75,
     "hybridSearch": {
       "enabled": true,
       "keywordWeight": 0.4
@@ -117,7 +119,7 @@
       "enabled": true,
       "minScore": 0.75,
       "maxChunks": 10,
-      "maxTokens": 3000,
+      "maxTokens": 2000,
       "contentType": "file_paths"
     }
   },
