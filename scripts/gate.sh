@@ -210,7 +210,7 @@ active_to_review() {
         gate_failed=1
       fi
     fi
-  elif [ -d "tests" ] && ls tests/test_*.py &>/dev/null 2>&1; then
+  elif [ -d "tests" ] && find tests -name 'test_*.py' 2>/dev/null | head -1 >/dev/null 2>&1; then
     PYTEST_CMD="python3 -m pytest"
     [ -f ".venv/bin/pytest" ] && PYTEST_CMD=".venv/bin/pytest"
     PYTEST_ENV=""
@@ -298,7 +298,7 @@ review_to_closed() {
         gate_failed=1
       fi
     fi
-  elif [ -d "tests" ] && ls tests/test_*.py &>/dev/null 2>&1; then
+  elif [ -d "tests" ] && find tests -name 'test_*.py' 2>/dev/null | head -1 >/dev/null 2>&1; then
     PYTEST_CMD="python3 -m pytest"
     [ -f ".venv/bin/pytest" ] && PYTEST_CMD=".venv/bin/pytest"
     PYTEST_ENV=""

@@ -90,7 +90,7 @@ After completing review work:
 
 ## Second Opinion
 
-Second opinions are delegated by Director to the `second-opinion` subagent (Mimo 2.5 via opencode/go), with fallback to `second-opinion-fallback` (local Ollama qwen3) if the primary is unavailable. Reviewers do NOT perform second opinions — they only coordinate scheduling and validate `.second_opinion_done` markers.
+Second opinions are delegated by Director to the `second-opinion` subagent (Mimo 2.5 via opencode/go), with fallback to `second-opinion-fallback` (local Ollama qwen2.5-coder:7b) if the primary is unavailable. Reviewers do NOT perform second opinions — they only coordinate scheduling and validate `.second_opinion_done` markers.
 
 For details, see the `second-opinion` agent definition.
 

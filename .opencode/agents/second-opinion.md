@@ -1,11 +1,11 @@
 ---
 name: second-opinion
 description: |
-  Cross-provider second opinion. Reviews critical decisions using a different model/provider than the primary. Invoked by Director for ADRs, security-critical code, ambiguous designs. Runs on Mimo 2.5 (opencode/go).
+  Cross-provider second opinion (Mimo 2.5 on opencode/go). Reviews critical decisions using a different model/provider than the primary. Invoked by Director for ADRs, security-critical code, ambiguous designs.
   
 mode: subagent
 hidden: true
-model: opencode/go/mimo-v2.5
+model: mimo-v2.5-free
 permission:
   read: allow
   write: deny

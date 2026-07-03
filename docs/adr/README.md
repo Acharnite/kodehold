@@ -61,4 +61,5 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0049](ADR-0049-lazy-senior-dev-philosophy.md) | Lazy Senior Dev Philosophy | Accepted | 2026-06-19 |
 | [ADR-0050](ADR-0050-agentmemory-to-opencode-rag-migration.md) | Agentmemory → OpenCode RAG Migration | Accepted | 2026-06-27 |
 | [ADR-0051](ADR-0051-opencode-mem-persistent-memory.md) | opencode-mem as KodeHold Persistent Memory Backend | Accepted | 2026-07-01 |
+| [ADR-0052](ADR-0052-structured-durable-execution.md) | Structured Durable Execution — Formal Checkpoint Schema and Auto-Checkpoint | Accepted | 2026-07-02 |
 

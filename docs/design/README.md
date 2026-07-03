@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.15.0  
+**Version:** 1.18.0  
 **Status:** Active  
-**Last Updated:** 2026-06-27
+**Last Updated:** 2026-07-02
 
 ---
 
@@ -251,6 +251,7 @@ Consequences: Trade-offs and follow-ups
 | ADR-0050 | Agentmemory → OpenCode RAG Migration | Accepted |
 | ADR-0051 | opencode-mem as KodeHold Persistent Memory Backend | Accepted |
 | ADR-0051b | Frontend Reactivity Strategy for DeepResearch | Proposed |
+| ADR-0052 | Structured Durable Execution — Formal Checkpoint Schema and Auto-Checkpoint | Accepted |
 
 
 See `docs/adr/README.md` for full details.
@@ -419,7 +420,7 @@ On small-context models (Ollama 32K), chat history grows with every delegation r
 
 **Consolidation:** When `session-summary` entries exceed 10, oldest 5 are consolidated into a single "session history" entry.
 
-See ADR-0019 for the full specification.
+**Note:** ADR-0052 (Structured Durable Execution) supersedes ADR-0019's unstructured summary approach with a formal YAML frontmatter checkpoint schema and auto-checkpoint on every delegation. See ADR-0052 for the canonical checkpoint format and protocol. ADR-0019 is now Superseded.
 
 ### 7.6 Adopted Project Symlinks (ADR-0012)
 
@@ -737,6 +738,8 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.18.0 (2026-07-02):** ADR-0052 promoted from Proposed → Accepted. Updated ADR-0019 superseded-by reference from "agentmemory" to "ADR-0052". Updated ADR README index with ADR-0052 Accepted entry.
+- **v1.17.0 (2026-07-02):** Registered ADR-0052 (Structured Durable Execution, Proposed) — formal YAML frontmatter checkpoint schema and auto-checkpoint on every delegation. Combines issues #59 (checkpoint format) and #35 (durable execution). Updated Section 7.5 to note ADR-0052 supersedes ADR-0019's compression protocol. Added ADR-0052 to ADR index.
 - **v1.16.0 (2026-07-01):** ADR-0051 integration — replaced Section 7.2 (Persistent Memory & Knowledge Retrieval) with opencode-mem as persistent memory backend and OpenCode RAG for code/doc search. Added ADR-0051 to ADR index. ADR-0050 §5 (File-Based Persistent Storage) superseded. See ADR-0051 for full rationale and configuration.
 - **v1.15.2 (2026-06-28):** ADR-0050 implementation — replaced Section 7.2 (Agentmemory → Persistent Memory & Knowledge Retrieval), removed Project Slug Migration subsection, updated all remaining agentmemory references throughout design doc to reflect file-based `.opencode/memory/` storage and OpenCode RAG tools. See ADR-0050 for full migration mapping.
 - **v1.15.1 (2026-06-27):** ADR-0050 promoted from Proposed → Accepted after Reviewers approval. Second opinion skipped per user request. ADR status updated, `.design_reviewed` marker created.

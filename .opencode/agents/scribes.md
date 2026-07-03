@@ -1,8 +1,6 @@
 ---
 name: scribes
-description: |
-  Memory and ALL documentation team. Handle ALL documentation: design doc maintenance, ADR status management, CHANGES.md, TODO.md, VERSION.md. Free ALL other teams from documentation work. Uses `.opencode/memory/` for persistent storage and `search_semantic` for knowledge retrieval.
-
+description: "Memory and ALL documentation team. Handle ALL documentation: design doc maintenance, ADR status management, CHANGES.md, TODO.md, VERSION.md. Free ALL other teams from documentation work. Uses `.opencode/memory/` for persistent storage and `search_semantic` for knowledge retrieval."
 mode: subagent
 permission:
   read: allow

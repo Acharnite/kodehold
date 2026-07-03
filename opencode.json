@@ -20,13 +20,6 @@
         "--browser-url",
         "http://localhost:9222"
       ]
-    },
-    "opencode-mem": {
-      "type": "local",
-      "command": ["npx", "-y", "opencode-mem"],
-      "environment": {
-        "OPENROUTER_API_KEY": "{env:OPENROUTER_API_KEY}"
-      }
     }
   },
   "default_agent": "director",
@@ -84,6 +77,7 @@
   },
   "lsp": true,
   "plugin": [
+    "opencode-mem",
     ".opencode/plugins/rag-plugin.js",
     ".opencode/plugins/rag-tui.js"
   ]

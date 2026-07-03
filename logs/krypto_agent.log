@@ -1,0 +1,97 @@
+2026-07-03 03:21:28,858 [INFO   ] [root] [-] krypto_agent:531 — Shutdown signal received — completing current cycle...
+2026-07-03 03:21:28,871 [INFO   ] [root] [-] krypto_agent:531 — Shutdown signal received — completing current cycle...
+2026-07-03 03:21:29,652 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:184 — Ollama call failed
+Traceback (most recent call last):
+  File "/home/kiffer/project/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 165, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<6 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.ConnectionError
+2026-07-03 03:21:29,656 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:184 — Ollama call failed
+Traceback (most recent call last):
+  File "/home/kiffer/project/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 165, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<6 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.Timeout
+2026-07-03 03:21:29,659 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:184 — Ollama call failed
+Traceback (most recent call last):
+  File "/home/kiffer/project/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 165, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<6 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.HTTPError: 500
+2026-07-03 03:21:29,663 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:184 — Ollama call failed
+Traceback (most recent call last):
+  File "/home/kiffer/project/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 176, in _call_ollama
+    return resp.json().get("response")
+           ~~~~~~~~~^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+ValueError: not JSON
+2026-07-03 03:21:29,682 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:184 — Ollama call failed
+Traceback (most recent call last):
+  File "/home/kiffer/project/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 165, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<6 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.ConnectionError
+2026-07-03 03:21:29,727 [INFO   ] [root] [-] krypto_agent.execution.paper:195 — Paper trade executed: Paper BUY 0.000200 BTC at 50050.0 (above market) — fee: 0.0100, total: 10.02
+2026-07-03 03:21:29,754 [INFO   ] [root] [-] krypto_agent.execution.paper:195 — Paper trade executed: Paper BUY 0.001980 BTC at 50500.0 (above market) — fee: 0.1000, total: 100.09
+2026-07-03 03:21:29,803 [INFO   ] [root] [-] krypto_agent.execution.paper:195 — Paper trade executed: Paper BUY 0.000200 BTC at 50050.0 (above market) — fee: 0.0100, total: 10.02
+2026-07-03 03:21:29,812 [INFO   ] [root] [-] krypto_agent.execution.paper:195 — Paper trade executed: Paper SELL 0.000200 BTC at 50949.0 (below market) — fee: 0.0102, total: 10.18
+2026-07-03 03:21:29,828 [INFO   ] [root] [-] krypto_agent.execution.paper:195 — Paper trade executed: Paper BUY 0.001998 BTC at 50050.0 (above market) — fee: 0.1000, total: 100.10
+2026-07-03 03:21:29,835 [INFO   ] [root] [-] krypto_agent.execution.paper:195 — Paper trade executed: Paper SELL 0.001998 BTC at 50949.0 (below market) — fee: 0.1018, total: 101.69
+2026-07-03 03:21:29,860 [INFO   ] [root] [-] krypto_agent.execution.paper:195 — Paper trade executed: Paper BUY 0.000200 BTC at 50050.0 (above market) — fee: 0.0100, total: 10.02
+2026-07-03 03:21:29,887 [INFO   ] [root] [-] krypto_agent.execution.paper:195 — Paper trade executed: Paper BUY 0.000200 BTC at 50050.0 (above market) — fee: 0.0100, total: 10.02
+2026-07-03 03:21:29,897 [INFO   ] [root] [-] krypto_agent.execution.paper:195 — Paper trade executed: Paper BUY 0.002996 ETH at 3003.0 (above market) — fee: 0.0090, total: 9.01
+2026-07-03 03:21:29,946 [INFO   ] [root] [-] krypto_agent.execution.paper:195 — Paper trade executed: Paper BUY 0.000500 BTC at 50050.0 (above market) — fee: 0.0250, total: 25.05
+2026-07-03 03:21:29,974 [INFO   ] [root] [-] krypto_agent.execution.paper:195 — Paper trade executed: Paper BUY 0.000200 BTC at 50050.0 (above market) — fee: 0.0100, total: 10.02
+2026-07-03 03:21:29,985 [INFO   ] [root] [-] krypto_agent.execution.paper:195 — Paper trade executed: Paper BUY 0.002996 ETH at 3003.0 (above market) — fee: 0.0090, total: 9.01
+2026-07-03 03:21:30,011 [INFO   ] [root] [-] krypto_agent.execution.paper:195 — Paper trade executed: Paper BUY 0.000200 BTC at 50050.0 (above market) — fee: 0.0100, total: 10.02

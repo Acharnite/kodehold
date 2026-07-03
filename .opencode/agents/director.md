@@ -277,7 +277,7 @@ When the Director receives an approval from the second-opinion subagent:
 
 **Fallback protocol:** If the primary second-opinion subagent (`second-opinion`, opencode/go/Mimo 2.5) fails or is unavailable:
 1. Log the failure reason (timeout, rate limit, provider error)
-2. Retry with the fallback subagent: `Task tool → subagent_type: "second-opinion-fallback"` (local Ollama/qwen3)
+2. Retry with the fallback subagent: `Task tool → subagent_type: "second-opinion-fallback"` (local Ollama/qwen2.5-coder:7b)
 3. If fallback also fails → inform the user: "Second opinion unavailable — both primary (opencode/go/Mimo 2.5) and fallback (Ollama) providers failed."
 4. For non-critical triggers, proceed without second opinion. For critical triggers (security, architecture), block until user resolves the provider issue.
 
@@ -294,7 +294,7 @@ When the Director receives an approval from the second-opinion subagent:
 | Testers | `testers` | Tests, verification, regression (core testing only) |
 | Reviewers | `reviewers` | Code/design review, gate validation (core review only) |
 | Second Opinion (primary) | `second-opinion` | Cross-model validation via Mimo 2.5 (opencode/go) |
-| Second Opinion (fallback) | `second-opinion-fallback` | Local fallback via Ollama qwen3 when primary is unavailable |
+| Second Opinion (fallback) | `second-opinion-fallback` | Local fallback via Ollama qwen2.5-coder:7b when primary is unavailable |
 | Scribes | `scribes` | ALL documentation, changelog, design doc maintenance, `.opencode/memory/` storage |
 | FLS | `fls` | Triage, hotfix, escalate (core triage only) |
 

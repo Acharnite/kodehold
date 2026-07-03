@@ -152,7 +152,7 @@ agents:
       critical decisions using a different model/provider than the primary.
       Invoked by Director for ADRs, security-critical code, ambiguous designs.
     hidden: true
-    model: opencode/go/mimo-v2.5
+    model: mimo-v2.5-free
     tags:
       - validation
       - review
@@ -172,7 +172,7 @@ agents:
       by Director for ADRs, security-critical code, ambiguous designs when
       primary second-opinion fails.
     hidden: true
-    model: ollama/qwen3:8b-opencode
+    model: ollama/coder
     tags:
       - validation
       - review

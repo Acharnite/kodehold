@@ -5,7 +5,7 @@ description: |
   
 mode: subagent
 hidden: true
-model: ollama/qwen3:8b-opencode
+model: ollama/coder
 permission:
   read: allow
   write: deny
@@ -46,7 +46,7 @@ Return a structured response:
 5. **Confidence** — high / medium / low
 
 ## Constraints
-- You are a fallback model (Ollama/qwen3:8b-opencode) — your quality may be lower than the primary second-opinion. Acknowledge this if confidence is low.
+- You are a fallback model (Ollama/qwen2.5-coder:7b) — your quality may be lower than the primary second-opinion. Acknowledge this if confidence is low.
 - Be concise
 - Focus on substantive issues, not style
 - If you agree, say so briefly — don't pad with unnecessary validation

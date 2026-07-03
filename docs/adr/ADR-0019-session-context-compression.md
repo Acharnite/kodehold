@@ -1,6 +1,6 @@
 ---
 status: Superseded
-superseded-by: agentmemory (native memory_crystallize / memory_checkpoint / memory_consolidate)
+superseded-by: ADR-0052 (Structured Durable Execution — Formal Checkpoint Schema and Auto-Checkpoint)
 phase:
   current: 1
   total: 1
@@ -14,7 +14,7 @@ phase:
 
 Superseded
 
-Replaced by agentmemory's native checkpoint and crystallization features. memory_checkpoint provides structured checkpoints, memory_crystallize auto-compresses completed action chains, and memory_consolidate handles multi-tier compression automatically.
+Superseded by ADR-0052 (Structured Durable Execution), which defines a formal YAML frontmatter checkpoint schema with thread-aware storage, auto-checkpoint on every delegation, and machine-validatable incomplete work detection.
 
 ## Context
 

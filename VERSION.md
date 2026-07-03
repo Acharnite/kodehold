@@ -4,6 +4,7 @@
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 1.15.0 | 2026-07-02 | ADR-0052 Structured Durable Execution — Formal Checkpoint Schema and Auto-Checkpoint (Accepted) |
 | 1.14.0 | 2026-06-30 | ADR-0050 completion: removed all agentmemory/ICM/headroom infrastructure, moved routines to skills, trimmed AGENTS.md/director.md per token-optimized loading directive |
 | 1.12.3 | 2026-06-04 | Project slug migration — migrated 366 sessions, 6,552 observations, and 3 profiles from full filesystem paths to canonical slugs. Used Python iii-sdk via WebSocket to iii-engine. ADR-0036 Phase 4 complete. |
 | 1.12.2 | 2026-06-03 | Summarization quality pipeline fixes — prompt-leakage anti-pattern detection, qualityScore -80 penalty, session summary deduplication. All in agentmemory source code. |
@@ -46,7 +47,7 @@
 
 ## Current
 
-**1.14.0** — ADR-0050 completion: removed all agentmemory/ICM/headroom infrastructure, migrated to file-based `.opencode/memory/` storage + OpenCode RAG tools. All stale references across foundational config files updated. Deprecated skill directory removed. ADR-0040 (Headroom) marked Deprecated.
+**1.15.0** — ADR-0052 Structured Durable Execution — Formal Checkpoint Schema and Auto-Checkpoint (Accepted).
 
 **1.12.1** — Agentmemory v0.9.25 upgrade. 5 obsolete patches removed (triggerVoid, summary XML parse, viewer-bind, merged patch, summary XML parse src) and archived to `patches-v0.9.24/`. New minimal `patches/agentmemory-viewer-bind-0.9.25.patch` bypasses AGENTMEMORY_SECRET requirement for non-loopback viewer binds. Viewer bind now via `AGENTMEMORY_VIEWER_HOST=0.0.0.0` env var. systemd service updated to v0.9.25. All upstream bug fixes from our reports now included: triggerVoid migration (PR #773), summary XML markdown fence parsing (PR #791), graph pagination, sharded index persistence, smart-search diagnostics, cross-project memory leakage fix, consolidation auto-enable, and 0 npm audit vulnerabilities.
 
