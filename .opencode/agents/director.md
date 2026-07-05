@@ -90,6 +90,7 @@ The Director's primary mechanism is direct delegation via the Task tool. No acti
    ```
    search_semantic(query="<delegation-topic> <team>", topK=5)
    search_semantic(query="<delegation-topic>", topK=3)
+   search_memories(query="<delegation-topic> <team> lessons bugs", scope="project")
    ```
    Capture the output and include it in the Task prompt's `Relevant Context` section.
    
@@ -119,6 +120,8 @@ The Director's primary mechanism is direct delegation via the Task tool. No acti
        - Relevant files: <paths>
        - Relevant Context:
          <results from step 2>
+       - Relevant Memories:
+         <results from search_memories in step 2 — prior bugs, learnings, pitfalls>
        - Current state: <done so far>
        Task: <specific task>
        Deliverables: <what to return>
@@ -442,6 +445,7 @@ Do NOT stop after ship.sh passes — you must complete Phase 2 manually.
 ## Knowledge Access Protocol
 
 - **To find context**: `search_semantic(query="<topic>", topK=5)` — searches indexed codebase, docs, and `.opencode/memory/` files
+- **To recall prior learnings**: `search_memories(query="<topic>", scope="project")` — searches opencode-mem for runtime learnings, bugs, and session context. Use before every delegation to prevent repeated mistakes.
 - **To store decisions**: delegate to Scribes to write structured markdown to `.opencode/memory/decisions/<slug>.md`
 - **To load session context**: read `.opencode/memory/checkpoints/<latest>.md` + `search_semantic(query="<project>", topK=5)`
 - **To check project history**: `search_semantic(query="<project> <topic>", pathHints=[".opencode/memory/"], topK=5)`
