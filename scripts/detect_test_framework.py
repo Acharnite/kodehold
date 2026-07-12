@@ -11,7 +11,6 @@ Exit: 0 if detected, 1 if none found
 
 from __future__ import annotations
 
-import os
 import re
 import sys
 from pathlib import Path

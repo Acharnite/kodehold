@@ -5,7 +5,6 @@ Replaces bash tests/integration/06-gate-transitions.sh.
 
 from pathlib import Path
 
-import pytest
 
 from .conftest import run_script, setup_gate_project
 

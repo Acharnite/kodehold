@@ -15,16 +15,14 @@ import os
 import re
 import subprocess
 import sys
-from datetime import date
 from pathlib import Path
-from typing import Callable, Optional
 
 # Ensure project root is in sys.path so we can import scripts.lib
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from scripts.lib.output import (
+from scripts.lib.output import (  # noqa: E402
     pass_msg,
     fail_msg,
     warn,

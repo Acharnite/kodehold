@@ -138,11 +138,11 @@ class TestYamlParsing:
         assert data is not None, "tasks.yaml is empty or None"
         assert isinstance(data, dict), "tasks.yaml root must be a dict"
 
-    def test_eight_agents_present(self):
-        """There must be exactly 8 agents in config/agents.yaml."""
+    def test_nine_agents_present(self):
+        """There must be exactly 9 agents in config/agents.yaml."""
         data = load_yaml(AGENTS_YAML)
         agents = data.get("agents", [])
-        assert len(agents) == 8, f"Expected 8 agents, found {len(agents)}"
+        assert len(agents) == 9, f"Expected 9 agents, found {len(agents)}"
 
     def test_all_agents_have_name_description(self):
         """Every agent entry must have 'name' and 'description'."""
@@ -404,7 +404,7 @@ class TestValidateConfigScript:
         modified = {"defaults": {}, "agents": []}
         with with_modified_yaml(modified):
             ret, out, err = run_script(VALIDATE_SCRIPT)
-        assert ret != 0, f"Expected failure for empty agents, got exit 0"
+        assert ret != 0, "Expected failure for empty agents, got exit 0"
 
     def test_validate_config_fails_on_missing_description(self):
         """validate_config.py must fail if an agent lacks 'description'."""
@@ -613,7 +613,7 @@ class TestEdgeCases:
         data = load_yaml(AGENTS_YAML)
         for agent in data["agents"]:
             if agent.get("hidden"):
-                assert "name" in agent, f"Hidden agent missing name"
+                assert "name" in agent, "Hidden agent missing name"
                 assert "description" in agent, (
                     f"Hidden agent {agent['name']} missing description"
                 )

@@ -11,6 +11,7 @@
 # scribes:         memory, opencode-rag, context, save, recall, document, changelog, summary, design doc, ADR
 # fls:             support, hotfix, triage, escalate, minor-change
 # second-opinion:  second opinion, cross-model review, independent validation
+# second-opinion-fallback: second opinion fallback, fallback review, offline validation
 # === END REGISTRY ===
 
 defaults:

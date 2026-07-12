@@ -3,11 +3,8 @@
 Replaces bash tests/integration/05-gate-marker-enforcement.sh.
 """
 
-import shutil
-import subprocess
 from pathlib import Path
 
-import pytest
 
 from .conftest import run_script, setup_gate_project
 

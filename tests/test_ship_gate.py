@@ -6,7 +6,6 @@ Replaces bash tests/integration/07-ship-gate.sh.
 import subprocess
 from pathlib import Path
 
-import pytest
 
 from .conftest import run_script, setup_ship_project
 

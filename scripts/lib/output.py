@@ -7,7 +7,6 @@ All functions respect JSON_MODE to suppress human-readable output.
 from __future__ import annotations
 
 import json
-import sys
 from typing import Optional
 
 # ANSI color constants
