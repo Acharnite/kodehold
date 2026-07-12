@@ -10,16 +10,8 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  smoke:
-    name: Smoke Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - name: Run smoke tests
-        run: bash tests/run.sh smoke
-
-  init:
-    name: Init Tests
+  test:
+    name: Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -29,18 +21,32 @@ jobs:
           python-version: '3.12'
       - name: Install Python deps
         run: pip install pyyaml jsonschema
-      - name: Run init tests
-        run: bash tests/run.sh init
-      - name: Run YAML config tests
-        run: bash tests/run.sh yaml
+      - name: Run tests
+        run: bash tests/run.sh
 
-  integration:
-    name: Integration Tests
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Run integration tests
-        run: bash tests/run.sh integration
+      - name: ShellCheck bash scripts
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: ./scripts
+          severity: style
+      - name: Validate YAML files
+        run: |
+          pip install yamllint 2>/dev/null
+          yamllint -d "{extends: relaxed, rules: {line-length: disable}}" .github/ config/ || true
+      - name: Check for shell scripting issues
+        run: |
+          echo "=== Checking scripts for common issues ==="
+          if grep -rn 'head -[^n]' scripts/ --include='*.sh' 2>/dev/null; then
+            echo "WARNING: Found non-portable 'head' usage — use 'head -n' instead"
+          fi
+          if grep -rn '$(dirname' scripts/ --include='*.sh' 2>/dev/null; then
+            echo "NOTE: Found dirname usage — ensure compatibility"
+          fi
 
   validate-config:
     name: Validate Config

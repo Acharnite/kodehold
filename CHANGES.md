@@ -117,12 +117,6 @@
 - **scripts/consolidate-all.sh** — Agentmemory auto-consolidates
 - **icm-knowledge-flow skill** — Replaced by agentmemory-knowledge-flow
 
-## 0.18.0 — 2026-06-01
-
-### Added
-- **Token report tool** (`scripts/token-report.py`) — generates a self-contained HTML report at `docs/dashboard/index.html` with cost and token usage visualizations. Queries OpenCode's local SQLite database for all session data and fetches OpenRouter billing data via API. Charts include: daily cost trend (line), daily tokens (stacked bar), cost by provider (doughnut), cost by model (horizontal bar), cost by team (horizontal bar). Tables: per model, per team, per provider. OpenRouter section: account usage vs credits, key usage, models used. Dark-themed, responsive, uses Chart.js CDN.
-- **Token report `--serve` mode** — added `--serve`, `--port`, `--host`, and `--refresh` CLI options to run the report tool as a headless HTTP server with auto-regeneration on a configurable timer. Default: port 8765, host 127.0.0.1, refresh every 60s.
-
 ## 0.17.2 — 2026-06-01
 
 ### Fixed

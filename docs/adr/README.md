@@ -21,7 +21,6 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0011](ADR-0011-team-meeting.md) | Team Meeting — Collective Project Review | Accepted | 2026-05-27 |
 | [ADR-0012](ADR-0012-adopted-projects.md) | Adopted Projects — Existing Codebases in KodeHold | Accepted | 2026-05-27 |
 | [ADR-0013](ADR-0013-investigate-skill.md) | Investigate Skill — Systematic Debugging | Accepted | 2026-05-27 |
-| [ADR-0014](ADR-0014-status-dashboard.md) | Status Dashboard — Project Overview | Superseded | 2026-05-27 |
 | [ADR-0015](ADR-0015-director-delegation-enforcement.md) | Director Delegation Enforcement via Tool Permissions | Accepted | 2026-05-28 |
 | [ADR-0016](ADR-0016-early-review-gates.md) | Early Review Gates in ACTIVE Phase | Accepted | 2026-05-28 |
 | [ADR-0017](ADR-0017-reviewers-gatekeeper-and-mandatory-second-opinion.md) | Reviewers as Gatekeeper + Mandatory Second Opinion | Accepted | 2026-05-28 |

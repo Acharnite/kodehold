@@ -212,7 +212,6 @@ Consequences: Trade-offs and follow-ups
 | ADR-0011 | Team Meeting — Collective Project Review | Accepted |
 | ADR-0012 | Adopted Projects — Existing Codebases in KodeHold | Accepted |
 | ADR-0013 | Investigate Skill — Systematic Debugging | Accepted |
-| ADR-0014 | Status Dashboard — Project Overview | Superseded |
 | ADR-0015 | Director Delegation Enforcement via Tool Permissions | Accepted |
 | ADR-0016 | Early Review Gates in ACTIVE Phase | Accepted |
 | ADR-0017 | Reviewers as Gatekeeper + Mandatory Second Opinion | Accepted |
@@ -615,61 +614,6 @@ Token budget tracking is implemented via a lightweight protocol:
 
 The script provides approximate token counts based on OpenCode's aggregated session data. It is not real-time but reflects cumulative usage per team for the current project.
 
-### 9.2 Token Usage Reporting
-
-The **token report tool** (`scripts/token-report.py`) extends the token tracking system with a rich visual report:
-
-**Data sources:**
-- **OpenCode SQLite database** (`~/.local/share/opencode/opencode.db`) — all session records including cost, tokens (input/output/reasoning/cache), model, provider, and agent (team) metadata
-- **OpenRouter billing API** — account credits, usage totals, and key-level usage data (requires `OPENROUTER_API_KEY` in environment or `.env` file)
-
-**Generated output:** `docs/dashboard/index.html` — a self-contained, dark-themed HTML page with:
-
-| Feature | Description |
-|---------|-------------|
-| Summary bar | Total cost, session count, input/output tokens, cache hit rate |
-| Daily cost trend | Line chart of daily spending over time |
-| Daily token trend | Stacked bar chart of input vs output tokens per day |
-| Cost by provider | Doughnut chart showing cost distribution across providers |
-| Cost by model (top 10) | Horizontal bar chart of most expensive models |
-| Cost by team (top 10) | Horizontal bar chart of cost distribution across agents/teams |
-| Per model table | Model name, provider, cost, input/output tokens, session count |
-| Per team table | Agent/team, cost, total tokens, sessions, avg cost per session |
-| Per provider table | Provider, cost, tokens, sessions |
-| OpenRouter section | Account total credits vs usage (progress bar), key usage, DB-tracked cost, models used |
-
-**Technology:** Python 3 with stdlib (`sqlite3`, `json`, `urllib.request`) for data collection, Chart.js (CDN) for interactive charts. No build step — the output file is pure HTML+CSS+JS.
-
-**Usage:** Run `python3 scripts/token-report.py` on demand. Generates the report at `docs/dashboard/index.html`.
-
-**Design notes:**
-- The report is a snapshot at generation time — not real-time
-- OpenRouter API calls are best-effort; the report degrades gracefully if the API key is missing or the API is unreachable
-- Chart.js is loaded from CDN — the report requires internet access for chart rendering, but the data and HTML are self-contained
-- The output file path (`docs/dashboard/index.html`) matches the location proposed in ADR-0014 (Status Dashboard), but this tool is focused on cost/token reporting rather than the project-state dashboard that ADR-0014 describes
-
-**Serve mode (`--serve`):** The script can also run as a headless HTTP server that serves the report and auto-regenerates it on a timer:
-
-| Option | Default | Description |
-|--------|---------|-------------|
-| `--serve` | — | Start headless webserver instead of generating a static file |
-| `--port PORT` | 8765 | HTTP port for the webserver |
-| `--host HOST` | 127.0.0.1 | Bind address for the webserver |
-| `--refresh SECONDS` | 60 | Auto-regeneration interval in seconds |
-
-Usage examples:
-```bash
-python3 scripts/token-report.py                           # generate static file
-python3 scripts/token-report.py --serve                   # start webserver on :8765
-python3 scripts/token-report.py --serve --port 8080 --refresh 120
-```
-
-**Serve mode design notes:**
-- Runs headless — no browser is opened automatically; the user navigates to the URL
-- On startup, the script generates the report once, then spawns a background thread that regenerates it every `--refresh` seconds
-- The webserver is an HTTP file server serving the `docs/dashboard/` directory
-- Graceful shutdown on SIGINT/SIGTERM (Ctrl+C or `kill`)
-
 ---
 
 ## 10. File Layout
@@ -724,7 +668,7 @@ kodehold/
 │   │   └── ...
 │   └── decisions/                 # Working notes, options analysis
 ├── .github/workflows/
-│   └── kodehold-ci.yml            # CI pipeline (smoke, init, integration)
+│   ├── kodehold-ci.yml            # CI pipeline (smoke, yaml, integration)
 ├── scripts/
 │   ├── benchmark.sh               # Performance benchmarks
 │   ├── detect-test-framework.sh   # Non-Python test framework detection (ADR-0047)
@@ -733,16 +677,14 @@ kodehold/
 │   ├── migrations/                # Data/config migration scripts
 │   ├── ship.sh                    # Shipping gate checklist automation
 │   ├── sync-agent-config.sh       # Syncs frontmatter between .md and agents.yaml
-│   ├── token-dashboard.sh         # Token dashboard launcher
-│   ├── token-report.py            # Rich token usage HTML report
 │   ├── token-usage.sh             # Token consumption tracking
 │   ├── validate-config.sh         # Validates config/agents.yaml against schema
 │   └── workspace.sh               # Workspace management (init, adopt)
 ├── tests/
 │   ├── run.sh                     # Test suite runner
-│   ├── smoke/                     # Structure validation
-│   ├── init/                      # Configuration validation
-│   └── integration/               # Orchestrator flow validation
+│   ├── smoke/                     # Script functionality tests
+│   ├── init/                      # YAML config tests (Python/pytest)
+│   └── integration/               # Gate & script flow tests
 ├── opencode.json                  # OpenCode project configuration (Ollama provider, permissions)
 ├── AGENTS.md                      # Director — orchestrator, lifecycle, quality gates
 ├── README.md                      # Project overview
@@ -783,8 +725,6 @@ kodehold/
 - **v1.10.1 (2026-06-02):** ADR status audit and sync — corrected 7 ADR statuses across design doc table and ADR README index (ADR-0004, ADR-0009 → Deprecated; ADR-0014, ADR-0019, ADR-0021, ADR-0026 → Superseded; ADR-0027 → Deprecated; ADR-0028, ADR-0029 → Accepted). Updated ADR-0026 file status to Superseded with note on cross-provider second opinion subagent. Updated ADR-0029 file status to Accepted noting all 5 migration phases complete. Updated ADR-0033 inter-agent-signals-sentinels file status to Superseded noting ADR-0033 (Crystals + Signals) as replacement.
 - **v1.10.0 (2026-06-02):** Added ADR-0035 (Custom KodeHold Viewer) to ADR index — standalone interactive HTML viewer with Frontier, Routines, and Signals tabs plus project filter for Actions. Also added ADR-0034 (Workflow Monitor Interface, Accepted) to ADR index.
 - **v1.9.0 (2026-06-02):** Phase 2 ICM→Agentmemory migration — replaced all ~28 ICM references throughout the design document with agentmemory equivalents. Updated Section 2 (Principle 4), Section 3 (Scribes box + 3.6), Section 6 (lifecycle states, reopening, commit protection), Section 7.2 (full rewrite describing agentmemory as the active memory system), Section 7.4 (skill reference), Section 7.5 (session context compression), Section 7.7 (prospective memory), Section 8.2 (light mode), Section 9 (token optimization), and Section 10 (file layout). Updated ADR-0030 status to Accepted in file header and ADR index. Synced ADR-0031 and ADR-0032 statuses in ADR index.
-- **v1.8.0 (2026-06-01):** Token report tool — added `--serve`, `--port`, `--host`, `--refresh` CLI options for headless HTTP server mode with auto-regeneration. Updated Section 9.2 (Token Usage Reporting).
-- **v1.7.0 (2026-06-01):** Token report tool (`scripts/token-report.py`) — self-contained HTML report at `docs/dashboard/index.html` with 5 chart types, per-model/per-team/per-provider tables, and OpenRouter billing integration. Added Section 9.2 (Token Usage Reporting).
 - **v1.5.0 (2026-05-31):** ADR-0028: Agentmemory Project Detection Strategy — three-stage `resolveProject()` in OpenCode plugin. Replaces single-line project path assignment with env var / git toplevel / fallback resolution.
 - **v1.4.23 (2026-05-31):** Documented agentmemory binding configuration — `iii` daemon listens on `0.0.0.0` (all interfaces) via `~/.agentmemory/iii-config.yaml`. Added note in Section 7.2 (ICM) explaining the custom config approach that survives npm updates.
 - **v1.4.22 (2026-05-30):** ICM memoir restructure — 7 team memoirs consolidated into `kodehold-teams` (27 concepts, 16 links). Learnings consolidated into `kodehold-learnings` (63 concepts, 68 links). All ADR references in ADR-0027, ADR-0023, ADR-0009 updated. CHANGES.md, VERSION.md bumped to 0.17.0.

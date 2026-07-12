@@ -12,7 +12,6 @@
 | 1.12.1 | 2026-06-03 | Agentmemory v0.9.25 upgrade + patch cleanup — 5 obsolete patches removed, viewer bind via env var, all upstream bug fixes from our reports included
 | 0.19.2 | 2026-06-02 | ADR-0036 slug convention, custom viewer server, Slots tab, Director protocol slug update, workspace validation |
 | 0.19.1 | 2026-06-02 | CI fixes: ADR format test SIGPIPE antipatch resolved, agentmemory health check warns (not fails) in CI, obsolete ICM setup steps removed from CI workflow. |
-| 0.18.0 | 2026-06-01 | Token report tool (`scripts/token-report.py`): self-contained HTML report at `docs/dashboard/index.html` with cost/token charts, per-model/per-team/per-provider tables, OpenRouter billing integration. 5 chart types (daily cost trend, daily tokens, cost by provider/model/team), dark-themed responsive UI. |
 | 0.17.1 | 2026-06-01 | CodeRabbitAI review fix: added runtime validation for `info?.directory` in agentmemory-capture.ts (replaces type assertion with `typeof` + length check per PR #749). ADR-0028 updated with finalized date and validation details. |
 | 0.17.0 | 2026-05-30 | ICM memoir restructure: 7 team memoirs merged into `kodehold-teams` (27 concepts, 16 links), learnings consolidated into `kodehold-learnings` (63 concepts, 68 links). All ADR/doc references updated. CLOSED→REOPEN→ACTIVE lifecycle transition. |
 | 0.16.0 | 2026-05-29 | ADR-0021 accepted (Prospective Memory design), lifecycle simulation document (4 scenarios), ADR cleanup (5 ADRs resolved: Superseded/Deprecated), delegation lesson documented, OPENCODE_NONINTERACTIVE env leak test fix. |
@@ -28,7 +27,7 @@
 | 0.12.0 | 2026-05-29 | GitHub MCP server upgrade: replaced deprecated `@modelcontextprotocol/server-github` npm package with official `github/github-mcp-server` Go binary v1.1.2. Resolves intermittent auth failures. Closed issues #22 (stale test count) and #25 (GitHub MCP auth) |
 | 0.11.0 | 2026-05-29 | Documentation audit: corrected test count (10→12), marked light mode complete, fixed version header consistency, updated README ADR range, closed stale GitHub issues #4 and #5 |
 | 0.10.0 | 2026-05-29 | ADR status compliance fix (ADR-0015/0016/0019), gate.sh workspace `--project-path`, commit protection protocol, git clean -fd safeguard |
-| 0.9.0 | 2026-05-27 | Gate markers (.design_reviewed, .impact_analysis_done), user review stop at INIT→ACTIVE, session checkpoint protocol, compaction config, Architects research, ADR-0014 dashboard |
+| 0.9.0 | 2026-05-27 | Gate markers (.design_reviewed, .impact_analysis_done), user review stop at INIT→ACTIVE, session checkpoint protocol, compaction config, Architects research |
 | 0.8.0 | 2026-05-27 | FLS-specific tests, shared .venv, English-only subagent prompts, ADR-0013 investigate skill, workspace `find` fix |
 | 0.7.0 | 2026-05-27 | Investigate skill (gstack port), state-awareness skillified, per-project .icm/ removed, Test→Review gate enforced |
 | 0.6.0 | 2026-05-27 | ACTIVE→REVIEW gate enforces Test→Review sequence, design doc discipline across all 7 agents, pytest best practices codified |

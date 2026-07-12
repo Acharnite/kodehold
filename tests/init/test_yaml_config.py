@@ -26,6 +26,9 @@ from contextlib import contextmanager
 import yaml
 import jsonschema
 
+# Reuse bash discovery from parent conftest
+from tests.conftest import BASH, PYTHON  # noqa: E402
+
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
@@ -36,8 +39,8 @@ SCRIPTS_DIR = os.path.join(PROJECT_DIR, "scripts")
 AGENTS_YAML = os.path.join(CONFIG_DIR, "agents.yaml")
 TASKS_YAML = os.path.join(CONFIG_DIR, "tasks.yaml")
 SCHEMA_JSON = os.path.join(CONFIG_DIR, "agents.schema.json")
-VALIDATE_SCRIPT = os.path.join(SCRIPTS_DIR, "validate-config.sh")
-SYNC_SCRIPT = os.path.join(SCRIPTS_DIR, "sync-agent-config.sh")
+VALIDATE_SCRIPT = os.path.join(SCRIPTS_DIR, "validate_config.py")
+SYNC_SCRIPT = os.path.join(SCRIPTS_DIR, "sync_agent_config.py")
 
 AGENTS_MD_DIR = os.path.join(PROJECT_DIR, ".opencode", "agents")
 
@@ -59,12 +62,21 @@ def load_schema(path):
 
 
 def run_script(script_path, *args):
-    """Run *script_path* with *args* and return (returncode, stdout, stderr)."""
+    """Run *script_path* with *args* and return (returncode, stdout, stderr).
+
+    Auto-detects whether to use bash or python based on file extension.
+    """
     env = os.environ.copy()
+    if script_path.endswith(".py"):
+        cmd = [PYTHON, script_path] + list(args)
+    else:
+        cmd = [BASH, script_path] + list(args)
     result = subprocess.run(
-        [script_path] + list(args),
+        cmd,
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         env=env,
         cwd=PROJECT_DIR,
     )
@@ -81,7 +93,7 @@ def get_agents_data():
 # ---------------------------------------------------------------------------
 # Helpers for testing scripts with modified configs
 # ---------------------------------------------------------------------------
-# The validate-config.sh and sync-agent-config.sh scripts hardcode the YAML
+# The validate_config.py and sync_agent_config.py scripts hardcode the YAML
 # path from the script location ($SCRIPT_DIR/../config/agents.yaml). Setting
 # AGENTS_YAML env var does NOT override this because bash recomputes it.
 # Therefore, to test failure modes we must temporarily replace the actual
@@ -336,24 +348,24 @@ class TestJsonSchemaValidation:
 # ===================================================================
 
 class TestValidateConfigScript:
-    """Validate that scripts/validate-config.sh behaves correctly."""
+    """Validate that scripts/validate_config.py behaves correctly."""
 
     def test_validate_config_exit_zero(self):
-        """validate-config.sh must exit 0 against the current valid config."""
+        """validate_config.py must exit 0 against the current valid config."""
         ret, out, err = run_script(VALIDATE_SCRIPT)
         assert ret == 0, (
-            f"validate-config.sh failed:\nstdout:{out}\nstderr:{err}"
+            f"validate_config.py failed:\nstdout:{out}\nstderr:{err}"
         )
 
     def test_validate_config_reports_success(self):
-        """validate-config.sh must print 'All validations passed!'."""
+        """validate_config.py must print 'All validations passed!'."""
         ret, out, err = run_script(VALIDATE_SCRIPT)
         assert "All validations passed!" in out, (
             f"Expected success message, got:\n{out}"
         )
 
     def test_validate_config_fails_on_missing_name(self):
-        """validate-config.sh must fail if an agent lacks 'name'."""
+        """validate_config.py must fail if an agent lacks 'name'."""
         data = load_yaml(AGENTS_YAML)
         modified = copy.deepcopy(data)
         del modified["agents"][-1]["name"]
@@ -367,7 +379,7 @@ class TestValidateConfigScript:
         )
 
     def test_validate_config_fails_on_duplicate_triggers(self):
-        """validate-config.sh must fail if there are duplicate triggers across agents."""
+        """validate_config.py must fail if there are duplicate triggers across agents."""
         data = load_yaml(AGENTS_YAML)
         modified = copy.deepcopy(data)
         # Agent[1] (index 1) has triggers; use its first trigger as duplicate
@@ -388,14 +400,14 @@ class TestValidateConfigScript:
         )
 
     def test_validate_config_fails_on_empty_agents(self):
-        """validate-config.sh must fail if 'agents' list is empty."""
+        """validate_config.py must fail if 'agents' list is empty."""
         modified = {"defaults": {}, "agents": []}
         with with_modified_yaml(modified):
             ret, out, err = run_script(VALIDATE_SCRIPT)
         assert ret != 0, f"Expected failure for empty agents, got exit 0"
 
     def test_validate_config_fails_on_missing_description(self):
-        """validate-config.sh must fail if an agent lacks 'description'."""
+        """validate_config.py must fail if an agent lacks 'description'."""
         data = load_yaml(AGENTS_YAML)
         modified = copy.deepcopy(data)
         del modified["agents"][0]["description"]
@@ -408,7 +420,7 @@ class TestValidateConfigScript:
         )
 
     def test_validate_config_fails_on_invalid_agent_name(self):
-        """validate-config.sh must fail if an agent name has invalid chars."""
+        """validate_config.py must fail if an agent name has invalid chars."""
         data = load_yaml(AGENTS_YAML)
         modified = copy.deepcopy(data)
         modified["agents"][0]["name"] = "Invalid-Name_123"
@@ -422,10 +434,10 @@ class TestValidateConfigScript:
 
 
 class TestSyncAgentConfigScript:
-    """Validate that scripts/sync-agent-config.sh behaves correctly."""
+    """Validate that scripts/sync_agent_config.py behaves correctly."""
 
     def test_sync_dry_run_exit_zero(self):
-        """sync-agent-config.sh --dry-run must exit 0."""
+        """sync_agent_config.py --dry-run must exit 0."""
         ret, out, err = run_script(SYNC_SCRIPT, "--dry-run")
         assert ret == 0, (
             f"--dry-run failed:\nstdout:{out}\nstderr:{err}"
@@ -434,12 +446,12 @@ class TestSyncAgentConfigScript:
     def test_sync_dry_run_completes(self):
         """--dry-run output should contain completion message."""
         ret, out, err = run_script(SYNC_SCRIPT, "--dry-run")
-        assert "Dry-run complete" in out, (
-            f"Expected 'Dry-run complete' in output:\n{out}\n{err}"
+        assert "All files in sync" in out, (
+            f"Expected 'All files in sync' in output:\n{out}\n{err}"
         )
 
     def test_sync_diff_exit_zero_with_matching_config(self):
-        """sync-agent-config.sh --diff must exit 0 when YAML and .md match."""
+        """sync_agent_config.py --diff must exit 0 when YAML and .md match."""
         ret, out, err = run_script(SYNC_SCRIPT, "--diff")
         assert ret == 0, (
             f"--diff failed:\nstdout:{out}\nstderr:{err}"
@@ -655,7 +667,7 @@ class TestEdgeCases:
             )
 
     def test_validate_config_fails_on_invalid_mode(self):
-        """validate-config.sh must fail if an agent has an invalid mode."""
+        """validate_config.py must fail if an agent has an invalid mode."""
         data = load_yaml(AGENTS_YAML)
         modified = copy.deepcopy(data)
         modified["agents"][0]["mode"] = "invalid-mode-value"

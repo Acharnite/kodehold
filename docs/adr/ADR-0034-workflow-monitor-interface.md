@@ -22,8 +22,7 @@ KodeHold's Director now operates a sophisticated action-based delegation system:
 
 **What exists:**
 - Agentmemory viewer (port 3113) — generic database browser with Actions/Crystals tabs, but no frontier or delegation view
-- ADR-0014 Status Dashboard (`docs/dashboard/index.html`) — project-level static overview
-- `scripts/token-report.py` — proven Python HTML generation pattern
+- *(Dashboard removed — ADR-0014 was a static HTML overview pattern)*
 
 **The gap:** The Director must mentally fuse data from `memory_frontier`, `memory_signal_read`, `memory_diagnose`, and `memory_recall` to understand "what is happening right now."
 
@@ -43,7 +42,7 @@ Build a workflow monitor — a Python script generating a self-contained HTML pa
 
 ### Script Design
 
-- **Language:** Python 3 (stdlib only — matches `token-report.py` pattern)
+- **Language:** Python 3 (stdlib only)
 - **Output:** `docs/dashboard/workflow.html` — self-contained HTML, dark theme, inline CSS
 - **Serve mode:** `--serve` flag enables auto-regeneration on a configurable timer
 - **Error resilience:** Each endpoint is fetched independently; failures show "Data unavailable" per view
@@ -58,7 +57,7 @@ Build a workflow monitor — a Python script generating a self-contained HTML pa
 
 ### Positive
 1. Visual operational awareness — one page shows frontier, delegations, crystals, signals, session
-2. Pattern reuse — follows ADR-0014 / `token-report.py` pattern exactly
+2. Pattern reuse — follows `token-report.py` pattern exactly *(tool removed)*
 3. Zero token cost — runs deterministically without LLM inference
 4. Debugging aid — session status includes system health checks
 5. Serve mode for continuous monitoring during long sessions
@@ -80,4 +79,4 @@ Build a workflow monitor — a Python script generating a self-contained HTML pa
 - ADR-0031 (Actions + Crystals) — action/frontier system
 - ADR-0032 (Routine Templates) — template-generated action chains
 - ADR-0033 (Crystals + Signals) — signal system
-- `scripts/token-report.py` — reference implementation
+- *(Dashboard/`token-report.py` removed)*

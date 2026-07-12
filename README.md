@@ -69,10 +69,10 @@ All agents follow **read-before, update-after**:
 ## Workspaces
 
 Managed projects live in `workspaces/<name>/`:
-- `bash scripts/workspace.sh init <name>` — create a new project
-- `bash scripts/workspace.sh list` — list all projects with state
-- `bash scripts/workspace.sh gate <name> <transition>` — run gate on a project
-- `bash scripts/workspace.sh deploy-ready <name>` — check if CLOSED
+- `python3 scripts/workspace.py init <name>` — create a new project
+- `python3 scripts/workspace.py list` — list all projects with state
+- `python3 scripts/workspace.py gate <name> <transition>` — run gate on a project
+- `python3 scripts/workspace.py deploy-ready <name>` — check if CLOSED
 
 ## Second Opinion
 
@@ -98,16 +98,41 @@ The Director agent loads automatically as the default agent. Start by reading `A
 | `docs/adr/` | Architecture Decision Records (ADR-0001 through ADR-0025) |
 | `.opencode/agents/director.md` | Director agent — full orchestrator protocol |
 | `.opencode/agents/` | Team agent definitions (7 agents) |
-| `scripts/gate.sh` | Lifecycle gate automation (5 transitions) |
-| `scripts/ship.sh` | Shipping gate automation (7 checks: version → changelog → todo → tests → git → branch) |
-| `scripts/workspace.sh` | Workspace project management |
-| `tests/run.sh` | Test suite — 12 tests across smoke, init, integration |
+| `scripts/gate.py` | Lifecycle gate automation (5 transitions) |
+| `scripts/ship.py` | Shipping gate automation (7 checks: version → changelog → todo → tests → git → branch) |
+| `scripts/workspace.py` | Workspace project management |
+| `tests/run.sh` | Test suite — 80+ tests across smoke, init, integration |
 
 ## Requirements
 
 - **OpenCode** — agent framework
-
 - **RTK** v0.40+ — token-optimized CLI (`pip install rtk`)
 - **Ollama** or another LLM provider
+
+## Python Environment
+
+KodeHold's scripts (`scripts/*.py`) and test suite are written in Python. To set up a virtual environment:
+
+```bash
+# Create and activate a venv
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run tests
+python3 -m pytest tests/ -v
+```
+
+**Dependencies** (see `requirements.txt`):
+
+| Package      | Used by                                      |
+|-------------|----------------------------------------------|
+| `pyyaml`    | `validate_config.py`, `sync_agent_config.py` |
+| `jsonschema`| Test suite (`test_yaml_config.py`)            |
+| `pytest`    | Test suite                                   |
+
+> **Note:** `.venv/` is in `.gitignore` — it won't be committed.
 
 All configs and functions are in English for token efficiency.

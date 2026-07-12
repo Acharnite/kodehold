@@ -24,7 +24,6 @@
 - [x] **Auto-crystallize on delegation** — completed action chains auto-crystallized into compact digests with narrative, outcomes, and lessons *(Superseded by ADR-0050)*
 - [x] **Inter-agent signal wiring** — all 6 teams wired with signal send/read for typed coordination via Director *(Superseded by ADR-0050)*
 
-- [x] **Token report tool** — `scripts/token-report.py` generates self-contained HTML report at `docs/dashboard/index.html` with cost and token visualizations (5 chart types, per-model/per-team/per-provider tables, OpenRouter billing integration). Dark-themed responsive UI powered by Chart.js.
 - [x] ADR-0011: Team Meeting — Collective Project Review
 - [x] **Team meeting feature** — replaces solo Director final approval
 - [x] Design document with architecture, team structure, lifecycle
@@ -53,7 +52,7 @@
 - [x] ADR-0009 promoted from Proposed to Accepted
 - [x] ADR-0002 updated: Director + 6 teams (FLS added)
 - [x] ADR-0008 updated: FLS triage gateway between CLOSED and REOPEN
-- [x] All ADRs follow Nygaard format (validated by smoke test)
+- [x] All ADRs follow Nygaard format (previously validated by smoke tests — removed in v1.19.0, tests are now functionality-only)
 - [x] **Default Director agent** — hardcoded as default_agent in opencode.json with mode: primary
 - [x] ADR-0006 updated: cross-provider second opinion (Claude/Codex), fallback til brugerprompt
 - [x] Second opinion cross-provider krav — implementeret i Director og Reviewers agenter
@@ -99,7 +98,7 @@
 - [x] **Sikre at design/ADR-status opdateres FØR implementering** — ADR-0015 og design-dokumentet blev ikke sat til "Accepted" inden engineers begyndte implementering. Dette er et brud på processen. Overvej at tilføje et gate-check i INIT→ACTIVE transitionen der verificerer at tilhørende design-dokument og ADR har status "Accepted" før tilladelse gives. Dette bør også gælde for ADR-0015 retroaktivt — opdater status til "Accepted" i begge dokumenter.
 
 - [x] **Run KodeHold against another real project** — validated full lifecycle on radarr-lang-router: adopt → design → tests → gates → CLOSED. 50 tests, ADR-0001, 3 gates passed. FLS hotfixed a KeyError bug.
-- [x] **ADR format CI** — ADR Nygaard validering kører allerede i CI via smoke tests (`tests/smoke/03-adr-format.sh` in `smoke` job)
+- [x] **ADR format CI** — ADR Nygaard validering kørte tidligere i CI via smoke tests (removed in v1.19.0 — tests are now functionality-only)
 - [x] **Udvid Scribes rolle til alt dokumentationsarbejde** — Scribes skal håndtere AL dokumentation: design docs, ADR'er, CHANGES.md, README, status-opdateringer, ICM-lagring, changelog. De øvrige teams skal KUN køre state-awareness protokol og udføre deres kerneopgave (Architects designer, Engineers implementerer, Reviewers reviewer, Testers tester, FLS triager). Ingen team-medlemmer skal skrive dokumentation selv. Dette kræver opdatering af alle 6 agent-.md filer, director.md delegation-sektionen, og Scribes' workflow-beskrivelse.
 - [x] **Fix gate-script workspace directory check** — gate.sh checks for markers (.design_reviewed, .second_opinion_done) in main project directory instead of workspace directory. Causes false negatives for workspace/adopted projects. Manual state updates needed as workaround (see qbit-migrate adoption). Fix: gate.sh should accept project path parameter or check workspaces/<name>/ when validating workspace projects. ([#8](https://github.com/Acharnite/kodehold/issues/8)) ✅ Implemented 2026-05-29
 - [x] **Investigate symlink/rtk command issues** — Commands on symlinked workspace directories have challenges (e.g., test collection fails with FileNotFoundError when importing modules). User suspects rtk-related root cause. Investigate and fix. Example: qbit-migrate tests fail because LOG_FILE path calculation resolves incorrectly when imported via symlink. Related to ADR-0012 (adopted projects). ([#9](https://github.com/Acharnite/kodehold/issues/9)) ✅ Implemented 2026-05-29 — symlink resolution in gate.sh and workspace.sh

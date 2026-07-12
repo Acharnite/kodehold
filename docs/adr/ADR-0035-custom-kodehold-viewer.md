@@ -57,9 +57,7 @@ KodeHold now operates a sophisticated action-based delegation system (ADR-0031),
 | Approach | Description | Status |
 |----------|-------------|--------|
 | ADR-0034 (Workflow Monitor) | Python script generating static HTML at `docs/dashboard/workflow.html` | Accepted — server-generated snapshot, not interactive |
-| ADR-0014 (Status Dashboard) | Static project overview at `docs/dashboard/index.html` | Superseded — project-level only |
 | Built-in viewer (port 3113) | Generic database browser with 12 tabs | Exists — no KodeHold-specific views |
-| `scripts/token-report.py` | Python HTML generation pattern | Reference — proven pattern |
 
 ADR-0034's workflow monitor is a **snapshot** tool — it runs as a Python script and generates a static HTML page that you refresh. This ADR proposes an **interactive** viewer — a dynamic single-page application that fetches live data from the REST API and lets you filter, sort, and drill down in real time. They are complementary.
 

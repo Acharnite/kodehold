@@ -206,7 +206,7 @@ The `.opencode/memory/` directory structure proposed in ADR-0050 is **superseded
 | `.opencode/memory/checkpoints/` | Empty, never used | Deprecate — opencode-mem handles session context |
 | `.opencode/memory/decisions/` | Empty, never used | Deprecate — decisions go in ADRs (file-based) |
 | `.opencode/memory/lessons/` | Empty, never used | Deprecate — opencode-mem stores learnings |
-| `.opencode/memory/metrics/` | Empty, never used | Deprecate — metrics go in token-report.py |
+| `.opencode/memory/metrics/` | Empty, never used | Deprecate — metrics go in token-report.py *(removed)* |
 | `.opencode/memory/patterns/` | Empty, never used | Deprecate — opencode-mem stores patterns |
 | `.opencode/memory/prospective/` | Empty, never used | Deprecate — use todowrite for task tracking |
 

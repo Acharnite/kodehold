@@ -162,7 +162,7 @@ init_to_active() {
     echo "  Design doc:  $DESIGN_DOC"
     echo "  ADRs:"
     for adr in "$ADR_DIR"/ADR-*.md; do
-      title=$(head -1 "$adr" 2>/dev/null | sed 's/^# //')
+      title=$(head -n 1 "$adr" 2>/dev/null | sed 's/^# //')
       echo "    • $(basename "$adr") — $title"
     done
     echo ""
@@ -189,59 +189,8 @@ active_to_review() {
     warn "No TODO.md — manual completeness check needed"
   fi
 
-  # Tests pass (try tests/run.sh first, then pytest)
-  tests_passed=false
-  if [ -f "$TEST_RUNNER" ]; then
-    if [ "$JSON_MODE" = true ]; then
-      # JSON mode: run silently
-      if bash "$TEST_RUNNER" 2>/dev/null >/dev/null; then
-        pass "All tests pass ($TEST_RUNNER)"
-        tests_passed=true
-      else
-        fail "Test suite has failures — fix before transition"
-        gate_failed=1
-      fi
-    else
-      if bash "$TEST_RUNNER" 2>&1 | tail -5; then
-        pass "All tests pass ($TEST_RUNNER)"
-        tests_passed=true
-      else
-        fail "Test suite has failures — fix before transition"
-        gate_failed=1
-      fi
-    fi
-  elif [ -d "tests" ] && find tests -name 'test_*.py' 2>/dev/null | head -1 >/dev/null 2>&1; then
-    PYTEST_CMD="python3 -m pytest"
-    [ -f ".venv/bin/pytest" ] && PYTEST_CMD=".venv/bin/pytest"
-    PYTEST_ENV=""
-    [ -d "src" ] && PYTEST_ENV="PYTHONPATH=src"
-    if [ "$JSON_MODE" = true ]; then
-      # JSON mode: pytest output goes to /dev/null; only pass/fail status recorded
-      if env $PYTEST_ENV $PYTEST_CMD tests/ -q 2>/dev/null >/dev/null; then
-        pass "All pytest tests pass"
-        tests_passed=true
-      else
-        fail "Pytest suite has failures — fix before transition"
-        gate_failed=1
-      fi
-    else
-      if env $PYTEST_ENV $PYTEST_CMD tests/ -q 2>&1 | tail -3; then
-        pass "All pytest tests pass"
-        tests_passed=true
-      else
-        fail "Pytest suite has failures — fix before transition"
-        gate_failed=1
-      fi
-    fi
-  else
-    fail "No test suite found (tests/run.sh or tests/test_*.py)"
-    gate_failed=1
-  fi
-  if [ "$tests_passed" = true ]; then
-    record_check "tests_passing" "PASS"
-  else
-    record_check "tests_passing" "FAIL"
-  fi
+  # Tests pass
+  _run_tests
 
   # Testers completed — verify .testers_done marker exists (ensures sequential flow)
   if [ -f ".testers_done" ]; then
@@ -278,57 +227,8 @@ review_to_closed() {
   [ "$JSON_MODE" = true ] || echo "━━━ Gate: REVIEW → CLOSED ━━━"
   [ "$JSON_MODE" = true ] || echo ""
 
-  # Test suite green (try tests/run.sh first, then pytest)
-  tests_passed=false
-  if [ -f "$TEST_RUNNER" ]; then
-    if [ "$JSON_MODE" = true ]; then
-      if bash "$TEST_RUNNER" 2>/dev/null >/dev/null; then
-        pass "All tests pass ($TEST_RUNNER)"
-        tests_passed=true
-      else
-        fail "Test suite has failures"
-        gate_failed=1
-      fi
-    else
-      if bash "$TEST_RUNNER" 2>&1 | tail -5; then
-        pass "All tests pass ($TEST_RUNNER)"
-        tests_passed=true
-      else
-        fail "Test suite has failures"
-        gate_failed=1
-      fi
-    fi
-  elif [ -d "tests" ] && find tests -name 'test_*.py' 2>/dev/null | head -1 >/dev/null 2>&1; then
-    PYTEST_CMD="python3 -m pytest"
-    [ -f ".venv/bin/pytest" ] && PYTEST_CMD=".venv/bin/pytest"
-    PYTEST_ENV=""
-    [ -d "src" ] && PYTEST_ENV="PYTHONPATH=src"
-    if [ "$JSON_MODE" = true ]; then
-      if env $PYTEST_ENV $PYTEST_CMD tests/ -q 2>/dev/null >/dev/null; then
-        pass "All pytest tests pass"
-        tests_passed=true
-      else
-        fail "Pytest suite has failures"
-        gate_failed=1
-      fi
-    else
-      if env $PYTEST_ENV $PYTEST_CMD tests/ -q 2>&1 | tail -3; then
-        pass "All pytest tests pass"
-        tests_passed=true
-      else
-        fail "Pytest suite has failures"
-        gate_failed=1
-      fi
-    fi
-  else
-    fail "No test suite found (tests/run.sh or tests/test_*.py)"
-    gate_failed=1
-  fi
-  if [ "$tests_passed" = true ]; then
-    record_check "tests_passing" "PASS"
-  else
-    record_check "tests_passing" "FAIL"
-  fi
+  # Test suite green
+  _run_tests
 
   # Design doc matches implementation (structural consistency)
   assert_file "$DESIGN_DOC"
@@ -438,6 +338,60 @@ reopen_to_active() {
   fi
 }
 
+# ── Shared test runner (DRY: used by active_to_review and review_to_closed) ──
+_run_tests() {
+  local tests_passed=false
+  if [ -f "$TEST_RUNNER" ]; then
+    if [ "$JSON_MODE" = true ]; then
+      if bash "$TEST_RUNNER" 2>/dev/null >/dev/null; then
+        pass "All tests pass ($TEST_RUNNER)"
+        tests_passed=true
+      else
+        fail "Test suite has failures — fix before transition"
+        gate_failed=1
+      fi
+    else
+      if bash "$TEST_RUNNER" 2>&1 | tail -5; then
+        pass "All tests pass ($TEST_RUNNER)"
+        tests_passed=true
+      else
+        fail "Test suite has failures — fix before transition"
+        gate_failed=1
+      fi
+    fi
+  elif [ -d "tests" ] && find tests -name 'test_*.py' 2>/dev/null | head -n 1 >/dev/null 2>&1; then
+    local PYTEST_CMD="python3 -m pytest"
+    [ -f ".venv/bin/pytest" ] && PYTEST_CMD=".venv/bin/pytest"
+    local PYTEST_ENV=""
+    [ -d "src" ] && PYTEST_ENV="PYTHONPATH=src"
+    if [ "$JSON_MODE" = true ]; then
+      if env $PYTEST_ENV $PYTEST_CMD tests/ -q 2>/dev/null >/dev/null; then
+        pass "All pytest tests pass"
+        tests_passed=true
+      else
+        fail "Pytest suite has failures — fix before transition"
+        gate_failed=1
+      fi
+    else
+      if env $PYTEST_ENV $PYTEST_CMD tests/ -q 2>&1 | tail -3; then
+        pass "All pytest tests pass"
+        tests_passed=true
+      else
+        fail "Pytest suite has failures — fix before transition"
+        gate_failed=1
+      fi
+    fi
+  else
+    fail "No test suite found (tests/run.sh or tests/test_*.py)"
+    gate_failed=1
+  fi
+  if [ "$tests_passed" = true ]; then
+    record_check "tests_passing" "PASS"
+  else
+    record_check "tests_passing" "FAIL"
+  fi
+}
+
 usage() {
   echo "Usage: $0 --transition <FROM>_TO_<TO> [OPTIONS]"
   echo ""
@@ -517,8 +471,7 @@ while [ $# -gt 0 ]; do
       show_status=true
       ;;
     --yes)
-      OPENCODE_NONINTERACTIVE=true bash "$0" "${@:2}"
-      exit $?
+      OPENCODE_NONINTERACTIVE=true
       ;;
     *)
       echo "Unknown option: $1"
@@ -589,13 +542,14 @@ case "$transition" in
 esac
 
 # JSON mode: emit structured JSON
-
+if [ "$JSON_MODE" = true ]; then
   if [ "$gate_failed" -eq 0 ]; then
     json_emit "gate.sh" "PASS" "" "$transition"
   else
     json_emit "gate.sh" "BLOCKED" "" "$transition"
   fi
   exit "$gate_failed"
+fi
 
 # Reviewer mode: output structured results
 if [ "$reviewer_mode" = true ]; then

@@ -49,7 +49,7 @@ KodeHold works with any LLM provider. Ollama is the primary provider, but the sy
 ### Commands
 - Run tests: `pytest tests/ -x -v`
 - Lint: `ruff check .` (Python), `eslint .` (JS/TS)
-- Gate: `bash scripts/gate.sh --transition <FROM>_TO_<TO>`
+- Gate: `python3 scripts/gate.py --transition <FROM>_TO_<TO>`
 - State: `.kodehold-state`
 
 ### Conventions
