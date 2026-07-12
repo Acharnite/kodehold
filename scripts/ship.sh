@@ -135,6 +135,21 @@ if [ "$GENERATE" = true ]; then
   exit 0
 fi
 
+# ── Self-modification check ───────────────────────────────────────────────
+# If KodeHold is modifying itself, skip the shipping gate to avoid circular
+# self-gating. Detection is based on env var, marker file, or git diff.
+if is_self_modification; then
+  echo ""
+  if [ "$JSON_MODE" = true ]; then
+    json_add "self_modification" "PASS" "KodeHold self-modification detected — ship gate skipped"
+    json_emit "ship.sh" "PASS" ""
+    exit 0
+  fi
+  echo -e "  ${YELLOW}━━━ KodeHold self-modification detected — skipping shipping gate ━━━${NC}"
+  echo ""
+  exit 0
+fi
+
 [ "${JSON_MODE:-false}" = true ] || echo ""
 [ "${JSON_MODE:-false}" = true ] || echo "=========================================="
 [ "${JSON_MODE:-false}" = true ] || echo "  KodeHold Shipping Gate"

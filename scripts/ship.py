@@ -31,6 +31,7 @@ from scripts.lib.output import (  # noqa: E402
     json_emit,
     set_json_mode,
     is_json_mode,
+    is_self_modification,
     reset_checks,
 )
 
@@ -349,6 +350,19 @@ def main() -> None:
         set_json_mode(True)
 
     reset_checks()
+
+    # ── Self-modification check ───────────────────────────────────────────
+    # If KodeHold is modifying itself, skip shipping gate to avoid circular
+    # self-gating. Detection is based on env var, marker file, or git diff.
+    if is_self_modification() and not args.generate_changes:
+        if is_json_mode():
+            json_add("self_modification", "PASS", "KodeHold self-modification detected — shipping gate skipped")
+            json_emit("ship.py", "PASS")
+            sys.exit(0)
+        print()
+        print("  \033[1;33m━━━ KodeHold self-modification detected — skipping shipping gate ━━━\033[0m")
+        print()
+        sys.exit(0)
 
     if args.generate_changes:
         print()

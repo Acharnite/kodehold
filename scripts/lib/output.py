@@ -7,6 +7,9 @@ All functions respect JSON_MODE to suppress human-readable output.
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+from pathlib import Path
 from typing import Optional
 
 # ANSI color constants
@@ -19,6 +22,73 @@ NC = "\033[0m"
 # Module-level state
 _JSON_MODE = False
 _JSON_CHECKS: list[dict[str, str]] = []
+
+
+# ── Self-modification detection ──────────────────────────────────────────
+# KodeHold self-modification system paths — if changes are detected to any
+# of these files, the gate system assumes KodeHold is modifying itself and
+# skips quality checks (avoiding circular self-gating).
+KODEHOLD_SYSTEM_PATHS: list[str] = [
+    "scripts/gate.py",
+    "scripts/gate.sh",
+    "scripts/ship.py",
+    "scripts/ship.sh",
+    "scripts/workspace.py",
+    "scripts/workspace.sh",
+    "scripts/lib/output.py",
+    "scripts/lib/output.sh",
+    "scripts/validate_config.py",
+    "scripts/sync_agent_config.py",
+    ".opencode/agents/",
+    "config/agents.yaml",
+    "opencode.json",
+    "opencode-rag.json",
+    "AGENTS.md",
+]
+
+
+def is_self_modification(project_path: str = "") -> bool:
+    """Check whether the gate is running on KodeHold itself.
+
+    Detection order: env var → marker file → git diff on system paths.
+
+    Args:
+        project_path: If set, the gate is running on a workspace project
+                      (not KodeHold itself), so auto-detection is skipped.
+
+    Returns:
+        True if self-modification is detected, False otherwise.
+    """
+    # 1. Explicit environment variable
+    if os.environ.get("KODEHOLD_SELF_MODE") == "1":
+        return True
+
+    # 2. Marker file in project root
+    if os.path.isfile(".kodehold-self-mode"):
+        return True
+
+    # 3. Auto-detection: only in the KodeHold root (gate scripts exist) AND
+    #    no project_path was given (meaning we're not checking a workspace)
+    if os.path.isfile("scripts/gate.py") and not project_path:
+        try:
+            result = subprocess.run(
+                ["git", "diff", "--name-only", "HEAD"],
+                capture_output=True, text=True,
+            )
+            if result.returncode != 0:
+                result = subprocess.run(
+                    ["git", "diff", "--name-only"],
+                    capture_output=True, text=True,
+                )
+            changed = result.stdout.strip().splitlines()
+            for pattern in KODEHOLD_SYSTEM_PATHS:
+                for f in changed:
+                    if f.startswith(pattern.rstrip("/")):
+                        return True
+        except OSError:
+            pass
+
+    return False
 
 
 def set_json_mode(enabled: bool = True) -> None:

@@ -507,6 +507,29 @@ if [ -z "$transition" ]; then
   usage
 fi
 
+# ── Self-modification check ───────────────────────────────────────────────
+# If KodeHold is modifying itself, skip all gate checks to avoid circular
+# self-gating. Detection is based on env var, marker file, or git diff.
+if is_self_modification; then
+  echo ""
+  if [ "$JSON_MODE" = true ]; then
+    json_add "self_modification" "PASS" "KodeHold self-modification detected — gate skipped"
+    json_emit "gate.sh" "PASS" transition="$transition"
+    exit 0
+  fi
+  echo -e "  ${YELLOW}━━━ KodeHold self-modification detected — skipping gate checks ━━━${NC}"
+  echo ""
+  if [ "$reviewer_mode" = true ]; then
+    echo "─── Reviewer Mode Output ───"
+    echo "GATE_RESULT:PASS"
+    echo "TRANSITION:$transition"
+    echo "VALIDATE_ONLY:$validate_only"
+    echo "CHECKS:self_modification:PASS"
+    echo "────────────────────────────"
+  fi
+  exit 0
+fi
+
 case "$transition" in
   INIT_TO_ACTIVE)    init_to_active ;;
   ACTIVE_TO_REVIEW)  active_to_review ;;

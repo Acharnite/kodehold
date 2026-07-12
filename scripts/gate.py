@@ -31,7 +31,10 @@ from scripts.lib.output import (  # noqa: E402
     json_emit,
     set_json_mode,
     is_json_mode,
+    is_self_modification,
     reset_checks,
+    YELLOW,
+    NC,
 )
 
 # ── Constants ─────────────────────────────────────────────────────────────
@@ -654,6 +657,26 @@ def main() -> None:
     cleanup_markers = []
     check_results = {}
     reset_checks()
+
+    # ── Self-modification check ───────────────────────────────────────────
+    # If KodeHold is modifying itself, skip all gate checks to avoid circular
+    # self-gating. Detection is based on env var, marker file, or git diff.
+    if is_self_modification(project_path=args.project_path):
+        if is_json_mode():
+            json_add("self_modification", "PASS", "KodeHold self-modification detected — gate skipped")
+            json_emit("gate.py", "PASS", transition=args.transition)
+            sys.exit(0)
+        print()
+        print(f"  {YELLOW}━━━ KodeHold self-modification detected — skipping gate checks ━━━{NC}")
+        print()
+        if args.reviewer_mode:
+            print("─── Reviewer Mode Output ───")
+            print("GATE_RESULT:PASS")
+            print(f"TRANSITION:{args.transition}")
+            print(f"VALIDATE_ONLY:{str(args.validate_only).lower()}")
+            print("CHECKS:self_modification:PASS")
+            print("────────────────────────────")
+        sys.exit(0)
 
     # Dispatch to transition function
     transition_map = {

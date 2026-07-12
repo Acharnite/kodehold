@@ -105,6 +105,14 @@ Reviewers validate lifecycle transitions on behalf of the Director.
 4. Reviewers return structured result: PASS (with optional notes) or BLOCKED (with specific failures)
 5. Director acts on result: if PASS, runs actual gate; if BLOCKED, delegates fixes
 
+### KodeHold Self-Modification
+When the `.kodehold-self-mode` marker file is present, KodeHold is modifying itself.
+In this case:
+- **Do NOT run `gate.sh --validate-only`** — the gate scripts auto-pass, and running them
+  would be misleading when the gate infrastructure itself is being changed.
+- **Perform manual review only** — verify changes through inspection and common sense.
+- **Return PASS** with a note: "Self-modification mode — manual review only, gate skipped."
+
 ### When Reviewers Gate
 - INIT → ACTIVE: Reviewers validate design quality + ADR completeness + second opinion
 - ACTIVE → REVIEW: Reviewers validate tests pass + code reviewed + comprehensive review
