@@ -14,7 +14,7 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
@@ -28,7 +28,7 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Validate YAML files
         run: |
           pip install yamllint 2>/dev/null
@@ -42,6 +42,6 @@ jobs:
     name: Validate Config
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Run config validation
         run: python3 scripts/validate_config.py
