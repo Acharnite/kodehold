@@ -22,31 +22,21 @@ jobs:
       - name: Install Python deps
         run: pip install pyyaml jsonschema
       - name: Run tests
-        run: bash tests/run.sh
+        run: python3 -m pytest tests/ -v
 
   lint:
     name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: ShellCheck bash scripts
-        uses: ludeeus/action-shellcheck@master
-        with:
-          scandir: ./scripts
-          severity: style
       - name: Validate YAML files
         run: |
           pip install yamllint 2>/dev/null
           yamllint -d "{extends: relaxed, rules: {line-length: disable}}" .github/ config/ || true
-      - name: Check for shell scripting issues
+      - name: Python lint
         run: |
-          echo "=== Checking scripts for common issues ==="
-          if grep -rn 'head -[^n]' scripts/ --include='*.sh' 2>/dev/null; then
-            echo "WARNING: Found non-portable 'head' usage — use 'head -n' instead"
-          fi
-          if grep -rn '$(dirname' scripts/ --include='*.sh' 2>/dev/null; then
-            echo "NOTE: Found dirname usage — ensure compatibility"
-          fi
+          pip install ruff 2>/dev/null
+          ruff check scripts/ tests/
 
   validate-config:
     name: Validate Config
@@ -54,4 +44,4 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Run config validation
-        run: bash scripts/validate-config.sh
+        run: python3 scripts/validate_config.py
