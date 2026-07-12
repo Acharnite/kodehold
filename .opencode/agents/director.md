@@ -141,7 +141,7 @@ Since there is no action queue, the Director manually ensures prerequisites:
 
 | Template ID | Flow | Steps | When to Use |
 |-------------|------|-------|-------------|
-| `rtn_mq1b0oxe_e64c394e1890` (kodehold-adr-flow-v3) | ADR creation + review | 6 | New ADR request |
+| `rtn_mq1b0oxe_e64c394e1890` (kodehold-adr-flow-v3) | ADR creation + review | 5 | New ADR request |
 | `rtn_mq1b0f4v_86477e3e6b49` (kodehold-implement-flow-v3) | Feature implementation | 6 | Feature request from approved design |
 | `rtn_mq1b3vzj_ec3dae260a03` (kodehold-bugfix-flow-v3) | Bug triage + hotfix | 4 | Bug report, minor fix |
 | `rtn_mq1b0kml_2092069aeb6b` (kodehold-ship-gate-v3) | Shipping gate | 8 | Release readiness |

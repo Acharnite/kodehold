@@ -1,9 +1,10 @@
-# Version 1.14.0 — ADR-0050 completion: infrastructure cleanup
+# Version 1.19.0 — vLLM migration documentation
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 1.19.0 | 2026-07-09 | Design doc Section 8.1 updated — vLLM documented as recommended local inference provider alongside Ollama. Concurrent LLM + Embedding serving architecture (dual vLLM instances on ports 8000/8001). References ADR-0053. |
 | 1.15.0 | 2026-07-02 | ADR-0052 Structured Durable Execution — Formal Checkpoint Schema and Auto-Checkpoint (Accepted) |
 | 1.14.0 | 2026-06-30 | ADR-0050 completion: removed all agentmemory/ICM/headroom infrastructure, moved routines to skills, trimmed AGENTS.md/director.md per token-optimized loading directive |
 | 1.12.3 | 2026-06-04 | Project slug migration — migrated 366 sessions, 6,552 observations, and 3 profiles from full filesystem paths to canonical slugs. Used Python iii-sdk via WebSocket to iii-engine. ADR-0036 Phase 4 complete. |
@@ -46,6 +47,8 @@
 - **PATCH**: Documentation updates, refinements, bug fixes
 
 ## Current
+
+**1.19.0** — Design doc Section 8.1 updated — vLLM documented as recommended local inference provider. Concurrent LLM + Embedding serving architecture. References ADR-0053.
 
 **1.15.0** — ADR-0052 Structured Durable Execution — Formal Checkpoint Schema and Auto-Checkpoint (Accepted).
 

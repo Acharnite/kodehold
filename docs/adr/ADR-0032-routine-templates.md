@@ -51,20 +51,19 @@ The same pattern applies to feature implementation, bug fixes, and the shipping 
 
 ## Decision
 
-### Template 1: `kodehold-adr-flow` (6 steps)
+### Template 1: `kodehold-adr-flow` (5 steps)
 
-**Version:** 1.0 | **Category:** design | **Author:** Architects
+**Version:** 1.1 | **Category:** design | **Author:** Architects
 
 | Step | Team | Action | Depends On | Priority | Optional? |
 |------|------|--------|------------|----------|-----------|
-| 1 | architects | research | (none) | 8 | No |
-| 2 | architects | write-adr | step 1 | 8 | No |
-| 3 | scribes | design-doc-update | step 2 | 5 | No |
-| 4 | reviewers | review-adr | step 2 | 7 | No |
-| 5 | second-opinion | cross-validate | step 2 | 7 | Yes |
-| 6 | scribes | finalize | steps 4, 5* | 5 | No |
+| 1 | architects | research + write-adr | (none) | 8 | No |
+| 2 | scribes | design-doc-update | step 1 | 5 | No |
+| 3 | reviewers | review-adr | step 1 | 7 | No |
+| 4 | second-opinion | cross-validate | step 1 | 7 | Yes |
+| 5 | scribes | finalize | steps 3, 4* | 5 | No |
 
-*If step 5 is skipped, step 6 depends only on step 4.
+*If step 4 is skipped, step 5 depends only on step 3.
 
 **Parameters:** `title` (required), `require_second_opinion` (boolean, default true)
 

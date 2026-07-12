@@ -20,6 +20,14 @@
         "--browser-url",
         "http://localhost:9222"
       ]
+    },
+    "krypto-agent": {
+      "type": "local",
+      "command": [
+        "opencode-rag",
+        "mcp"
+      ],
+      "cwd": "/home/kiffer/project/krypto-agent"
     }
   },
   "default_agent": "director",
@@ -33,6 +41,9 @@
       "models": {
         "coder": {
           "name": "qwen2.5-coder:7b"
+        },
+        "llama3.1:8b": {
+          "name": "llama3.1:8b"
         }
       }
     }
@@ -77,7 +88,6 @@
   },
   "lsp": true,
   "plugin": [
-    "opencode-mem",
     ".opencode/plugins/rag-plugin.js",
     ".opencode/plugins/rag-tui.js"
   ]

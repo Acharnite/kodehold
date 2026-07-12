@@ -3038,3 +3038,823 @@ requests.exceptions.ConnectionError
 2026-07-03 10:05:03,639 [INFO   ] [root] [-] krypto_agent.web.server:259 — Config updated and daemon signaled to reload
 2026-07-03 10:05:03,789 [INFO   ] [root] [-] krypto_agent.web.server:259 — Config updated and daemon signaled to reload
 2026-07-03 10:05:03,826 [INFO   ] [root] [-] krypto_agent.web.server:259 — Config updated and daemon signaled to reload
+2026-07-07 07:59:30,199 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 07:59:30,226 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 07:59:30,236 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.000500 BTC at 50049.99999999999 (above market) — fee: 0.0250, total: 25.02
+2026-07-07 07:59:30,246 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper SELL 0.000500 BTC at 54945.0 (below market) — fee: 0.0274, total: 27.42
+2026-07-07 07:59:30,273 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 07:59:30,282 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0100, total: 10.01
+2026-07-07 07:59:30,308 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 07:59:30,348 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 07:59:30,358 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0100, total: 10.01
+2026-07-07 07:59:30,383 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 07:59:30,393 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0100, total: 10.01
+2026-07-07 07:59:30,400 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.002997 ETH at 3002.9999999999995 (above market) — fee: 0.0090, total: 9.01
+2026-07-07 07:59:30,408 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper SELL 0.000200 BTC at 50949.0 (below market) — fee: 0.0102, total: 10.17
+2026-07-07 07:59:30,435 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 07:59:30,447 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0100, total: 10.01
+2026-07-07 07:59:33,173 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 27/100 (Fear)
+2026-07-07 07:59:33,364 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 20 news items from 3 RSS feeds
+2026-07-07 07:59:37,417 [CRITICAL] [root] [-] krypto_agent.monitor.alert:43 — Test Critical — This is a critical alert
+2026-07-07 07:59:37,419 [CRITICAL] [root] [-] krypto_agent.monitor.alert:43 — Critical — Message
+2026-07-07 07:59:37,423 [WARNING] [root] [-] krypto_agent.monitor.alert:60 — Warning — This is a warning
+2026-07-07 07:59:37,425 [CRITICAL] [root] [-] krypto_agent.monitor.alert:43 — Critical 1 — First critical
+2026-07-07 07:59:37,426 [WARNING] [root] [-] krypto_agent.monitor.alert:60 — Warning 1 — First warning
+2026-07-07 07:59:37,454 [CRITICAL] [root] [-] krypto_agent.monitor.alert:43 — Critical 2 — Second critical
+2026-07-07 07:59:37,454 [WARNING] [root] [-] krypto_agent.monitor.alert:60 — Warning 2 — Second warning
+2026-07-07 07:59:37,513 [INFO   ] [root] [-] krypto_agent:68 — SIGINT received — graceful shutdown (press Ctrl+C again within 3s to force)...
+2026-07-07 07:59:37,522 [INFO   ] [root] [-] krypto_agent:68 — SIGINT received — graceful shutdown (press Ctrl+C again within 3s to force)...
+2026-07-07 07:59:39,146 [WARNING] [root] [-] krypto_agent.data.fetcher:57 — Sandbox mode not supported for kraken — falling back to live: Sandbox not supported
+2026-07-07 07:59:39,189 [WARNING] [root] [-] krypto_agent.data.fetcher:57 — Sandbox mode not supported for kraken — falling back to live: Not supported
+2026-07-07 07:59:39,449 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:376 — Ollama call failed (attempt 1/3), retrying in 2.0s
+2026-07-07 07:59:41,450 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:376 — Ollama call failed (attempt 2/3), retrying in 4.0s
+2026-07-07 07:59:45,450 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:380 — Ollama call failed after 3 attempts
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 357, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<7 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.ConnectionError
+2026-07-07 07:59:45,455 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:376 — Ollama call failed (attempt 1/3), retrying in 2.0s
+2026-07-07 07:59:47,455 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:376 — Ollama call failed (attempt 2/3), retrying in 4.0s
+2026-07-07 07:59:51,456 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:380 — Ollama call failed after 3 attempts
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 357, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<7 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.Timeout
+2026-07-07 07:59:51,465 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:383 — Ollama call failed (permanent)
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 357, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<7 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.HTTPError: 500
+2026-07-07 07:59:51,469 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:383 — Ollama call failed (permanent)
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 369, in _call_ollama
+    return resp.json().get("response")
+           ~~~~~~~~~^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+ValueError: not JSON
+2026-07-07 07:59:51,486 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:376 — Ollama call failed (attempt 1/3), retrying in 2.0s
+2026-07-07 07:59:53,487 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:376 — Ollama call failed (attempt 2/3), retrying in 4.0s
+2026-07-07 07:59:57,487 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:380 — Ollama call failed after 3 attempts
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 357, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<7 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.ConnectionError
+2026-07-07 07:59:57,512 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:271 — Checking LLM readiness for llama3.1:8b (ctx=4096)...
+2026-07-07 07:59:57,513 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:294 — Model llama3.1:8b already loaded in GPU (probe: 0.5s)
+2026-07-07 07:59:57,514 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:315 — Model llama3.1:8b ready (verified)
+2026-07-07 07:59:57,517 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:271 — Checking LLM readiness for llama3.1:8b (ctx=4096)...
+2026-07-07 07:59:57,518 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:298 — Model llama3.1:8b loaded into GPU (warmup: 3.5s)
+2026-07-07 07:59:57,518 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:315 — Model llama3.1:8b ready (verified)
+2026-07-07 07:59:57,521 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:271 — Checking LLM readiness for llama3.1:8b (ctx=4096)...
+2026-07-07 07:59:57,522 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:320 — LLM warmup failed — Ollama not reachable
+2026-07-07 07:59:57,524 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:271 — Checking LLM readiness for llama3.1:8b (ctx=4096)...
+2026-07-07 07:59:57,525 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:324 — Model warmup failed (non-blocking): weird error
+2026-07-07 07:59:57,545 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:228 — Model llama3.1:8b not found locally — pulling...
+2026-07-07 07:59:57,546 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:245 — Model llama3.1:8b pulled successfully
+2026-07-07 07:59:57,550 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:228 — Model llama3.1:8b not found locally — pulling...
+2026-07-07 07:59:57,553 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:257 — Failed to ensure model: 
+2026-07-07 07:59:57,556 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:228 — Model llama3.1:8b not found locally — pulling...
+2026-07-07 07:59:57,558 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:245 — Model llama3.1:8b pulled successfully
+2026-07-07 07:59:57,567 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:376 — Ollama call failed (attempt 1/3), retrying in 2.0s
+2026-07-07 07:59:59,568 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:376 — Ollama call failed (attempt 2/3), retrying in 4.0s
+2026-07-07 08:00:03,568 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:380 — Ollama call failed after 3 attempts
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 357, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<7 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.ConnectionError
+2026-07-07 08:00:03,572 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:376 — Ollama call failed (attempt 1/3), retrying in 2.0s
+2026-07-07 08:00:05,573 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:376 — Ollama call failed (attempt 2/3), retrying in 4.0s
+2026-07-07 08:00:09,576 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:383 — Ollama call failed (permanent)
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 357, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<7 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.HTTPError: 400 Bad Request
+2026-07-07 08:00:09,579 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:376 — Ollama call failed (attempt 1/3), retrying in 2.0s
+2026-07-07 08:00:11,579 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:376 — Ollama call failed (attempt 2/3), retrying in 4.0s
+2026-07-07 08:00:15,580 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:380 — Ollama call failed after 3 attempts
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 357, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<7 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.Timeout
+2026-07-07 08:00:15,687 [INFO   ] [root] [-] krypto_agent:345 — Paper trading data reset
+2026-07-07 08:00:20,733 [INFO   ] [root] [-] krypto_agent:89 — Auto-pruned BTC/EUR (win rate 27% over 11 decisions)
+2026-07-07 08:00:20,733 [INFO   ] [root] [-] krypto_agent:93 — Pruned 1 low-performer pairs: ['BTC/EUR']
+2026-07-07 08:00:20,746 [INFO   ] [root] [-] krypto_agent:91 — STOP_LOSS triggered for BTC/EUR at 47500.00 (entry=50000.00, SL=48000.00, TP=55000.00)
+2026-07-07 08:00:20,750 [INFO   ] [root] [-] krypto_agent:91 — TAKE_PROFIT triggered for BTC/EUR at 55500.00 (entry=50000.00, SL=48000.00, TP=55000.00)
+2026-07-07 08:00:20,773 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 42/100 (Fear)
+2026-07-07 08:00:20,775 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 85/100 (Extreme Greed)
+2026-07-07 08:00:20,777 [WARNING] [root] [-] krypto_agent.analysis.news:151 — Fear & Greed fetch failed: 
+2026-07-07 08:00:20,779 [WARNING] [root] [-] krypto_agent.analysis.news:151 — Fear & Greed fetch failed: 
+2026-07-07 08:00:20,781 [WARNING] [root] [-] krypto_agent.analysis.news:151 — Fear & Greed fetch failed: bad json
+2026-07-07 08:00:20,784 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 2 news items from 3 RSS feeds
+2026-07-07 08:00:20,786 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 0 news items from 3 RSS feeds
+2026-07-07 08:00:20,788 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed CoinDesk failed: 
+2026-07-07 08:00:20,788 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed CoinTelegraph failed: 
+2026-07-07 08:00:20,789 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed Decrypt failed: 
+2026-07-07 08:00:20,789 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 0 news items from 3 RSS feeds
+2026-07-07 08:00:20,790 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed CoinDesk failed: 
+2026-07-07 08:00:20,791 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed CoinTelegraph failed: 
+2026-07-07 08:00:20,791 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed Decrypt failed: 
+2026-07-07 08:00:20,791 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 0 news items from 3 RSS feeds
+2026-07-07 08:00:20,793 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 0 news items from 3 RSS feeds
+2026-07-07 08:00:20,795 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 55/100 (Neutral)
+2026-07-07 08:00:20,798 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 0 news items from 3 RSS feeds
+2026-07-07 08:00:20,800 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 30/100 (Fear)
+2026-07-07 08:00:20,801 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 30/100 (Fear)
+2026-07-07 08:00:20,803 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 42/100 (Fear)
+2026-07-07 08:00:20,803 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed CoinTelegraph failed: 
+2026-07-07 08:00:20,803 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed Decrypt failed: 
+2026-07-07 08:00:20,804 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 1 news items from 3 RSS feeds
+2026-07-07 08:00:20,805 [WARNING] [root] [-] krypto_agent.analysis.news:151 — Fear & Greed fetch failed: 
+2026-07-07 08:00:20,806 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed CoinDesk failed: 
+2026-07-07 08:00:20,806 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed CoinTelegraph failed: 
+2026-07-07 08:00:20,806 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed Decrypt failed: 
+2026-07-07 08:00:20,806 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 0 news items from 3 RSS feeds
+2026-07-07 08:00:20,808 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 60/100 (Greed)
+2026-07-07 08:00:20,809 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 0 news items from 3 RSS feeds
+2026-07-07 08:00:20,841 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 08:00:20,869 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 500.00
+2026-07-07 08:00:20,897 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 08:00:20,927 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 08:00:20,937 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0100, total: 10.01
+2026-07-07 08:00:20,964 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 08:00:20,991 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 1000.00
+2026-07-07 08:00:21,000 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.001980 BTC at 50500.0 (above market) — fee: 0.1000, total: 100.10
+2026-07-07 08:00:21,026 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 08:00:21,055 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 08:00:21,065 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0100, total: 10.01
+2026-07-07 08:00:21,073 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper SELL 0.000200 BTC at 50949.0 (below market) — fee: 0.0102, total: 10.17
+2026-07-07 08:00:21,099 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 08:00:21,105 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 1000.00
+2026-07-07 08:00:21,113 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper SELL 0.001980 BTC at 50949.0 (below market) — fee: 0.1009, total: 100.79
+2026-07-07 08:00:21,138 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 08:00:21,148 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0100, total: 10.01
+2026-07-07 08:00:21,173 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 08:00:21,184 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0100, total: 10.01
+2026-07-07 08:00:21,192 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.002997 ETH at 3002.9999999999995 (above market) — fee: 0.0090, total: 9.01
+2026-07-07 08:00:21,219 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 08:00:21,229 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0100, total: 10.01
+2026-07-07 08:00:21,256 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 08:00:21,266 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0100, total: 10.01
+2026-07-07 08:00:21,295 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 08:00:21,325 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 08:00:21,335 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.000500 BTC at 50049.99999999999 (above market) — fee: 0.0250, total: 25.02
+2026-07-07 08:00:21,362 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 08:00:21,373 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0100, total: 10.01
+2026-07-07 08:00:21,380 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.002997 ETH at 3002.9999999999995 (above market) — fee: 0.0090, total: 9.01
+2026-07-07 08:00:21,407 [INFO   ] [root] [-] krypto_agent.execution.paper:48 — No snapshot found, using initial cash: 100.00
+2026-07-07 08:00:21,417 [INFO   ] [root] [-] krypto_agent.execution.paper:248 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0100, total: 10.01
+2026-07-07 08:00:21,741 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-07 08:00:21,791 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-07 08:00:21,842 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-07 08:00:21,890 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-07 08:00:21,938 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-07 08:00:21,985 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-07 08:00:22,186 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-07 08:00:22,237 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-08 13:06:29,535 [CRITICAL] [root] [-] krypto_agent.monitor.alert:43 — Test Critical — This is a critical alert
+2026-07-08 13:06:29,537 [CRITICAL] [root] [-] krypto_agent.monitor.alert:43 — Critical — Message
+2026-07-08 13:06:29,539 [WARNING] [root] [-] krypto_agent.monitor.alert:60 — Warning — This is a warning
+2026-07-08 13:06:29,540 [CRITICAL] [root] [-] krypto_agent.monitor.alert:43 — Critical 1 — First critical
+2026-07-08 13:06:29,541 [WARNING] [root] [-] krypto_agent.monitor.alert:60 — Warning 1 — First warning
+2026-07-08 13:06:29,541 [CRITICAL] [root] [-] krypto_agent.monitor.alert:43 — Critical 2 — Second critical
+2026-07-08 13:06:29,542 [WARNING] [root] [-] krypto_agent.monitor.alert:60 — Warning 2 — Second warning
+2026-07-08 13:06:29,578 [INFO   ] [root] [-] krypto_agent:68 — SIGINT received — graceful shutdown (press Ctrl+C again within 3s to force)...
+2026-07-08 13:06:29,584 [INFO   ] [root] [-] krypto_agent:68 — SIGINT received — graceful shutdown (press Ctrl+C again within 3s to force)...
+2026-07-08 13:06:31,099 [WARNING] [root] [-] krypto_agent.data.fetcher:57 — Sandbox mode not supported for kraken — falling back to live: Sandbox not supported
+2026-07-08 13:06:31,124 [WARNING] [root] [-] krypto_agent.data.fetcher:57 — Sandbox mode not supported for kraken — falling back to live: Not supported
+2026-07-08 13:06:31,693 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:404 — Ollama call failed (attempt 1/3), retrying in 2.0s
+2026-07-08 13:06:33,694 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:404 — Ollama call failed (attempt 2/3), retrying in 4.0s
+2026-07-08 13:06:37,694 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:408 — Ollama call failed after 3 attempts
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 385, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<7 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.ConnectionError
+2026-07-08 13:06:37,699 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:404 — Ollama call failed (attempt 1/3), retrying in 2.0s
+2026-07-08 13:06:39,700 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:404 — Ollama call failed (attempt 2/3), retrying in 4.0s
+2026-07-08 13:06:43,700 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:408 — Ollama call failed after 3 attempts
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 385, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<7 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.Timeout
+2026-07-08 13:06:43,704 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:411 — Ollama call failed (permanent)
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 385, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<7 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.HTTPError: 500
+2026-07-08 13:06:43,707 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:411 — Ollama call failed (permanent)
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 397, in _call_ollama
+    return resp.json().get("response")
+           ~~~~~~~~~^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+ValueError: not JSON
+2026-07-08 13:06:43,725 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:404 — Ollama call failed (attempt 1/3), retrying in 2.0s
+2026-07-08 13:06:45,725 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:404 — Ollama call failed (attempt 2/3), retrying in 4.0s
+2026-07-08 13:06:49,726 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:408 — Ollama call failed after 3 attempts
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 385, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<7 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.ConnectionError
+2026-07-08 13:06:49,734 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:616 — LLM returned unparseable response (attempt 1+2 both failed). Raw: garbage
+2026-07-08 13:06:49,755 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:299 — Checking LLM readiness for llama3.1:8b (ctx=4096)...
+2026-07-08 13:06:49,756 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:322 — Model llama3.1:8b already loaded in GPU (probe: 0.5s)
+2026-07-08 13:06:49,757 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:343 — Model llama3.1:8b ready (verified)
+2026-07-08 13:06:49,761 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:299 — Checking LLM readiness for llama3.1:8b (ctx=4096)...
+2026-07-08 13:06:49,762 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:326 — Model llama3.1:8b loaded into GPU (warmup: 3.5s)
+2026-07-08 13:06:49,763 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:343 — Model llama3.1:8b ready (verified)
+2026-07-08 13:06:49,765 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:299 — Checking LLM readiness for llama3.1:8b (ctx=4096)...
+2026-07-08 13:06:49,766 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:348 — LLM warmup failed — Ollama not reachable
+2026-07-08 13:06:49,768 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:299 — Checking LLM readiness for llama3.1:8b (ctx=4096)...
+2026-07-08 13:06:49,769 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:352 — Model warmup failed (non-blocking): weird error
+2026-07-08 13:06:49,774 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:256 — Model llama3.1:8b not found locally — pulling...
+2026-07-08 13:06:49,776 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:273 — Model llama3.1:8b pulled successfully
+2026-07-08 13:06:49,779 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:256 — Model llama3.1:8b not found locally — pulling...
+2026-07-08 13:06:49,783 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:285 — Failed to ensure model: 
+2026-07-08 13:06:49,785 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:256 — Model llama3.1:8b not found locally — pulling...
+2026-07-08 13:06:49,787 [INFO   ] [root] [-] krypto_agent.analysis.llm_analyzer:273 — Model llama3.1:8b pulled successfully
+2026-07-08 13:06:49,796 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:404 — Ollama call failed (attempt 1/3), retrying in 2.0s
+2026-07-08 13:06:51,796 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:404 — Ollama call failed (attempt 2/3), retrying in 4.0s
+2026-07-08 13:06:55,797 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:408 — Ollama call failed after 3 attempts
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 385, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<7 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.ConnectionError
+2026-07-08 13:06:55,801 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:404 — Ollama call failed (attempt 1/3), retrying in 2.0s
+2026-07-08 13:06:57,801 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:404 — Ollama call failed (attempt 2/3), retrying in 4.0s
+2026-07-08 13:07:01,804 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:411 — Ollama call failed (permanent)
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 385, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<7 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.HTTPError: 400 Bad Request
+2026-07-08 13:07:01,807 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:404 — Ollama call failed (attempt 1/3), retrying in 2.0s
+2026-07-08 13:07:03,808 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:404 — Ollama call failed (attempt 2/3), retrying in 4.0s
+2026-07-08 13:07:07,808 [WARNING] [root] [-] krypto_agent.analysis.llm_analyzer:408 — Ollama call failed after 3 attempts
+Traceback (most recent call last):
+  File "/home/kiffer/project/kodehold/workspaces/krypto-agent/krypto_agent/analysis/llm_analyzer.py", line 385, in _call_ollama
+    resp = requests.post(
+        f"{self._base_url}/api/generate",
+    ...<7 lines>...
+        timeout=self._timeout,
+    )
+  File "/usr/lib/python3.13/unittest/mock.py", line 1169, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1173, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/unittest/mock.py", line 1228, in _execute_mock_call
+    raise effect
+requests.exceptions.Timeout
+2026-07-08 13:07:07,934 [INFO   ] [root] [-] krypto_agent:347 — Paper trading data reset
+2026-07-08 13:07:12,981 [INFO   ] [root] [-] krypto_agent:89 — Auto-pruned BTC/EUR (win rate 27% over 11 decisions)
+2026-07-08 13:07:12,981 [INFO   ] [root] [-] krypto_agent:93 — Pruned 1 low-performer pairs: ['BTC/EUR']
+2026-07-08 13:07:12,994 [INFO   ] [root] [-] krypto_agent:91 — STOP_LOSS triggered for BTC/EUR at 47500.00 (entry=50000.00, SL=48000.00, TP=55000.00)
+2026-07-08 13:07:12,998 [INFO   ] [root] [-] krypto_agent:91 — TAKE_PROFIT triggered for BTC/EUR at 55500.00 (entry=50000.00, SL=48000.00, TP=55000.00)
+2026-07-08 13:07:13,022 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 42/100 (Fear)
+2026-07-08 13:07:13,024 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 85/100 (Extreme Greed)
+2026-07-08 13:07:13,026 [WARNING] [root] [-] krypto_agent.analysis.news:151 — Fear & Greed fetch failed: 
+2026-07-08 13:07:13,028 [WARNING] [root] [-] krypto_agent.analysis.news:151 — Fear & Greed fetch failed: 
+2026-07-08 13:07:13,030 [WARNING] [root] [-] krypto_agent.analysis.news:151 — Fear & Greed fetch failed: bad json
+2026-07-08 13:07:13,032 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 2 news items from 3 RSS feeds
+2026-07-08 13:07:13,035 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 0 news items from 3 RSS feeds
+2026-07-08 13:07:13,037 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed CoinDesk failed: 
+2026-07-08 13:07:13,037 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed CoinTelegraph failed: 
+2026-07-08 13:07:13,038 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed Decrypt failed: 
+2026-07-08 13:07:13,038 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 0 news items from 3 RSS feeds
+2026-07-08 13:07:13,039 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed CoinDesk failed: 
+2026-07-08 13:07:13,040 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed CoinTelegraph failed: 
+2026-07-08 13:07:13,040 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed Decrypt failed: 
+2026-07-08 13:07:13,040 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 0 news items from 3 RSS feeds
+2026-07-08 13:07:13,042 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 0 news items from 3 RSS feeds
+2026-07-08 13:07:13,044 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 55/100 (Neutral)
+2026-07-08 13:07:13,047 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 0 news items from 3 RSS feeds
+2026-07-08 13:07:13,049 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 30/100 (Fear)
+2026-07-08 13:07:13,049 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 30/100 (Fear)
+2026-07-08 13:07:13,053 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 42/100 (Fear)
+2026-07-08 13:07:13,054 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed CoinTelegraph failed: 
+2026-07-08 13:07:13,054 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed Decrypt failed: 
+2026-07-08 13:07:13,054 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 1 news items from 3 RSS feeds
+2026-07-08 13:07:13,056 [WARNING] [root] [-] krypto_agent.analysis.news:151 — Fear & Greed fetch failed: 
+2026-07-08 13:07:13,057 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed CoinDesk failed: 
+2026-07-08 13:07:13,057 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed CoinTelegraph failed: 
+2026-07-08 13:07:13,057 [WARNING] [root] [-] krypto_agent.analysis.news:201 — RSS feed Decrypt failed: 
+2026-07-08 13:07:13,057 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 0 news items from 3 RSS feeds
+2026-07-08 13:07:13,059 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 60/100 (Greed)
+2026-07-08 13:07:13,060 [INFO   ] [root] [-] krypto_agent.analysis.news:211 — Fetched 0 news items from 3 RSS feeds
+2026-07-08 13:07:13,092 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,121 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 500.00
+2026-07-08 13:07:13,148 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,176 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,179 [WARNING] [root] [-] krypto_agent.execution.paper:82 — Failed to fetch fee for BTC/EUR, using default 0.5000%: Network error
+2026-07-08 13:07:13,205 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,208 [INFO   ] [root] [-] krypto_agent.execution.paper:79 — Fetched taker fee for BTC/EUR: 0.2500%
+2026-07-08 13:07:13,234 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,261 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,271 [INFO   ] [root] [-] krypto_agent.execution.paper:279 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0400, total: 10.04
+2026-07-08 13:07:13,295 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,320 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 1000.00
+2026-07-08 13:07:13,329 [INFO   ] [root] [-] krypto_agent.execution.paper:279 — Paper trade executed: Paper BUY 0.001980 BTC at 50500.0 (above market) — fee: 0.4000, total: 100.40
+2026-07-08 13:07:13,353 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,379 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,389 [INFO   ] [root] [-] krypto_agent.execution.paper:279 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0400, total: 10.04
+2026-07-08 13:07:13,396 [INFO   ] [root] [-] krypto_agent.execution.paper:279 — Paper trade executed: Paper SELL 0.000200 BTC at 50949.0 (below market) — fee: 0.0407, total: 10.14
+2026-07-08 13:07:13,421 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,447 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 1000.00
+2026-07-08 13:07:13,456 [INFO   ] [root] [-] krypto_agent.execution.paper:279 — Paper trade executed: Paper BUY 0.001998 BTC at 50049.99999999999 (above market) — fee: 0.4000, total: 100.40
+2026-07-08 13:07:13,463 [INFO   ] [root] [-] krypto_agent.execution.paper:279 — Paper trade executed: Paper SELL 0.001998 BTC at 50949.0 (below market) — fee: 0.4072, total: 101.39
+2026-07-08 13:07:13,485 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,494 [INFO   ] [root] [-] krypto_agent.execution.paper:279 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0400, total: 10.04
+2026-07-08 13:07:13,518 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,526 [INFO   ] [root] [-] krypto_agent.execution.paper:279 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0400, total: 10.04
+2026-07-08 13:07:13,533 [INFO   ] [root] [-] krypto_agent.execution.paper:279 — Paper trade executed: Paper BUY 0.002996 ETH at 3002.9999999999995 (above market) — fee: 0.0360, total: 9.03
+2026-07-08 13:07:13,556 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,565 [INFO   ] [root] [-] krypto_agent.execution.paper:279 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0400, total: 10.04
+2026-07-08 13:07:13,589 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,599 [INFO   ] [root] [-] krypto_agent.execution.paper:279 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0400, total: 10.04
+2026-07-08 13:07:13,624 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,650 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,659 [INFO   ] [root] [-] krypto_agent.execution.paper:279 — Paper trade executed: Paper BUY 0.000500 BTC at 50049.99999999999 (above market) — fee: 0.1000, total: 25.10
+2026-07-08 13:07:13,685 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,694 [INFO   ] [root] [-] krypto_agent.execution.paper:279 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0400, total: 10.04
+2026-07-08 13:07:13,700 [INFO   ] [root] [-] krypto_agent.execution.paper:279 — Paper trade executed: Paper BUY 0.002996 ETH at 3002.9999999999995 (above market) — fee: 0.0360, total: 9.03
+2026-07-08 13:07:13,723 [INFO   ] [root] [-] krypto_agent.execution.paper:52 — No snapshot found, using initial cash: 100.00
+2026-07-08 13:07:13,732 [INFO   ] [root] [-] krypto_agent.execution.paper:279 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0400, total: 10.04
+2026-07-08 13:07:14,013 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-08 13:07:14,059 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-08 13:07:14,104 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-08 13:07:14,146 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-08 13:07:14,190 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-08 13:07:14,233 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-08 13:07:14,415 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-08 13:07:14,461 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-10 22:14:24,631 [INFO   ] [root] [-] krypto_agent:221 — STOP LOSS triggered for BTC/EUR at 48800.00 (entry=50000.00, SL=49000.00, TP=55000.00)
+2026-07-10 22:14:24,641 [INFO   ] [root] [-] krypto_agent:221 — TAKE PROFIT triggered for BTC/EUR at 55200.00 (entry=50000.00, SL=49000.00, TP=55000.00)
+2026-07-10 22:14:24,651 [INFO   ] [root] [-] krypto_agent:221 — STOP LOSS triggered for SHIB/EUR at 0.00008000 (entry=0.00010000, SL=0.00009000, TP=0.00015000)
+2026-07-10 22:14:24,925 [WARNING] [root] [-] krypto_agent:246 — Failed to fetch OHLCV for BTC/EUR: API error — skipping pair
+2026-07-10 22:14:24,930 [WARNING] [root] [-] krypto_agent:254 — Failed to fetch ticker for BTC/EUR: Ticker error — skipping trade
+2026-07-10 22:14:24,933 [WARNING] [root] [-] krypto_agent:249 — No data fetched for BTC/EUR
+2026-07-10 22:14:25,004 [WARNING] [root] [-] krypto_agent:278 — Price is 0 for BTC/EUR — skipping trade to avoid stale data
+2026-07-10 22:14:31,603 [INFO   ] [root] [-] krypto_agent.analysis.rag_memory:34 — Loading embedding model BAAI/bge-m3 (first call - cached for session)
+2026-07-10 22:14:38,366 [WARNING] [root] [-] krypto_agent:409 — RAG retrieval failed for BTC/EUR: RAG server down
+2026-07-10 22:14:38,410 [INFO   ] [root] [-] krypto_agent:535 — Confidence penalized: 0.85 -> 0.25 (5 indicators N/A)
+2026-07-10 22:14:38,434 [INFO   ] [root] [-] krypto_agent:619 — Trade executed: BUY BTC/EUR at 50500.00 (size: 0.010000)
+2026-07-10 22:14:38,447 [INFO   ] [root] [-] krypto_agent:619 — Trade executed: BUY BTC/EUR at 50500.00 (size: 0.010000)
+2026-07-10 22:14:38,452 [INFO   ] [root] [-] krypto_agent:619 — Trade executed: BUY BTC/EUR at 50500.00 (size: 0.010000)
+2026-07-10 22:14:38,457 [WARNING] [root] [-] krypto_agent:624 — Trade FAILED for BTC/EUR: Insufficient cash
+2026-07-10 22:14:38,852 [INFO   ] [root] [-] krypto_agent:503 — Confidence: 0.85 (LLM) -> 0.80 (final) [llm]
+2026-07-10 22:14:38,855 [INFO   ] [root] [-] krypto_agent:619 — Trade executed: BUY BTC/EUR at 50500.00 (size: 0.010000)
+2026-07-10 22:14:38,866 [INFO   ] [root] [-] krypto_agent:535 — Confidence penalized: 0.30 -> 0.15 (1 indicators N/A)
+2026-07-10 22:14:38,872 [WARNING] [root] [-] krypto_agent:249 — No data fetched for BTC/EUR
+2026-07-10 22:14:38,901 [INFO   ] [root] [-] krypto_agent:221 — STOP LOSS triggered for BTC/EUR at 48800.00 (entry=50000.00, SL=49000.00, TP=55000.00)
+2026-07-10 22:14:38,905 [INFO   ] [root] [-] krypto_agent:758 — STOP_LOSS triggered: sold 0.500000 BTC/EUR at 48800.00
+2026-07-10 22:14:38,934 [INFO   ] [root] [-] krypto_agent:221 — STOP LOSS triggered for BTC/EUR at 48800.00 (entry=50000.00, SL=49000.00, TP=55000.00)
+2026-07-10 22:14:38,937 [INFO   ] [root] [-] krypto_agent:758 — STOP_LOSS triggered: sold 0.500000 BTC/EUR at 48800.00
+2026-07-10 22:14:38,971 [INFO   ] [root] [-] krypto_agent:221 — STOP LOSS triggered for BTC/EUR at 48800.00 (entry=50000.00, SL=49000.00, TP=55000.00)
+2026-07-10 22:14:38,974 [INFO   ] [root] [-] krypto_agent:758 — STOP_LOSS triggered: sold 0.500000 BTC/EUR at 48800.00
+2026-07-10 22:14:39,003 [INFO   ] [root] [-] krypto_agent:221 — STOP LOSS triggered for BTC/EUR at 48800.00 (entry=50000.00, SL=49000.00, TP=55000.00)
+2026-07-10 22:14:39,006 [INFO   ] [root] [-] krypto_agent:758 — STOP_LOSS triggered: sold 0.500000 BTC/EUR at 48800.00
+2026-07-10 22:14:39,035 [INFO   ] [root] [-] krypto_agent:221 — STOP LOSS triggered for BTC/EUR at 48800.00 (entry=50000.00, SL=49000.00, TP=55000.00)
+2026-07-10 22:14:39,038 [INFO   ] [root] [-] krypto_agent:758 — STOP_LOSS triggered: sold 0.500000 BTC/EUR at 48800.00
+2026-07-10 22:14:39,067 [INFO   ] [root] [-] krypto_agent:221 — STOP LOSS triggered for BTC/EUR at 48800.00 (entry=50000.00, SL=49000.00, TP=55000.00)
+2026-07-10 22:14:39,070 [INFO   ] [root] [-] krypto_agent:758 — STOP_LOSS triggered: sold 0.500000 BTC/EUR at 48800.00
+2026-07-10 22:14:39,099 [INFO   ] [root] [-] krypto_agent:221 — STOP LOSS triggered for BTC/EUR at 48800.00 (entry=50000.00, SL=49000.00, TP=55000.00)
+2026-07-10 22:14:39,102 [INFO   ] [root] [-] krypto_agent:758 — STOP_LOSS triggered: sold 0.500000 BTC/EUR at 48800.00
+2026-07-10 22:14:39,117 [INFO   ] [root] [-] krypto_agent:503 — Confidence: 0.85 (LLM) -> 0.80 (final) [llm]
+2026-07-10 22:14:39,119 [INFO   ] [root] [-] krypto_agent:535 — Confidence penalized: 0.80 -> 0.65 (1 indicators N/A)
+2026-07-10 22:14:39,134 [INFO   ] [root] [-] krypto_agent:503 — Confidence: 0.85 (LLM) -> 0.80 (final) [llm]
+2026-07-10 22:14:39,136 [INFO   ] [root] [-] krypto_agent:535 — Confidence penalized: 0.80 -> 0.65 (1 indicators N/A)
+2026-07-10 22:14:39,138 [WARNING] [root] [-] krypto_agent:624 — Trade FAILED for BTC/EUR: Insufficient liquidity
+2026-07-10 22:14:39,150 [INFO   ] [root] [-] krypto_agent:535 — Confidence penalized: 0.30 -> 0.05 (2 indicators N/A)
+2026-07-10 22:14:39,165 [INFO   ] [root] [-] krypto_agent:503 — Confidence: 0.85 (LLM) -> 0.80 (final) [llm]
+2026-07-10 22:14:39,167 [INFO   ] [root] [-] krypto_agent:535 — Confidence penalized: 0.80 -> 0.35 (3 indicators N/A)
+2026-07-10 22:14:39,169 [INFO   ] [root] [-] krypto_agent:619 — Trade executed: BUY BTC/EUR at 50500.00 (size: 0.010000)
+2026-07-10 22:14:39,175 [WARNING] [root] [-] krypto_agent:278 — Price is -1.0 for BTC/EUR — skipping trade to avoid stale data
+2026-07-11 17:16:39,134 [INFO   ] [root] [-] krypto_agent.analysis.rag_memory:34 — Loading embedding model BAAI/bge-m3 (first call - cached for session)
+2026-07-11 17:16:46,433 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 100.00
+2026-07-11 17:16:46,479 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 100.00
+2026-07-11 17:16:47,697 [INFO   ] [root] [-] krypto_agent.execution.paper:111 — Fetched taker fee for BTC/EUR: 0.4000%
+2026-07-11 17:16:47,700 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=100.00, pct=25.0%, price=50050.00 -> size=0.00049950, total=25.1000
+2026-07-11 17:16:47,714 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.000500 BTC at 50049.99999999999 (above market) — fee: 0.1000, total: 25.10
+2026-07-11 17:16:47,722 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00049950, pct=100.0%, price=54945.00 -> sell_size=0.00049950, total=27.3353
+2026-07-11 17:16:47,730 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper SELL 0.000500 BTC at 54945.0 (below market) — fee: 0.1098, total: 27.34
+2026-07-11 17:16:47,773 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 100.00
+2026-07-11 17:16:47,829 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 100.00
+2026-07-11 17:16:47,835 [INFO   ] [root] [-] krypto_agent.execution.paper:111 — Fetched taker fee for BTC/EUR: 0.4000%
+2026-07-11 17:16:47,839 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=100.00, pct=10.0%, price=50050.00 -> size=0.00019980, total=10.0400
+2026-07-11 17:16:47,847 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0400, total: 10.04
+2026-07-11 17:16:47,889 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 100.00
+2026-07-11 17:16:47,895 [INFO   ] [root] [-] krypto_agent.execution.paper:111 — Fetched taker fee for BTC/EUR: 0.4000%
+2026-07-11 17:16:47,897 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=100.00, pct=10.0%, price=50050.00 -> size=0.00019980, total=10.0400
+2026-07-11 17:16:47,904 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0400, total: 10.04
+2026-07-11 17:16:47,907 [INFO   ] [root] [-] krypto_agent.execution.paper:111 — Fetched taker fee for ETH/EUR: 0.4000%
+2026-07-11 17:16:47,909 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=89.96, pct=10.0%, price=3003.00 -> size=0.00299567, total=9.0320
+2026-07-11 17:16:47,917 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.002996 ETH at 3002.9999999999995 (above market) — fee: 0.0360, total: 9.03
+2026-07-11 17:16:47,922 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00019980, pct=100.0%, price=50949.00 -> sell_size=0.00019980, total=10.1389
+2026-07-11 17:16:47,929 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper SELL 0.000200 BTC at 50949.0 (below market) — fee: 0.0407, total: 10.14
+2026-07-11 17:16:47,970 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 100.00
+2026-07-11 17:16:47,980 [INFO   ] [root] [-] krypto_agent.execution.paper:111 — Fetched taker fee for BTC/EUR: 0.4000%
+2026-07-11 17:16:47,982 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=100.00, pct=10.0%, price=50050.00 -> size=0.00019980, total=10.0400
+2026-07-11 17:16:47,988 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0400, total: 10.04
+2026-07-11 17:16:51,505 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 26/100 (Fear)
+2026-07-11 17:16:51,682 [INFO   ] [root] [-] krypto_agent.analysis.news:219 — Fetched 18 news items from 8 RSS feeds
+2026-07-11 17:17:02,142 [INFO   ] [root] [-] krypto_agent:221 — STOP LOSS triggered for BTC/EUR at 50000.00 (entry=50000.00, SL=50440.00, TP=57500.00)
+2026-07-11 17:17:02,234 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 1000.00
+2026-07-11 17:17:02,240 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=1000.00, pct=50.0%, price=50050.00 -> size=0.00999001, total=502.0000
+2026-07-11 17:17:02,247 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.009990 BTC at 50049.99999999999 (above market) — fee: 2.0000, total: 502.00
+2026-07-11 17:17:02,254 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00999001, pct=25.0%, price=51948.00 -> sell_size=0.00249750, total=129.2213
+2026-07-11 17:17:02,259 [INFO   ] [root] [-] krypto_agent.execution.paper:349 — PARTIAL_SELL: sold 0.002498 of BTC/EUR, 0.007493 remaining
+2026-07-11 17:17:02,263 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper PARTIAL_SELL 0.002498 BTC at 51948.0 (below market) — fee: 0.5190, total: 129.22, remaining: 0.007493
+2026-07-11 17:17:02,303 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 1000.00
+2026-07-11 17:17:02,309 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=1000.00, pct=50.0%, price=50050.00 -> size=0.00999001, total=502.0000
+2026-07-11 17:17:02,316 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.009990 BTC at 50049.99999999999 (above market) — fee: 2.0000, total: 502.00
+2026-07-11 17:17:02,321 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00999001, pct=25.0%, price=51948.00 -> sell_size=0.00249750, total=129.2213
+2026-07-11 17:17:02,327 [INFO   ] [root] [-] krypto_agent.execution.paper:349 — PARTIAL_SELL: sold 0.002498 of BTC/EUR, 0.007493 remaining
+2026-07-11 17:17:02,330 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper PARTIAL_SELL 0.002498 BTC at 51948.0 (below market) — fee: 0.5190, total: 129.22, remaining: 0.007493
+2026-07-11 17:17:02,370 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 1000.00
+2026-07-11 17:17:02,376 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=1000.00, pct=50.0%, price=50050.00 -> size=0.00999001, total=502.0000
+2026-07-11 17:17:02,384 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.009990 BTC at 50049.99999999999 (above market) — fee: 2.0000, total: 502.00
+2026-07-11 17:17:02,389 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00999001, pct=25.0%, price=51948.00 -> sell_size=0.00249750, total=129.2213
+2026-07-11 17:17:02,395 [INFO   ] [root] [-] krypto_agent.execution.paper:349 — PARTIAL_SELL: sold 0.002498 of BTC/EUR, 0.007493 remaining
+2026-07-11 17:17:02,399 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper PARTIAL_SELL 0.002498 BTC at 51948.0 (below market) — fee: 0.5190, total: 129.22, remaining: 0.007493
+2026-07-11 17:17:02,403 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00749251, pct=100.0%, price=44955.00 -> sell_size=0.00749251, total=335.4784
+2026-07-11 17:17:02,411 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper SELL 0.007493 BTC at 44955.0 (below market) — fee: 1.3473, total: 335.48
+2026-07-11 17:17:02,452 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 1000.00
+2026-07-11 17:17:02,458 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=1000.00, pct=50.0%, price=50050.00 -> size=0.00999001, total=502.0000
+2026-07-11 17:17:02,466 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.009990 BTC at 50049.99999999999 (above market) — fee: 2.0000, total: 502.00
+2026-07-11 17:17:02,471 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00999001, pct=25.0%, price=51948.00 -> sell_size=0.00249750, total=129.2213
+2026-07-11 17:17:02,476 [INFO   ] [root] [-] krypto_agent.execution.paper:349 — PARTIAL_SELL: sold 0.002498 of BTC/EUR, 0.007493 remaining
+2026-07-11 17:17:02,480 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper PARTIAL_SELL 0.002498 BTC at 51948.0 (below market) — fee: 0.5190, total: 129.22, remaining: 0.007493
+2026-07-11 17:17:02,484 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00749251, pct=25.0%, price=53946.00 -> sell_size=0.00187313, total=100.6435
+2026-07-11 17:17:02,490 [INFO   ] [root] [-] krypto_agent.execution.paper:349 — PARTIAL_SELL: sold 0.001873 of BTC/EUR, 0.005619 remaining
+2026-07-11 17:17:02,495 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper PARTIAL_SELL 0.001873 BTC at 53946.0 (below market) — fee: 0.4042, total: 100.64, remaining: 0.005619
+2026-07-11 17:17:02,500 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00561938, pct=100.0%, price=45954.00 -> sell_size=0.00561938, total=257.2001
+2026-07-11 17:17:02,508 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper SELL 0.005619 BTC at 45954.0 (below market) — fee: 1.0329, total: 257.20
+2026-07-11 17:17:02,562 [INFO   ] [root] [-] krypto_agent:163 — Partial TP triggered for BTC/EUR at 52000.0000 (sold 25% @ level 4%)
+2026-07-11 17:17:02,573 [CRITICAL] [root] [-] krypto_agent.monitor.alert:42 — Test Critical — This is a critical alert
+2026-07-11 17:17:02,578 [CRITICAL] [root] [-] krypto_agent.monitor.alert:42 — Critical — Message
+2026-07-11 17:17:02,582 [WARNING] [root] [-] krypto_agent.monitor.alert:56 — Warning — This is a warning
+2026-07-11 17:17:02,586 [WARNING] [root] [-] krypto_agent.monitor.alert:56 — Warning — This is a warning
+2026-07-11 17:17:02,591 [CRITICAL] [root] [-] krypto_agent.monitor.alert:42 — Critical 1 — First critical
+2026-07-11 17:17:02,593 [WARNING] [root] [-] krypto_agent.monitor.alert:56 — Warning 1 — First warning
+2026-07-11 17:17:02,595 [CRITICAL] [root] [-] krypto_agent.monitor.alert:42 — Critical 2 — Second critical
+2026-07-11 17:17:02,597 [WARNING] [root] [-] krypto_agent.monitor.alert:56 — Warning 2 — Second warning
+2026-07-11 17:17:02,657 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:02,665 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:02,674 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:02,684 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:02,694 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:02,703 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:02,712 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:02,722 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:02,732 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:02,742 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:02,752 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:02,765 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:02,775 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:21,620 [INFO   ] [root] [-] krypto_agent.analysis.rag_memory:34 — Loading embedding model BAAI/bge-m3 (first call - cached for session)
+2026-07-11 17:17:29,013 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 100.00
+2026-07-11 17:17:29,058 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 100.00
+2026-07-11 17:17:30,301 [INFO   ] [root] [-] krypto_agent.execution.paper:111 — Fetched taker fee for BTC/EUR: 0.4000%
+2026-07-11 17:17:30,304 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=100.00, pct=25.0%, price=50050.00 -> size=0.00049950, total=25.1000
+2026-07-11 17:17:30,318 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.000500 BTC at 50049.99999999999 (above market) — fee: 0.1000, total: 25.10
+2026-07-11 17:17:30,327 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00049950, pct=100.0%, price=54945.00 -> sell_size=0.00049950, total=27.3353
+2026-07-11 17:17:30,335 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper SELL 0.000500 BTC at 54945.0 (below market) — fee: 0.1098, total: 27.34
+2026-07-11 17:17:30,380 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 100.00
+2026-07-11 17:17:30,436 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 100.00
+2026-07-11 17:17:30,441 [INFO   ] [root] [-] krypto_agent.execution.paper:111 — Fetched taker fee for BTC/EUR: 0.4000%
+2026-07-11 17:17:30,444 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=100.00, pct=10.0%, price=50050.00 -> size=0.00019980, total=10.0400
+2026-07-11 17:17:30,451 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0400, total: 10.04
+2026-07-11 17:17:30,495 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 100.00
+2026-07-11 17:17:30,502 [INFO   ] [root] [-] krypto_agent.execution.paper:111 — Fetched taker fee for BTC/EUR: 0.4000%
+2026-07-11 17:17:30,504 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=100.00, pct=10.0%, price=50050.00 -> size=0.00019980, total=10.0400
+2026-07-11 17:17:30,512 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0400, total: 10.04
+2026-07-11 17:17:30,515 [INFO   ] [root] [-] krypto_agent.execution.paper:111 — Fetched taker fee for ETH/EUR: 0.4000%
+2026-07-11 17:17:30,518 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=89.96, pct=10.0%, price=3003.00 -> size=0.00299567, total=9.0320
+2026-07-11 17:17:30,527 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.002996 ETH at 3002.9999999999995 (above market) — fee: 0.0360, total: 9.03
+2026-07-11 17:17:30,533 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00019980, pct=100.0%, price=50949.00 -> sell_size=0.00019980, total=10.1389
+2026-07-11 17:17:30,541 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper SELL 0.000200 BTC at 50949.0 (below market) — fee: 0.0407, total: 10.14
+2026-07-11 17:17:30,582 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 100.00
+2026-07-11 17:17:30,592 [INFO   ] [root] [-] krypto_agent.execution.paper:111 — Fetched taker fee for BTC/EUR: 0.4000%
+2026-07-11 17:17:30,595 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=100.00, pct=10.0%, price=50050.00 -> size=0.00019980, total=10.0400
+2026-07-11 17:17:30,600 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.000200 BTC at 50049.99999999999 (above market) — fee: 0.0400, total: 10.04
+2026-07-11 17:17:33,728 [INFO   ] [root] [-] krypto_agent.analysis.news:148 — Fear & Greed: 26/100 (Fear)
+2026-07-11 17:17:33,894 [INFO   ] [root] [-] krypto_agent.analysis.news:219 — Fetched 18 news items from 8 RSS feeds
+2026-07-11 17:17:40,947 [INFO   ] [root] [-] krypto_agent:221 — STOP LOSS triggered for BTC/EUR at 50000.00 (entry=50000.00, SL=50440.00, TP=57500.00)
+2026-07-11 17:17:41,040 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 1000.00
+2026-07-11 17:17:41,046 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=1000.00, pct=50.0%, price=50050.00 -> size=0.00999001, total=502.0000
+2026-07-11 17:17:41,053 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.009990 BTC at 50049.99999999999 (above market) — fee: 2.0000, total: 502.00
+2026-07-11 17:17:41,059 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00999001, pct=25.0%, price=51948.00 -> sell_size=0.00249750, total=129.2213
+2026-07-11 17:17:41,065 [INFO   ] [root] [-] krypto_agent.execution.paper:349 — PARTIAL_SELL: sold 0.002498 of BTC/EUR, 0.007493 remaining
+2026-07-11 17:17:41,068 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper PARTIAL_SELL 0.002498 BTC at 51948.0 (below market) — fee: 0.5190, total: 129.22, remaining: 0.007493
+2026-07-11 17:17:41,108 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 1000.00
+2026-07-11 17:17:41,115 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=1000.00, pct=50.0%, price=50050.00 -> size=0.00999001, total=502.0000
+2026-07-11 17:17:41,122 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.009990 BTC at 50049.99999999999 (above market) — fee: 2.0000, total: 502.00
+2026-07-11 17:17:41,127 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00999001, pct=25.0%, price=51948.00 -> sell_size=0.00249750, total=129.2213
+2026-07-11 17:17:41,133 [INFO   ] [root] [-] krypto_agent.execution.paper:349 — PARTIAL_SELL: sold 0.002498 of BTC/EUR, 0.007493 remaining
+2026-07-11 17:17:41,137 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper PARTIAL_SELL 0.002498 BTC at 51948.0 (below market) — fee: 0.5190, total: 129.22, remaining: 0.007493
+2026-07-11 17:17:41,176 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 1000.00
+2026-07-11 17:17:41,182 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=1000.00, pct=50.0%, price=50050.00 -> size=0.00999001, total=502.0000
+2026-07-11 17:17:41,190 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.009990 BTC at 50049.99999999999 (above market) — fee: 2.0000, total: 502.00
+2026-07-11 17:17:41,195 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00999001, pct=25.0%, price=51948.00 -> sell_size=0.00249750, total=129.2213
+2026-07-11 17:17:41,201 [INFO   ] [root] [-] krypto_agent.execution.paper:349 — PARTIAL_SELL: sold 0.002498 of BTC/EUR, 0.007493 remaining
+2026-07-11 17:17:41,204 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper PARTIAL_SELL 0.002498 BTC at 51948.0 (below market) — fee: 0.5190, total: 129.22, remaining: 0.007493
+2026-07-11 17:17:41,208 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00749251, pct=100.0%, price=44955.00 -> sell_size=0.00749251, total=335.4784
+2026-07-11 17:17:41,215 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper SELL 0.007493 BTC at 44955.0 (below market) — fee: 1.3473, total: 335.48
+2026-07-11 17:17:41,257 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 1000.00
+2026-07-11 17:17:41,263 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=1000.00, pct=50.0%, price=50050.00 -> size=0.00999001, total=502.0000
+2026-07-11 17:17:41,271 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.009990 BTC at 50049.99999999999 (above market) — fee: 2.0000, total: 502.00
+2026-07-11 17:17:41,276 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00999001, pct=25.0%, price=51948.00 -> sell_size=0.00249750, total=129.2213
+2026-07-11 17:17:41,282 [INFO   ] [root] [-] krypto_agent.execution.paper:349 — PARTIAL_SELL: sold 0.002498 of BTC/EUR, 0.007493 remaining
+2026-07-11 17:17:41,286 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper PARTIAL_SELL 0.002498 BTC at 51948.0 (below market) — fee: 0.5190, total: 129.22, remaining: 0.007493
+2026-07-11 17:17:41,290 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00749251, pct=25.0%, price=53946.00 -> sell_size=0.00187313, total=100.6435
+2026-07-11 17:17:41,296 [INFO   ] [root] [-] krypto_agent.execution.paper:349 — PARTIAL_SELL: sold 0.001873 of BTC/EUR, 0.005619 remaining
+2026-07-11 17:17:41,300 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper PARTIAL_SELL 0.001873 BTC at 53946.0 (below market) — fee: 0.4042, total: 100.64, remaining: 0.005619
+2026-07-11 17:17:41,304 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00561938, pct=100.0%, price=45954.00 -> sell_size=0.00561938, total=257.2001
+2026-07-11 17:17:41,311 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper SELL 0.005619 BTC at 45954.0 (below market) — fee: 1.0329, total: 257.20
+2026-07-11 17:17:41,363 [INFO   ] [root] [-] krypto_agent:163 — Partial TP triggered for BTC/EUR at 52000.0000 (sold 25% @ level 4%)
+2026-07-11 17:17:41,374 [CRITICAL] [root] [-] krypto_agent.monitor.alert:42 — Test Critical — This is a critical alert
+2026-07-11 17:17:41,379 [CRITICAL] [root] [-] krypto_agent.monitor.alert:42 — Critical — Message
+2026-07-11 17:17:41,383 [WARNING] [root] [-] krypto_agent.monitor.alert:56 — Warning — This is a warning
+2026-07-11 17:17:41,387 [WARNING] [root] [-] krypto_agent.monitor.alert:56 — Warning — This is a warning
+2026-07-11 17:17:41,391 [CRITICAL] [root] [-] krypto_agent.monitor.alert:42 — Critical 1 — First critical
+2026-07-11 17:17:41,393 [WARNING] [root] [-] krypto_agent.monitor.alert:56 — Warning 1 — First warning
+2026-07-11 17:17:41,395 [CRITICAL] [root] [-] krypto_agent.monitor.alert:42 — Critical 2 — Second critical
+2026-07-11 17:17:41,397 [WARNING] [root] [-] krypto_agent.monitor.alert:56 — Warning 2 — Second warning
+2026-07-11 17:17:41,455 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:41,463 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:41,472 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:41,480 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:41,489 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:41,499 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:41,508 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:41,517 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:41,527 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:41,535 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:41,544 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:41,558 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:41,566 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:17:41,718 [INFO   ] [root] [-] krypto_agent:298 — Paper trading data reset
+2026-07-11 17:17:41,904 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-11 17:17:41,915 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-11 17:17:41,927 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-11 17:17:41,937 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-11 17:17:41,948 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-11 17:17:41,955 [INFO   ] [root] [-] krypto_agent:77 — SIGINT received — graceful shutdown (press Ctrl+C again within 3s to force)...
+2026-07-11 17:17:41,958 [INFO   ] [root] [-] krypto_agent:79 — Shutdown requested — press Ctrl+C again within 3s to force kill.
+2026-07-11 17:17:41,962 [INFO   ] [root] [-] krypto_agent:77 — SIGINT received — graceful shutdown (press Ctrl+C again within 3s to force)...
+2026-07-11 17:17:41,964 [INFO   ] [root] [-] krypto_agent:79 — Shutdown requested — press Ctrl+C again within 3s to force kill.
+2026-07-11 17:17:41,972 [INFO   ] [root] [-] krypto_agent:67 — SIGTERM received — graceful shutdown...
+2026-07-11 17:17:41,974 [INFO   ] [root] [-] krypto_agent:69 — Shutdown requested — will stop after current cycle.
+2026-07-11 17:17:41,978 [WARNING] [root] [-] krypto_agent:82 — Second SIGINT received — force killing...
+2026-07-11 17:17:41,979 [WARNING] [root] [-] krypto_agent:83 — Force shutdown!
+2026-07-11 17:17:41,983 [INFO   ] [root] [-] krypto_agent:77 — SIGINT received — graceful shutdown (press Ctrl+C again within 3s to force)...
+2026-07-11 17:17:41,985 [INFO   ] [root] [-] krypto_agent:79 — Shutdown requested — press Ctrl+C again within 3s to force kill.
+2026-07-11 17:17:41,988 [WARNING] [root] [-] krypto_agent:82 — Second SIGINT received — force killing...
+2026-07-11 17:17:41,990 [WARNING] [root] [-] krypto_agent:83 — Force shutdown!
+2026-07-11 17:17:41,994 [WARNING] [root] [-] krypto_agent:82 — Second SIGINT received — force killing...
+2026-07-11 17:17:41,995 [WARNING] [root] [-] krypto_agent:83 — Force shutdown!
+2026-07-11 17:20:24,167 [INFO   ] [root] [-] krypto_agent:221 — STOP LOSS triggered for BTC/EUR at 50000.00 (entry=50000.00, SL=50440.00, TP=57500.00)
+2026-07-11 17:20:24,273 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 1000.00
+2026-07-11 17:20:24,279 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=1000.00, pct=50.0%, price=50050.00 -> size=0.00999001, total=502.0000
+2026-07-11 17:20:24,288 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.009990 BTC at 50049.99999999999 (above market) — fee: 2.0000, total: 502.00
+2026-07-11 17:20:24,295 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00999001, pct=25.0%, price=51948.00 -> sell_size=0.00249750, total=129.2213
+2026-07-11 17:20:24,301 [INFO   ] [root] [-] krypto_agent.execution.paper:349 — PARTIAL_SELL: sold 0.002498 of BTC/EUR, 0.007493 remaining
+2026-07-11 17:20:24,305 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper PARTIAL_SELL 0.002498 BTC at 51948.0 (below market) — fee: 0.5190, total: 129.22, remaining: 0.007493
+2026-07-11 17:20:24,348 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 1000.00
+2026-07-11 17:20:24,354 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=1000.00, pct=50.0%, price=50050.00 -> size=0.00999001, total=502.0000
+2026-07-11 17:20:24,362 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.009990 BTC at 50049.99999999999 (above market) — fee: 2.0000, total: 502.00
+2026-07-11 17:20:24,367 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00999001, pct=25.0%, price=51948.00 -> sell_size=0.00249750, total=129.2213
+2026-07-11 17:20:24,372 [INFO   ] [root] [-] krypto_agent.execution.paper:349 — PARTIAL_SELL: sold 0.002498 of BTC/EUR, 0.007493 remaining
+2026-07-11 17:20:24,376 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper PARTIAL_SELL 0.002498 BTC at 51948.0 (below market) — fee: 0.5190, total: 129.22, remaining: 0.007493
+2026-07-11 17:20:24,417 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 1000.00
+2026-07-11 17:20:24,424 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=1000.00, pct=50.0%, price=50050.00 -> size=0.00999001, total=502.0000
+2026-07-11 17:20:24,431 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.009990 BTC at 50049.99999999999 (above market) — fee: 2.0000, total: 502.00
+2026-07-11 17:20:24,435 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00999001, pct=25.0%, price=51948.00 -> sell_size=0.00249750, total=129.2213
+2026-07-11 17:20:24,440 [INFO   ] [root] [-] krypto_agent.execution.paper:349 — PARTIAL_SELL: sold 0.002498 of BTC/EUR, 0.007493 remaining
+2026-07-11 17:20:24,443 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper PARTIAL_SELL 0.002498 BTC at 51948.0 (below market) — fee: 0.5190, total: 129.22, remaining: 0.007493
+2026-07-11 17:20:24,447 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00749251, pct=100.0%, price=44955.00 -> sell_size=0.00749251, total=335.4784
+2026-07-11 17:20:24,453 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper SELL 0.007493 BTC at 44955.0 (below market) — fee: 1.3473, total: 335.48
+2026-07-11 17:20:24,489 [INFO   ] [root] [-] krypto_agent.execution.paper:56 — No snapshot found, using initial cash: 1000.00
+2026-07-11 17:20:24,494 [INFO   ] [root] [-] krypto_agent.execution.paper:208 — BUY size calc: cash=1000.00, pct=50.0%, price=50050.00 -> size=0.00999001, total=502.0000
+2026-07-11 17:20:24,501 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper BUY 0.009990 BTC at 50049.99999999999 (above market) — fee: 2.0000, total: 502.00
+2026-07-11 17:20:24,505 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00999001, pct=25.0%, price=51948.00 -> sell_size=0.00249750, total=129.2213
+2026-07-11 17:20:24,509 [INFO   ] [root] [-] krypto_agent.execution.paper:349 — PARTIAL_SELL: sold 0.002498 of BTC/EUR, 0.007493 remaining
+2026-07-11 17:20:24,512 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper PARTIAL_SELL 0.002498 BTC at 51948.0 (below market) — fee: 0.5190, total: 129.22, remaining: 0.007493
+2026-07-11 17:20:24,515 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00749251, pct=25.0%, price=53946.00 -> sell_size=0.00187313, total=100.6435
+2026-07-11 17:20:24,520 [INFO   ] [root] [-] krypto_agent.execution.paper:349 — PARTIAL_SELL: sold 0.001873 of BTC/EUR, 0.005619 remaining
+2026-07-11 17:20:24,523 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper PARTIAL_SELL 0.001873 BTC at 53946.0 (below market) — fee: 0.4042, total: 100.64, remaining: 0.005619
+2026-07-11 17:20:24,526 [INFO   ] [root] [-] krypto_agent.execution.paper:310 — SELL size calc: current_size=0.00561938, pct=100.0%, price=45954.00 -> sell_size=0.00561938, total=257.2001
+2026-07-11 17:20:24,532 [INFO   ] [root] [-] krypto_agent.execution.paper:380 — Paper trade executed: Paper SELL 0.005619 BTC at 45954.0 (below market) — fee: 1.0329, total: 257.20
+2026-07-11 17:20:24,579 [INFO   ] [root] [-] krypto_agent:163 — Partial TP triggered for BTC/EUR at 52000.0000 (sold 25% @ level 4%)
+2026-07-11 17:20:24,586 [CRITICAL] [root] [-] krypto_agent.monitor.alert:42 — Test Critical — This is a critical alert
+2026-07-11 17:20:24,588 [CRITICAL] [root] [-] krypto_agent.monitor.alert:42 — Critical — Message
+2026-07-11 17:20:24,590 [WARNING] [root] [-] krypto_agent.monitor.alert:56 — Warning — This is a warning
+2026-07-11 17:20:24,593 [WARNING] [root] [-] krypto_agent.monitor.alert:56 — Warning — This is a warning
+2026-07-11 17:20:24,595 [CRITICAL] [root] [-] krypto_agent.monitor.alert:42 — Critical 1 — First critical
+2026-07-11 17:20:24,596 [WARNING] [root] [-] krypto_agent.monitor.alert:56 — Warning 1 — First warning
+2026-07-11 17:20:24,597 [CRITICAL] [root] [-] krypto_agent.monitor.alert:42 — Critical 2 — Second critical
+2026-07-11 17:20:24,599 [WARNING] [root] [-] krypto_agent.monitor.alert:56 — Warning 2 — Second warning
+2026-07-11 17:20:24,632 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:20:24,638 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:20:24,643 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:20:24,648 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:20:24,653 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:20:24,658 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:20:24,666 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:20:24,671 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:20:24,676 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:20:24,681 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:20:24,686 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:20:24,691 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:20:24,696 [INFO   ] [root] [-] krypto_agent.execution.paper:54 — Cash restored from DB: 100.00 (was 100.00)
+2026-07-11 17:20:24,788 [INFO   ] [root] [-] krypto_agent:298 — Paper trading data reset
+2026-07-11 17:20:24,897 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-11 17:20:24,903 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-11 17:20:24,910 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-11 17:20:24,916 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-11 17:20:24,923 [INFO   ] [root] [-] krypto_agent.web.server:269 — Config updated and daemon signaled to reload
+2026-07-11 17:20:24,927 [INFO   ] [root] [-] krypto_agent:77 — SIGINT received — graceful shutdown (press Ctrl+C again within 3s to force)...
+2026-07-11 17:20:24,929 [INFO   ] [root] [-] krypto_agent:79 — Shutdown requested — press Ctrl+C again within 3s to force kill.
+2026-07-11 17:20:24,931 [INFO   ] [root] [-] krypto_agent:77 — SIGINT received — graceful shutdown (press Ctrl+C again within 3s to force)...
+2026-07-11 17:20:24,932 [INFO   ] [root] [-] krypto_agent:79 — Shutdown requested — press Ctrl+C again within 3s to force kill.
+2026-07-11 17:20:24,937 [INFO   ] [root] [-] krypto_agent:67 — SIGTERM received — graceful shutdown...
+2026-07-11 17:20:24,938 [INFO   ] [root] [-] krypto_agent:69 — Shutdown requested — will stop after current cycle.
+2026-07-11 17:20:24,940 [WARNING] [root] [-] krypto_agent:82 — Second SIGINT received — force killing...
+2026-07-11 17:20:24,941 [WARNING] [root] [-] krypto_agent:83 — Force shutdown!
+2026-07-11 17:20:24,943 [INFO   ] [root] [-] krypto_agent:77 — SIGINT received — graceful shutdown (press Ctrl+C again within 3s to force)...
+2026-07-11 17:20:24,944 [INFO   ] [root] [-] krypto_agent:79 — Shutdown requested — press Ctrl+C again within 3s to force kill.
+2026-07-11 17:20:24,946 [WARNING] [root] [-] krypto_agent:82 — Second SIGINT received — force killing...
+2026-07-11 17:20:24,947 [WARNING] [root] [-] krypto_agent:83 — Force shutdown!
+2026-07-11 17:20:24,950 [WARNING] [root] [-] krypto_agent:82 — Second SIGINT received — force killing...
+2026-07-11 17:20:24,951 [WARNING] [root] [-] krypto_agent:83 — Force shutdown!

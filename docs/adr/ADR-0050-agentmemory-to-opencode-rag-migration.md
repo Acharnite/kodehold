@@ -94,7 +94,7 @@ The 4 routine templates are the only agentmemory feature worth preserving. They 
 
 | Template | Steps | Owner | Preserved As |
 |----------|-------|-------|-------------|
-| `kodehold-adr-flow` | 6 steps: research → write-adr → design-doc-update → review-adr → [cross-validate] → finalize | Architects | Static table in director.md Action Frontier Protocol section |
+| `kodehold-adr-flow` | 5 steps: research + write-adr → design-doc-update → review-adr → [cross-validate] → finalize | Architects | Static table in director.md Action Frontier Protocol section |
 | `kodehold-implement-flow` | 6 steps: design → [design-review] → implement → code-review → test → gate-validation | Engineers | Static table in director.md |
 | `kodehold-bugfix-flow` | 5 steps with branching: triage → hotfix or REOPEN | FLS | Static table with condition branches |
 | `kodehold-ship-gate` | 7 parallel steps: version-check → changelog-check → todo-check → test-suite → agentmemory-check* → git-status → branch-check | Director | Static table (* agentmemory-check replaced with git-status-only or removed) |
@@ -238,7 +238,7 @@ Replace the current Action Frontier Protocol (which uses `memory_frontier`, `mem
 Embed the 4 routine templates directly in director.md as markdown tables. Example for the ADR flow:
 
 ```markdown
-### kodehold-adr-flow (6 steps)
+### kodehold-adr-flow (5 steps)
 | Step | Team | Action | Depends On | Priority | Optional? |
 |------|------|--------|------------|----------|-----------|
 | 1 | architects | research | (none) | 8 | No |

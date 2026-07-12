@@ -148,11 +148,11 @@ agents:
 
   - name: second-opinion
     description: >
-      Cross-provider second opinion (Mimo 2.5 on opencode/go). Reviews
+      Cross-provider second opinion (Llama 3.1 8B via Ollama). Reviews
       critical decisions using a different model/provider than the primary.
       Invoked by Director for ADRs, security-critical code, ambiguous designs.
     hidden: true
-    model: mimo-v2.5-free
+    model: ollama/llama3.1:8b
     tags:
       - validation
       - review

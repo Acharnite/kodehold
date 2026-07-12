@@ -1,6 +1,11 @@
 # Changelog
 
 
+## 1.19.0 — 2026-07-09
+
+### Changed
+- **Design doc Section 8.1 (Bring Your Own Model)** — vLLM documented as recommended local inference provider alongside Ollama. Added concurrent LLM + Embedding serving architecture: dual vLLM instances (LLM on port 8000, embedding on port 8001) for projects requiring simultaneous generation and embeddings (e.g., RAG pipelines). References ADR-0053 (Replace Ollama with vLLM for Concurrent LLM + Embedding Serving).
+
 ## 1.12.8 — 2026-06-06
 
 ### Added

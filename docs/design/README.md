@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.18.0  
+**Version:** 1.19.0  
 **Status:** Active  
-**Last Updated:** 2026-07-02
+**Last Updated:** 2026-07-09
 
 ---
 
@@ -541,7 +541,25 @@ Scribes updates this line when creating/expiring tasks.
 
 KodeHold does not mandate a specific LLM model. The user's global OpenCode model configuration is used as the default for all operations. No per-team model overrides are set in agent definitions — all teams inherit the same default model.
 
-Ollama is available as an optional local provider for users who want private inference. The provider configuration in `opencode.json` enables Ollama as an option without forcing its use.
+**Local inference:** Ollama is the primary local inference provider for LLM generation:
+
+- **Ollama** — single-process server for LLM inference (qwen3.5:9b). Runs on GPU with full VRAM allocation. The provider configuration in `opencode.json` enables Ollama as the default option.
+
+**Hybrid Embedding Strategy (ADR-0053):** Embeddings use sentence-transformers on CPU, keeping Ollama dedicated to LLM inference:
+
+| Component | Location | Model | Purpose |
+|-----------|----------|-------|---------|
+| LLM (Ollama) | GPU, port 11434 | qwen3.5:9b | Chat completions, analysis |
+| Embeddings (CPU) | Local Python | bge-m3 (567M params) | Vector embeddings for RAG |
+
+**Why sentence-transformers on CPU:**
+- bge-m3 uses XLMRobertaModel (encoder-only, Transformers-compatible)
+- ~567M parameters, fast enough on CPU (<100ms for short texts)
+- Zero VRAM consumption — leaves full GPU for LLM
+- No Ollama blocking — embedding requests served independently
+- Simple setup: `pip install sentence-transformers`
+
+This architecture is documented in ADR-0053 (Hybrid Embedding Strategy — sentence-transformers + Ollama).
 
 ### 8.2 Light Mode (32k Context)
 
@@ -738,6 +756,7 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.19.0 (2026-07-09):** Updated Section 8.1 (Bring Your Own Model) to document hybrid embedding strategy: sentence-transformers on CPU for embeddings (bge-m3), Ollama for LLM inference (qwen3.5:9b). Replaces previous vLLM dual-instance plan. References ADR-0053 (Hybrid Embedding Strategy — sentence-transformers + Ollama).
 - **v1.18.0 (2026-07-02):** ADR-0052 promoted from Proposed → Accepted. Updated ADR-0019 superseded-by reference from "agentmemory" to "ADR-0052". Updated ADR README index with ADR-0052 Accepted entry.
 - **v1.17.0 (2026-07-02):** Registered ADR-0052 (Structured Durable Execution, Proposed) — formal YAML frontmatter checkpoint schema and auto-checkpoint on every delegation. Combines issues #59 (checkpoint format) and #35 (durable execution). Updated Section 7.5 to note ADR-0052 supersedes ADR-0019's compression protocol. Added ADR-0052 to ADR index.
 - **v1.16.0 (2026-07-01):** ADR-0051 integration — replaced Section 7.2 (Persistent Memory & Knowledge Retrieval) with opencode-mem as persistent memory backend and OpenCode RAG for code/doc search. Added ADR-0051 to ADR index. ADR-0050 §5 (File-Based Persistent Storage) superseded. See ADR-0051 for full rationale and configuration.
