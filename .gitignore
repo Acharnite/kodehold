@@ -13,3 +13,9 @@ __pycache__
 
 # Graphify generated output
 graphify-out/
+
+# OpenCode runtime log (auto-generated)
+.opencode/opencode-rag.log
+
+# opencode-rag workspace symlink (external project)
+workspaces/opencode-rag
