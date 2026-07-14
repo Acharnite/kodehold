@@ -48,13 +48,13 @@ cat $(ls -t .opencode/memory/checkpoints/*.md 2>/dev/null | head -1)
 ### Step 4: Search for additional context
 
 ```bash
-search_semantic(query="<project> session summary", topK=5)
+graphify query "<project> session summary"
 ```
 
 ### Step 5: Check current gate/state
 
 ```bash
-bash scripts/gate.sh --status 2>/dev/null || echo "STATE: unknown"
+python3 scripts/gate.py --status 2>/dev/null || echo "STATE: unknown"
 ```
 
 ### Step 6: Present structured summary to user
@@ -70,12 +70,12 @@ Format the output as follows:
 - <content from latest checkpoint>
 
 ### Additional Context
-- <results from search_semantic>
+- <results from graphify query>
 ```
 
 ## Important Notes
 
-1. All queries use `search_semantic` and file reads — no external daemon needed.
+1. All queries use `graphify query` and file reads — no external daemon needed.
 2. If no checkpoint file is found, report that clearly and suggest starting fresh.
 3. Handle failures gracefully — if the checkpoint directory is empty, tell the user.
 4. This skill loads the AI with context — it does NOT automatically execute anything.
@@ -87,4 +87,4 @@ Format the output as follows:
 |----------|----------|
 | No checkpoint directory | "No checkpoints found. Start a fresh session manually." |
 | Checkpoint exists but empty | "Checkpoint found but appears empty. Starting fresh." |
-| search_semantic fails | "Could not load additional context. Starting with checkpoint data only." |
+| graphify query fails | "Could not load additional context. Starting with checkpoint data only." |

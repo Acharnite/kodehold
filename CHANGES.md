@@ -1,6 +1,35 @@
 # Changelog
 
 
+## 1.22.0 — 2026-07-14
+
+### Changed
+- Removed all `.sh` scripts — `gate.sh`, `workspace.sh`, `ship.sh`, `benchmark.sh`,
+  `sync-agent-config.sh`, `validate-config.sh`, `token-usage.sh`,
+  `detect-test-framework.sh`, and `scripts/lib/output.sh` deleted
+- Updated all agent files (director.md, reviewers.md, scribes.md, engineers.md,
+  fls.md, testers.md) to reference `.py` scripts directly
+- Updated `resume/SKILL.md` and `state-awareness/SKILL.md` to use `gate.py --status`
+- Updated `lib/output.py` — removed `.sh` entries from `KODEHOLD_SYSTEM_PATHS`
+- All commands now use `python3 scripts/gate.py`, `python3 scripts/workspace.py`,
+  `python3 scripts/ship.py`, etc.
+
+## 1.20.0 — 2026-07-14
+
+### Added
+- **ADR-0054: OpenCode RAG → Graphify migration** — Replaces the standalone `opencode-rag mcp` MCP server with Graphify knowledge graph for deterministic, tree-sitter-based code retrieval
+- **Graphify knowledge graph** — Primary code retrieval tool for structural queries (call graphs, imports, class hierarchies, symbol definitions)
+- **Documentation section** per ADR-0048 §3 — mandatory tool documentation added to ADR-0054
+
+### Changed
+- **Code retrieval architecture** — Graphify replaces opencode-rag as the sole code retrieval method. Built-in tools (`search_semantic`, `find_usages`, `get_file_skeleton`, `describe_image`) are platform-level primitives, not part of KodeHold's documented workflow
+- **opencode.json cleanup** — Removed `krypto-agent` MCP server entry and stale `rag-plugin.js`/`rag-tui.js` plugin references
+- **Design doc §5, §7.2** — Updated with ADR-0054 entry and Graphify as primary retrieval layer
+- **VERSION.md** — Bumped 1.19.0 → 1.20.0
+
+### ADRs
+- **ADR-0054** — Accepted: Replace opencode-rag with Graphify Knowledge Graph for Code Retrieval
+
 ## 1.19.0 — 2026-07-09
 
 ### Changed

@@ -422,7 +422,7 @@ stdlib: custom LRU cache... [src/cache/local.py]
 ### Recall previous audit
 
 ```
-search_semantic(query="ponytail-audit <project>", topK=3)
+graphify query "ponytail-audit <project>"
 ```
 
 ### Persist findings

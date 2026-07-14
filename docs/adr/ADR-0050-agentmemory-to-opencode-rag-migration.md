@@ -8,7 +8,9 @@ Accepted
 
 **Note:** Second opinion (Step 5) skipped per user request — cross-model validation provider not available at time of finalization.
 
-> **Superseded:** §5 (File-Based Persistent Storage) is superseded by [ADR-0051](ADR-0051-opencode-mem-persistent-memory.md) — opencode-mem replaces the file-based `.opencode/memory/` proposal. The file-based storage was never implemented; opencode-mem provides semantic search, auto-capture, and compaction. The rest of ADR-0050 (agentmemory removal, OpenCode RAG adoption) remains valid.
+> **Superseded (ADR-0054):** The OpenCode RAG tools adopted in this ADR (§3, OpenCode RAG Knowledge Flow Skill) have been superseded by Graphify knowledge graph per [ADR-0054](ADR-0054-replace-opencode-rag-with-graphify.md). Graphify is now KodeHold's sole documented code retrieval method. This ADR is retained for historical context around the agentmemory removal.
+>
+> **Superseded (ADR-0051):** §5 (File-Based Persistent Storage) is superseded by [ADR-0051](ADR-0051-opencode-mem-persistent-memory.md) — opencode-mem replaces the file-based `.opencode/memory/` proposal. The file-based storage was never implemented; opencode-mem provides semantic search, auto-capture, and compaction. The rest of ADR-0050 (agentmemory removal, OpenCode RAG adoption) remains valid for its time, though OpenCode RAG has since been replaced by Graphify per ADR-0054.
 
 ## Context
 
@@ -199,6 +201,8 @@ Phase 4    Phase 5    Phase 6    Phase 7    Phase 8    Phase 9
 
 ### 3. OpenCode RAG Knowledge Flow Skill
 
+> **Historical (superseded by ADR-0054):** The opencode-rag-knowledge-flow skill created here has been replaced by `graphify-knowledge-flow` per ADR-0054. Graphify is now the sole code retrieval method. This section is retained for historical context.
+
 Replace `.opencode/skills/agentmemory-knowledge-flow/SKILL.md` with a new skill at `.opencode/skills/opencode-rag-knowledge-flow/SKILL.md`:
 
 **Pre-task Knowledge Retrieval:**
@@ -292,6 +296,8 @@ After Phase 8, `docs/design/README.md` must be updated:
 - **Changelog** — add entry for ADR-0050 migration.
 
 ## Documentation
+
+> **Historical (superseded by ADR-0054):** The OpenCode RAG tools documented here have been replaced by Graphify knowledge graph. See ADR-0054 for current documentation.
 
 | Field | Value |
 |-------|-------|

@@ -61,17 +61,16 @@ Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these tea
 - Architectural change
 - Uncertain root cause
 
-## OpenCode RAG Knowledge Flow (Pre-task Mode)
+## Knowledge Flow (Pre-task Mode)
 
-Follow the OpenCode RAG Knowledge Flow skill protocol in **Pre-task mode**:
-1. Search the indexed codebase for relevant patterns before starting work:
-   `search_semantic(query="fls patterns <task-keywords>", topK=5)`
+1. Search the knowledge graph for relevant patterns before starting work:
+   `graphify query "fls patterns <task-keywords>"`
 2. Search for team-specific documentation and ADRs before starting work:
-   `search_semantic(query="fls <task-keywords>", pathHints=["docs/"], topK=5)`
+   `graphify query "fls <task-keywords>"`
 
 **If the user mentions a specific project** (e.g. lib-validate, my-project), also recall that project's full context before executing:
 ```
-search_semantic(query="kodehold <project-name> context", topK=5)
+graphify query "kodehold <project-name> context"
 ```
 
 ## Workflow
@@ -80,25 +79,25 @@ search_semantic(query="kodehold <project-name> context", topK=5)
  2. **Project discovery** — if the user can't recall the exact project name:
     a. List all known projects:
        ```
-        bash scripts/workspace.sh list
+        python3 scripts/workspace.py list
         ```
-     b. Search the indexed codebase with the user's description to find matching projects:
+     b. Search the knowledge graph with the user's description to find matching projects:
         ```
-        search_semantic(query="<user's description>", topK=5)
+        graphify query "<user's description>"
        ```
     c. Show found projects/topics to the user and ask which one they mean
    3. **If Minor, clear root cause:**
       a. Load context: read design doc, relevant ADRs, affected code
       a-ii. **Read official documentation** — before applying a hotfix to code that uses an external dependency, read the relevant sections of that dependency's official documentation (linked from the ADR's Documentation section per ADR-0048). For unfamiliar dependencies, do a full read of the key sections — not just the affected area.
-      b. **Recall project history** — search the indexed codebase for context related to the specific project (architecture, bugfixes, decisions):
+      b. **Recall project history** — search the knowledge graph for context related to the specific project (architecture, bugfixes, decisions):
          ```
-         search_semantic(query="kodehold <project> context", topK=5)
-         search_semantic(query="kodehold <project> fls", topK=5)
+         graphify query "kodehold <project> context"
+         graphify query "kodehold <project> fls"
          ```
-      c. Search for similar past fixes (FLS-related concepts) via `search_semantic(query="fls hotfix patterns <keywords>", topK=5)`
+      c. Search for similar past fixes (FLS-related concepts) via `graphify query "fls hotfix patterns <keywords>"`
       d. **If root cause is unclear,** load the `.opencode/skills/investigate/SKILL.md` skill and run its 4-phase debugging protocol before implementing
       e. Implement the fix
-      f. Verify: run **quick** mode tests per ADR-0047 (Universal Test Execution Standard). Use `scripts/detect-test-framework.sh` for non-Python projects.
+      f. Verify: run **quick** mode tests per ADR-0047 (Universal Test Execution Standard). Use `python3 scripts/detect_test_framework.py` for non-Python projects.
       g. Return summary to Director (Post-Task Protocol handles documentation via Scribes)
   4. **If Major (escalate → REOPEN):**
      a. Prepare escalation summary:
@@ -140,4 +139,4 @@ search_memories(query="<topic>", scope="project")
 add_memory(content="<learning>", scope="project")
 ```
 
-Use `search_semantic` for code/doc retrieval. Use `search_memories` for runtime learnings and session context. They are complementary, not competing.
+Use `graphify query` for code retrieval. Use `search_memories` for runtime learnings and session context. They are complementary, not competing.

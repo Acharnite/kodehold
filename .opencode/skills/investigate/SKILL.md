@@ -41,7 +41,7 @@ Gather context before forming any hypothesis.
    more evidence before proceeding.
 
 5. **Check `.opencode/memory/` for prior investigations:** Search for prior bug investigation
-   reports in `.opencode/memory/bugs/` or via `search_semantic`. Recurring bugs in the
+   reports in `.opencode/memory/bugs/` or via `graphify query`. Recurring bugs in the
    same module are an architectural smell, not a coincidence.
 
 **Output:** A specific, testable hypothesis about what is wrong and why.
@@ -149,7 +149,7 @@ date: <date>
 [Full debug report content]
 ```
 
-Access via: `search_semantic(query="investigation <component>", topK=3)`
+Access via: `graphify query "investigation <component>"`
 
 ---
 

@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.19.0  
+**Version:** 1.21.0  
 **Status:** Active  
-**Last Updated:** 2026-07-09
+**Last Updated:** 2026-07-14
 
 ---
 
@@ -251,6 +251,7 @@ Consequences: Trade-offs and follow-ups
 | ADR-0051 | opencode-mem as KodeHold Persistent Memory Backend | Accepted |
 | ADR-0051b | Frontend Reactivity Strategy for DeepResearch | Proposed |
 | ADR-0052 | Structured Durable Execution — Formal Checkpoint Schema and Auto-Checkpoint | Accepted |
+| ADR-0054 | Replace opencode-rag with Graphify Knowledge Graph for Code Retrieval | Accepted |
 
 
 See `docs/adr/README.md` for full details.
@@ -301,7 +302,7 @@ See ADR-0016 for the full early review gate specification.
 ### 6.3 Reopening
 
 When a project is reopened:
-1. Director loads project context from `.opencode/memory/` and `search_semantic`
+1. Director loads project context from `.opencode/memory/` and `search_memories`
 2. Design doc is updated with new requirements
 3. Impact analysis is performed by Architects → `.impact_analysis_done`
 4. New ADRs are written for significant changes
@@ -331,7 +332,7 @@ KodeHold runs as an OpenCode agent or set of agents. All interaction with the fi
 
 ### 7.2 Persistent Memory & Knowledge Retrieval
 
-KodeHold uses **opencode-mem** as its persistent memory backend (per [ADR-0051](../adr/ADR-0051-opencode-mem-persistent-memory.md)), providing cross-session memory with semantic search, auto-capture, and automatic compaction. OpenCode RAG provides code and documentation search. The two systems are complementary and serve different purposes.
+KodeHold uses **opencode-mem** as its persistent memory backend (per [ADR-0051](../adr/ADR-0051-opencode-mem-persistent-memory.md)), providing cross-session memory with semantic search, auto-capture, and automatic compaction. **Graphify** provides structural code and documentation retrieval. The two systems serve different purposes — Graphify for exact structural code queries, opencode-mem for runtime learnings and session context.
 
 **opencode-mem** — an MCP server providing persistent memory with:
 - Semantic search via vector embeddings (USearch backend, nomic-embed-text-v1 model)
@@ -353,24 +354,18 @@ MCP tools available to all agents:
 
 > **Project scoping is MANDATORY.** Every `search_memories` and `add_memory` call MUST include `scope: "project"` to prevent cross-project memory bleed. KodeHold shares an opencode-mem instance with other agents. See [ADR-0051 §3b](../adr/ADR-0051-opencode-mem-persistent-memory.md) for details.
 
-**OpenCode RAG** — built-in tools for code and documentation search:
-- `search_semantic` — semantic search across indexed workspace files (source, docs, ADRs)
-- `find_usages` — symbol reference tracking across the indexed codebase
-- `get_file_skeleton` — structural file overview before reading
-- `describe_image` — vision-model description of screenshots and diagrams
+**Graphify** (per [ADR-0054](../adr/ADR-0054-replace-opencode-rag-with-graphify.md)) is KodeHold's mechanism for structural code retrieval. It uses tree-sitter AST parsing to build a deterministic, navigable graph of files, functions, classes, imports, and their relationships — providing exact structural queries. Installed via `uv tool install graphifyy` and registered via `graphify install`.
 
-**Relationship between opencode-mem and OpenCode RAG:**
+| Layer | What it retrieves | Strength |
+|-------|------------------|----------|
+| **Graphify (PRIMARY)** | Structural code relationships (callers, callees, imports, class hierarchy) | Exact, deterministic, navigable |
+| **opencode-mem** | Runtime learnings, session context | Cross-session persistence |
 
-| Aspect | OpenCode RAG | opencode-mem |
-|--------|-------------|--------------|
-| What it searches | Indexed workspace files (source, docs, ADRs) | Runtime memory (session context, agent learnings) |
-| When populated | At index time (file changes trigger re-indexing) | At runtime (auto-capture + explicit `add_memory`) |
-| Use case | "What does this code do?" "What ADR covers this?" | "What did we learn last session?" "What triage pattern applied?" |
-| Persistence | Tied to file system (files must exist) | Independent of files (memories persist across sessions) |
+The code retrieval flow is: **Graphify → opencode-mem**. Agents use Graphify first for structural queries, then `search_memories` for runtime context.
 
-Agents use OpenCode RAG for code/doc retrieval and opencode-mem for runtime memory. The `opencode-rag-knowledge-flow` skill handles RAG retrieval; a parallel memory recall step handles opencode-mem retrieval.
+> **Note on built-in OpenCode tools:** OpenCode provides platform-level primitives (`search_semantic`, `find_usages`, `get_file_skeleton`, `describe_image`) that exist at the tool level. These are NOT part of KodeHold's documented retrieval workflow. All code retrieval goes through Graphify per ADR-0054. See [ADR-0054](../adr/ADR-0054-replace-opencode-rag-with-graphify.md).
 
-> **Previous systems:** The agentmemory daemon (`iii`, port 3111) was removed per ADR-0050. The file-based `.opencode/memory/` storage proposed in ADR-0050 §5 was never implemented and is superseded by opencode-mem per ADR-0051. See [ADR-0050](../adr/ADR-0050-agentmemory-to-opencode-rag-migration.md) and [ADR-0051](../adr/ADR-0051-opencode-mem-persistent-memory.md).
+> **Previous systems:** The agentmemory daemon (`iii`, port 3111) was removed per ADR-0050. The file-based `.opencode/memory/` storage proposed in ADR-0050 §5 was never implemented and is superseded by opencode-mem per ADR-0051. OpenCode RAG's standalone `opencode-rag mcp` server was removed per ADR-0054 — Graphify is now the sole code retrieval method. See [ADR-0050](../adr/ADR-0050-agentmemory-to-opencode-rag-migration.md), [ADR-0051](../adr/ADR-0051-opencode-mem-persistent-memory.md), and [ADR-0054](../adr/ADR-0054-replace-opencode-rag-with-graphify.md).
 
 ### 7.3 RTK (Runtime Toolkit)
 
@@ -388,7 +383,7 @@ via the `skill` tool with zero token cost until invoked.
 
 | Skill | Purpose | Used by |
 |-------|---------|---------|
-| `opencode-rag-knowledge-flow` | OpenCode RAG knowledge protocol with search_semantic, find_usages, and get_file_skeleton for pre-task context retrieval | All 6 team subagents |
+| `graphify-knowledge-flow` | Pre-task knowledge retrieval via Graphify knowledge graph queries (callers, definitions, imports, class hierarchy) | All 6 team subagents |
 | `state-awareness` | Lifecycle state check preamble and mismatch reporting | All 6 team subagents |
 | `investigate` | 4-phase systematic debugging (Iron Law, pattern analysis, 3-strike rule) | FLS, Engineers, Reviewers, Director |
 
@@ -638,13 +633,11 @@ kodehold/
 │   ├── references/
 │   │   └── kodehold-protocol.md   # Shared protocol reference
 │   ├── plugins/
-│   │   ├── rag-plugin.js          # RAG index plugin
-│   │   └── rag-tui.js             # RAG TUI plugin
+│   │   └── graphify.js          # Graphify knowledge graph plugin
 │   └── skills/                    # Reusable skills
 │       ├── README.md              # Skill index
-│       ├── opencode-rag/
-│       │   └── SKILL.md           # OpenCode RAG skill
-│       ├── opencode-rag-knowledge-flow/
+│       ├── graphify-knowledge-flow/
+│       │   └── SKILL.md           # Pre-task knowledge retrieval via Graphify
 │       ├── investigate/
 │       │   └── SKILL.md           # Systematic debugging protocol (4 phases)
 │       ├── ponytail-audit/
@@ -698,6 +691,8 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.21.0 (2026-07-14):** ADR-0054 completion — replaced all remaining OpenCode RAG references with Graphify across all documentation. Created `graphify-knowledge-flow` skill to replace `opencode-rag-knowledge-flow`. Updated AGENTS.md, design doc §7.2/§7.4/§10, skills README, root README, ADR-0050, ADR-0051, and config/agents.yaml. Graphify is now the sole documented code retrieval method; platform-level OpenCode RAG primitives (search_semantic, find_usages, get_file_skeleton, describe_image) are explicitly noted as not part of KodeHold's workflow.
+- **v1.20.0 (2026-07-14):** ADR-0054: OpenCode RAG → Graphify migration. Replaced standalone `opencode-rag mcp` server with Graphify knowledge graph as the sole code retrieval mechanism. Graphify handles all code retrieval; built-in OpenCode RAG tools are platform-level primitives, not part of KodeHold's documented workflow. Updated Section 5 (ADR Index) and Section 7.2 (Persistent Memory & Knowledge Retrieval) with Graphify as sole retrieval layer. References ADR-0054.
 - **v1.19.0 (2026-07-09):** Updated Section 8.1 (Bring Your Own Model) to document hybrid embedding strategy: sentence-transformers on CPU for embeddings (bge-m3), Ollama for LLM inference (qwen3.5:9b). Replaces previous vLLM dual-instance plan. References ADR-0053 (Hybrid Embedding Strategy — sentence-transformers + Ollama).
 - **v1.18.0 (2026-07-02):** ADR-0052 promoted from Proposed → Accepted. Updated ADR-0019 superseded-by reference from "agentmemory" to "ADR-0052". Updated ADR README index with ADR-0052 Accepted entry.
 - **v1.17.0 (2026-07-02):** Registered ADR-0052 (Structured Durable Execution, Proposed) — formal YAML frontmatter checkpoint schema and auto-checkpoint on every delegation. Combines issues #59 (checkpoint format) and #35 (durable execution). Updated Section 7.5 to note ADR-0052 supersedes ADR-0019's compression protocol. Added ADR-0052 to ADR index.

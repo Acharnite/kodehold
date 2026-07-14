@@ -13,10 +13,10 @@ Run one of these to determine the current lifecycle state:
 
 ```
 # For KodeHold itself or workspace project root:
-bash scripts/gate.sh --status
+python3 scripts/gate.py --status
 
 # For workspace projects specifically:
-bash scripts/workspace.sh state <name>
+python3 scripts/workspace.py state <name>
 ```
 
 Read the `STATE=` line from the output.
@@ -40,7 +40,7 @@ If the project is in the wrong state for the requested work:
 ## Step 4: Workspace Awareness
 
 For workspace projects (`workspaces/<name>/`):
-- Run `bash scripts/workspace.sh state <name>` to check workspace state
+- Run `python3 scripts/workspace.py state <name>` to check workspace state
 - The workspace `.kodehold-state` may differ from the root project state
 - Adopted projects have `ADOPTED=true` — this may relax some phase restrictions
 

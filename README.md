@@ -14,7 +14,7 @@ KodeHold simulates a disciplined software organization where specialized AI agen
 - **Design-first** — no code without an approved design document
 - **Separation of concerns** — distinct teams for design, implementation, review, testing, memory, and front-line support
 - **Token-conscious** — every operation evaluated for token cost; RTK for compact CLI output
-- **Persistent memory** — full project context preserved across sessions via file-based storage (`.opencode/memory/`) and OpenCode RAG (`search_semantic`, `find_usages`)
+- **Persistent memory** — full project context preserved across sessions via Graphify knowledge graph queries (`graphify query`) and file-based storage (`.opencode/memory/`)
 - **Traceable decisions** — all architecture decisions recorded as ADRs (Nygaard format)
 - **LLM-agnostic** — bring your own model; second-opinion cross-check supported via different providers
 - **Gate-driven lifecycle** — every state transition validated by automated gates; no skipping steps

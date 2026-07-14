@@ -74,13 +74,12 @@ After approving a design document (INIT phase), create `.design_reviewed` marker
 touch .design_reviewed
 ```
 
-## OpenCode RAG Knowledge Flow (Pre-task Mode)
+## Knowledge Flow (Pre-task Mode)
 
-Follow the OpenCode RAG Knowledge Flow skill protocol in **Pre-task mode**:
-1. Search the indexed codebase for relevant patterns before starting work:
-   `search_semantic(query="reviewers patterns <task-keywords>", topK=5)`
+1. Search the knowledge graph for relevant patterns before starting work:
+   `graphify query "reviewers patterns <task-keywords>"`
 2. Search for team-specific documentation and ADRs before starting work:
-   `search_semantic(query="reviewers <task-keywords>", pathHints=["docs/"], topK=5)`
+   `graphify query "reviewers <task-keywords>"`
 
 ## Post-Task Protocol
 
@@ -100,7 +99,7 @@ Reviewers validate lifecycle transitions on behalf of the Director.
 
 ### Process
 1. Director requests validation: "Validate transition ACTIVE_TO_REVIEW"
-2. Reviewers run: `bash scripts/gate.sh --transition <FROM>_TO_<TO> --validate-only`
+2. Reviewers run: `python3 scripts/gate.py --transition <FROM>_TO_<TO> --validate-only`
 3. Reviewers review the automated checks AND perform manual verification
 4. Reviewers return structured result: PASS (with optional notes) or BLOCKED (with specific failures)
 5. Director acts on result: if PASS, runs actual gate; if BLOCKED, delegates fixes
@@ -108,7 +107,7 @@ Reviewers validate lifecycle transitions on behalf of the Director.
 ### KodeHold Self-Modification
 When the `.kodehold-self-mode` marker file is present, KodeHold is modifying itself.
 In this case:
-- **Do NOT run `gate.sh --validate-only`** — the gate scripts auto-pass, and running them
+- **Do NOT run `gate.py --validate-only`** — the gate scripts auto-pass, and running them
   would be misleading when the gate infrastructure itself is being changed.
 - **Perform manual review only** — verify changes through inspection and common sense.
 - **Return PASS** with a note: "Self-modification mode — manual review only, gate skipped."
@@ -154,4 +153,4 @@ search_memories(query="<topic>", scope="project")
 add_memory(content="<learning>", scope="project")
 ```
 
-Use `search_semantic` for code/doc retrieval. Use `search_memories` for runtime learnings and session context. They are complementary, not competing.
+Use `graphify query` for code retrieval. Use `search_memories` for runtime learnings and session context. They are complementary, not competing.

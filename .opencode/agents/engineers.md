@@ -41,13 +41,12 @@ Load the `.opencode/skills/state-awareness/SKILL.md` skill, then apply these tea
 
 **Refusal example:** *"Project is INIT, not ACTIVE. Cannot implement code until design doc is approved and INIT→ACTIVE gate passes. Delegate to Architects first."*
 
-## OpenCode RAG Knowledge Flow (Pre-task Mode)
+## Knowledge Flow (Pre-task Mode)
 
-Follow the OpenCode RAG Knowledge Flow skill protocol in **Pre-task mode**:
-1. Search the indexed codebase for relevant patterns before starting work:
-   `search_semantic(query="engineers patterns <task-keywords>", topK=5)`
+1. Search the knowledge graph for relevant patterns before starting work:
+   `graphify query "engineers patterns <task-keywords>"`
 2. Search for team-specific documentation and ADRs before starting work:
-   `search_semantic(query="engineers <task-keywords>", pathHints=["docs/"], topK=5)`
+   `graphify query "engineers <task-keywords>"`
 
 ## Adopted Projects — Symlink Awareness
 
@@ -89,7 +88,7 @@ When in doubt, run `realpath workspaces/<name>` to confirm the symlink target ex
 8. Never write tests — that is the Testers' role
 9. **Verify your code** — run **quick** mode tests on the affected files before handing off to Testers:
    - See ADR-0047 (Universal Test Execution Standard) for modes, venv discovery, and commands
-   - Use `scripts/detect-test-framework.sh` for non-Python projects
+   - Use `python3 scripts/detect_test_framework.py` for non-Python projects
 
 ## Post-Task Protocol
 
@@ -124,4 +123,4 @@ search_memories(query="<topic>", scope="project")
 add_memory(content="<learning>", scope="project")
 ```
 
-Use `search_semantic` for code/doc retrieval. Use `search_memories` for runtime learnings and session context. They are complementary, not competing.
+Use `graphify query` for code retrieval. Use `search_memories` for runtime learnings and session context. They are complementary, not competing.

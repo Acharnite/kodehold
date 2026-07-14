@@ -2,6 +2,15 @@
 
 ## Completed
 
+- [x] **ADR-0054: Replace opencode-rag with Graphify Knowledge Graph** — ADR written, reviewed, cross-validated, and Accepted. 7-phase migration plan defined:
+  - [x] Phase 1: ADR written and Accepted
+  - [x] Phase 2: Clean up opencode.json (config cleanup — remove krypto-agent MCP, plugin refs)
+  - [x] Phase 3: Install Graphify (uv tool install + graphify install)
+  - [x] Phase 4: Update AGENTS.md instructions
+  - [x] Phase 5: Update opencode-rag-knowledge-flow skill (replaced by graphify-knowledge-flow)
+  - [x] Phase 6: Update agent files (director.md + team agents)
+  - [ ] Phase 7: Final verification (in progress)
+
 - [x] **Issue #34: YAML-Based Agent & Task Configuration (ADR-0037)** — Phase 1-4 complete:
   - [x] `config/agents.yaml` — all 8 agents defined with name, role, model, and delegations
   - [x] `config/agents.schema.json` — JSON Schema for validating agents.yaml
@@ -10,7 +19,7 @@
   - [x] `scripts/sync-agent-config.sh` — syncs frontmatter between .md agent files and agents.yaml
   - [x] `tests/init/test_yaml_config.py` — 46 schema validation tests
   - [x] ADR-0037 promoted from Proposed → Accepted
-> **Historical (ADR-0050):** The ICM→agentmemory migration (ADR-0029) has been superseded by ADR-0050 (Agentmemory → OpenCode RAG Migration). The agentmemory daemon and its npm package have been removed. Pre-task knowledge retrieval is now handled by OpenCode's built-in RAG tools (`search_semantic`, `find_usages`, `get_file_skeleton`, `describe_image`) and file-based `.opencode/memory/` storage.
+> **Historical (ADR-0050, ADR-0054):** The ICM→agentmemory migration (ADR-0029) was superseded by ADR-0050 (Agentmemory → OpenCode RAG Migration), which was itself superseded by ADR-0054 (OpenCode RAG → Graphify Knowledge Graph). Pre-task knowledge retrieval is now handled by Graphify knowledge graph queries and opencode-mem persistent memory.
 
 - [x] **ICM → Agentmemory Migration Complete** — Phases 1-5 (ADR-0029): ADR-0030 through ADR-0033, Action Frontier Protocol, routine templates, auto-crystallize, inter-agent signaling. Complete replacement of ICM with agentmemory across all agents, scripts, and references. *(Superseded by ADR-0050)*
 - [x] ADR-0030: Agentmemory Knowledge Flow Skill — unified knowledge flow via agentmemory replacing ICM Knowledge Flow *(Superseded by ADR-0050)*
@@ -76,6 +85,7 @@
 
 ## Medium Priority
 
+- [x] **Remove all .sh scripts** — 9 bash scripts deleted (gate.sh, workspace.sh, ship.sh, benchmark.sh, sync-agent-config.sh, validate-config.sh, token-usage.sh, detect-test-framework.sh, output.sh). All references updated to .py equivalents.
 - [x] **Forbyd git clean -fd uden brugertilladelse** — git clean -fd må ALDRIG bruges uden bruger tilladelse. Kommandoen sletter alle untracked filer og kan forårsage tab af data. Dette bør tilføjes som en regel i Director protokollen og i agent dokumentationen. ([#3](https://github.com/Acharnite/kodehold/issues/3)) ✅ Implemented 2026-05-29
 - [x] **Brug GitHub til issue tracking og generel integration** — KodeHold bør bruge GitHub Issues til at holde styr på projekter og generelt integrere GitHub features (PRs, releases, branch protection, etc.) i workflowet. Dette forbedrer projektstyring og samarbejde. ([#4](https://github.com/Acharnite/kodehold/issues/4))
 - [x] **Design doc discipline** — agents must read design doc before work and update it with results when done (enforce via agent files)

@@ -8,6 +8,8 @@ Accepted
 
 **Note:** ADR-0051 numbering conflict — the ADR index already lists ADR-0051 as "Frontend Reactivity Strategy for DeepResearch" (2026-06-24). If that ADR file is created later, renumber this ADR to ADR-0052.
 
+> **Update (ADR-0054):** The OpenCode RAG tools referenced in this ADR as complementary to opencode-mem have been superseded by Graphify knowledge graph per ADR-0054. The opencode-mem backend is unchanged, but the code retrieval partner is now Graphify, not OpenCode RAG. See ADR-0054 for details.
+
 ## Context
 
 ### The Problem
@@ -84,7 +86,7 @@ This configuration is proven to work and will be reused for KodeHold with minor 
 
 3. **opencode-mem is validated infrastructure.** Bob's configuration proves it works with OpenCode's MCP system. No daemon management, no npm packages, no custom scripts — just an MCP server entry in `opencode.json`.
 
-4. **Complementary to OpenCode RAG.** OpenCode RAG (`search_semantic`, `find_usages`, `get_file_skeleton`) searches the indexed codebase — source files, docs, ADRs. opencode-mem searches runtime memory — session context, agent learnings, conversation history. They serve different purposes and do not overlap.
+4. **Complementary to code retrieval tools.** Graphify (per ADR-0054) searches structural code relationships (callers, callees, imports, class hierarchy). opencode-mem searches runtime memory — session context, agent learnings, conversation history. They serve different purposes and do not overlap.
 
 5. **Minimal integration surface.** opencode-mem integrates via MCP. Adding it requires one entry in `opencode.json` — no agent file rewrites, no skill changes, no script updates.
 
@@ -180,22 +182,24 @@ opencode-mem provides these MCP tools available to all agents:
 - This is defense-in-depth: even if the default changes, agents remain safe
 - Bob's memories (from other projects) must never appear in KodeHold search results
 
-**Implementation:** The `opencode-rag-knowledge-flow` skill and all 7 agent files include this scoping requirement. The skill's "Persistent Memory Recall" section shows all memory tool calls with `scope: "project"`.
+**Implementation:** The `graphify-knowledge-flow` skill and all 7 agent files include this scoping requirement. The skill's "Persistent Memory Recall" section shows all memory tool calls with `scope: "project"`.
 
-### 4. Relationship to OpenCode RAG
+### 4. Relationship to Graphify and Code Retrieval
 
-opencode-mem and OpenCode RAG are **complementary, not competing**:
+opencode-mem and Graphify serve **different purposes**:
 
-| Aspect | OpenCode RAG | opencode-mem |
-|--------|-------------|--------------|
-| **What it searches** | Indexed workspace files (source, docs, ADRs) | Runtime memory (session context, agent learnings) |
-| **When it's populated** | At index time (file changes trigger re-indexing) | At runtime (auto-capture + explicit `add_memory`) |
-| **Search method** | Semantic vector search on file chunks | Semantic vector search on memory entries |
-| **Use case** | "What does this code do?" "What ADR covers this?" | "What did we learn last session?" "What triage pattern applied here?" |
-| **Scope** | Codebase and documentation | Conversation history and agent knowledge |
-| **Persistence** | Tied to file system (files must exist) | Independent of files (memories persist across sessions) |
+| Aspect | Graphify | opencode-mem |
+|--------|----------|--------------|
+| **What it retrieves** | Structural code relationships (callers, callees, imports, class hierarchy) | Runtime memory (session context, agent learnings) |
+| **When it's populated** | At graph build time (tree-sitter AST parsing) | At runtime (auto-capture + explicit `add_memory`) |
+| **Search method** | Deterministic, navigable AST-based graph queries | Semantic vector search on memory entries |
+| **Use case** | "What does this function call?" "Where is this symbol defined?" | "What did we learn last session?" "What triage pattern applied here?" |
+| **Scope** | Codebase structure and dependencies | Conversation history and agent knowledge |
+| **Persistence** | Tied to file system (regenerated on file changes) | Independent of files (memories persist across sessions) |
 
-**Integration pattern:** Agents use OpenCode RAG for code/doc retrieval and opencode-mem for runtime memory. The `opencode-rag-knowledge-flow` skill handles RAG retrieval; a parallel memory recall step handles opencode-mem retrieval.
+**Integration pattern:** Agents use Graphify for code retrieval and opencode-mem for runtime memory. The `graphify-knowledge-flow` skill handles Graphify retrieval; a parallel memory recall step handles opencode-mem retrieval. See [ADR-0054](ADR-0054-replace-opencode-rag-with-graphify.md) for the full Graphify integration.
+
+> **Previous complementary system:** OpenCode RAG tools (`search_semantic`, `find_usages`, `get_file_skeleton`, `describe_image`) were previously used as the code retrieval layer alongside opencode-mem (per v1.16.0). As of ADR-0054, these have been replaced by Graphify as the sole documented code retrieval method. The built-in tools remain available as platform-level primitives but are not part of KodeHold's workflow.
 
 ### 5. Deprecate File-Based Memory Directories
 
@@ -225,7 +229,7 @@ The `.opencode/memory/` directory structure proposed in ADR-0050 is **superseded
 | ADR | Update Required |
 |-----|----------------|
 | ADR-0050 | Add note that §5 (File-Based Persistent Storage) is superseded by ADR-0051. Update Section 7.2 reference in design doc to mention opencode-mem. |
-| ADR-0038 | Knowledge Recall Protocol — add opencode-mem as a recall source alongside `search_semantic` |
+| ADR-0038 | Knowledge Recall Protocol — add opencode-mem as a recall source alongside Graphify |
 | ADR-0039 | Pre-Flight Knowledge Check — add opencode-mem search as a pre-flight step |
 
 ## Consequences
@@ -243,7 +247,7 @@ The `.opencode/memory/` directory structure proposed in ADR-0050 is **superseded
 ### Negative
 
 1. **New dependency.** opencode-mem adds an MCP server dependency. If it fails, memory tools are unavailable (but agents still function — they just can't recall memories).
-   *Mitigation:* opencode-mem is a local process, not a remote service. Failure modes are limited to npm issues or embedding model failures. OpenCode RAG tools remain available regardless.
+   *Mitigation:* opencode-mem is a local process, not a remote service. Failure modes are limited to npm issues or embedding model failures. Graphify and file-based documentation remain available regardless.
 
 2. **Shared storage with Bob.** If KodeHold and Bob share `~/.opencode-mem/data`, memories from both agents are in the same store. Project scoping (`defaultScope: "project"`) isolates them, but cross-project queries could surface unrelated memories.
    *Mitigation:* Project scoping is enforced by opencode-mem. If isolation is insufficient, configure a separate `storagePath` for KodeHold (e.g., `~/.opencode-mem/kodehold-data`).

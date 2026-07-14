@@ -1,9 +1,12 @@
-# Version 1.19.0 — vLLM migration documentation
+# Version 1.22.0
 
 ## Version History
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 1.22.0 | 2026-07-14 | Removed all `.sh` scripts — 9 bash scripts deleted (gate.sh, workspace.sh, ship.sh, benchmark.sh, sync-agent-config.sh, validate-config.sh, token-usage.sh, detect-test-framework.sh, output.sh). All references updated to `.py` equivalents. |
+| 1.21.0 | 2026-07-14 | ADR-0054 completion: Replaced all remaining OpenCode RAG references with Graphify across documentation. Created graphify-knowledge-flow skill. Updated AGENTS.md, design doc, skills README, root README, ADR-0050, ADR-0051, config/agents.yaml, director.md, TODO.md. Graphify is the sole documented code retrieval method. |
+| 1.20.0 | 2026-07-14 | ADR-0054: OpenCode RAG → Graphify migration. Replaced opencode-rag MCP server with Graphify knowledge graph as the sole code retrieval mechanism. Removed all "fallback" language — built-in tools are platform-level primitives, not part of KodeHold's documented workflow. |
 | 1.19.0 | 2026-07-09 | Design doc Section 8.1 updated — vLLM documented as recommended local inference provider alongside Ollama. Concurrent LLM + Embedding serving architecture (dual vLLM instances on ports 8000/8001). References ADR-0053. |
 | 1.15.0 | 2026-07-02 | ADR-0052 Structured Durable Execution — Formal Checkpoint Schema and Auto-Checkpoint (Accepted) |
 | 1.14.0 | 2026-06-30 | ADR-0050 completion: removed all agentmemory/ICM/headroom infrastructure, moved routines to skills, trimmed AGENTS.md/director.md per token-optimized loading directive |
@@ -46,6 +49,10 @@
 - **PATCH**: Documentation updates, refinements, bug fixes
 
 ## Current
+
+**1.22.0** — Removed all `.sh` scripts — 9 bash scripts deleted (gate.sh, workspace.sh, ship.sh, benchmark.sh, sync-agent-config.sh, validate-config.sh, token-usage.sh, detect-test-framework.sh, output.sh). All references across 10 files updated to `.py` equivalents with `python3` prefix.
+
+**1.21.0** — ADR-0054 completion: Replaced all remaining OpenCode RAG references with Graphify across all documentation. Created `graphify-knowledge-flow` skill replacing `opencode-rag-knowledge-flow`. Updated AGENTS.md, design doc (§7.2, §7.4, §10), skills README, root README, ADR-0050, ADR-0051, config/agents.yaml, director.md, TODO.md, and VERSION.md. Graphify is now the sole documented code retrieval method; platform-level OpenCode RAG tools are noted as not part of KodeHold's workflow.
 
 **1.19.0** — Design doc Section 8.1 updated — vLLM documented as recommended local inference provider. Concurrent LLM + Embedding serving architecture. References ADR-0053.
 

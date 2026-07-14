@@ -78,6 +78,7 @@ KodeHold works with any LLM provider. Ollama is the primary provider, but the sy
 - REOPEN — Impact analysis, design update, new ADRs
 
 ### Access
-- RAG tools: `search_semantic`, `find_usages`, `get_file_skeleton`, `describe_image`
+- Code retrieval: `graphify query "<question>"` — knowledge graph queries via Graphify
+- Memory: `search_memories(query, scope)` — opencode-mem persistent memory
 - Design doc: `docs/design/README.md`
-- Memory: `.opencode/memory/`
+- File-based memory: `.opencode/memory/`

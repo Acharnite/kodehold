@@ -10,3 +10,6 @@ __pycache__
 # Auto-generated memory artifacts
 .opencode/memory/metrics/
 .opencode/memory/prospective/
+
+# Graphify generated output
+graphify-out/

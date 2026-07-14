@@ -30,19 +30,14 @@ _JSON_CHECKS: list[dict[str, str]] = []
 # skips quality checks (avoiding circular self-gating).
 KODEHOLD_SYSTEM_PATHS: list[str] = [
     "scripts/gate.py",
-    "scripts/gate.sh",
     "scripts/ship.py",
-    "scripts/ship.sh",
     "scripts/workspace.py",
-    "scripts/workspace.sh",
     "scripts/lib/output.py",
-    "scripts/lib/output.sh",
     "scripts/validate_config.py",
     "scripts/sync_agent_config.py",
     ".opencode/agents/",
     "config/agents.yaml",
     "opencode.json",
-    "opencode-rag.json",
     "AGENTS.md",
 ]
 

@@ -20,14 +20,6 @@
         "--browser-url",
         "http://localhost:9222"
       ]
-    },
-    "krypto-agent": {
-      "type": "local",
-      "command": [
-        "opencode-rag",
-        "mcp"
-      ],
-      "cwd": "/home/kiffer/project/krypto-agent"
     }
   },
   "default_agent": "director",
@@ -88,7 +80,6 @@
   },
   "lsp": true,
   "plugin": [
-    ".opencode/plugins/rag-plugin.js",
-    ".opencode/plugins/rag-tui.js"
+    ".opencode/plugins/graphify.js"
   ]
 }
