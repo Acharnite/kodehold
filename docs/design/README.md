@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.21.0  
+**Version:** 1.21.1  
 **Status:** Active  
-**Last Updated:** 2026-07-14
+**Last Updated:** 2026-07-15
 
 ---
 
@@ -21,7 +21,7 @@ The orchestrator is design-document-centric: every project begins with a design 
 | 1 | **Design-First** | Every project starts with and revolves around a living design document |
 | 2 | **Separation of Concerns** | Distinct teams handle design, implementation, review, testing, and memory |
 | 3 | **Token-Conscious** | Every operation is evaluated for token cost; RTK is used for efficient output |
-| 4 | **Persistent Memory** | Agentmemory stores all project context, decisions, and rationale across sessions |
+| 4 | **Persistent Memory** | opencode-mem stores all project context, decisions, and rationale across sessions |
 | 5 | **LLM-Agnostic** | Core works with any LLM; Ollama is primary; second-opinion cross-check supported |
 | 6 | **Traceable Decisions** | All architectural decisions are recorded as ADRs in git |
 | 7 | **Project Lifecycle** | Projects can be opened, closed, and reopened without losing context |

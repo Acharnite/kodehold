@@ -16,6 +16,21 @@ The Director loads this skill, reads the relevant step table, and delegates each
 5. **Track progress** — Use `todowrite` after each step
 6. **Branching (bugfix-flow only)** — Evaluate triage result at branch point: minor → hotfix path, major → REOPEN path
 
+### Mandatory Pre-Step for All Routines
+
+**Before delegating Step 1 of any routine, the Director MUST perform a memory search:**
+
+```
+search_memories(query="<routine-topic> <project> lessons bugs", scope="project")
+```
+
+Capture the results and pass them as `Relevant Context` in the Step 1 Task prompt.
+This ensures the team receives prior learnings before starting work.
+
+The memory search is NOT listed as a numbered step in each table — it is an
+invisible pre-step that applies to ALL routines. Skipping it defeats the purpose
+of persistent memory.
+
 ---
 
 ## `kodehold-adr-flow` (5 steps)

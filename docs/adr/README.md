@@ -11,12 +11,12 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0001](ADR-0001-kodehold-foundation.md) | KodeHold Foundation and Principles | Accepted | 2026-05-25 |
 | [ADR-0002](ADR-0002-architecture-and-teams.md) | Organizational Structure — Director and Teams | Accepted | 2026-05-25 |
 | [ADR-0003](ADR-0003-design-document-lifecycle.md) | Design Document Lifecycle | Accepted | 2026-05-25 |
-| [ADR-0004](ADR-0004-icm-rtk-integration.md) | ICM and RTK Integration Strategy | Deprecated | 2026-05-25 |
+| [ADR-0004](ADR-0004-icm-rtk-integration.md) | ICM and RTK Integration Strategy | Archived† | 2026-05-25 |
 | [ADR-0005](ADR-0005-llm-support.md) | LLM Support and Light Mode | Accepted | 2026-05-25 |
 | [ADR-0006](ADR-0006-second-opinion.md) | Second Opinion Protocol | Accepted | 2026-05-25 |
 | [ADR-0007](ADR-0007-token-optimization.md) | Token Optimization Strategy | Accepted | 2026-05-25 |
 | [ADR-0008](ADR-0008-project-lifecycle.md) | Project Lifecycle and Reopening | Accepted | 2026-05-25 |
-| [ADR-0009](ADR-0009-icm-mcp-integration.md) | ICM MCP Integration | Deprecated | 2026-05-26 |
+| [ADR-0009](ADR-0009-icm-mcp-integration.md) | ICM MCP Integration | Archived† | 2026-05-26 |
 | [ADR-0010](ADR-0010-fls-front-line-support.md) | FLS — Front Line Support Team | Accepted | 2026-05-27 |
 | [ADR-0011](ADR-0011-team-meeting.md) | Team Meeting — Collective Project Review | Accepted | 2026-05-27 |
 | [ADR-0012](ADR-0012-adopted-projects.md) | Adopted Projects — Existing Codebases in KodeHold | Accepted | 2026-05-27 |
@@ -25,16 +25,15 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0016](ADR-0016-early-review-gates.md) | Early Review Gates in ACTIVE Phase | Accepted | 2026-05-28 |
 | [ADR-0017](ADR-0017-reviewers-gatekeeper-and-mandatory-second-opinion.md) | Reviewers as Gatekeeper + Mandatory Second Opinion | Accepted | 2026-05-28 |
 | [ADR-0018](ADR-0018-centralize-documentation-under-scribes.md) | Centralize All Documentation Work Under Scribes | Accepted | 2026-05-28 |
-| [ADR-0019](ADR-0019-session-context-compression.md) | Session Context Compression via Periodic ICM Summaries | Superseded | 2026-05-28 |
-| [ADR-0051](ADR-0051-frontend-reactivity-strategy.md) | Frontend Reactivity Strategy for DeepResearch | Proposed | 2026-06-24 |
-| [ADR-0020](ADR-0020-hierarchical-memory.md) | Hierarchical Memory (Hot/Warm/Cold) | Superseded | 2026-05-29 |
-| [ADR-0021](ADR-0021-prospective-memory.md) | Prospective Memory (Task Queue & Scheduler) | Superseded | 2026-05-29 |
-| [ADR-0022](ADR-0022-automated-episodic-extraction.md) | Automated Episodic Extraction | Superseded | 2026-05-29 |
-| [ADR-0023](ADR-0023-semantic-memory-automation.md) | Semantic Memory Automation | Superseded | 2026-05-29 |
-| [ADR-0024](ADR-0024-shared-memory.md) | Shared Memory (Multi-Agent Alignment) | Deprecated | 2026-05-29 |
-| [ADR-0025](ADR-0025-a2a-protocol.md) | A2A Protocol (Agent-to-Agent Coordination) | Deprecated | 2026-05-29 |
+| [ADR-0019](ADR-0019-session-context-compression.md) | Session Context Compression via Periodic ICM Summaries | Archived† | 2026-05-28 |
+| [ADR-0020](ADR-0020-hierarchical-memory.md) | Hierarchical Memory (Hot/Warm/Cold) | Archived† | 2026-05-29 |
+| [ADR-0021](ADR-0021-prospective-memory.md) | Prospective Memory (Task Queue & Scheduler) | Accepted | 2026-05-29 |
+| [ADR-0022](ADR-0022-automated-episodic-extraction.md) | Automated Episodic Extraction | Archived† | 2026-05-29 |
+| [ADR-0023](ADR-0023-semantic-memory-automation.md) | Semantic Memory Automation | Archived† | 2026-05-29 |
+| [ADR-0024](ADR-0024-shared-memory.md) | Shared Memory (Multi-Agent Alignment) | Archived† | 2026-05-29 |
+| [ADR-0025](ADR-0025-a2a-protocol.md) | A2A Protocol (Agent-to-Agent Coordination) | Archived† | 2026-05-29 |
 | [ADR-0026](ADR-0026-second-opinion-same-model-bias.md) | Second Opinion Same-Model Bias Enforcement | Superseded | 2026-05-29 |
-| [ADR-0027](ADR-0027-icm-knowledge-flow-invocation-modes.md) | ICM Knowledge Flow Invocation Modes | Deprecated | 2026-05-29 |
+| [ADR-0027](ADR-0027-icm-knowledge-flow-invocation-modes.md) | ICM Knowledge Flow Invocation Modes | Archived† | 2026-05-29 |
 | [ADR-0028](ADR-0028-agentmemory-project-detection.md) | Agentmemory Project Detection Strategy | **Deprecated** | 2026-05-31 |
 | [ADR-0029](ADR-0029-agentmemory-migration-strategy.md) | ICM → Agentmemory Migration Strategy | **Deprecated** | 2026-05-31 |
 | [ADR-0030](ADR-0030-agentmemory-knowledge-flow.md) | Agentmemory Knowledge Flow | **Deprecated** | 2026-05-31 |
@@ -63,4 +62,24 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0052](ADR-0052-structured-durable-execution.md) | Structured Durable Execution — Formal Checkpoint Schema and Auto-Checkpoint | Accepted | 2026-07-02 |
 | [ADR-0053](ADR-0053-replace-ollama-with-vllm.md) | Hybrid Embedding Strategy — sentence-transformers + Ollama | Accepted | 2026-07-09 |
 | [ADR-0054](ADR-0054-replace-opencode-rag-with-graphify.md) | Replace opencode-rag with Graphify Knowledge Graph | Accepted | 2026-07-14 |
+
+† Archived — historical record, kept for reference in `docs/adr/archived/`.
+
+### Archived ADRs
+
+The following ADRs have been archived — they were superseded by now-removed
+systems (agentmemory, ICM) or were design explorations that did not proceed.
+They are kept for historical reference in `docs/adr/archived/`.
+
+| ID | Title | Original Status | Reason |
+|----|-------|-----------------|--------|
+| ADR-0004 | ICM/RTK Integration | Deprecated | ICM removed per ADR-0029 chain |
+| ADR-0009 | ICM MCP Integration | Deprecated | ICM removed |
+| ADR-0019 | Session Context Compression | Superseded | Superseded by ADR-0052 |
+| ADR-0020 | Hierarchical Memory | Superseded | Superseding system (agentmemory) removed |
+| ADR-0022 | Automated Episodic Extraction | Superseded | Superseding system (ICM) removed |
+| ADR-0023 | Semantic Memory Automation | Superseded | Superseding system (ICM) removed |
+| ADR-0024 | Shared Memory | Deprecated | Deprecated by sequential delegation model |
+| ADR-0025 | A2A Protocol | Deprecated | Deprecated by Director coordination |
+| ADR-0027 | ICM Knowledge Flow | Deprecated | ICM removed |
 

@@ -1,6 +1,5 @@
 ---
-status: Superseded
-superseded-by: ADR-0031
+status: Accepted
 phase:
   current: 1
   total: 1
@@ -12,9 +11,11 @@ phase:
 
 ## Status
 
-Superseded
+**Reactivated — Accepted (2026-07-15)**
 
-Replaced by agentmemory Actions + Frontier per ADR-0031 (Actions + Crystals for Director Delegation). Task queues are now handled via memory_action_create with requires dependency chains and memory_frontier for priority-based task selection.
+Originally superseded by ADR-0031 (agentmemory Actions + Crystals). With agentmemory removed per ADR-0050 chain, the infrastructure described in this ADR (`.opencode/memory/prospective/`) was never replaced and remains in active use as of 2026-07-15.
+
+The prospective task system now operates via structured markdown files in `.opencode/memory/prospective/`, with CRUD lifecycle managed by Scribes per the Scribes agent definition.
 
 ## Context
 

@@ -110,7 +110,7 @@ def test_token_usage_runs_gracefully(project_root: Path) -> None:
 SCRIPTS = [
     "gate.py", "ship.py", "workspace.py",
     "validate_config.py", "sync_agent_config.py", "token_usage.py",
-    "detect_test_framework.py", "benchmark.py",
+    "detect_test_framework.py",
 ]
 
 

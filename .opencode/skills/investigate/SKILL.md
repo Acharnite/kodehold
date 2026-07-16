@@ -24,6 +24,14 @@ root cause makes the next bug harder to find. Find the root cause, then fix it.
 
 Gather context before forming any hypothesis.
 
+0. **Check prior memory — has this bug been seen before?**
+   ```
+   search_memories(query="<error-type> <component> bugs investigations", scope="project")
+   ```
+   If results include a prior investigation, READ that report first. There is no
+   point debugging a solved problem. If the prior fix is still in place, this is
+   a recurrence — treat it as an architectural smell, not a fresh bug.
+
 1. **Collect symptoms:** Read error messages, stack traces, and reproduction
    steps. If the user hasn't provided enough context, ask ONE question at a time.
 
@@ -41,8 +49,9 @@ Gather context before forming any hypothesis.
    more evidence before proceeding.
 
 5. **Check `.opencode/memory/` for prior investigations:** Search for prior bug investigation
-   reports in `.opencode/memory/bugs/` or via `graphify query`. Recurring bugs in the
-   same module are an architectural smell, not a coincidence.
+   reports in `.opencode/memory/bugs/`, via `graphify query`, or via
+   `search_memories(scope="project")`. Recurring bugs in the same module are an
+   architectural smell, not a coincidence.
 
 **Output:** A specific, testable hypothesis about what is wrong and why.
 

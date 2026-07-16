@@ -138,29 +138,16 @@ The Director's primary mechanism is direct delegation via the Task tool. No acti
 
 1. **Determine next step** — based on the current phase and what was just completed. Use `todowrite` to track progress when a workflow has more than 2-3 steps.
 
-2. **Pre-flight knowledge search** — before writing the Task prompt:
-   ```
-   graphify query "<delegation-topic> <team>"
-   graphify query "<delegation-topic>"
-   search_memories(query="<delegation-topic> <team> lessons bugs", scope="project")
-   ```
-   Capture the output and include it in the Task prompt's `Relevant Context` section.
-   
-   **Context length guard:** If results exceed ~800 chars, include only the top-2 most relevant snippets (those with highest relevance scores).
+2. **Pre-flight knowledge search** — MANDATORY before every delegation.
+   Load the `preflight` skill with cross-reference between graphify and
+   opencode-mem:
 
-   **When delegation topic contains these keywords, always query with the primary topic first:**
-   | Task keyword | Query with |
-   |--------------|------------|
-   | "agent" / "agents" / "config" | `agent` |
-   | "design" / "doc" / "readme" | `design` |
-   | "adr" | `adr` |
-   | "version" / "release" / "changelog" | `version` |
-   | "plugin" / "capture" | `plugin` |
-   | "deploy" / "ship" / "gate" | `release` |
-   
-   **Error handling:** If `graphify query` fails (timeout/error), log a warning, skip pre-flight, and continue. Never block delegation on search failure.
-   
-   **Hotfix exemption:** For P0/emergency situations, pre-flight may be skipped with explicit user approval and logged reason.
+   ```
+   skill("preflight")
+   ```
+
+   This runs 4 steps: graphify query → search_memories → cross-reference →
+   context assembly. Full protocol in `.opencode/skills/preflight/SKILL.md`.
 
 3. **Delegate to team via Task tool** — the prompt MUST include a `Relevant Context` section:
    ```
