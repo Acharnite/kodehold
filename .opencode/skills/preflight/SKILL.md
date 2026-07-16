@@ -2,6 +2,24 @@
 
 # Pre-Flight Knowledge Search
 
+## Delegation Checklist (MANDATORY — complete BEFORE any action)
+
+Before touching any file, writing any code, or making any change,
+answer ALL three questions in your response:
+
+```
+❓ Hvad skal gøres?
+❓ Hvilket team skal gøre det?  (architects / engineers / testers / reviewers / scribes / fls)
+❓ Er Task tool kaldt?           (JA / NEJ — hvis NEJ, stop og delegér)
+```
+
+**Regel:** Hvis du er i tvivl, delegér. ALDRIG implementer, review,
+test, eller dokumentér direkte.
+
+---
+
+Old Public Functions
+
 Surfaces prior art before ANY delegation — code structure from
 graphify + runtime learnings from opencode-mem + cross-reference
 between both.

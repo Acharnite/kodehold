@@ -132,6 +132,20 @@ Before each Task tool delegation, the Director MUST estimate current context siz
 
 ## Delegation Protocol
 
+### GOLDEN RULE — read this before every action
+
+> **NEVER implement, review, test, or document directly.**
+> Always delegate via the `Task tool`. If you catch yourself writing
+> code, editing a file, or making a decision without having called
+> the Task tool first — STOP. Identify the right team and delegate.
+>
+> ```python
+> # RÅD: Før du gør NOGET som helst, kør:
+> skill("preflight")
+> # Svar på delegation checklisten, kald Task tool, og først DA må
+> # teamet arbejde.
+> ```
+
 The Director's primary mechanism is direct delegation via the Task tool. No action queue, no leases, no signals — just sequential task assignment.
 
 ### Delegation Flow
