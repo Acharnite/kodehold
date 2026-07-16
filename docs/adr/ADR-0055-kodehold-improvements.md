@@ -6,7 +6,7 @@
 
 ## Context
 
-En systematisk undersøgelse af KodeHold-projektet afslørede 13 forbedringsmuligheder på tværs af strukturelle problemer i design doc og agentfiler, kodekvalitet i scripts, og vedligeholdelsesproblemer i konfiguration og skills.
+A systematic investigation of the KodeHold project revealed 13 improvement opportunities across structural issues i design doc og agentfiler, kodekvalitet i scripts, og vedligeholdelsesproblemer i konfiguration og skills.
 
 ### Structural / Design Doc
 

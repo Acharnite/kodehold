@@ -331,7 +331,7 @@ const response = await fetch('./adr-index.json');
 const data = await response.json();
 ```
 
-> **Note:** Selvom fase-info primært lagres i ADR-filernes YAML frontmatter, genererer sync-scriptet `adr-index.json` som et maskinlæsbart JSON data store. Dette JSON-dokument kan queries af andre værktøjer (CI dashboards, rapporter, scripts) uden at parse YAML eller Markdown.
+> **Note:** Although phase info is primarily stored in ADR YAML frontmatter, the sync script generates `adr-index.json` som et maskinlæsbart JSON data store. Dette JSON-dokument kan queries af andre værktøjer (CI dashboards, rapporter, scripts) uden at parse YAML eller Markdown.
 
 **Agentmemory supplement:** For "last changed" timestamps on each ADR card, the viewer may query agentmemory for recent memories mentioning the ADR number. This is a Phase 2 enhancement.
 
@@ -353,7 +353,7 @@ Når en ADR fase skrider frem (f.eks. via "Move to next phase" knap), lagres ove
 - Board'et kan query'e `GET /agentmemory/memories?concepts=adr-phase` for "last changed" timestamps
 - Director kan bruge agentmemory phase-data til at prioritere actions: hvis en ADR er i Phase 2, skal actions med `requires` dependency på den ADR aktiveres
 
-Dette gør board'et til mere end en status-display — det bliver en driver af action-prioritering i fremtidige versioner.
+This makes the board more than a status display — it becomes an action-priority driver in future versions.
 
 **Phase 3 (future):**
 - Standalone drag-and-drop board
