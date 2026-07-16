@@ -140,7 +140,7 @@ Before each Task tool delegation, the Director MUST estimate current context siz
 > the Task tool first — STOP. Identify the right team and delegate.
 >
 > ```python
-> # RÅD: Før du gør NOGET som helst, kør:
+> # TIP: Before doing ANYTHING, run:
 > skill("preflight")
 > # Svar på delegation checklisten, kald Task tool, og først DA må
 > # teamet arbejde.
