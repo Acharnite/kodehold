@@ -48,9 +48,9 @@ Gather context before forming any hypothesis.
 4. **Reproduce:** Can you trigger the bug deterministically? If not, gather
    more evidence before proceeding.
 
-5. **Check `.opencode/memory/` for prior investigations:** Search for prior bug investigation
-   reports in `.opencode/memory/bugs/`, via `graphify query`, or via
-   `search_memories(scope="project")`. Recurring bugs in the same module are an
+5. **Check for prior investigations in opencode-mem:** Search for prior bug investigation
+   reports via `search_memories(query="<error-type> <component> bugs", scope="project")`,
+   or via `graphify query`. Recurring bugs in the same module are an
    architectural smell, not a coincidence.
 
 **Output:** A specific, testable hypothesis about what is wrong and why.
@@ -143,22 +143,16 @@ Status:          DONE | DONE_WITH_CONCERNS | BLOCKED
 ═════════════════════════════════════════
 ```
 
-### Store findings in `.opencode/memory/`
+### Store findings via opencode-mem
 
 Save the investigation report so future sessions can find it:
 
-Write `.opencode/memory/bugs/<component>-<date>.md`:
 ```
----
-type: bug
-concepts: investigations, <component>, <error-type>
-date: <date>
----
-
-[Full debug report content]
+add_memory(content="[Full debug report content]", tags=["bug", "<component>"], scope="project")
 ```
 
-Access via: `graphify query "investigation <component>"`
+Access via: `search_memories(query="investigation <component>", scope="project")` or
+`graphify query "investigation <component>"`
 
 ---
 
@@ -169,4 +163,4 @@ Access via: `graphify query "investigation <component>"`
   do not ship it.
 - **Never say "this should fix it."** Verify and prove it. Run the tests.
 - **If fix touches >5 files → ask** about blast radius before proceeding.
-- **Document everything.** Write findings to `.opencode/memory/bugs/`. The next person debugging this code will thank you.
+- **Document everything.** Store findings via `add_memory(tags=["bug"], scope="project")`. The next person debugging this code will thank you.

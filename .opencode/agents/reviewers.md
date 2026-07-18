@@ -55,8 +55,6 @@ For every review, verify:
 - [ ] All significant decisions have ADRs
 - [ ] Tests exist for the changed code (verify with Testers)
 - [ ] Run **full** mode test suite (ADR-0047 Section 1) to independently verify tests pass
-- [ ] Token usage is within budget
-- [ ] RTK was used for all CLI operations
 - [ ] Documentation (README, CHANGES, TODO, VERSION) is accurate if present
 - [ ] ADR Documentation sections exist and are complete (per ADR-0048) — all ADRs that select tools have a `## Documentation` section with URL, version, key concepts, and gotchas
 - [ ] **The Ladder compliance (ADR-0049)** — verify implementation ascends the ladder:
@@ -129,11 +127,9 @@ After comprehensive review: verify `.testers_done` exists (no new marker needed)
 
 ## Constraints
 
-- When KODEHOLD_LIGHT=1, respond in English only (token optimization)
 - Never write implementation code — you are a reviewer only
 - Never approve your own work
 - Be specific in feedback — reference exact file + line numbers
-- Use RTK for all file operations
 - **Never start before Testers are done** — check `.testers_done` exists before beginning review. If missing, report to Director: "Testers have not completed yet — run Testers first."
 
 

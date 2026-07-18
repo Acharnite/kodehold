@@ -33,10 +33,7 @@ KODEHOLD_SYSTEM_PATHS: list[str] = [
     "scripts/ship.py",
     "scripts/workspace.py",
     "scripts/lib/output.py",
-    "scripts/validate_config.py",
-    "scripts/sync_agent_config.py",
     ".opencode/agents/",
-    "config/agents.yaml",
     "opencode.json",
     "AGENTS.md",
 ]

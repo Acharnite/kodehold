@@ -100,11 +100,10 @@ of persistent memory.
 | 2 | director | changelog-check | (none) | 9 | No |
 | 3 | director | todo-check | (none) | 9 | No |
 | 4 | testers | test-suite | (none) | 9 | No |
-| 5 | director | agentmemory-check | (none) | 9 | No |
-| 6 | director | git-status | (none) | 9 | No |
-| 7 | director | branch-check | (none) | 9 | No |
+| 5 | director | git-status | (none) | 9 | No |
+| 6 | director | branch-check | (none) | 9 | No |
 
-All 7 steps have no dependencies — they can run in parallel (fan-out).
+All 6 steps have no dependencies — they can run in parallel (fan-out).
 
 **Parameters:** `version` (required), `project` (required)
 

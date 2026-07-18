@@ -393,7 +393,7 @@ def main() -> None:
     print("  Director: you must now manually execute:")
     print("    1. Bump VERSION.md (MAJOR/MINOR/PATCH)")
     print("    2. Update CHANGES.md with version + date + changes")
-    print("    3. Store release: Store release note in .opencode/memory/releases/")
+    print("    3. Store release: Store release note via add_memory(tags=['release'], scope='project')")
     print("    4. Delegate structured commit to Scribes")
     print("    5. Push: git push")
     print("    6. Tag: git tag v<ver> && git push origin v<ver>")

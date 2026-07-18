@@ -13,11 +13,10 @@ All delegation rules, triage-check, state transitions, gates, shipping, and work
 - Shipping Gate (8-step process)
 - Workspace management commands
 - Context window & session management
-- Token budget protocol
 
 ## Design Principles & Directives
 
-### Token-Optimized Loading
+### File Loading Strategy
 **Files loaded often must be lean and precise; files loaded less must be descriptive and precise.**
 
 Loaded every session (keep lean, reference-heavy):
@@ -81,4 +80,3 @@ KodeHold works with any LLM provider. Ollama is the primary provider, but the sy
 - Code retrieval: `graphify query "<question>"` — knowledge graph queries via Graphify
 - Memory: `search_memories(query, scope)` — opencode-mem persistent memory
 - Design doc: `docs/design/README.md`
-- File-based memory: `.opencode/memory/`

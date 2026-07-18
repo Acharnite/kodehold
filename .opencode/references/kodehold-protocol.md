@@ -1,39 +1,12 @@
 # KodeHold Protocol — Shared Reference
 
-## RTK Mandatory
+## CLI Operations
 
-All CLI commands must use RTK for token-efficient output.
-
-```bash
-rtk ls           # list files
-rtk read <file>  # read files
-rtk grep <pat>   # search content
-rtk tree         # show tree
-rtk git status   # git status
-rtk git diff     # git diff
-rtk git log      # git log
-```
-
-## Token Budgets (per operation)
-
-| Operation | Max Tokens |
-|-----------|-----------|
-| Context load | 8k |
-| Code generation | 12k |
-| Code review | 8k |
-| Test generation | 8k |
-| Documentation | 4k |
-| Second opinion | 6k |
-
-## Light Mode (32k context) — optional
-
-When `KODEHOLD_LIGHT=1` is set (user explicitly opts in):
-- Collapse Reviewers + Testers into single Quality team
-- Use `.opencode/memory/` checkpoints for persistence, never full file reads
-- Chunk files > 100 lines
-- 28k hard limit per operation
-- No redundant context between messages
-- English-only prompts
+Use OpenCode's native tools for all file and code operations:
+- `glob` for file pattern matching
+- `grep` for content search
+- `read` for file reading
+- `bash` for shell commands
 
 ## Inter-Agent Communication
 
@@ -46,21 +19,17 @@ Reason: <why this team is needed>
 Context: <what context to pass>
 ```
 
-## Persistent Storage Convention
+## Persistent Memory (opencode-mem)
 
-All persistent state is stored in `.opencode/memory/` using structured markdown files:
+All persistent memory is stored via opencode-mem MCP tools (`add_memory`, `search_memories`).
+Every `add_memory` and `search_memories` call MUST include `scope: "project"`.
 
-```
-.opencode/memory/
-├── decisions/      # Architectural decisions
-├── patterns/       # Recurring patterns
-├── lessons/        # Tagged lessons
-├── bugs/           # Bug investigation reports
-├── metrics/        # Token usage and audit data
-├── checkpoints/    # Session checkpoints
-├── prospective/    # Deferred/recurring task definitions
-└── releases/       # Release notes
-```
+Use tags to categorize: `decision`, `pattern`, `bug`, `lesson`, `metrics`, `prospective`, `release`.
+
+Examples:
+- Store a decision: `add_memory(content="...", tags=["decision"], scope="project")`
+- Store a bug finding: `add_memory(content="...", tags=["bug"], scope="project")`
+- Search prior work: `search_memories(query="<topic>", scope="project")`
 
 ## Quality Gate Checklist
 
@@ -69,8 +38,7 @@ Before transitioning between lifecycle states, verify:
 - [ ] ADRs cover all significant decisions
 - [ ] Code matches design doc specs
 - [ ] Tests exist and pass
-- [ ] Token budget is within limits
-- [ ] `.opencode/memory/` is up to date
+- [ ] Memory up to date (relevant context stored via `add_memory`)
 
 ## Shipping Gate Checklist
 
@@ -79,7 +47,7 @@ Before every push, PR, or release, verify:
 - [ ] CHANGES.md entry added (version + date + structured changes)
 - [ ] TODO.md: completed items marked `[x]`, follow-ups added
 - [ ] Test suite green: `bash tests/run.sh` — all pass
-- [ ] Release summary stored in `.opencode/memory/releases/`
+- [ ] Release summary stored via `add_memory(tags=["release"], scope="project")`
 - [ ] Commit message follows `<type>(<scope>): <description>` format
 - [ ] PR created if on feature branch (`gh pr create`)
 - [ ] Tag applied for releases (`git tag v<version> && git push origin v<version>`)
@@ -90,4 +58,4 @@ Ship is BLOCKED if:
 - Any test fails (smoke / init / integration)
 - VERSION.md or CHANGES.md not updated
 - Design doc differs from implementation without an ADR
-- `.opencode/memory/releases/` missing for the release
+- Release summary not stored via `add_memory`

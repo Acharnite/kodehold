@@ -64,7 +64,7 @@ Load via `skill` tool when:
 | When used | During code review (ACTIVE) | Project health / pre-audit / debt tracking |
 | How findings found | Manual scan of diff | Systematic grep/search commands |
 | Score | `net: -<N> lines` | `net: -<N> lines, -<M> deps` |
-| File-based storage | No | Optional (write `.opencode/memory/metrics/` report) |
+| File-based storage | No | Optional (store via `add_memory(tags=["metrics"], scope="project")`) |
 | Frequency | Every PR/review | Per-project, or on-demand |
 
 ---
@@ -395,28 +395,13 @@ Do not count transitive dependencies.
 
 ## Persistent Storage (Optional)
 
-The calling agent may write the audit findings to `.opencode/memory/metrics/` for debt tracking.
+The calling agent may store the audit findings via `add_memory(tags=["metrics"], scope="project")` for debt tracking.
 This is **optional** — the caller decides whether to persist.
 
-### Store as file
+### Store as memory
 
-Write `.opencode/memory/metrics/ponytail-audit-<project>-<date>.md`:
 ```
----
-type: metric
-project: <project>
-concepts: ponytail-audit, debt, over-engineering, baseline
-date: <date>
----
-
-# Ponytail Audit: <project>
-
-net: -<N> lines, -<M> deps possible.
-
-Findings:
-yagni: AbstractRepository... [src/repo/interfaces.py]
-stdlib: custom LRU cache... [src/cache/local.py]
-...
+add_memory(content="# Ponytail Audit: <project>\n\nnet: -<N> lines, -<M> deps possible.\n\nFindings:\nyagni: AbstractRepository... [src/repo/interfaces.py]\nstdlib: custom LRU cache... [src/cache/local.py]\n...", tags=["metrics", "ponytail-audit"], scope="project")
 ```
 
 ### Recall previous audit
@@ -427,7 +412,7 @@ graphify query "ponytail-audit <project>"
 
 ### Persist findings
 
-Write the report to `.opencode/memory/metrics/` so it can be recalled later.
+Store the report via `add_memory(tags=["metrics"], scope="project")` so it can be recalled later.
 
 ---
 

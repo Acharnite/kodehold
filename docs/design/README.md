@@ -20,7 +20,7 @@ The orchestrator is design-document-centric: every project begins with a design 
 |---|-----------|-------------|
 | 1 | **Design-First** | Every project starts with and revolves around a living design document |
 | 2 | **Separation of Concerns** | Distinct teams handle design, implementation, review, testing, and memory |
-| 3 | **Token-Conscious** | Every operation is evaluated for token cost; RTK is used for efficient output |
+| 3 | **Token-Conscious** | Every operation is evaluated for token cost; efficient output through native tools |
 | 4 | **Persistent Memory** | opencode-mem stores all project context, decisions, and rationale across sessions |
 | 5 | **LLM-Agnostic** | Core works with any LLM; Ollama is primary; second-opinion cross-check supported |
 | 6 | **Traceable Decisions** | All architectural decisions are recorded as ADRs in git |
@@ -94,7 +94,7 @@ Verification team. Responsibilities:
 ### 3.6 Scribes
 
 Memory and documentation team. Responsibilities:
-- Manage persistent memory and documentation (store/retrieve project context in `.opencode/memory/`)
+- Manage persistent memory and documentation (store/retrieve project context via opencode-mem)
 - Generate and update project documentation
 - Maintain CHANGELOG
 - Extract knowledge from completed work for future reuse
@@ -271,7 +271,7 @@ INIT → ACTIVE → REVIEW → CLOSED → (REOPEN → ACTIVE)
 | INIT | Design doc created, ADRs drafted, project scoped |
 | ACTIVE | Implementation in progress, teams working |
 | REVIEW | All work completed, Team Meeting review, testing |
-| CLOSED | Project complete, context archived in `.opencode/memory/` |
+| CLOSED | Project complete, context archived in opencode-mem |
 | REOPEN | Project resurrected for new feature or bugfix |
 
 ### 6.2 Quality Gates (Markers)
@@ -302,7 +302,7 @@ See ADR-0016 for the full early review gate specification.
 ### 6.3 Reopening
 
 When a project is reopened:
-1. Director loads project context from `.opencode/memory/` and `search_memories`
+1. Director loads project context via `search_memories(query="<project> recent", scope="project")`
 2. Design doc is updated with new requirements
 3. Impact analysis is performed by Architects → `.impact_analysis_done`
 4. New ADRs are written for significant changes
@@ -319,7 +319,7 @@ To prevent data loss (inspired by ADR-0015 through ADR-0019 being lost when sess
   - `docs(adr): ADR-00XX - <title>` for new ADR files
   - `docs(design): <description>` for design document changes
   - `config: <description>` for agent configuration changes
-- If the user declines, the Director logs the warning in `.opencode/memory/` and continues — data loss risk is acknowledged
+- If the user declines, the Director logs the warning via `add_memory` and continues — data loss risk is acknowledged
 - Scribes verify file persistence before storing pre-transition context and escalate untracked files to the Director
 
 ---
@@ -365,15 +365,11 @@ The code retrieval flow is: **Graphify → opencode-mem**. Agents use Graphify f
 
 > **Note on built-in OpenCode tools:** OpenCode provides platform-level primitives (`search_semantic`, `find_usages`, `get_file_skeleton`, `describe_image`) that exist at the tool level. These are NOT part of KodeHold's documented retrieval workflow. All code retrieval goes through Graphify per ADR-0054. See [ADR-0054](../adr/ADR-0054-replace-opencode-rag-with-graphify.md).
 
-> **Previous systems:** The agentmemory daemon (`iii`, port 3111) was removed per ADR-0050. The file-based `.opencode/memory/` storage proposed in ADR-0050 §5 was never implemented and is superseded by opencode-mem per ADR-0051. OpenCode RAG's standalone `opencode-rag mcp` server was removed per ADR-0054 — Graphify is now the sole code retrieval method. See [ADR-0050](../adr/ADR-0050-agentmemory-to-opencode-rag-migration.md), [ADR-0051](../adr/ADR-0051-opencode-mem-persistent-memory.md), and [ADR-0054](../adr/ADR-0054-replace-opencode-rag-with-graphify.md).
+> **Previous systems:** The agentmemory daemon (`iii`, port 3111) was removed per ADR-0050. The file-based `.opencode/memory/` storage was removed per ADR-0057 — opencode-mem is now the sole memory system. OpenCode RAG's standalone `opencode-rag mcp` server was removed per ADR-0054 — Graphify is now the sole code retrieval method. See [ADR-0050](../adr/ADR-0050-agentmemory-to-opencode-rag-migration.md), [ADR-0051](../adr/ADR-0051-opencode-mem-persistent-memory.md), [ADR-0054](../adr/ADR-0054-replace-opencode-rag-with-graphify.md), and [ADR-0057](../adr/ADR-0057-migrate-file-memory-to-opencode-mem.md).
 
-### 7.3 RTK (Runtime Toolkit)
+### 7.3 CLI Operations
 
-RTK is used for all CLI interaction to reduce token consumption:
-- `rtk ls`, `rtk read`, `rtk grep`, `rtk tree` for file operations
-- `rtk git` for version control
-- `rtk find` for file discovery
-- Compact output format reduces tokens by 40-60%
+OpenCode's native tools (`glob`, `grep`, `read`, `bash`) are used for all file and code operations. No external CLI proxy is required.
 
 ### 7.4 Skills System
 
@@ -383,7 +379,6 @@ via the `skill` tool with zero token cost until invoked.
 
 | Skill | Purpose | Used by |
 |-------|---------|---------|
-| `graphify-knowledge-flow` | Pre-task knowledge retrieval via Graphify knowledge graph queries (callers, definitions, imports, class hierarchy) | All 6 team subagents |
 | `state-awareness` | Lifecycle state check preamble and mismatch reporting | All 6 team subagents |
 | `investigate` | 4-phase systematic debugging (Iron Law, pattern analysis, 3-strike rule) | FLS, Engineers, Reviewers, Director |
 
@@ -391,30 +386,16 @@ See `docs/adr/ADR-0013-investigate-skill.md` for the full ADR on the investigate
 
 ### 7.5 Session Context Compression
 
-On small-context models (Ollama 32K), chat history grows with every delegation round and eventually overflows. Session context compression periodically compresses the running chat into structured checkpoint summaries, reducing context window pressure.
+On small-context models (Ollama 32K), chat history grows with every delegation round and eventually overflows. Session context compression is handled automatically by opencode-mem's auto-capture and compaction — no manual checkpoint protocol is needed.
 
-**Compression triggers:**
-| Trigger | Frequency | Rationale |
-|---------|-----------|-----------|
-| Delegation rounds | Every 4 Task tool invocations | Catches growth before critical |
-| State transitions | After every gate passes | Natural summary point |
-| Explicit request | User says "compress" / "summarize" | Manual override |
+**Compression mechanism:** opencode-mem captures conversation context automatically and compacts memories when limits are reached. This replaces the file-based checkpoint system removed per ADR-0057.
 
-**Summary structure:** Each summary is a 200-400 token document covering: completed work, in-progress items, decisions made, files changed, team assignments, blockers, and context carry-forward. Stored as structured markdown files in `.opencode/memory/checkpoints/` with YAML frontmatter.
+**Agent guidance:**
+- Director session lifecycle uses `search_memories` to load recent context at session start
+- No manual checkpoint files need to be created or managed
+- opencode-mem handles compaction transparently
 
-**Relationship to checkpoints:**
-| Aspect | Summary | Checkpoint |
-|--------|---------|------------|
-| Purpose | Compress running chat | Snapshot full project state |
-| Frequency | Every 4 rounds | Every 8 rounds OR state transition |
-| Content | Decisions, changes, assignments | Full state: completed, in-progress, next |
-| Importance | `high` | `critical` |
-
-**Wake-up integration:** Session start loads the latest summary from `.opencode/memory/checkpoints/` after standard context loading, providing immediate "what happened last time" context.
-
-**Consolidation:** When `session-summary` entries exceed 10, oldest 5 are consolidated into a single "session history" entry.
-
-**Note:** ADR-0052 (Structured Durable Execution) supersedes ADR-0019's unstructured summary approach with a formal YAML frontmatter checkpoint schema and auto-checkpoint on every delegation. See ADR-0052 for the canonical checkpoint format and protocol. ADR-0019 is now Superseded.
+**Note:** ADR-0052 (Structured Durable Execution) was the formal YAML frontmatter checkpoint schema. The checkpoint system has been superseded by opencode-mem's auto-capture per ADR-0057. ADR-0019 (Session Context Compression) is now fully Superseded.
 
 ### 7.6 Adopted Project Symlinks (ADR-0012)
 
@@ -440,7 +421,7 @@ When KodeHold adopts an existing project, `workspace.sh adopt` creates a **symli
 
 ### 7.7 Prospective Memory (ADR-0021)
 
-Prospective memory enables deferred actions, recurring tasks, and future intentions that survive session boundaries. Instead of losing "I should check X next time" when a session ends, tasks are stored in `.opencode/memory/prospective/` and checked at session start.
+Prospective memory enables deferred actions, recurring tasks, and future intentions that survive session boundaries. Instead of losing "I should check X next time" when a session ends, tasks are stored in opencode-mem and checked at session start.
 
 **Scope (v1):**
 - Deferred tasks — execute after a timestamp
@@ -451,7 +432,7 @@ Prospective memory enables deferred actions, recurring tasks, and future intenti
 
 #### Storage Format
 
-Tasks are stored as structured markdown files in `.opencode/memory/prospective/` with YAML frontmatter. The content field uses a structured format:
+Tasks are stored via `add_memory` with `tags: ["prospective"]`. The content uses a structured format:
 
 ```
 [PROSPECTIVE-TASK]
@@ -466,10 +447,6 @@ created_at: <ISO 8601 timestamp>
 status: pending
 ```
 
-**File parameters per task:**
-- YAML type: `prospective`
-- Frontmatter fields: `id`, `type`, `action`, `execute_after`, `recurring_interval`, `priority`, `context`, `status`
-
 #### Task Types
 
 | Type | Fields | Behavior |
@@ -483,13 +460,11 @@ Add a new step in Director's session lifecycle (section "Session Lifecycle" in d
 
 ```
 1.5. Check prospective tasks:
-     ls .opencode/memory/prospective/*.md
-     Parse frontmatter for execute_after <= now()
+     search_memories(query="prospective pending", scope="project")
+     Parse results for execute_after <= now()
      If due tasks found → present to user as "Pending tasks:"
      User decides: execute now / skip / dismiss
 ```
-
-This is a lightweight check — one directory listing, parsed in-context. No new scripts or tools.
 
 #### Task Lifecycle
 
@@ -499,7 +474,7 @@ Created → Pending → [Due] → Executing → Completed
                                Re-created (recurring) or forgotten (deferred)
 ```
 
-- **Created:** Scribes writes `.opencode/memory/prospective/<id>-<slug>.md` with status=pending
+- **Created:** Scribes stores via `add_memory(content="...", tags=["prospective"], scope="project")`
 - **Due:** Session-start check finds `execute_after <= now()` — presented to Director
 - **Executing:** Director delegates to appropriate team
 - **Completed:** Scribes updates status in the file's frontmatter or removes the file
@@ -522,7 +497,7 @@ Prospective tasks are **separate** from TODO.md. TODO.md tracks "what we're buil
 
 ```markdown
 ## Prospective Tasks
-- 3 deferred tasks in `.opencode/memory/prospective/` (next due: 2026-06-01)
+- 3 deferred tasks in opencode-mem (next due: 2026-06-01)
 ```
 
 Scribes updates this line when creating/expiring tasks.
@@ -555,18 +530,7 @@ KodeHold does not mandate a specific LLM model. The user's global OpenCode model
 
 This architecture is documented in ADR-0053 (Hybrid Embedding Strategy — sentence-transformers + Ollama).
 
-### 8.2 Light Mode (32k Context)
-
-An optional execution mode for users who want to run KodeHold on a local LLM with at least 32k context. Activated by `KODEHOLD_LIGHT=1`:
-- Aggressive RTK usage for all tool output
-- Agentmemory summaries instead of full context loading
-- Chunked processing for large files
-- Minimal prompt templates
-- 28k token budget per operation
-- Collapsed Reviewers + Testers into single Quality team
-- English-only responses (~15% token savings)
-
-### 8.3 Second Opinion
+### 8.2 Second Opinion
 
 For critical decisions, the Director can request a second opinion from a different AI model:
 - Design decisions above a complexity threshold
@@ -587,8 +551,8 @@ Protocol:
 
 | Technique | Application | Est. Savings |
 |-----------|------------|--------------|
-| RTK compact output | All CLI commands | 40-60% |
-| Agentmemory summaries | Context loading | 30-50% |
+| Native tools (glob/grep/read) | All CLI commands | built-in |
+| opencode-mem auto-capture | Context loading | 30-50% |
 | Session context compression | Running chat history | 60-80% per cycle |
 | Minimal prompts | All agent messages | 20-30% |
 | Chunked processing | Large file handling | 50-70% |
@@ -603,9 +567,9 @@ Token budget tracking is implemented via a lightweight protocol:
 
 2. **Director's warning protocol**: Before each delegation, Director runs the token-usage script and compares usage against per-phase budgets (ADR-0007). If any team exceeds 80% of its phase budget, a warning is issued; if exceeds 100%, the user is alerted and suggested to compress context.
 
-3. **Session compression logging**: During session compression, Scribes runs the token-usage script and includes per-team token consumption in the checkpoint summary (field `TokenUsage`). This provides a historical record of token usage across sessions.
+3. **Session context logging**: During context compression, Scribes runs the token-usage script and stores per-team token consumption via `add_memory(tags=["metrics"])`. This provides a historical record of token usage across sessions.
 
-4. **Checkpoint token usage**: Session checkpoints also include token usage per team, enabling quick assessment when resuming.
+4. **Context token usage**: Session context also includes token usage per team, enabling quick assessment when resuming.
 
 The script provides approximate token counts based on OpenCode's aggregated session data. It is not real-time but reflects cumulative usage per team for the current project.
 
@@ -615,7 +579,6 @@ The script provides approximate token counts based on OpenCode's aggregated sess
 
 ```
 kodehold/
-├── .opencode/memory/              # File-based persistent memory (decisions, patterns, lessons, metrics, checkpoints, prospective)
 ├── .opencode/                     # OpenCode agent/subagent configs
 │   ├── opencode.json              # Local overrides
 │   ├── agents/
@@ -627,25 +590,18 @@ kodehold/
 │   │   ├── scribes.md             # Memory and documentation (+ deprecated YAML frontmatter)
 │   │   ├── director.md            # Orchestrator (+ deprecated YAML frontmatter)
 │   │   └── second-opinion.md      # Cross-model review (+ deprecated YAML frontmatter)
-│   ├── commands/
-│   │   ├── recall.md              # Knowledge recall command
-│   │   └── remember.md            # Memory persistence command
 │   ├── references/
 │   │   └── kodehold-protocol.md   # Shared protocol reference
 │   ├── plugins/
 │   │   └── graphify.js          # Graphify knowledge graph plugin
 │   └── skills/                    # Reusable skills
 │       ├── README.md              # Skill index
-│       ├── graphify-knowledge-flow/
-│       │   └── SKILL.md           # Pre-task knowledge retrieval via Graphify
 │       ├── investigate/
 │       │   └── SKILL.md           # Systematic debugging protocol (4 phases)
 │       ├── ponytail-audit/
 │       │   └── SKILL.md           # Whole-repo over-engineering audit
 │       ├── ponytail-review/
 │       │   └── SKILL.md           # Diff-level over-engineering review
-│       ├── resume/
-│       │   └── SKILL.md           # Session resume from checkpoint
 │       └── state-awareness/
 │           └── SKILL.md           # Lifecycle state checking + mismatch protocol
 ├── config/                        # YAML-based configuration (ADR-0037)
@@ -691,6 +647,7 @@ kodehold/
 
 ## 11. Changelog
 
+- **v1.22.0 (2026-07-18):** ADR-0057 completion — removed all file-based `.opencode/memory/` references from design doc. Updated §3.6 (Scribes), §6.1 (CLOSED state), §6.3 (Reopening), §6.4 (Commit Protection), §7.2 (Previous systems note corrected), §7.5 (Session Context Compression rewritten to reflect opencode-mem auto-capture), §7.7 (Prospective Memory updated to use `add_memory`/`search_memories`), §9 (Token Optimization table), §10 (File Layout — removed `.opencode/memory/`, `commands/`, `graphify-knowledge-flow`, `resume` skill). Removed checkpoint/compression protocol references. See ADR-0057 for full migration details.
 - **v1.21.0 (2026-07-14):** ADR-0054 completion — replaced all remaining OpenCode RAG references with Graphify across all documentation. Created `graphify-knowledge-flow` skill to replace `opencode-rag-knowledge-flow`. Updated AGENTS.md, design doc §7.2/§7.4/§10, skills README, root README, ADR-0050, ADR-0051, and config/agents.yaml. Graphify is now the sole documented code retrieval method; platform-level OpenCode RAG primitives (search_semantic, find_usages, get_file_skeleton, describe_image) are explicitly noted as not part of KodeHold's workflow.
 - **v1.20.0 (2026-07-14):** ADR-0054: OpenCode RAG → Graphify migration. Replaced standalone `opencode-rag mcp` server with Graphify knowledge graph as the sole code retrieval mechanism. Graphify handles all code retrieval; built-in OpenCode RAG tools are platform-level primitives, not part of KodeHold's documented workflow. Updated Section 5 (ADR Index) and Section 7.2 (Persistent Memory & Knowledge Retrieval) with Graphify as sole retrieval layer. References ADR-0054.
 - **v1.19.0 (2026-07-09):** Updated Section 8.1 (Bring Your Own Model) to document hybrid embedding strategy: sentence-transformers on CPU for embeddings (bge-m3), Ollama for LLM inference (qwen3.5:9b). Replaces previous vLLM dual-instance plan. References ADR-0053 (Hybrid Embedding Strategy — sentence-transformers + Ollama).

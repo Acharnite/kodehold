@@ -13,8 +13,8 @@ KodeHold simulates a disciplined software organization where specialized AI agen
 
 - **Design-first** — no code without an approved design document
 - **Separation of concerns** — distinct teams for design, implementation, review, testing, memory, and front-line support
-- **Token-conscious** — every operation evaluated for token cost; RTK for compact CLI output
-- **Persistent memory** — full project context preserved across sessions via Graphify knowledge graph queries (`graphify query`) and file-based storage (`.opencode/memory/`)
+- **Token-conscious** — every operation evaluated for token cost
+- **Persistent memory** — full project context preserved across sessions via Graphify knowledge graph queries (`graphify query`) and opencode-mem (`search_memories`/`add_memory`)
 - **Traceable decisions** — all architecture decisions recorded as ADRs (Nygaard format)
 - **LLM-agnostic** — bring your own model; second-opinion cross-check supported via different providers
 - **Gate-driven lifecycle** — every state transition validated by automated gates; no skipping steps
@@ -28,7 +28,7 @@ Director                        ← orchestrator, lifecycle gates, delegation, s
 ├── Engineers    — implementation, refactoring, bug fixes
 ├── Testers      — testing, verification, regression suites
 ├── Reviewers    — code review, design review, second opinion coordination
-├── Scribes      — documentation, `.opencode/memory/`, knowledge extraction
+├── Scribes      — documentation, opencode-mem, knowledge extraction
 └── FLS          — front line support, triage, hotfix, escalation
 ```
 
@@ -43,7 +43,7 @@ INIT → ACTIVE → REVIEW → CLOSED ↔ REOPEN
 | INIT | Design doc created, ADRs drafted, project scoped |
 | ACTIVE | Implementation — Engineers → **Testers** → **Reviewers** (sequential, enforced) |
 | REVIEW | Final gate — Team Meeting reviews all work across all 6 teams |
-| CLOSED | Complete, context stored in `.opencode/memory/` and design docs |
+| CLOSED | Complete, context stored in opencode-mem and design docs |
 | REOPEN | Resurrected for new features or bugfixes |
 
 Each transition runs automated gates via `scripts/gate.sh`. Agents check state before work and refuse if in the wrong phase. The ACTIVE→REVIEW gate enforces that Testers complete before Reviewers begin (`.testers_done` marker).
@@ -63,7 +63,7 @@ All agents follow **read-before, update-after**:
 | Engineers | Implementation, code, feature, bugfix, refactor | — |
 | Testers | Test, verify, regression, QA | Must finish before Reviewers |
 | Reviewers | Review, code review, design review | Must run after Tests pass |
-| Scribes | Memory (`.opencode/memory/`), documentation, changelog | — |
+| Scribes | Memory (opencode-mem), documentation, changelog | — |
 | FLS | Support, hotfix, triage, minor change | — |
 
 ## Workspaces
@@ -81,7 +81,7 @@ For critical decisions, the Director can request a second opinion from a **diffe
 ## Quick Start
 
 ```bash
-# Prerequisites: OpenCode, RTK v0.40+
+# Prerequisites: OpenCode
 git clone https://github.com/Acharnite/kodehold.git
 cd kodehold
 opencode
@@ -106,7 +106,6 @@ The Director agent loads automatically as the default agent. Start by reading `A
 ## Requirements
 
 - **OpenCode** — agent framework
-- **RTK** v0.40+ — token-optimized CLI (`pip install rtk`)
 - **Ollama** or another LLM provider
 
 ## Python Environment
@@ -127,11 +126,9 @@ python3 -m pytest tests/ -v
 
 **Dependencies** (see `requirements.txt`):
 
-| Package      | Used by                                      |
-|-------------|----------------------------------------------|
-| `pyyaml`    | `validate_config.py`, `sync_agent_config.py` |
-| `jsonschema`| Test suite (`test_yaml_config.py`)            |
-| `pytest`    | Test suite                                   |
+| Package      | Used by                     |
+|-------------|------------------------------|
+| `pytest`    | Test suite                   |
 
 > **Note:** `.venv/` is in `.gitignore` — it won't be committed.
 

@@ -81,12 +81,10 @@ When in doubt, run `realpath workspaces/<name>` to confirm the symlink target ex
     - Mark intentional simplifications with a `ponytail:` comment — name the ceiling and upgrade path.
     - **NOT lazy about:** trust-boundary input validation, error handling that prevents data loss, security, accessibility, anything explicitly requested in the design doc.
 3. Read existing code to understand conventions
-4. Implement using RTK for all file/git operations: `rtk ls`, `rtk read`, `rtk grep`
-5. Run RTK-compact commands to minimize token consumption
-6. **Debug systematically** — if the task involves fixing a bug, first load the `.opencode/skills/investigate/SKILL.md` skill and run its 4-phase debugging protocol. Never fix without root cause.
-7. Never review your own code — always submit to Reviewers
-8. Never write tests — that is the Testers' role
-9. **Verify your code** — run **quick** mode tests on the affected files before handing off to Testers:
+5. **Debug systematically** — if the task involves fixing a bug, first load the `.opencode/skills/investigate/SKILL.md` skill and run its 4-phase debugging protocol. Never fix without root cause.
+6. Never review your own code — always submit to Reviewers
+7. Never write tests — that is the Testers' role
+8. **Verify your code** — run **quick** mode tests on the affected files before handing off to Testers:
    - See ADR-0047 (Universal Test Execution Standard) for modes, venv discovery, and commands
    - Use `python3 scripts/detect_test_framework.py` for non-Python projects
 
@@ -98,7 +96,6 @@ After completing implementation work:
 
 ## Constraints
 
-- When KODEHOLD_LIGHT=1, respond in English only (token optimization)
 - Never implement without an approved design document section reference
 - Chunk files > 150 lines — process one section at a time
 - Use minimal prompts — no explanatory text, no chain-of-thought examples

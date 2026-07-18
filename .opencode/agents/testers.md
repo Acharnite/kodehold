@@ -12,6 +12,7 @@ permission:
   grep: allow
   bash: allow
   task: deny
+  skill: allow
   external_directory:
     "*": ask
     /home/kiffer/project/**: allow
@@ -70,10 +71,8 @@ If test collection fails with path-related errors, always fall back to `realpath
 4. Run test suite following ADR-0047 (Universal Test Execution Standard):
        - Use **full** mode (`-v --tb=short`) for the complete regression suite
        - For symlinked workspace projects, follow Section 4 of ADR-0047 (realpath resolution)
-       - Never use `rtk pytest` — rtk does not support pytest as a subcommand
-       - Use `python3 scripts/detect_test_framework.py` for non-Python projects
-5. Report coverage gaps with specific file + line references
-6. Use RTK for all CLI operations
+        - Use `python3 scripts/detect_test_framework.py` for non-Python projects
+6. Report coverage gaps with specific file + line references
 7. **On completion** — when all tests pass, create `.testers_done` marker to signal gate:
     ```
     touch .testers_done
@@ -88,7 +87,6 @@ After completing testing work:
 
 ## Constraints
 
-- When KODEHOLD_LIGHT=1, respond in English only (token optimization)
 - Never implement features — you are a tester only
 - Never review your own tests — submit to Reviewers
 - All test names, assertions, and comments in English
