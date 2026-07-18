@@ -13,6 +13,7 @@ Usage:
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import re
@@ -538,76 +539,61 @@ def ws_ensure_git(name: str) -> None:
 # ── CLI ───────────────────────────────────────────────────────────────────
 
 
+def _build_parser() -> argparse.ArgumentParser:
+    """Build the argument parser with subcommands."""
+    parser = argparse.ArgumentParser(
+        prog="workspace.py",
+        description="KodeHold Workspace Manager — create, list, and manage project workspaces",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""Transitions:
+  INIT_TO_ACTIVE, ACTIVE_TO_REVIEW, REVIEW_TO_CLOSED,
+  CLOSED_TO_REOPEN, REOPEN_TO_ACTIVE""",
+    )
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    init_p = sub.add_parser("init", help="Create a new project workspace from scratch")
+    init_p.add_argument("name", help="Workspace slug (e.g. my-project)")
+
+    adopt_p = sub.add_parser("adopt", help="Adopt an existing project (symlink + KodeHold bootstrap)")
+    adopt_p.add_argument("name", help="Workspace slug")
+    adopt_p.add_argument("path", help="Path to existing project directory")
+
+    sub.add_parser("list", help="List all workspaces")
+
+    state_p = sub.add_parser("state", help="Show lifecycle state of a workspace")
+    state_p.add_argument("name", help="Workspace name")
+
+    gate_p = sub.add_parser("gate", help="Run a gate transition on a workspace")
+    gate_p.add_argument("name", help="Workspace name")
+    gate_p.add_argument("transition", help="Transition (e.g. INIT_TO_ACTIVE)")
+
+    deploy_p = sub.add_parser("deploy-ready", help="Check if workspace is ready to deploy")
+    deploy_p.add_argument("name", help="Workspace name")
+
+    git_p = sub.add_parser("ensure-git", help="Initialize git repo for an existing workspace (backfill)")
+    git_p.add_argument("name", help="Workspace name")
+
+    return parser
+
+
 def main() -> None:
     """Main entry point."""
-    if len(sys.argv) < 2:
-        print("KodeHold Workspace Manager")
-        print()
-        print("Usage: python3 scripts/workspace.py <command> [options]")
-        print()
-        print("Commands:")
-        print("  init <name>         Create a new project workspace from scratch")
-        print("  adopt <name> <path> Adopt an existing project (symlink + KodeHold bootstrap)")
-        print("  list                List all workspaces")
-        print("  state <name>        Show lifecycle state of a workspace")
-        print("  gate <name> <t>     Run a gate transition on a workspace")
-        print("  deploy-ready <name> Check if workspace is ready to deploy")
-        print("  ensure-git <name>   Initialize git repo for an existing workspace (backfill)")
-        print()
-        print("Transitions:")
-        print("  INIT_TO_ACTIVE, ACTIVE_TO_REVIEW, REVIEW_TO_CLOSED,")
-        print("  CLOSED_TO_REOPEN, REOPEN_TO_ACTIVE")
-        print()
-        sys.exit(1)
+    parser = _build_parser()
+    args = parser.parse_args()
 
     # Change to project root
     os.chdir(str(_PROJECT_ROOT))
 
-    command = sys.argv[1]
-
-    if command == "init":
-        if len(sys.argv) < 3:
-            print("Usage: python3 scripts/workspace.py init <name>")
-            sys.exit(1)
-        ws_init(sys.argv[2])
-
-    elif command == "adopt":
-        if len(sys.argv) < 4:
-            print("Usage: python3 scripts/workspace.py adopt <name> <path>")
-            sys.exit(1)
-        ws_adopt(sys.argv[2], sys.argv[3])
-
-    elif command == "list":
-        ws_list()
-
-    elif command == "state":
-        if len(sys.argv) < 3:
-            print("Usage: python3 scripts/workspace.py state <name>")
-            sys.exit(1)
-        ws_state(sys.argv[2])
-
-    elif command == "gate":
-        if len(sys.argv) < 4:
-            print("Usage: python3 scripts/workspace.py gate <name> <transition>")
-            sys.exit(1)
-        ws_transition(sys.argv[2], sys.argv[3])
-
-    elif command == "deploy-ready":
-        if len(sys.argv) < 3:
-            print("Usage: python3 scripts/workspace.py deploy-ready <name>")
-            sys.exit(1)
-        ws_deploy_ready(sys.argv[2])
-
-    elif command == "ensure-git":
-        if len(sys.argv) < 3:
-            print("Usage: python3 scripts/workspace.py ensure-git <name>")
-            sys.exit(1)
-        ws_ensure_git(sys.argv[2])
-
-    else:
-        print(f"Unknown command: {command}")
-        print("Run without arguments to see usage.")
-        sys.exit(1)
+    dispatch = {
+        "init": lambda: ws_init(args.name),
+        "adopt": lambda: ws_adopt(args.name, args.path),
+        "list": lambda: ws_list(),
+        "state": lambda: ws_state(args.name),
+        "gate": lambda: ws_transition(args.name, args.transition),
+        "deploy-ready": lambda: ws_deploy_ready(args.name),
+        "ensure-git": lambda: ws_ensure_git(args.name),
+    }
+    dispatch[args.command]()
 
 
 if __name__ == "__main__":

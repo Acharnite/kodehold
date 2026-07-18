@@ -122,6 +122,27 @@ def cleanup_markers_on_pass() -> None:
     pass_msg(f"Lifecycle markers cleaned up: {' '.join(cleanup_markers)}")
 
 
+def _emit_reviewer_output(
+    result: str,
+    transition: str,
+    validate_only: bool,
+    checks: dict[str, str],
+    markers_required: str,
+    markers_cleanup: list[str],
+) -> None:
+    """Emit structured reviewer mode output."""
+    print("─── Reviewer Mode Output ───")
+    print(f"GATE_RESULT:{result}")
+    print(f"TRANSITION:{transition}")
+    print(f"VALIDATE_ONLY:{str(validate_only).lower()}")
+    checks_line = ",".join(f"{k}:{v}" for k, v in checks.items())
+    print(f"CHECKS:{checks_line}")
+    print(f"MARKERS_REQUIRED:{markers_required}")
+    if markers_cleanup:
+        print(f"MARKERS_CLEANUP:{' '.join(markers_cleanup)}")
+    print("────────────────────────────")
+
+
 def is_noninteractive() -> bool:
     """Check if running in non-interactive mode."""
     val = os.environ.get("OPENCODE_NONINTERACTIVE", "").lower()
@@ -670,12 +691,10 @@ def main() -> None:
         print(f"  {YELLOW}━━━ KodeHold self-modification detected — skipping gate checks ━━━{NC}")
         print()
         if args.reviewer_mode:
-            print("─── Reviewer Mode Output ───")
-            print("GATE_RESULT:PASS")
-            print(f"TRANSITION:{args.transition}")
-            print(f"VALIDATE_ONLY:{str(args.validate_only).lower()}")
-            print("CHECKS:self_modification:PASS")
-            print("────────────────────────────")
+            _emit_reviewer_output(
+                "PASS", args.transition, args.validate_only,
+                {"self_modification": "PASS"}, "", [],
+            )
         sys.exit(0)
 
     # Dispatch to transition function
@@ -730,18 +749,11 @@ def main() -> None:
 
     # Reviewer mode output
     if args.reviewer_mode:
-        print("─── Reviewer Mode Output ───")
-        print(f"GATE_RESULT:{'PASS' if gate_failed == 0 else 'BLOCKED'}")
-        print(f"TRANSITION:{args.transition}")
-        print(f"VALIDATE_ONLY:{str(args.validate_only).lower()}")
-        checks_line = ",".join(
-            f"{k}:{v}" for k, v in check_results.items()
+        _emit_reviewer_output(
+            "PASS" if gate_failed == 0 else "BLOCKED",
+            args.transition, args.validate_only,
+            check_results, markers_required, cleanup_markers,
         )
-        print(f"CHECKS:{checks_line}")
-        print(f"MARKERS_REQUIRED:{markers_required}")
-        if cleanup_markers:
-            print(f"MARKERS_CLEANUP:{' '.join(cleanup_markers)}")
-        print("────────────────────────────")
 
     # In validate-only mode, do NOT clean markers or modify state
     if not args.validate_only and gate_failed == 0:
