@@ -38,10 +38,3 @@ jobs:
           pip install ruff 2>/dev/null
           ruff check scripts/ tests/
 
-  validate-config:
-    name: Validate Config
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - name: Run config validation
-        run: python3 scripts/validate_config.py

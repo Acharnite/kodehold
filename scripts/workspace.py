@@ -32,7 +32,6 @@ from scripts.lib.output import (  # noqa: E402
     fail_msg,
     warn,
     info,
-    is_self_modification,
 )
 
 WORKSPACE_ROOT = "workspaces"
