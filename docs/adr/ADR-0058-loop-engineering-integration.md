@@ -30,7 +30,7 @@ The loop-engineering ecosystem provides structured tooling:
 |------|---------|-------------------|
 | `loop-init` | Scaffold new loop | `workspace.sh init` |
 | `loop-audit` | Loop Readiness Score (0-100) | gate.py (binary pass/fail, no score) |
-| `loop-cost` | Token estimation per run | `token-usage.sh` (referenced, not implemented) |
+| `loop-cost` | Token estimation per run | None |
 | `loop-sync` | Drift detection (state vs doc) | Manual ADR/design doc review |
 | `loop-gate` | Declarative gate enforcement | gate.py (hardcoded Python) |
 | `loop-context` | Memory manager | opencode-mem (via MCP) |
@@ -75,11 +75,10 @@ KodeHold IS loop engineering with a strong team metaphor. The missing pieces are
 |-----------|------|----------|
 | **P1.1** Run `loop-audit` on KodeHold | Establish baseline Loop Ready Score. Document gaps. Target ≥80 before Phase 2. Note: `loop-audit` CLI availability should be validated (`npx @cobusgreyling/loop-audit --version`) before this milestone begins — do not assume the tool works without verification. | MUST |
 | **P1.2** Write `config/gate.yaml` | Declarative gate definitions (schemas, markers, checks). Compatible with loop-gate. Does NOT replace gate.py yet — runs alongside it. | MUST |
-| **P1.3** Implement `scripts/token_usage.py` | Query OpenCode SQLite DB for per-team token counts. JSON output. Replaces the referenced-but-not-implemented `token-usage.sh`. Uses `search_memories(query="session_token", tags=["loop_cost"])` for historical tracking. | MUST |
-| **P1.4** Token Budget Protocol v2 | Modernize ADR-0007 budgets (see §6 below). | MUST |
-| **P1.5** Write `STATE.md` | Human-readable loop state file alongside `.kodehold-state`. Documents active loops, last run times, health status. Updated by Scribes after each loop iteration. | SHOULD |
+| **P1.3** Token Budget Protocol v2 | Modernize ADR-0007 budgets (see §6 below). | MUST |
+| **P1.4** Write `STATE.md` | Human-readable loop state file alongside `.kodehold-state`. Documents active loops, last run times, health status. Updated by Scribes after each loop iteration. | SHOULD |
 
-**Phase 1 completion gate:** Loop Ready Score documented + gate.yaml validated + token_usage.py functional.
+**Phase 1 completion gate:** Loop Ready Score documented + gate.yaml validated.
 
 #### Phase 2: Automation (Requires Phase 1 Complete)
 
@@ -90,7 +89,6 @@ KodeHold IS loop engineering with a strong team metaphor. The missing pieces are
 | **P2.1** Daily Triage Loop | Cron job runs `opencode run` with a triage prompt every morning. Agent reads recent `search_memories`, checks for stale PRs, failing CI, uncommitted ADRs. Produces a report (stored via `add_memory` and appended to `loop-run-log.md`). No automated fixes. | L1 (report-only) |
 | **P2.2** PR Babysitter Loop | Cron job checks open PRs → updates stale PRs, flags merge conflicts, notifies if review >24h pending. | L1 (report-only) |
 | **P2.3** loop-sync Drift Detection | Weekly cron job compares design doc ADR index vs actual files, state file vs marker files, TODO.md vs completed ADRs. Reports drift without fixing. | L1 (report-only) |
-| **P2.4** Token Budget Monitoring | Director runs `token_usage.py` before each delegation. 80% → warning, 100% → alert + suggest context compression. Logged to `add_memory(tags=["loop_cost"])`. | N/A (manual gate) |
 
 **Phase 2 completion gate:** Three loops running for 7 consecutive weekdays with at least one meaningful finding or an explicit "no issues found" report per loop per day (empty runs do not count as successful). Loop Ready Score re-evaluated.
 
@@ -226,11 +224,11 @@ Modernize ADR-0007's budgets with loop-engineering integration:
 | Documentation | 4k | Code + decisions |
 | Second opinion | 6k | Cross-model validation |
 
-**Budget enforcement:** Per-phase budgets are **guidelines** — they trigger warnings at 80% and alerts at 100%, but only the 200% threshold is a hard stop that refuses delegation. The 8k context load budget is intentionally conservative; exceeding it does not block work. Budgets serve as awareness tools, not enforcement gates. Actual token consumption is tracked via `token_usage.py` to inform future budget calibration.
+**Budget enforcement:** Per-phase budgets are **guidelines** — they trigger warnings at 80% and alerts at 100%, but only the 200% threshold is a hard stop that refuses delegation. The 8k context load budget is intentionally conservative; exceeding it does not block work. Budgets serve as awareness tools, not enforcement gates.
 
 #### 6.2 Per-Automation-Run Caps (NEW)
 
-Each autonomous loop run has a hard token cap, enforced by `token_usage.py` being checked after each `opencode run` invocation. If a run exceeds its cap, the loop is paused (writes `.loop_paused` marker) and an alert is stored via `add_memory`.
+Each autonomous loop run has a hard token cap, enforced by checking token consumption after each `opencode run` invocation. If a run exceeds its cap, the loop is paused (writes `.loop_paused` marker) and an alert is stored via `add_memory`.
 
 | Loop | Max Tokens/Run | Rationale |
 |------|---------------|-----------|
@@ -257,40 +255,13 @@ Removed by:
 - **Force-resume:** User can `rm .loop_pause_all` at any time to resume immediately.
 - After investigation + fix, Scribes removes the marker.
 
-#### 6.4 Cost Tracking (NEW)
-
-`token_usage.py` queries OpenCode's SQLite database for aggregated token counts:
-
-```
-# Output format (JSON)
-{
-  "period": "2026-07-21",
-  "teams": {
-    "architects": 4200,
-    "engineers": 8900,
-    "testers": 1200,
-    "reviewers": 3400,
-    "scribes": 800,
-    "fls": 0,
-    "director": 2100
-  },
-  "total": 20600,
-  "loop_runs": {
-    "daily_triage": { "runs": 5, "tokens": 12000, "avg_per_run": 2400 }
-  }
-}
-```
-
-Stored via `add_memory(content="...", scope="project", tags=["loop_cost"])` for historical tracking.
-
-#### 6.5 Director's Warning Protocol (Updated)
+#### 6.4 Director's Warning Protocol (Updated)
 
 Before each delegation, Director:
-1. Runs `scripts/token_usage.py` (if available)
-2. Checks against per-phase budget
-3. **80% of budget** → warns user: "Approaching token budget for `<phase>`: `<current>`/`<max>`"
-4. **100% of budget** → alerts user: "Token budget exceeded. Consider context compression or smaller scope."
-5. **200% of budget** → hard stop: refuses delegation, suggests session reset
+1. Checks against per-phase budget
+2. **80% of budget** → warns user: "Approaching token budget for `<phase>`: `<current>`/`<max>`"
+3. **100% of budget** → alerts user: "Token budget exceeded. Consider context compression or smaller scope."
+4. **200% of budget** → hard stop: refuses delegation, suggests session reset
 
 ### 7. State Management: Dual-State Files
 
@@ -357,7 +328,6 @@ ADR-0007 (Token Optimization Strategy) is superseded by this ADR:
 - **File chunking >150 lines** → superseded by Graphify's structural queries
 - **Context deduplication** → handled by opencode-mem auto-capture
 - **Per-phase token budgets** → modernized and extended in this ADR (§6)
-- **Token tracking** → replaced by `token_usage.py` + loop-cost integration
 
 ADR-0007 status changes from **Accepted** to **Superseded** with reference to this ADR.
 
@@ -375,7 +345,6 @@ ADR-0007 status changes from **Accepted** to **Superseded** with reference to th
 ### Positive
 
 - **Operational maturity:** KodeHold graduates from a solely human-triggered system to one with autonomous maintenance loops. Design work (Architects) and implementation (Engineers) remain human-triggered; only maintenance/observation is automated.
-- **Token cost visibility:** `token_usage.py` + loop-cost tracking provides concrete per-loop and per-team token consumption data, replacing the aspirational budgets of ADR-0007 with measurable reality.
 - **Safety-first automation:** All automation starts at L1 (report-only). L2/L3 requires proven reliability. Kill switch (`loop_pause_all`) provides emergency stop with 24-hour auto-recovery. Per-run caps prevent runaway loops. Cron wrapper script creates `.loop_error` markers for FLS triage on failure.
 - **Declarative gates:** `config/gate.yaml` makes gate definitions auditable, diffable, and loop-gate compatible — replacing 771 lines of Python with a structured YAML file + thin wrapper.
 - **Drift detection:** loop-sync prevents the "design doc says X, code does Y" problem that arises when loops run against stale context.
@@ -386,7 +355,6 @@ ADR-0007 status changes from **Accepted** to **Superseded** with reference to th
 - **Integration complexity:** Three phases spanning weeks/months. Phase dependencies must be respected (Phase 2 cannot start without Phase 1's baseline score and token tracking).
 - **Token overhead of loops:** Daily Triage + PR Babysitter + Drift Detection add ~9k tokens/day (3k + 2k + 4k). Even at conservative rates (~$3/M tokens), this adds marginal cost. But for local Ollama models, context window pressure is the real concern.
 - **Cron fragility:** Cron jobs have no intrinsic error handling. A failed `opencode run` invocation could silently fail. Mitigation: The `scripts/loop-run.sh` wrapper script logs exit codes and creates `.loop_error` markers on failure (preventive, not reactive). Additional mitigations: loop-pause-all auto-created on token cap breach; STATE.md tracks last run times; FLS triages `.loop_error` markers.
-- **OpenCode SQLite dependency:** `token_usage.py` reads OpenCode's internal database schema, which is not a public API. Schema changes could break the script. Mitigation: schema version check + graceful degradation.
 - **Design document impact:** This ADR's adoption requires updates to `docs/design/README.md`: ADR Index (add ADR-0058), Token Optimization section (mark as superseded by ADR-0058), Architecture Overview (add loop-engineering scheduling layer), and Implementation Plan (add Phase 1-3 roadmap milestones).
 
 ### Risks
@@ -403,18 +371,16 @@ ADR-0007 status changes from **Accepted** to **Superseded** with reference to th
 |-------|-----------|----------|-------------|
 | P1.1 | loop-audit baseline | 1 session | Validate `loop-audit` CLI availability first |
 | P1.2 | gate.yaml | 2 sessions | Analyze all 5 gate.py transitions |
-| P1.3 | token_usage.py | 1 session | OpenCode SQLite schema analysis |
 | P1.4 | ADR-0007 deprecation | Done (this ADR) | — |
 | P1.5 | STATE.md | 1 session | Scribes workflow update |
 | P2.1 | Daily Triage Loop | 2 sessions | Phase 1 complete, cron + wrapper setup |
 | P2.2 | PR Babysitter Loop | 1 session | P2.1 patterns established |
 | P2.3 | loop-sync | 2 sessions | Design doc/index analysis |
-| P2.4 | Token Budget Monitoring | 1 session | P1.3 complete |
 | P3.1 | Worktree ADR + implementation | 3+ sessions | Separate ADR, extensive testing |
 | P3.2 | Goal Mode Skill | 2 sessions | Prospective memory (ADR-0021) |
 | P3.3 | Gate Migration | 1 session | gate.yaml validated over months |
 
-**Phase 1 total:** ~5 sessions (1-2 weeks).
+**Phase 1 total:** ~4 sessions (1-2 weeks).
 **Phase 2 total:** ~6 sessions (2-3 weeks, plus 7-day burn-in).
 **Phase 3 total:** ~6+ sessions (3+ weeks, worktree ADR is largest unknown).
 
@@ -428,7 +394,7 @@ ADR-0007 status changes from **Accepted** to **Superseded** with reference to th
 | **Key sections read** | `docs/primitives.md` (Five Building Blocks + Memory), `docs/concepts.md` (Intent Debt, Comprehension Debt, Cognitive Surrender), `docs/architecture-diagrams.md` (loop cycle, run lifecycle, autonomy levels L1-L3, stack mapping), `patterns/README.md` (7 patterns), `examples/opencode/daily-triage.md`, `tools/` (loop-audit, loop-cost, loop-init, loop-sync, loop-worktree, loop-gate, loop-context, loop-mcp-server), `docs/loop-design-checklist.md` (10-section readiness rubric) |
 | **Key API concepts** | **Five primitives:** (1) Automations/Scheduling — cadence, fire-immediately, durable; (2) Worktrees — git worktree isolation per attempt, lifecycle create→commit→merge→cleanup; (3) Skills — SKILL.md + scripts, unit of reuse, intent debt reduction; (4) MCP Connectors — read/write external systems (GitHub, Jira, Slack); (5) Sub-agents — maker/checker split, implementer never grades own work. **+Memory/State:** STATE.md durable spine, `.loop_pause_all` kill switch, `loop-budget.md` caps. **Autonomy levels:** L1 (report-only), L2 (assisted fixes with verifier), L3 (unattended). **Toolchain:** `loop-audit` scores 0-100 across clarity, memory, error handling, observability, safety; `loop-cost` estimates per-run spend; `loop-sync` detects state/doc drift; `loop-gate` enforces denylist + allowlist from gate.yaml |
 | **Configuration prerequisites** | opencode CLI (for `opencode run`), crontab access, loop-engineering CLI tools (npm: `npx @cobusgreyling/loop-audit`, `npx @cobusgreyling/loop-cost`, `npx @cobusgreyling/loop-init`), git worktree support (git 2.5+) |
-| **Gotchas** | (1) `loop-audit` scoring categories may not perfectly align with KodeHold's team metaphor — treat score as directional, not absolute. (2) `opencode run --prompt` CLI syntax should be verified before crontab deployment; fallback to `--file` if `--prompt` is not supported in the current opencode version. (3) OpenCode SQLite schema for `token_usage.py` is not a public API — schema version check required. (4) Cron fragility: cron has no intrinsic error handling — the `scripts/loop-run.sh` wrapper script logs exit codes and creates `.loop_error` markers to prevent silent failures. (5) `add_memory` MCP calls can silently fail if opencode-mem connection drops — `loop-run-log.md` provides plain-text fallback for loop reports. (6) Per-phase token budgets (8k context load) may be aspirational rather than hard caps given design doc + ADRs easily exceed this — budgets serve as guidelines with warnings at 80% and alerts at 100%; only the 200% threshold is a hard stop. |
+| **Gotchas** | (1) `loop-audit` scoring categories may not perfectly align with KodeHold's team metaphor — treat score as directional, not absolute. (2) `opencode run --prompt` CLI syntax should be verified before crontab deployment; fallback to `--file` if `--prompt` is not supported in the current opencode version. (3) Cron fragility: cron has no intrinsic error handling — the `scripts/loop-run.sh` wrapper script logs exit codes and creates `.loop_error` markers to prevent silent failures. (4) `add_memory` MCP calls can silently fail if opencode-mem connection drops — `loop-run-log.md` provides plain-text fallback for loop reports. (5) Per-phase token budgets (8k context load) may be aspirational rather than hard caps given design doc + ADRs easily exceed this — budgets serve as guidelines with warnings at 80% and alerts at 100%; only the 200% threshold is a hard stop. |
 
 ## References
 
@@ -445,5 +411,5 @@ ADR-0007 status changes from **Accepted** to **Superseded** with reference to th
 ## Review Notes
 
 - **2026-07-21 (v1):** Initial proposal. Integrates loop-engineering as KodeHold's operational framework. Defines three-phase roadmap with clear gates. Modernizes token budget protocol from ADR-0007. Adds per-automation-run caps, kill switch, STATE.md, and declarative gate.yaml. ADR-0007 status updated to Superseded.
-- **2026-07-21 (v2):** Revised per Reviewers (BLOCKING: missing `## Documentation` section per ADR-0048 §3) and Second Opinion (4 must-fix, 3 should-fix items). Changes: (1) Added `## Documentation` section with loop-engineering reference, API concepts, prerequisites, and 6 gotchas. (2) Clarified per-phase budgets as guidelines (warnings at 80%, alerts at 100%, hard stop at 200%). (3) Added 24-hour auto-expiry to `.loop_pause_all` kill switch with `touch`-to-extend. (4) Added `scripts/loop-run.sh` cron wrapper script with exit code logging and `.loop_error` marker creation. (5) Added `loop-run-log.md` as plain-text fallback for `add_memory` failures. (6) Tightened Phase 2 completion gate to require meaningful findings or explicit "no issues found" per loop per day over 7 consecutive weekdays. (7) Noted `opencode run --prompt` CLI syntax must be verified before deployment. (8) Added "Impact on Design Document" to Consequences. (9) Noted concurrent write protection for dual-state files as a risk with staggered-cron mitigation.
+- **2026-07-21 (v2):** Revised per Reviewers (BLOCKING: missing `## Documentation` section per ADR-0048 §3) and Second Opinion (4 must-fix, 3 should-fix items). Changes: (1) Added `## Documentation` section with loop-engineering reference, API concepts, prerequisites, and 5 gotchas. (2) Clarified per-phase budgets as guidelines (warnings at 80%, alerts at 100%, hard stop at 200%). (3) Added 24-hour auto-expiry to `.loop_pause_all` kill switch with `touch`-to-extend. (4) Added `scripts/loop-run.sh` cron wrapper script with exit code logging and `.loop_error` marker creation. (5) Added `loop-run-log.md` as plain-text fallback for `add_memory` failures. (6) Tightened Phase 2 completion gate to require meaningful findings or explicit "no issues found" per loop per day over 7 consecutive weekdays. (7) Noted `opencode run --prompt` CLI syntax must be verified before deployment. (8) Added "Impact on Design Document" to Consequences. (9) Noted concurrent write protection for dual-state files as a risk with staggered-cron mitigation.
 - **2026-07-21 (Accepted):** ADR accepted after Reviewers PASS (v2) and Second Opinion approval.

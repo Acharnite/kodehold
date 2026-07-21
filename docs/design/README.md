@@ -56,7 +56,7 @@ KodeHold adopts **Loop Engineering** as its operational framework (ADR-0058). A 
 
 | Phase | Goal | Key Deliverables |
 |-------|------|-----------------|
-| **Phase 1: Foundation** | Baseline metrics and standards | loop-audit score, `config/gate.yaml`, `scripts/token_usage.py`, `STATE.md` |
+| **Phase 1: Foundation** | Baseline metrics and standards | loop-audit score, `config/gate.yaml`, `STATE.md` |
 | **Phase 2: Automation** | L1 autonomous report-only loops | Daily Triage, PR Babysitter, Drift Detection (cron-based) |
 | **Phase 3: Deep Integration** | Worktree isolation, Goal Mode, gate migration | git worktree ADR, `.loop_pause_all` kill switch, declarative gates |
 
@@ -70,10 +70,9 @@ See ADR-0058 for the full integration specification.
 |---|-----------|-------------|----------|
 | P1.1 | loop-audit baseline | Run `loop-audit` on KodeHold, establish Loop Ready Score. Target ≥80 before Phase 2. | MUST |
 | P1.2 | `config/gate.yaml` | Declarative gate definitions (schemas, markers, checks). Runs alongside gate.py, not replacing it. | MUST |
-| P1.3 | `scripts/token_usage.py` | Query OpenCode SQLite DB for per-team token counts. JSON output. | MUST |
-| P1.4 | `STATE.md` | Human-readable loop state file alongside `.kodehold-state`. Updated by Scribes after each loop iteration. | SHOULD |
+| P1.3 | `STATE.md` | Human-readable loop state file alongside `.kodehold-state`. Updated by Scribes after each loop iteration. | SHOULD |
 
-Phase 1 completion gate: Loop Ready Score documented + gate.yaml validated + token_usage.py functional.
+Phase 1 completion gate: Loop Ready Score documented + gate.yaml validated.
 
 ### 3.1 Director
 
@@ -560,7 +559,7 @@ Protocol:
 
 ## 9. Token Optimization Strategy
 
-> **Note:** The Token Optimization Strategy (originally ADR-0007) has been modernized and superseded by **ADR-0058** (Loop Engineering Integration & Token Budget Protocol v2). ADR-0058 defines per-phase budget guidelines, per-automation-run caps, a 24-hour kill switch (`.loop_pause_all`), and `scripts/token_usage.py` for cost tracking. See ADR-0058 for the current token budget protocol.
+> **Note:** The Token Optimization Strategy (originally ADR-0007) has been modernized and superseded by **ADR-0058** (Loop Engineering Integration & Token Budget Protocol v2). ADR-0058 defines per-phase budget guidelines, per-automation-run caps, and a 24-hour kill switch (`.loop_pause_all`). See ADR-0058 for the current token budget protocol.
 
 ---
 
@@ -615,7 +614,6 @@ kodehold/
 │   ├── migrations/                # Data/config migration scripts
 │   ├── ship.sh                    # Shipping gate checklist automation
 │   ├── sync-agent-config.sh       # Syncs frontmatter between .md and agents.yaml
-│   ├── token-usage.sh             # Token consumption tracking
 │   ├── validate-config.sh         # Validates config/agents.yaml against schema
 │   └── workspace.sh               # Workspace management (init, adopt)
 ├── tests/
