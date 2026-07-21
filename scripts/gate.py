@@ -33,6 +33,7 @@ from scripts.lib.output import (  # noqa: E402
     is_json_mode,
     is_self_modification,
     reset_checks,
+    emit_reviewer_output,
     YELLOW,
     NC,
 )
@@ -63,9 +64,33 @@ DESIGN_SECTIONS = [
 gate_failed: int = 0
 cleanup_markers: list[str] = []
 check_results: dict[str, str] = {}
+_self_mod_handled: bool = False
 
 
 # ── Helper functions ──────────────────────────────────────────────────────
+
+
+def _handle_self_mod(args: argparse.Namespace) -> None:
+    """Handle self-modification — skip gates, print banner, set up state for standard output.
+
+    Does NOT exit — main() handles all output routing (JSON + reviewer)
+    via the standard paths. This sets check_results so the standard
+    paths have data.
+    """
+    global gate_failed, _self_mod_handled, check_results
+    _self_mod_handled = True
+    gate_failed = 0
+    check_results = {"self_modification": "PASS"}
+    json_add("self_modification", "PASS",
+              "KodeHold self-modification detected — gate skipped")
+
+    # In JSON mode, skip the banner — the standard JSON path handles output
+    if is_json_mode():
+        return
+
+    print()
+    print(f"  {YELLOW}━━━ KodeHold self-modification detected — skipping gate checks ━━━{NC}")
+    print()
 
 
 def check(cmd: str, *args: str) -> None:
@@ -120,27 +145,6 @@ def cleanup_markers_on_pass() -> None:
         if os.path.exists(marker):
             os.remove(marker)
     pass_msg(f"Lifecycle markers cleaned up: {' '.join(cleanup_markers)}")
-
-
-def _emit_reviewer_output(
-    result: str,
-    transition: str,
-    validate_only: bool,
-    checks: dict[str, str],
-    markers_required: str,
-    markers_cleanup: list[str],
-) -> None:
-    """Emit structured reviewer mode output."""
-    print("─── Reviewer Mode Output ───")
-    print(f"GATE_RESULT:{result}")
-    print(f"TRANSITION:{transition}")
-    print(f"VALIDATE_ONLY:{str(validate_only).lower()}")
-    checks_line = ",".join(f"{k}:{v}" for k, v in checks.items())
-    print(f"CHECKS:{checks_line}")
-    print(f"MARKERS_REQUIRED:{markers_required}")
-    if markers_cleanup:
-        print(f"MARKERS_CLEANUP:{' '.join(markers_cleanup)}")
-    print("────────────────────────────")
 
 
 def is_noninteractive() -> bool:
@@ -585,37 +589,16 @@ Examples:
         default="",
         help="Path to project directory (default: current dir)",
     )
-    parser.add_argument(
-        "--validate-only",
-        action="store_true",
-        help="Run checks without executing transition (for Reviewers)",
-    )
-    parser.add_argument(
-        "--reviewer-mode",
-        action="store_true",
-        help="Output structured results for Reviewers (PASS/BLOCKED per check)",
-    )
-    parser.add_argument(
-        "--json",
-        action="store_true",
-        dest="json_mode",
-        help="Output results as JSON",
-    )
-    parser.add_argument(
-        "--list",
-        action="store_true",
-        help="List all gates and their checks",
-    )
-    parser.add_argument(
-        "--status",
-        action="store_true",
-        help="Show current lifecycle state",
-    )
-    parser.add_argument(
-        "--yes",
-        action="store_true",
-        help="Skip interactive prompts (for CI/automation)",
-    )
+    # Boolean flags — collapsed via loop per ADR-0049
+    for flag, help_text, kwargs in [
+        ("--validate-only", "Run checks without executing transition (for Reviewers)", {}),
+        ("--reviewer-mode", "Output structured results for Reviewers (PASS/BLOCKED per check)", {}),
+        ("--json", "Output results as JSON", {"dest": "json_mode"}),
+        ("--list", "List all gates and their checks", {}),
+        ("--status", "Show current lifecycle state", {}),
+        ("--yes", "Skip interactive prompts (for CI/automation)", {}),
+    ]:
+        parser.add_argument(flag, action="store_true", help=help_text, **kwargs)
     return parser
 
 
@@ -683,35 +666,24 @@ def main() -> None:
     # If KodeHold is modifying itself, skip all gate checks to avoid circular
     # self-gating. Detection is based on env var, marker file, or git diff.
     if is_self_modification(project_path=args.project_path):
-        if is_json_mode():
-            json_add("self_modification", "PASS", "KodeHold self-modification detected — gate skipped")
-            json_emit("gate.py", "PASS", transition=args.transition)
-            sys.exit(0)
-        print()
-        print(f"  {YELLOW}━━━ KodeHold self-modification detected — skipping gate checks ━━━{NC}")
-        print()
-        if args.reviewer_mode:
-            _emit_reviewer_output(
-                "PASS", args.transition, args.validate_only,
-                {"self_modification": "PASS"}, "", [],
-            )
-        sys.exit(0)
+        _handle_self_mod(args)
 
-    # Dispatch to transition function
-    transition_map = {
-        "INIT_TO_ACTIVE": init_to_active,
-        "ACTIVE_TO_REVIEW": active_to_review,
-        "REVIEW_TO_CLOSED": review_to_closed,
-        "CLOSED_TO_REOPEN": closed_to_reopen,
-        "REOPEN_TO_ACTIVE": reopen_to_active,
-    }
+    # Dispatch to transition function (skip if self-mod handled)
+    if not _self_mod_handled:
+        transition_map = {
+            "INIT_TO_ACTIVE": init_to_active,
+            "ACTIVE_TO_REVIEW": active_to_review,
+            "REVIEW_TO_CLOSED": review_to_closed,
+            "CLOSED_TO_REOPEN": closed_to_reopen,
+            "REOPEN_TO_ACTIVE": reopen_to_active,
+        }
 
-    transition_fn = transition_map.get(args.transition)
-    if not transition_fn:
-        print(f"Unknown transition: {args.transition}", file=sys.stderr)
-        sys.exit(1)
+        transition_fn = transition_map.get(args.transition)
+        if not transition_fn:
+            print(f"Unknown transition: {args.transition}", file=sys.stderr)
+            sys.exit(1)
 
-    transition_fn()
+        transition_fn()
 
     # Print result header
     print() if not is_json_mode() else None
@@ -749,7 +721,7 @@ def main() -> None:
 
     # Reviewer mode output
     if args.reviewer_mode:
-        _emit_reviewer_output(
+        emit_reviewer_output(
             "PASS" if gate_failed == 0 else "BLOCKED",
             args.transition, args.validate_only,
             check_results, markers_required, cleanup_markers,

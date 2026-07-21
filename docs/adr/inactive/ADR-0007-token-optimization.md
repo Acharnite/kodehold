@@ -10,7 +10,17 @@ phase:
 
 ## Status
 
-Accepted
+Superseded by [ADR-0058](../adr/ADR-0058-loop-engineering-integration.md)
+
+**Superseded:** 2026-07-21
+
+All concepts from this ADR have been absorbed and modernized by ADR-0058:
+- **Per-phase token budgets** → modernized with per-automation-run caps and kill switch
+- **English-only policy** → absorbed into standard KodeHold conventions
+- **Tiered context loading** → superseded by Graphify + opencode-mem retrieval
+- **Minimal prompt templates** → replaced by The Ladder (ADR-0049)
+- **File chunking** → superseded by Graphify structural queries
+- **Token tracking** → replaced by `scripts/token_usage.py` + loop-cost integration
 
 ## Context
 

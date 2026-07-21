@@ -2,7 +2,7 @@
 
 ## Status
 
-**Proposed** — 2026-07-15
+**Accepted** — 2026-07-21
 
 ## Context
 
@@ -132,6 +132,7 @@ Eliminate config duplication entirely by making `.md` frontmatter the single sou
 ## Review Notes
 
 - **2026-07-15:** Initial version. Documents 13 findings from systematic investigation. No implementation — this is a catalog ADR for Director prioritization. KodeHold self-mod — no gates apply.
+- **2026-07-21 (Accepted):** All 13 findings implemented. Design doc numbering fixed, gate.py refactored (-43 lines), Memory Tools deduplicated (-85 lines, shared reference), director.md split (-63 lines), ponytail-audit archived, stale README removed. Self-mod protocol used (no gates).
 
 ## References
 

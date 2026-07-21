@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.21.1  
+**Version:** 1.22.0  
 **Status:** Active  
-**Last Updated:** 2026-07-15
+**Last Updated:** 2026-07-21
 
 ---
 
@@ -49,6 +49,31 @@ The orchestrator is design-document-centric: every project begins with a design 
 │Decisions │  │          │  │Standards │  │Perf Test │  │Extract   │  │          │
 └──────────┘  └──────────┘  └──────────┘  └──────────┘  └──────────┘  └──────────┘
 ```
+
+### 3.0 Loop Engineering Operational Framework
+
+KodeHold adopts **Loop Engineering** as its operational framework (ADR-0058). A three-phase roadmap guides integration:
+
+| Phase | Goal | Key Deliverables |
+|-------|------|-----------------|
+| **Phase 1: Foundation** | Baseline metrics and standards | loop-audit score, `config/gate.yaml`, `scripts/token_usage.py`, `STATE.md` |
+| **Phase 2: Automation** | L1 autonomous report-only loops | Daily Triage, PR Babysitter, Drift Detection (cron-based) |
+| **Phase 3: Deep Integration** | Worktree isolation, Goal Mode, gate migration | git worktree ADR, `.loop_pause_all` kill switch, declarative gates |
+
+Loop Engineering maps KodeHold's existing 4 of 5 building blocks (Skills, MCP Connectors, Sub-agents, Memory/State) and adds the missing Scheduling and Worktree layers. All automation starts at L1 (report-only) and graduates to higher autonomy only after proven reliability.
+
+See ADR-0058 for the full integration specification.
+
+**Phase 1 Implementation Plan (Immediate):**
+
+| # | Milestone | Description | Priority |
+|---|-----------|-------------|----------|
+| P1.1 | loop-audit baseline | Run `loop-audit` on KodeHold, establish Loop Ready Score. Target ≥80 before Phase 2. | MUST |
+| P1.2 | `config/gate.yaml` | Declarative gate definitions (schemas, markers, checks). Runs alongside gate.py, not replacing it. | MUST |
+| P1.3 | `scripts/token_usage.py` | Query OpenCode SQLite DB for per-team token counts. JSON output. | MUST |
+| P1.4 | `STATE.md` | Human-readable loop state file alongside `.kodehold-state`. Updated by Scribes after each loop iteration. | SHOULD |
+
+Phase 1 completion gate: Loop Ready Score documented + gate.yaml validated + token_usage.py functional.
 
 ### 3.1 Director
 
@@ -141,17 +166,17 @@ Each design document follows this structure:
 **Design Authority:** Architects
 **Last Reviewed:** YYYY-MM-DD
 
-## 1. Purpose & Scope
-## 2. Requirements
-## 3. Architecture Overview
-## 4. Component Design
-## 5. Data Model
-## 6. API Design
-## 7. Implementation Plan
-## 8. Testing Strategy
-## 9. ADR Index (links to relevant ADRs)
-## 10. Open Questions
-## 11. Changelog
+### 4.1 Purpose & Scope
+### 4.2 Requirements
+### 4.3 Architecture Overview
+### 4.4 Component Design
+### 4.5 Data Model
+### 4.6 API Design
+### 4.7 Implementation Plan
+### 4.8 Testing Strategy
+### 4.9 ADR Index (links to relevant ADRs)
+### 4.10 Open Questions
+### 4.11 Changelog
 ```
 
 ### 4.2 Review Cadence
@@ -197,17 +222,16 @@ Consequences: Trade-offs and follow-ups
 
 ### ADR Index
 
+Only **active** ADRs (Accepted + Proposed) are listed here. Inactive ADRs (Superseded, Deprecated, Archived) have been moved to `docs/adr/inactive/`.
+
 | ADR | Title | Status |
 |-----|-------|--------|
 | ADR-0001 | KodeHold Foundation and Principles | Accepted |
 | ADR-0002 | Organizational Structure — Director + Teams | Accepted |
 | ADR-0003 | Design Document Lifecycle | Accepted |
-| ADR-0004 | ICM and RTK Integration Strategy | Deprecated |
 | ADR-0005 | LLM Support and Light Mode | Accepted |
 | ADR-0006 | Second Opinion Protocol | Accepted |
-| ADR-0007 | Token Optimization Strategy | Accepted |
 | ADR-0008 | Project Lifecycle and Reopening | Accepted |
-| ADR-0009 | ICM MCP Integration | Deprecated |
 | ADR-0010 | FLS — Front Line Support Team | Accepted |
 | ADR-0011 | Team Meeting — Collective Project Review | Accepted |
 | ADR-0012 | Adopted Projects — Existing Codebases in KodeHold | Accepted |
@@ -216,32 +240,15 @@ Consequences: Trade-offs and follow-ups
 | ADR-0016 | Early Review Gates in ACTIVE Phase | Accepted |
 | ADR-0017 | Reviewers as Gatekeeper + Mandatory Second Opinion | Accepted |
 | ADR-0018 | Centralize All Documentation Under Scribes | Accepted |
-| ADR-0019 | Session Context Compression via Periodic ICM Summaries | Superseded |
-| ADR-0020 | Hierarchical Memory (Hot/Warm/Cold) | Superseded |
-| ADR-0021 | Prospective Memory (Task Queue & Scheduler) | Superseded |
-| ADR-0022 | Automated Episodic Extraction | Superseded |
-| ADR-0023 | Semantic Memory Automation | Superseded |
-| ADR-0024 | Shared Memory (Multi-Agent Alignment) | Deprecated |
-| ADR-0025 | A2A Protocol (Agent-to-Agent Coordination) | Deprecated |
-| ADR-0026 | Second Opinion Same-Model Bias Enforcement | Superseded |
-| ADR-0027 | ICM Knowledge Flow Invocation Modes | Deprecated |
-| ADR-0028 | Agentmemory Project Detection Strategy | Accepted |
-| ADR-0029 | ICM → Agentmemory Migration Strategy | Accepted |
-| ADR-0030 | Agentmemory Knowledge Flow | Accepted |
-| ADR-0031 | Actions + Crystals for Director Delegation | Accepted |
+| ADR-0021 | Prospective Memory (Task Queue & Scheduler) | Accepted |
 | ADR-0032 | Routine Templates for Standard Flows | Accepted |
-| ADR-0033 | Crystals + Signals for KodeHold | Accepted |
 | ADR-0034 | Workflow Monitor Interface | Accepted |
-| ADR-0035 | Custom KodeHold Viewer | Accepted |
 | ADR-0036 | Project Slug Convention — Stable Canonical Identifiers | Accepted |
 | ADR-0037 | YAML-Based Agent and Task Configuration | Accepted |
 | ADR-0038 | Knowledge Recall Protocol | Accepted |
 | ADR-0039 | Pre-Flight Knowledge Check Enforcement | Accepted |
-| ADR-0040 | Headroom Integration — Context Compression Layer | Proposed |
 | ADR-0041 | Procedural Consolidation Tier — Bridge Pattern Detection to Pipeline | Accepted |
 | ADR-0042 | ADR Implementation Phase Board | Accepted |
-| ADR-0043 | Agentmemory Slot Integration | Proposed |
-| ADR-0044 | Automatic Session Lifecycle Management | Accepted |
 | ADR-0045 | Patch mem::remember to Create KV.relations Entry on Supersede | Accepted |
 | ADR-0046 | Automatic Git Repository Initialization for Workspace Management | Accepted |
 | ADR-0047 | Universal Test Execution Standard | Accepted |
@@ -249,9 +256,13 @@ Consequences: Trade-offs and follow-ups
 | ADR-0049 | Lazy Senior Dev Philosophy | Accepted |
 | ADR-0050 | Agentmemory → OpenCode RAG Migration | Accepted |
 | ADR-0051 | opencode-mem as KodeHold Persistent Memory Backend | Accepted |
-| ADR-0051b | Frontend Reactivity Strategy for DeepResearch | Proposed |
 | ADR-0052 | Structured Durable Execution — Formal Checkpoint Schema and Auto-Checkpoint | Accepted |
+| ADR-0053 | Replace ollama with vllm for Embeddings | Accepted |
 | ADR-0054 | Replace opencode-rag with Graphify Knowledge Graph for Code Retrieval | Accepted |
+| ADR-0058 | Loop Engineering Integration & Token Budget Protocol v2 | Accepted |
+| ADR-0055 | KodeHold Improvement Opportunities | Proposed |
+| ADR-0056 | Agent Configuration Cleanup | Proposed |
+| ADR-0057 | Migrate File-Based Memory to opencode-mem | Proposed |
 
 
 See `docs/adr/README.md` for full details.
@@ -549,29 +560,7 @@ Protocol:
 
 ## 9. Token Optimization Strategy
 
-| Technique | Application | Est. Savings |
-|-----------|------------|--------------|
-| Native tools (glob/grep/read) | All CLI commands | built-in |
-| opencode-mem auto-capture | Context loading | 30-50% |
-| Session context compression | Running chat history | 60-80% per cycle |
-| Minimal prompts | All agent messages | 20-30% |
-| Chunked processing | Large file handling | 50-70% |
-| Token budget tracking | All operations | Variable |
-| English-only configs | All configuration | ~15% vs Danish |
-
-### Token Budget Tracking Details
-
-Token budget tracking is implemented via a lightweight protocol:
-
-1. **Token usage script** (`scripts/token-usage.sh`): Queries OpenCode's SQLite database for aggregated token counts per agent (team) within a time window. Outputs JSON with per-team token consumption.
-
-2. **Director's warning protocol**: Before each delegation, Director runs the token-usage script and compares usage against per-phase budgets (ADR-0007). If any team exceeds 80% of its phase budget, a warning is issued; if exceeds 100%, the user is alerted and suggested to compress context.
-
-3. **Session context logging**: During context compression, Scribes runs the token-usage script and stores per-team token consumption via `add_memory(tags=["metrics"])`. This provides a historical record of token usage across sessions.
-
-4. **Context token usage**: Session context also includes token usage per team, enabling quick assessment when resuming.
-
-The script provides approximate token counts based on OpenCode's aggregated session data. It is not real-time but reflects cumulative usage per team for the current project.
+> **Note:** The Token Optimization Strategy (originally ADR-0007) has been modernized and superseded by **ADR-0058** (Loop Engineering Integration & Token Budget Protocol v2). ADR-0058 defines per-phase budget guidelines, per-automation-run caps, a 24-hour kill switch (`.loop_pause_all`), and `scripts/token_usage.py` for cost tracking. See ADR-0058 for the current token budget protocol.
 
 ---
 
@@ -648,6 +637,7 @@ kodehold/
 ## 11. Changelog
 
 - **v1.22.0 (2026-07-18):** ADR-0057 completion — removed all file-based `.opencode/memory/` references from design doc. Updated §3.6 (Scribes), §6.1 (CLOSED state), §6.3 (Reopening), §6.4 (Commit Protection), §7.2 (Previous systems note corrected), §7.5 (Session Context Compression rewritten to reflect opencode-mem auto-capture), §7.7 (Prospective Memory updated to use `add_memory`/`search_memories`), §9 (Token Optimization table), §10 (File Layout — removed `.opencode/memory/`, `commands/`, `graphify-knowledge-flow`, `resume` skill). Removed checkpoint/compression protocol references. See ADR-0057 for full migration details.
+- **v1.22.0 (2026-07-21):** ADR-0058 accepted — Loop Engineering integration framework, Token Budget Protocol v2, three-phase roadmap (Foundation → Automation → Deep Integration). Added §3.0 (Loop Engineering Operational Framework) with Phase 1 implementation plan. Updated §5 (ADR Index) — ADR-0007 superseded by ADR-0058, added ADR-0055/0056/0057/0058 entries. Simplified §9 (Token Optimization Strategy) to reference ADR-0058. Updated ADR index in `docs/adr/README.md`.
 - **v1.21.0 (2026-07-14):** ADR-0054 completion — replaced all remaining OpenCode RAG references with Graphify across all documentation. Created `graphify-knowledge-flow` skill to replace `opencode-rag-knowledge-flow`. Updated AGENTS.md, design doc §7.2/§7.4/§10, skills README, root README, ADR-0050, ADR-0051, and config/agents.yaml. Graphify is now the sole documented code retrieval method; platform-level OpenCode RAG primitives (search_semantic, find_usages, get_file_skeleton, describe_image) are explicitly noted as not part of KodeHold's workflow.
 - **v1.20.0 (2026-07-14):** ADR-0054: OpenCode RAG → Graphify migration. Replaced standalone `opencode-rag mcp` server with Graphify knowledge graph as the sole code retrieval mechanism. Graphify handles all code retrieval; built-in OpenCode RAG tools are platform-level primitives, not part of KodeHold's documented workflow. Updated Section 5 (ADR Index) and Section 7.2 (Persistent Memory & Knowledge Retrieval) with Graphify as sole retrieval layer. References ADR-0054.
 - **v1.19.0 (2026-07-09):** Updated Section 8.1 (Bring Your Own Model) to document hybrid embedding strategy: sentence-transformers on CPU for embeddings (bge-m3), Ollama for LLM inference (qwen3.5:9b). Replaces previous vLLM dual-instance plan. References ADR-0053 (Hybrid Embedding Strategy — sentence-transformers + Ollama).

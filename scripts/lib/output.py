@@ -153,3 +153,24 @@ def json_emit(
 def reset_checks() -> None:
     """Clear accumulated check results (for testing or re-runs)."""
     _JSON_CHECKS.clear()
+
+
+def emit_reviewer_output(
+    result: str,
+    transition: str,
+    validate_only: bool,
+    checks: dict[str, str],
+    markers_required: str,
+    markers_cleanup: list[str],
+) -> None:
+    """Emit structured reviewer mode output (key=value pairs)."""
+    print("─── Reviewer Mode Output ───")
+    print(f"GATE_RESULT:{result}")
+    print(f"TRANSITION:{transition}")
+    print(f"VALIDATE_ONLY:{str(validate_only).lower()}")
+    checks_line = ",".join(f"{k}:{v}" for k, v in checks.items())
+    print(f"CHECKS:{checks_line}")
+    print(f"MARKERS_REQUIRED:{markers_required}")
+    if markers_cleanup:
+        print(f"MARKERS_CLEANUP:{' '.join(markers_cleanup)}")
+    print("────────────────────────────")
