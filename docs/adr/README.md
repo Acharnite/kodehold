@@ -42,11 +42,11 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0053](ADR-0053-replace-ollama-with-vllm.md) | Hybrid Embedding Strategy — sentence-transformers + Ollama | Accepted | 2026-07-09 |
 | [ADR-0054](ADR-0054-replace-opencode-rag-with-graphify.md) | Replace opencode-rag with Graphify Knowledge Graph | Accepted | 2026-07-14 |
 | [ADR-0058](ADR-0058-loop-engineering-integration.md) | Loop Engineering Integration & Token Budget Protocol v2 | Accepted | 2026-07-21 |
-| [ADR-0055](ADR-0055-kodehold-improvements.md) | KodeHold Improvement Opportunities | Proposed | 2026-07-15 |
+| [ADR-0055](ADR-0055-kodehold-improvements.md) | KodeHold Improvement Opportunities | Accepted | 2026-07-21 |
 | [ADR-0056](ADR-0056-agent-config-cleanup.md) | Agent Configuration Cleanup | Accepted | 2026-07-21 |
-| [ADR-0057](ADR-0057-migrate-file-memory-to-opencode-mem.md) | Migrate File-Based Memory to opencode-mem | Proposed | 2026-07-18 |
+| [ADR-0057](ADR-0057-migrate-file-memory-to-opencode-mem.md) | Migrate File-Based Memory to opencode-mem | Accepted | 2026-07-21 |
 
-**35 Accepted, 2 Proposed** — total 37 active ADRs.
+**37 Accepted** — total 37 active ADRs.
 
 ## Inactive ADRs
 
