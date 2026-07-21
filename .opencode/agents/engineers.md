@@ -82,10 +82,10 @@ When in doubt, run `realpath workspaces/<name>` to confirm the symlink target ex
     - Mark intentional simplifications with a `ponytail:` comment — name the ceiling and upgrade path.
     - **NOT lazy about:** trust-boundary input validation, error handling that prevents data loss, security, accessibility, anything explicitly requested in the design doc.
 3. Read existing code to understand conventions
-5. **Debug systematically** — if the task involves fixing a bug, first load the `.opencode/skills/investigate/SKILL.md` skill and run its 4-phase debugging protocol. Never fix without root cause.
-6. Never review your own code — always submit to Reviewers
-7. Never write tests — that is the Testers' role
-8. **Verify your code** — run **quick** mode tests on the affected files before handing off to Testers:
+4. **Debug systematically** — if the task involves fixing a bug, first load the `.opencode/skills/investigate/SKILL.md` skill and run its 4-phase debugging protocol. Never fix without root cause.
+5. Never review your own code — always submit to Reviewers
+6. Never write tests — that is the Testers' role
+7. **Verify your code** — run **quick** mode tests on the affected files before handing off to Testers:
    - See ADR-0047 (Universal Test Execution Standard) for modes, venv discovery, and commands
    - Use `python3 scripts/detect_test_framework.py` for non-Python projects
 

@@ -2,7 +2,7 @@
 
 ## Status
 
-**Proposed** — 2026-07-18
+**Accepted** — 2026-07-21
 
 ## Context
 
@@ -271,6 +271,7 @@ ls -d .opencode/memory/lessons/ .opencode/memory/releases/
 - **2026-07-18:** Initial version. Documents 18 findings from comprehensive audit of all 11 agent configuration files. All treatments are low-effort except J1 (medium). No gates apply — KodeHold self-mod documentation task.
 - **2026-07-18 (update):** Added Category K — `.opencode/memory/` legacy system discovered via graphify knowledge graph queries and opencode-mem search. This is a major finding (100+ reference sites across 12+ files) requiring separate ADR-0057 for migration. Total findings now: 19 (18 original + 1 major). Treatment table updated with K1 row.
 - **2026-07-18 (update 2):** Added Category L — Dead Skill References from graphify knowledge graph queries. L1: `agentmemory-check` step in shipping gate routine (kodehold-routines/SKILL.md). L2: Skills README stale `agentmemory-knowledge-flow` entry (already C4). Total findings now: 21. Treatment table updated with L1, L2 rows.
+- **2026-07-21 (Accepted):** All 21 findings implemented. A1 (permissions), B1 (skill:allow), C1-C4 (dead refs), D1-D2 (directory refs cleaned), E1-E3 (stale content removed), F1 (taxonomy), G1-G2 (step numbering), H1 (CRLF), I1 (team count clarified), I2 (heading consistency), J1 (graphify-knowledge-flow archived), K1 (.opencode/memory/ migrated), L1-L2 (skill refs cleaned).
 
 ## References
 

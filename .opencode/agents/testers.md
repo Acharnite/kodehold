@@ -73,8 +73,8 @@ If test collection fails with path-related errors, always fall back to `realpath
        - Use **full** mode (`-v --tb=short`) for the complete regression suite
        - For symlinked workspace projects, follow Section 4 of ADR-0047 (realpath resolution)
         - Use `python3 scripts/detect_test_framework.py` for non-Python projects
-6. Report coverage gaps with specific file + line references
-7. **On completion** — when all tests pass, create `.testers_done` marker to signal gate:
+5. Report coverage gaps with specific file + line references
+6. **On completion** — when all tests pass, create `.testers_done` marker to signal gate:
     ```
     touch .testers_done
     ```

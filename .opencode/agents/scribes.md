@@ -111,7 +111,7 @@ No action management or crystal consumption needed — simple file updates.
 - **Search before storing** — use `search_memories` to check for existing knowledge on the topic
 - **Review periodically** — if a category has >7 entries, review and consolidate via summary memory
 
-## Persistent Memory (opencode-mem)
+## Memory Tools (opencode-mem)
 
 All persistent knowledge is stored via opencode-mem MCP tools.
 
