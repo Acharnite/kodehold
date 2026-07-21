@@ -464,3 +464,581 @@ The last 4 commits on `main` all failed CI:
 Want me to delegate fixes for any of these?
 **Exit code:** 0 | **Duration:** 96s
 
+## pr-babysitter — 2026-07-22T01:22:01+02:00
+## drift-detection — 2026-07-22T01:22:02+02:00
+[0m
+> director · deepseek-v4-flash
+[0m
+[0m
+> director · deepseek-v4-flash
+[0m
+[0m→ [0mSkill "state-awareness"
+[0m→ [0mRead .kodehold-state
+[0m# [0mTodos
+[ ] Compare design doc ADR index vs actual ADR files in docs/adr/
+[ ] Compare state file (.kodehold-state) vs marker files
+[ ] Compare TODO.md vs completed ADRs
+[ ] Compile and present drift report
+[0m
+[0m
+[0m$ [0mecho "[graphify] knowledge graph at graphify-out/. For focused questions, run graphify query with your question (scoped subgraph, usually much smaller than GRAPH_REPORT.md) instead of grepping raw files. Read GRAPH_REPORT.md only for broad architecture context." ; echo "[graphify] knowledge graph at graphify-out/. For focused questions, run graphify query with your question (scoped subgraph, usually much smaller than GRAPH_REPORT.md) instead of grepping raw files. Read GRAPH_REPORT.md only for broad architecture context." ; git remote get-url origin
+[graphify] knowledge graph at graphify-out/. For focused questions, run graphify query with your question (scoped subgraph, usually much smaller than GRAPH_REPORT.md) instead of grepping raw files. Read GRAPH_REPORT.md only for broad architecture context.
+[graphify] knowledge graph at graphify-out/. For focused questions, run graphify query with your question (scoped subgraph, usually much smaller than GRAPH_REPORT.md) instead of grepping raw files. Read GRAPH_REPORT.md only for broad architecture context.
+git@github.com:Acharnite/kodehold.git
+[0m
+[0m→ [0mRead docs/design/README.md
+[0m→ [0mRead .kodehold-state
+[0m→ [0mRead TODO.md
+[0m✱ [0mGlob "docs/adr/*.md"[90m 38 matches[0m
+[0m✱ [0mGlob ".*.marker"[90m 0 matches[0m
+[0m✱ [0mGlob ".kodehold-*"[90m 1 match[0m
+[0m⚙ [0mgithub_list_pull_requests {"owner":"Acharnite","repo":"kodehold","state":"open"}
+[0m
+[0m$ [0mcat loop-run-log.md | tail -100
+Lint	Python lint	2026-07-21T23:00:42.6060608Z 
+Lint	Python lint	2026-07-21T23:00:42.6060694Z Found 2 errors.
+Lint	Python lint	2026-07-21T23:00:42.6060911Z [*] 2 fixable with the `--fix` option.
+Lint	Python lint	2026-07-21T23:00:42.6075350Z ##[error]Process completed with exit code 1.
+Validate Config	Run config validation	﻿2026-07-21T23:00:38.8269100Z ##[group]Run python3 scripts/validate_config.py
+Validate Config	Run config validation	2026-07-21T23:00:38.8269383Z [36;1mpython3 scripts/validate_config.py[0m
+Validate Config	Run config validation	2026-07-21T23:00:38.8333736Z shell: /usr/bin/bash -e {0}
+Validate Config	Run config validation	2026-07-21T23:00:38.8333924Z env:
+Validate Config	Run config validation	2026-07-21T23:00:38.8334074Z   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+Validate Config	Run config validation	2026-07-21T23:00:38.8334267Z ##[endgroup]
+Validate Config	Run config validation	2026-07-21T23:00:38.8806638Z python3: can't open file '/home/runner/work/kodehold/kodehold/scripts/validate_config.py': [Errno 2] No such file or directory
+Validate Config	Run config validation	2026-07-21T23:00:38.8841274Z ##[error]Process completed with exit code 2.
+[0m
+[0m# [0mTodos
+[✓] Check current project state & load context
+[✓] Check for stale PRs (GitHub)
+[✓] Check for failing CI (GitHub)
+[✓] Check for uncommitted ADRs/documents
+[✓] Check for open TODOs and pending decisions
+[•] Compile report and store via add_memory
+[0m
+[0m⚙ [0mmemory {"mode":"add","content":"## Daily Triage Report — 2026-07-22\n\n**KodeHold Lifecycle State:** ACTIVE (v1.22.0)\n\n### PRs\n- **PR #67** (dependabot/github_actions): bump actions/checkout from 6 to 7 — OPEN since 2026-06-19 (33 days stale). No CI checks run on it. Needs review and merge.\n\n### CI Health — FAILING\n- **KodeHold CI is failing on main** (last 4 runs all failed):\n  1. **Lint failure** — 2 ruff errors: unused `pathlib.Path` import in `scripts/lib/output.py:12`, unused `is_self_modification` import in `scripts/workspace.py:35`\n  2. **Validate Config failure** — `scripts/validate_config.py` does not exist. CI references it but the `.sh`→`.py` migration (v1.22.0) deleted `validate-config.sh` without creating a `.py` equivalent. The CI workflow file needs updating.\n\n### Open Issues (3 total)\n- **#48** — Structured Human-in-the-Loop Workflows (enhancement)\n- **#46** — Agent Evaluation Framework & Quality Metrics (enhancement)\n- **#41** — Multi-Model Task Routing (enhancement, P2-medium)\n\n### Uncommitted Files (5)\n- `M opencode.json` — added `\"model\": \"opencode-go/deepseek-v4-flash\"` (not committed)\n- `?? STATE.md` — new loop state tracking file\n- `?? config/gate.yaml` — new declarative gate definitions (ADR-0058)\n- `?? loop-run-log.md` — new loop execution log\n- `?? scripts/loop-run.sh` — new loop runner script\n\n### ADRs\n- All 38 ADR files are committed — no uncommitted ADRs.\n\n### TODOs\n- ADR-0054 Phase 7 (final verification) marked as \"in progress\" in TODO.md — not yet fully completed.\n- No other pending high-priority work items.\n\n### Current State\n- Tests pass locally and in CI (33/33 passing).\n- Gate markers clean.\n- No active workspace projects.\n- No drift detected.\n\n### Recommendations\n1. Fix CI: remove unused imports (ruff auto-fix), and update CI workflow to remove or replace the `validate_config.py` reference with the equivalent check (config/gate.yaml validation?).\n2. Review + merge PR #67 (dependabot actions/checkout bump).\n3. Commit the 5 uncommitted files after CI is fixed.\n","tags":"loop_report,daily_triage,2026-07-22","scope":"project"}
+Now I have a complete picture. Let me compile and store the triage report.
+[0m
+[0m# [0mTodos
+[✓] Check current project state & load context
+[✓] Check for stale PRs (GitHub)
+[✓] Check for failing CI (GitHub)
+[✓] Check for uncommitted ADRs/documents
+[✓] Check for open TODOs and pending decisions
+[✓] Compile report and store via add_memory
+[0m
+## ✅ Daily Triage Report — 2026-07-22
+
+Report stored via `add_memory` with tags `loop_report`, `daily_triage`, `2026-07-22`.
+
+---
+
+### PRs
+- **#67** — `dependabot: bump actions/checkout 6→7` — open since **June 19** (33 days stale). No CI checks run on it. Needs review + merge.
+
+### CI Health 🔴 — KodeHold CI is FAILING
+The last 4 commits on `main` all failed CI:
+
+| Job | Failure | Detail |
+|-----|---------|--------|
+| **Lint** | 2 ruff errors | `pathlib.Path` unused in `scripts/lib/output.py:12`; `is_self_modification` unused in `scripts/workspace.py:35` |
+| **Validate Config** | Script missing | `scripts/validate_config.py` does not exist — `.sh`→`.py` migration deleted `validate-config.sh` without a `.py` replacement |
+| Tests | ✅ Pass | All 33 tests pass |
+
+### Open Issues (3)
+- #48 — HITL Workflows, #46 — Agent Evaluation Framework, #41 — Multi-Model Task Routing
+
+### Uncommitted Files (5)
+- `opencode.json` (modified — added `"model"` field)
+- `STATE.md`, `config/gate.yaml`, `loop-run-log.md`, `scripts/loop-run.sh` (all new)
+
+### ADRs — All 38 committed ✅
+### Tests — 33/33 passing ✅
+
+---
+
+### Recommendations
+1. **Fix CI lint** — run `ruff check --fix scripts/` to remove the 2 unused imports
+2. **Fix CI validate-config** — the CI workflow references `validate_config.py` which doesn't exist (was never migrated from `.sh`). Either remove the step or create the script.
+3. **Review & merge PR #67** — 33-day-old dependabot bump
+4. **Commit uncommitted files** after CI is green
+
+Want me to delegate fixes for any of these?
+**Exit code:** 0 | **Duration:** 96s
+
+## pr-babysitter — 2026-07-22T01:22:01+02:00
+## drift-detection — 2026-07-22T01:22:02+02:00
+[0m
+> director · deepseek-v4-flash
+[0m
+[0m
+> director · deepseek-v4-flash
+[0m
+[0m→ [0mSkill "state-awareness"
+[0m→ [0mRead .kodehold-state
+[0m# [0mTodos
+[ ] Compare design doc ADR index vs actual ADR files in docs/adr/
+[ ] Compare state file (.kodehold-state) vs marker files
+[ ] Compare TODO.md vs completed ADRs
+[ ] Compile and present drift report
+[0m
+[0m
+[0m$ [0mecho "[graphify] knowledge graph at graphify-out/. For focused questions, run graphify query with your question (scoped subgraph, usually much smaller than GRAPH_REPORT.md) instead of grepping raw files. Read GRAPH_REPORT.md only for broad architecture context." ; echo "[graphify] knowledge graph at graphify-out/. For focused questions, run graphify query with your question (scoped subgraph, usually much smaller than GRAPH_REPORT.md) instead of grepping raw files. Read GRAPH_REPORT.md only for broad architecture context." ; git remote get-url origin
+[graphify] knowledge graph at graphify-out/. For focused questions, run graphify query with your question (scoped subgraph, usually much smaller than GRAPH_REPORT.md) instead of grepping raw files. Read GRAPH_REPORT.md only for broad architecture context.
+[graphify] knowledge graph at graphify-out/. For focused questions, run graphify query with your question (scoped subgraph, usually much smaller than GRAPH_REPORT.md) instead of grepping raw files. Read GRAPH_REPORT.md only for broad architecture context.
+git@github.com:Acharnite/kodehold.git
+[0m
+[0m→ [0mRead docs/design/README.md
+[0m→ [0mRead .kodehold-state
+[0m→ [0mRead TODO.md
+[0m✱ [0mGlob "docs/adr/*.md"[90m 38 matches[0m
+[0m✱ [0mGlob ".*.marker"[90m 0 matches[0m
+[0m✱ [0mGlob ".kodehold-*"[90m 1 match[0m
+[0m⚙ [0mgithub_list_pull_requests {"owner":"Acharnite","repo":"kodehold","state":"open"}
+[0m
+[0m→ [0mRead docs/adr/README.md
+[0m✱ [0mGlob "docs/adr/inactive/*.md"[90m 22 matches[0m
+[0m✱ [0mGlob ".**"[90m in . · 12 matches[0m
+[0m→ [0mRead docs/design/README.md[90m [offset=693][0m
+[0m⚙ [0mgithub_pull_request_read {"owner":"Acharnite","repo":"kodehold","pullNumber":67,"method":"get"}
+[0m⚙ [0mgithub_pull_request_read {"owner":"Acharnite","repo":"kodehold","pullNumber":67,"method":"get_reviews"}
+[0m⚙ [0mgithub_pull_request_read {"owner":"Acharnite","repo":"kodehold","pullNumber":67,"method":"get_files"}
+[0m⚙ [0mgithub_pull_request_read {"method":"get_status","owner":"Acharnite","repo":"kodehold","pullNumber":67}
+[0m⚙ [0mgithub_pull_request_read {"method":"get_check_runs","owner":"Acharnite","repo":"kodehold","pullNumber":67}
+[0m
+[0m# [0mTodos
+[•] Compare design doc ADR index vs actual ADR files in docs/adr/
+[ ] Compare state file (.kodehold-state) vs marker files
+[ ] Compare TODO.md vs completed ADRs
+[ ] Compile and present drift report
+[0m
+[0m$ [0mecho "[graphify] knowledge graph at graphify-out/. For focused questions, run graphify query with your question (scoped subgraph, usually much smaller than GRAPH_REPORT.md) instead of grepping raw files. Read GRAPH_REPORT.md only for broad architecture context." ; echo "[graphify] knowledge graph at graphify-out/. For focused questions, run graphify query with your question (scoped subgraph, usually much smaller than GRAPH_REPORT.md) instead of grepping raw files. Read GRAPH_REPORT.md only for broad architecture context." ; cd /home/kiffer/project/kodehold && grep -n "^Status:" docs/adr/ADR-0055-kodehold-improvements.md docs/adr/ADR-0056-agent-config-cleanup.md docs/adr/ADR-0057-migrate-file-memory-to-opencode-mem.md
+[graphify] knowledge graph at graphify-out/. For focused questions, run graphify query with your question (scoped subgraph, usually much smaller than GRAPH_REPORT.md) instead of grepping raw files. Read GRAPH_REPORT.md only for broad architecture context.
+[graphify] knowledge graph at graphify-out/. For focused questions, run graphify query with your question (scoped subgraph, usually much smaller than GRAPH_REPORT.md) instead of grepping raw files. Read GRAPH_REPORT.md only for broad architecture context.
+[0m
+[0m→ [0mRead docs/adr/inactive/README.md
+Now let me check the actual ADR file statuses for the ones that show drift, and verify marker behavior:
+[0m
+[0m$ [0mgrep -n "^Status:" /home/kiffer/project/kodehold/docs/adr/ADR-0055-kodehold-improvements.md /home/kiffer/project/kodehold/docs/adr/ADR-0056-agent-config-cleanup.md /home/kiffer/project/kodehold/docs/adr/ADR-0057-migrate-file-memory-to-opencode-mem.md
+(no output)
+[0m
+[0m$ [0mls -la /home/kiffer/project/kodehold/.design_reviewed /home/kiffer/project/kodehold/.second_opinion_done /home/kiffer/project/kodehold/.pai-disable 2>&1
+-rw-rw-r-- 1 kiffer kiffer   0 Jul 21 09:03 /home/kiffer/project/kodehold/.design_reviewed
+-rw-rw-r-- 1 kiffer kiffer 105 Jul 12 22:36 /home/kiffer/project/kodehold/.pai-disable
+-rw-rw-r-- 1 kiffer kiffer   0 Jul 21 09:03 /home/kiffer/project/kodehold/.second_opinion_done
+[0m
+[0m$ [0mcd /home/kiffer/project/kodehold && python3 scripts/gate.py --help 2>/dev/null || head -30 scripts/gate.py
+usage: gate.py [-h]
+               [--transition {INIT_TO_ACTIVE,ACTIVE_TO_REVIEW,REVIEW_TO_CLOSED,CLOSED_TO_REOPEN,REOPEN_TO_ACTIVE}]
+               [--project-path PROJECT_PATH] [--validate-only]
+               [--reviewer-mode] [--json] [--list] [--status] [--yes]
+
+KodeHold Lifecycle Gate — run quality checks for state transitions
+
+options:
+  -h, --help            show this help message and exit
+  --transition {INIT_TO_ACTIVE,ACTIVE_TO_REVIEW,REVIEW_TO_CLOSED,CLOSED_TO_REOPEN,REOPEN_TO_ACTIVE}
+                        The state transition to validate
+  --project-path PROJECT_PATH
+                        Path to project directory (default: current dir)
+  --validate-only       Run checks without executing transition (for
+                        Reviewers)
+  --reviewer-mode       Output structured results for Reviewers (PASS/BLOCKED
+                        per check)
+  --json                Output results as JSON
+  --list                List all gates and their checks
+  --status              Show current lifecycle state
+  --yes                 Skip interactive prompts (for CI/automation)
+
+Transitions:
+  INIT_TO_ACTIVE      Design doc complete, ADRs written
+  ACTIVE_TO_REVIEW    Features implemented, tests pass, code reviewed
+  REVIEW_TO_CLOSED    Final sign-off, tests green, memories stored
+  CLOSED_TO_REOPEN    Impact analysis, design doc updated
+  REOPEN_TO_ACTIVE    Design doc approved, new ADRs
+
+Examples:
+  python3 scripts/gate.py --transition INIT_TO_ACTIVE
+  python3 scripts/gate.py --transition ACTIVE_TO_REVIEW --validate-only
+  python3 scripts/gate.py --project-path workspaces/my-project --status
+  python3 scripts/gate.py --list
+[0m
+[0m$ [0mhead -10 /home/kiffer/project/kodehold/docs/adr/ADR-0055-kodehold-improvements.md
+# ADR-0055: KodeHold Improvement Opportunities
+
+## Status
+
+**Accepted** — 2026-07-21
+
+## Context
+
+A systematic investigation of the KodeHold project revealed 13 improvement opportunities across structural issues i design doc og agentfiler, kodekvalitet i scripts, og vedligeholdelsesproblemer i konfiguration og skills.
+[0m
+[0m$ [0mhead -10 /home/kiffer/project/kodehold/docs/adr/ADR-0056-agent-config-cleanup.md
+# ADR-0056: Agent Configuration Cleanup
+
+## Status
+
+**Accepted** — 2026-07-21
+
+## Context
+
+A comprehensive audit of all 11 agent configuration files (`AGENTS.md`, `director.md`, `architects.md`, `engineers.md`, `fls.md`, `reviewers.md`, `scribes.md`, `testers.md`, `second-opinion.md`, `second-opinion-fallback.md`, `kodehold-protocol.md`) was performed. The audit checked for contradictions, dead references, clarity issues, permission mismatches, cross-file consistency, and structural problems. Additional issues were found via graphify knowledge graph queries and opencode-mem search.
+[0m
+[0m$ [0mhead -10 /home/kiffer/project/kodehold/docs/adr/ADR-0057-migrate-file-memory-to-opencode-mem.md
+# ADR-0057: Migrate File-Based Memory to opencode-mem
+
+## Status
+
+**Accepted** — 2026-07-21
+
+## Context
+
+KodeHold currently operates a dual memory system:
+[0m
+[0m$ [0mcat /home/kiffer/project/kodehold/.pai-disable
+# PAI context disabled for this project.
+# Remove this file to re-enable PAI system context injection.
+[0m
+[0m$ [0mgrep -n "marker\|cleanup\|remove\|unlink\|delete" /home/kiffer/project/kodehold/scripts/gate.py | head -30
+65:cleanup_markers: list[str] = []
+129:def queue_cleanup_marker(path: str) -> None:
+130:    """Queue a marker file for cleanup on gate pass."""
+131:    cleanup_markers.append(path)
+140:def cleanup_markers_on_pass() -> None:
+141:    """Remove all queued marker files."""
+142:    if not cleanup_markers:
+144:    for marker in cleanup_markers:
+145:        if os.path.exists(marker):
+146:            os.remove(marker)
+147:    pass_msg(f"Lifecycle markers cleaned up: {' '.join(cleanup_markers)}")
+329:    # Design reviewed marker
+332:        queue_cleanup_marker(".design_reviewed")
+341:    # Second opinion marker
+344:        queue_cleanup_marker(".second_opinion_done")
+391:    # Testers completed marker
+394:        queue_cleanup_marker(".testers_done")
+403:    # Code reviewed marker
+406:        queue_cleanup_marker(".code_reviewed")
+456:    # Queue lifecycle markers for cleanup
+457:    for marker in [
+465:        queue_cleanup_marker(marker)
+497:    # Impact analysis completed marker
+500:        queue_cleanup_marker(".impact_analysis_done")
+539:    # Second opinion marker
+542:        queue_cleanup_marker(".second_opinion_done")
+607:    global gate_failed, cleanup_markers, check_results
+661:    cleanup_markers = []
+667:    # self-gating. Detection is based on env var, marker file, or git diff.
+706:    # Determine markers for this transition (used by JSON/reviewer output)
+[0m
+[0m$ [0mcd /home/kiffer/project/kodehold && python3 scripts/gate.py --list 2>&1
+Available transitions:
+  INIT_TO_ACTIVE
+  ACTIVE_TO_REVIEW
+  REVIEW_TO_CLOSED
+  CLOSED_TO_REOPEN
+  REOPEN_TO_ACTIVE
+[0m
+Now I have a complete picture. Here's the **PR Babysitter Report** — report only, no actions taken.
+
+---
+
+## 🤖 PR Babysitter Report — 2026-07-22
+
+### Repository: `Acharnite/kodehold`
+
+**Open PRs: 1 total**
+
+---
+
+### 🔴 PR #67 — `ci: bump actions/checkout from 6 to 7`
+
+| Metric | Status |
+|--------|--------|
+| **Author** | dependabot[bot] |
+| **Age** | 33 days (created 2026-06-19) |
+| **Last activity** | 10 days ago (2026-07-12) |
+| **Draft** | No |
+| **Mergeable state** | ⚠️ `unstable` |
+| **Files changed** | 1 (`.github/workflows/kodehold-ci.yml`) |
+| **Changes** | +3/-3 — simple `v6` → `v7` version bumps in 3 job steps |
+| **Reviews** | **None** — no reviews requested, no reviews given |
+| **Pending reviews >24h** | N/A — no review ever requested |
+
+**CI Check Runs (last run 2026-07-12):**
+
+| Job | Status |
+|-----|--------|
+| Tests (Ubuntu) | ❌ **Failure** |
+| Lint | ✅ Success |
+| Validate Config | ✅ Success |
+| **Overall** | ⏳ **Pending (blocked)** |
+
+---
+
+### Assessment
+
+1. **Stale:** ✅ Yes — 33 days old, last updated 10 days ago. Dependabot PRs should typically be merged or closed within 1-2 weeks.
+
+2. **Merge conflicts:** ⚠️ `mergeable_state: "unstable"` — GitHub hasn't auto-evaluated mergeability. Likely due to the PR being based on a pre-fix commit while `main` has since been updated (commit `8aa9273` fixed CI, removed `validate-config` job, etc.). The PR's single-file change (checkout version bump) is unlikely to have true conflicts.
+
+3. **Pending reviews >24h:** N/A — no review has ever been requested. The PR sits unreviewed since June 19.
+
+4. **Test failure:** ❌ The `Tests` job failed on the PR branch. This is likely a **pre-existing failure** from the base commit — the PR was created before the CI fixes landed on main (commit `8aa9273`). Rebasing on latest `main` would resolve this.
+
+---
+
+### Summary
+
+| Flag | Finding |
+|------|---------|
+| 🟢 | No merge conflicts detected (1-file change, just version bumps) |
+| 🟡 | **33 days stale** — needs attention |
+| 🟡 | **No reviews requested** ever |
+| 🔴 | **Tests failing** — likely due to pre-main-fix base; needs rebase |
+| 🔴 | **Not mergeable** until tests pass on updated base |
+[0m$ [0mgrep -A5 "INIT_TO_ACTIVE\|ACTIVE_TO_REVIEW\|REVIEW_TO_CLOSED\|CLOSED_TO_REOPEN\|REOPEN_TO_ACTIVE" /home/kiffer/project/kodehold/scripts/gate.py | head -60
+python3 scripts/gate.py --transition INIT_TO_ACTIVE
+    python3 scripts/gate.py --transition ACTIVE_TO_REVIEW --validate-only
+    python3 scripts/gate.py --project-path workspaces/my-project --status
+    python3 scripts/gate.py --list
+"""
+
+from __future__ import annotations
+--
+  INIT_TO_ACTIVE      Design doc complete, ADRs written
+  ACTIVE_TO_REVIEW    Features implemented, tests pass, code reviewed
+  REVIEW_TO_CLOSED    Final sign-off, tests green, memories stored
+  CLOSED_TO_REOPEN    Impact analysis, design doc updated
+  REOPEN_TO_ACTIVE    Design doc approved, new ADRs
+
+Examples:
+  python3 scripts/gate.py --transition INIT_TO_ACTIVE
+  python3 scripts/gate.py --transition ACTIVE_TO_REVIEW --validate-only
+  python3 scripts/gate.py --project-path workspaces/my-project --status
+  python3 scripts/gate.py --list
+        """,
+    )
+    parser.add_argument(
+--
+            "INIT_TO_ACTIVE",
+            "ACTIVE_TO_REVIEW",
+            "REVIEW_TO_CLOSED",
+            "CLOSED_TO_REOPEN",
+            "REOPEN_TO_ACTIVE",
+        ],
+        help="The state transition to validate",
+    )
+    parser.add_argument(
+        "--project-path",
+--
+            "INIT_TO_ACTIVE",
+            "ACTIVE_TO_REVIEW",
+            "REVIEW_TO_CLOSED",
+            "CLOSED_TO_REOPEN",
+            "REOPEN_TO_ACTIVE",
+        ]:
+            print(f"  {t}")
+        sys.exit(0)
+
+    # JSON mode
+--
+            "INIT_TO_ACTIVE": init_to_active,
+            "ACTIVE_TO_REVIEW": active_to_review,
+            "REVIEW_TO_CLOSED": review_to_closed,
+            "CLOSED_TO_REOPEN": closed_to_reopen,
+            "REOPEN_TO_ACTIVE": reopen_to_active,
+        }
+
+        transition_fn = transition_map.get(args.transition)
+        if not transition_fn:
+            print(f"Unknown transition: {args.transition}", file=sys.stderr)
+--
+        "INIT_TO_ACTIVE": ".design_reviewed .second_opinion_done",
+        "ACTIVE_TO_REVIEW": ".code_reviewed .testers_done",
+        "REVIEW_TO_CLOSED": "",
+        "CLOSED_TO_REOPEN": "",
+[0m
+**Exit code:** 0 | **Duration:** 50s
+
+[0m→ [0mRead scripts/gate.py[90m [offset=125, limit=50][0m
+[0m→ [0mRead scripts/gate.py[90m [offset=310, limit=100][0m
+[0m→ [0mRead scripts/gate.py[90m [offset=440, limit=120][0m
+[0m→ [0mRead scripts/gate.py[90m [offset=600, limit=100][0m
+[0m→ [0mRead scripts/gate.py[90m [offset=700][0m
+[0m
+[0m$ [0mls -la /home/kiffer/project/kodehold/STATE.md 2>/dev/null && head -30 /home/kiffer/project/kodehold/STATE.md || echo "STATE.md not found"
+-rw-rw-r-- 1 kiffer kiffer 677 Jul 22 01:08 /home/kiffer/project/kodehold/STATE.md
+# KodeHold Loop State
+
+**Last updated:** 2026-07-22T23:11:00Z
+**Lifecycle State:** ACTIVE
+**Loop Ready Score:** 35/100 (L0)
+
+## Active Loops
+
+| Loop | Schedule | Status | Last Run | Tokens Used |
+|------|----------|--------|----------|-------------|
+| Daily Triage | Weekdays 08:00 | Configured | — | — |
+| PR Babysitter | Every 4h, 08-16 | Configured | — | — |
+| Drift Detection | Sunday 10:00 | Configured | — | — |
+
+## Health
+
+| Check | Status |
+|-------|--------|
+| Tests passing | yes |
+| Gate markers clean | yes |
+| No drift detected | yes |
+| Token budget OK | yes |
+
+## Recent Loop Reports
+
+<!-- Scribes appends loop reports here as they are generated -->
+[0m
+[0m$ [0mls -la /home/kiffer/project/kodehold/.design_reviewed /home/kiffer/project/kodehold/.second_opinion_done /home/kiffer/project/kodehold/.kodehold-state 2>&1
+-rw-rw-r-- 1 kiffer kiffer   0 Jul 21 09:03 /home/kiffer/project/kodehold/.design_reviewed
+-rw-rw-r-- 1 kiffer kiffer 199 Jun 30 13:01 /home/kiffer/project/kodehold/.kodehold-state
+-rw-rw-r-- 1 kiffer kiffer   0 Jul 21 09:03 /home/kiffer/project/kodehold/.second_opinion_done
+[0m
+[0m# [0mTodos
+[✓] Compare design doc ADR index vs actual ADR files in docs/adr/
+[✓] Compare state file (.kodehold-state) vs marker files
+[•] Compare TODO.md vs completed ADRs
+[ ] Compile and present drift report
+[0m
+[0m$ [0mls -la /home/kiffer/project/kodehold/.opencode/memory/ 2>&1 || echo "Directory .opencode/memory/ not found"
+ls: cannot access '/home/kiffer/project/kodehold/.opencode/memory/': No such file or directory
+Directory .opencode/memory/ not found
+[0m
+[0m$ [0mcd /home/kiffer/project/kodehold && python3 scripts/gate.py --status 2>&1
+# KodeHold Lifecycle State
+# Valid states: INIT, ACTIVE, REVIEW, CLOSED, REOPEN
+STATE=ACTIVE
+LAST_UPDATED=2026-06-28
+DESIGN_DOC_APPROVED=true
+ADRS_COMPLETE=true
+TESTS_PASSING=true
+CODE_REVIEWED=true
+[0m
+[0m# [0mTodos
+[✓] Compare design doc ADR index vs actual ADR files in docs/adr/
+[✓] Compare state file (.kodehold-state) vs marker files
+[✓] Compare TODO.md vs completed ADRs
+[•] Compile and present drift report
+[0m
+[0m# [0mTodos
+[✓] Compare design doc ADR index vs actual ADR files in docs/adr/
+[✓] Compare state file (.kodehold-state) vs marker files
+[✓] Compare TODO.md vs completed ADRs
+[✓] Compile and present drift report
+[0m
+# 🔍 Loop-Sync Drift Detection Report
+
+## 1️⃣ Design Doc ADR Index vs Actual ADR Files
+
+### ❗ DRIFT FOUND: 3 ADRs have stale status in design doc
+
+| ADR | Design Doc says | Actual File says | ADR README says |
+|-----|----------------|-----------------|-----------------|
+| **ADR-0055** (KodeHold Improvements) | **Proposed** | **Accepted** | **Accepted** |
+| **ADR-0056** (Agent Config Cleanup) | **Proposed** | **Accepted** | **Accepted** |
+| **ADR-0057** (File Memory → opencode-mem) | **Proposed** | **Accepted** | **Accepted** |
+
+The design doc §5 ADR Index (lines 262-264) was not updated when these 3 ADRs were promoted from Proposed → Accepted on 2026-07-21. The ADR README at `docs/adr/README.md` is correct — it shows all 37 as Accepted.
+
+**File count check:** 37 active ADR files ↔ 37 ADR README entries ↔ 37 design doc entries — count matches. No missing or extra ADRs in the index.
+
+---
+
+## 2️⃣ State File (`.kodehold-state`) vs Marker Files
+
+### ❗ DRIFT 2A: `.kodehold-state` is 24 days stale
+
+```
+STATE=ACTIVE
+LAST_UPDATED=2026-06-28    ← not updated since June 28
+```
+
+Meanwhile, the design doc shows updates through **2026-07-21**. The state file's `LAST_UPDATED` field has not been updated for 24 days despite significant project progress (ADR-0055/56/57/58 accepted, Phase 1+2 Loop Engineering work, CI fixes committed).
+
+### ❗ DRIFT 2B: Stale INIT→ACTIVE markers still present
+
+| Marker | File Status | Expected in ACTIVE? |
+|--------|------------|-------------------|
+| `.design_reviewed` | **EXISTS** (Jul 21) | ❌ Should be cleaned after INIT→ACTIVE gate pass |
+| `.second_opinion_done` | **EXISTS** (Jul 21) | ❌ Should be cleaned after INIT→ACTIVE gate pass |
+| `.testers_done` | Not found | ✓ Correct for ACTIVE state |
+| `.code_reviewed` | Not found | ✓ Correct for ACTIVE state |
+| `.impact_analysis_done` | Not found | ✓ Correct for ACTIVE state |
+| `.pai-disable` | Exists | ⚠️ Not a lifecycle marker — PAI context disable file |
+
+Per `scripts/gate.py` (lines 329-351, 730-732) and design doc §6.2, `.design_reviewed` and `.second_opinion_done` are **INIT→ACTIVE** markers that should be queued for cleanup and removed when the INIT→ACTIVE gate passes. Their continued presence is either because:
+- The INIT→ACTIVE gate was run in `--validate-only` mode (which skips cleanup per line 731), or
+- The markers were created manually outside the gate process, or
+- The state was set to ACTIVE without running the actual gate
+
+### ❗ DRIFT 2C: STATE.md claims "clean" but isn't
+
+`STATE.md` says:
+- `Gate markers clean: yes` — **False.** Two stale markers exist.
+- `No drift detected: yes` — **False.** Multiple drifts found (this report).
+
+---
+
+## 3️⃣ STATE.md vs State File
+
+| Check | STATE.md (Jul 22) | `.kodehold-state` (Jun 28) |
+|------|------------------|---------------------------|
+| Lifecycle State | ACTIVE | ACTIVE ✓ |
+| Last Updated | 2026-07-22T23:11 | 2026-06-28 |
+| Tests passing | yes | TESTS_PASSING=true ✓ |
+| Gate markers clean | **yes** | **No** — 2 stale markers exist |
+
+STATE.md is a human-readable Loop Engineering artifact, so minor divergence from the machine state file is expected. However, the "clean" claim is factually wrong.
+
+---
+
+## 4️⃣ TODO.md vs Completed ADRs
+
+### ❗ DRIFT 4A: Dead path reference to `.opencode/memory/`
+
+TODO.md line 156:
+```
+_This section is maintained by Scribes. Active deferred/recurring tasks live in `.opencode/memory/prospective/` (see ADR-0021)._
+```
+
+The directory `.opencode/memory/` **no longer exists** — it was removed per ADR-0057 (Migrate File-Based Memory to opencode-mem). Prospective tasks now live in **opencode-mem** (MCP memory system), not on the filesystem.
+
+### ❗ DRIFT 4B: Stale ADR-0050 implementation note
+
+TODO.md line 170:
+```
+- [x] Memory files migrated to `.opencode/memory/` structure
+```
+
+This was correct after ADR-0050, but ADR-0057 then **migrated those same files to opencode-mem**. The `.opencode/memory/` path is now gone, making this entry historically inaccurate without context.
+
+### ✅ No meaningful ADR-completion drift
+
+TODO.md is a task tracker, not an ADR registrar. Most Accepted ADRs are not individually listed as tasks — that's expected. No actionable drift here.
+
+---
+
+## 📋 Drift Summary
+
+| # | Severity | Drift | Sources |
+|---|----------|-------|---------|
+| 1 | **HIGH** | ADR-0055/56/57 status mismatch — design doc says Proposed, files say Accepted | `docs/design/README.md:262-264` vs actual ADR files |
+| 2 | **MEDIUM** | `.kodehold-state` LAST_UPDATED 24 days stale | `.kodehold-state:4` |
+| 3 | **MEDIUM** | Stale `.design_reviewed` + `.second_opinion_done` markers in ACTIVE state | `.design_reviewed`, `.second_opinion_done` |
+| 4 | **LOW** | STATE.md incorrectly reports "Gate markers clean: yes" | `STATE.md:16` |
+| 5 | **LOW** | TODO.md references dead path `.opencode/memory/prospective/` | `TODO.md:156` |
+| 6 | **LOW** | TODO.md ADR-0050 section references now-removed `.opencode/memory/` | `TODO.md:170` |
+
+**Total: 6 drifts (1 HIGH, 2 MEDIUM, 3 LOW)**
+
+Only drift #1 (stale ADR statuses in design doc) requires immediate attention — it misrepresents what's been accepted. Drifts #2-3 are state management housekeeping. Drifts #4-6 are cosmetic inaccuracies.
+**Exit code:** 0 | **Duration:** 118s
+

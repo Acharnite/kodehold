@@ -259,9 +259,9 @@ Only **active** ADRs (Accepted + Proposed) are listed here. Inactive ADRs (Super
 | ADR-0053 | Replace ollama with vllm for Embeddings | Accepted |
 | ADR-0054 | Replace opencode-rag with Graphify Knowledge Graph for Code Retrieval | Accepted |
 | ADR-0058 | Loop Engineering Integration & Token Budget Protocol v2 | Accepted |
-| ADR-0055 | KodeHold Improvement Opportunities | Proposed |
-| ADR-0056 | Agent Configuration Cleanup | Proposed |
-| ADR-0057 | Migrate File-Based Memory to opencode-mem | Proposed |
+| ADR-0055 | KodeHold Improvement Opportunities | Accepted |
+| ADR-0056 | Agent Configuration Cleanup | Accepted |
+| ADR-0057 | Migrate File-Based Memory to opencode-mem | Accepted |
 
 
 See `docs/adr/README.md` for full details.

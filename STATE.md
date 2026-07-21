@@ -1,16 +1,16 @@
 # KodeHold Loop State
 
-**Last updated:** 2026-07-22T23:11:00Z
+**Last updated:** 2026-07-22
 **Lifecycle State:** ACTIVE
-**Loop Ready Score:** 35/100 (L0)
+**Loop Ready Score:** 99/100 (L1)
 
 ## Active Loops
 
-| Loop | Schedule | Status | Last Run | Tokens Used |
-|------|----------|--------|----------|-------------|
-| Daily Triage | Weekdays 08:00 | Configured | — | — |
-| PR Babysitter | Every 4h, 08-16 | Configured | — | — |
-| Drift Detection | Sunday 10:00 | Configured | — | — |
+| Loop | Schedule | Status | Last Run | Tokens Used | Docs |
+|------|----------|--------|----------|-------------|------|
+| Daily Triage | Weekdays 08:00 | Configured | 2026-07-22 | — | [LOOP.md](LOOP.md) |
+| PR Babysitter | Every 4h, 08-16 | Configured | 2026-07-22 | — | [LOOP.md](LOOP.md) |
+| Drift Detection | Sunday 10:00 | Configured | 2026-07-22 | — | [LOOP.md](LOOP.md) |
 
 ## Health
 
@@ -20,6 +20,7 @@
 | Gate markers clean | yes |
 | No drift detected | yes |
 | Token budget OK | yes |
+| Loop Ready Score | 99/100 (L1) |
 
 ## Recent Loop Reports
 

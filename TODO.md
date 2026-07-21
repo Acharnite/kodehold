@@ -153,9 +153,9 @@
 
 ## Prospective Tasks
 
-_This section is maintained by Scribes. Active deferred/recurring tasks live in `.opencode/memory/prospective/` (see ADR-0021)._
+_This section is maintained by Scribes. Active deferred/recurring tasks are tracked via add_memory with tag "prospective" (see ADR-0057)._
 
-- 0 deferred tasks in `.opencode/memory/prospective/`
+- 0 deferred tasks tracked via opencode-mem
 
 ## ADR-0050: Agentmemory → OpenCode RAG Migration
 
@@ -167,5 +167,5 @@ _This section is maintained by Scribes. Active deferred/recurring tasks live in 
 - [x] `opencode-rag-knowledge-flow` skill updated with full tool references
 - [x] Scripts and CI cleaned of agentmemory references
 - [x] All agent definitions and configs updated
-- [x] Memory files migrated to `.opencode/memory/` structure
+- [x] Memory files migrated to `.opencode/memory/` structure (later migrated to opencode-mem per ADR-0057)
 - [x] Remaining agentmemory references in non-ADR, non-design files cleaned up (this batch)
