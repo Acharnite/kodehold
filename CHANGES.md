@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.24.0 — 2026-07-22
+
+### Added
+- **Loop system cleanup + workspace rewrite** — Removed deprecated loop skills (loop-budget, loop-constraints, loop-triage), config files (gate.yaml, workspaces.yaml), and stale documentation (LOOP.md, STATE.md, safety.md). Moved ADR-0058/0059 to inactive/, added ADR-0060. workspace.py rewritten with full workspace management. Added workspace-loop-management skill and discord-notify.py.
+
+### Changed
+- **director.md, AGENTS.md, opencode.json** — Updated for new loop integration with workspace-loop-management skill.
+
+### Removed
+- **Deprecated loop infrastructure** — 3 loop skills, 2 config files, 4 documentation files, patterns/registry.yaml, loop-run.sh.
+
 ## 1.23.0 — 2026-07-22
 
 ### Added
