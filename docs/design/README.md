@@ -1,8 +1,8 @@
 # KodeHold — Coding Orchestrator Design Document
 
-**Version:** 1.22.0  
+**Version:** 1.25.0  
 **Status:** Active  
-**Last Updated:** 2026-07-21
+**Last Updated:** 2026-07-22
 
 ---
 
@@ -52,27 +52,49 @@ The orchestrator is design-document-centric: every project begins with a design 
 
 ### 3.0 Loop Engineering Operational Framework
 
-KodeHold adopts **Loop Engineering** as its operational framework (ADR-0058). A three-phase roadmap guides integration:
+KodeHold adopts **Loop Engineering** as its operational framework for workspace loop management (ADR-0060). All three phases are now complete:
 
-| Phase | Goal | Key Deliverables |
-|-------|------|-----------------|
-| **Phase 1: Foundation** | Baseline metrics and standards | loop-audit score, `config/gate.yaml`, `STATE.md` |
-| **Phase 2: Automation** | L1 autonomous report-only loops | Daily Triage, PR Babysitter, Drift Detection (cron-based) |
-| **Phase 3: Deep Integration** | Worktree isolation, Goal Mode, gate migration | git worktree ADR, `.loop_pause_all` kill switch, declarative gates |
+| Phase | Goal | Status | Key Deliverables |
+|-------|------|--------|-----------------|
+| **Phase 1: Foundation** | loop-init integration + loop subcommand | ✅ Complete | `workspace.py init/adopt` calls `loop-init`, `workspace.py loop list` |
+| **Phase 2: Automation** | enable/disable/run + cron commands | ✅ Complete | `workspace.py loop enable/disable/run`, `workspace.py cron install/remove/list` |
+| **Phase 3: Monitoring** | audit + cost + sync commands | ✅ Complete | `workspace.py audit/cost/sync` |
 
-Loop Engineering maps KodeHold's existing 4 of 5 building blocks (Skills, MCP Connectors, Sub-agents, Memory/State) and adds the missing Scheduling and Worktree layers. All automation starts at L1 (report-only) and graduates to higher autonomy only after proven reliability.
+Loop Engineering provides 7 production patterns, CLI tools (loop-init, loop-audit, loop-cost, loop-sync), and safety mechanisms (loop-gate, loop-context, loop-constraints). All automation starts at L1 (report-only) and graduates to higher autonomy only after proven reliability.
 
-See ADR-0058 for the full integration specification.
+See ADR-0060 for the full integration specification.
 
-**Phase 1 Implementation Plan (Immediate):**
+**Available Commands:**
 
-| # | Milestone | Description | Priority |
-|---|-----------|-------------|----------|
-| P1.1 | loop-audit baseline | Run `loop-audit` on KodeHold, establish Loop Ready Score. Target ≥80 before Phase 2. | MUST |
-| P1.2 | `config/gate.yaml` | Declarative gate definitions (schemas, markers, checks). Runs alongside gate.py, not replacing it. | MUST |
-| P1.3 | `STATE.md` | Human-readable loop state file alongside `.kodehold-state`. Updated by Scribes after each loop iteration. | SHOULD |
+```bash
+# Loop management
+workspace.py loop <name> list              # List active loops
+workspace.py loop <name> enable <pattern>  # Enable a pattern
+workspace.py loop <name> disable <pattern> # Disable a pattern
+workspace.py loop <name> run <pattern>     # Run a loop manually
 
-Phase 1 completion gate: Loop Ready Score documented + gate.yaml validated.
+# Cron management
+workspace.py cron install                  # Install crontab entries
+workspace.py cron remove                   # Remove crontab entries
+workspace.py cron list                     # Show crontab entries
+
+# Monitoring
+workspace.py audit <name>                  # Run loop-audit
+workspace.py cost <name> <pattern>         # Estimate token cost
+workspace.py sync <name>                   # Check STATE.md ↔ LOOP.md drift
+```
+
+**Supported Patterns:**
+
+| Pattern | Cadence | Risk | Token Cost | Level |
+|---------|---------|------|------------|-------|
+| Daily Triage | 1d–2h | Low | Low (~50k/run) | L1 |
+| PR Babysitter | 5–15m | Medium | High (~250k/run) | L1→L2 |
+| CI Sweeper | 5–15m | Medium | Very high (~200k/run) | L2 |
+| Dependency Sweeper | 6h–1d | Medium | Medium (~300k/run) | L2 |
+| Changelog Drafter | 1d | Low | Low (~35k/run) | L1 |
+| Post-Merge Cleanup | 1d–6h | Low | Low (~40k/run) | L1 |
+| Issue Triage | 2h–1d | Low | Low (~30k/run) | L1 |
 
 ### 3.1 Director
 
@@ -258,7 +280,7 @@ Only **active** ADRs (Accepted + Proposed) are listed here. Inactive ADRs (Super
 | ADR-0052 | Structured Durable Execution — Formal Checkpoint Schema and Auto-Checkpoint | Accepted |
 | ADR-0053 | Replace ollama with vllm for Embeddings | Accepted |
 | ADR-0054 | Replace opencode-rag with Graphify Knowledge Graph for Code Retrieval | Accepted |
-| ADR-0058 | Loop Engineering Integration & Token Budget Protocol v2 | Accepted |
+| ADR-0060 | Loop-Engineering Integration for Workspace Management | Accepted |
 | ADR-0055 | KodeHold Improvement Opportunities | Accepted |
 | ADR-0056 | Agent Configuration Cleanup | Accepted |
 | ADR-0057 | Migrate File-Based Memory to opencode-mem | Accepted |
@@ -375,7 +397,7 @@ The code retrieval flow is: **Graphify → opencode-mem**. Agents use Graphify f
 
 > **Note on built-in OpenCode tools:** OpenCode provides platform-level primitives (`search_semantic`, `find_usages`, `get_file_skeleton`, `describe_image`) that exist at the tool level. These are NOT part of KodeHold's documented retrieval workflow. All code retrieval goes through Graphify per ADR-0054. See [ADR-0054](../adr/ADR-0054-replace-opencode-rag-with-graphify.md).
 
-> **Previous systems:** The agentmemory daemon (`iii`, port 3111) was removed per ADR-0050. The file-based `.opencode/memory/` storage was removed per ADR-0057 — opencode-mem is now the sole memory system. OpenCode RAG's standalone `opencode-rag mcp` server was removed per ADR-0054 — Graphify is now the sole code retrieval method. See [ADR-0050](../adr/ADR-0050-agentmemory-to-opencode-rag-migration.md), [ADR-0051](../adr/ADR-0051-opencode-mem-persistent-memory.md), [ADR-0054](../adr/ADR-0054-replace-opencode-rag-with-graphify.md), and [ADR-0057](../adr/ADR-0057-migrate-file-memory-to-opencode-mem.md).
+> **Previous systems:** The agentmemory daemon (`iii`, port 3111) was removed per ADR-0050. opencode-mem is now the sole memory system. OpenCode RAG's standalone `opencode-rag mcp` server was removed per ADR-0054 — Graphify is now the sole code retrieval method. See [ADR-0050](../adr/ADR-0050-agentmemory-to-opencode-rag-migration.md), [ADR-0051](../adr/ADR-0051-opencode-mem-persistent-memory.md), [ADR-0054](../adr/ADR-0054-replace-opencode-rag-with-graphify.md), and [ADR-0057](../adr/ADR-0057-migrate-file-memory-to-opencode-mem.md).
 
 ### 7.3 CLI Operations
 
@@ -559,7 +581,7 @@ Protocol:
 
 ## 9. Token Optimization Strategy
 
-> **Note:** The Token Optimization Strategy (originally ADR-0007) has been modernized and superseded by **ADR-0058** (Loop Engineering Integration & Token Budget Protocol v2). ADR-0058 defines per-phase budget guidelines, per-automation-run caps, and a 24-hour kill switch (`.loop_pause_all`). See ADR-0058 for the current token budget protocol.
+> **Note:** The Token Optimization Strategy has been superseded by **ADR-0060** (Loop-Engineering Integration for Workspace Management). ADR-0060 defines loop-engineering integration, token cost estimation via `loop-cost`, and safety mechanisms via `loop-gate` and `loop-context`. See ADR-0060 for the current token budget protocol.
 
 ---
 
@@ -634,15 +656,18 @@ kodehold/
 
 ## 11. Changelog
 
-- **v1.22.0 (2026-07-18):** ADR-0057 completion — removed all file-based `.opencode/memory/` references from design doc. Updated §3.6 (Scribes), §6.1 (CLOSED state), §6.3 (Reopening), §6.4 (Commit Protection), §7.2 (Previous systems note corrected), §7.5 (Session Context Compression rewritten to reflect opencode-mem auto-capture), §7.7 (Prospective Memory updated to use `add_memory`/`search_memories`), §9 (Token Optimization table), §10 (File Layout — removed `.opencode/memory/`, `commands/`, `graphify-knowledge-flow`, `resume` skill). Removed checkpoint/compression protocol references. See ADR-0057 for full migration details.
-- **v1.22.0 (2026-07-21):** ADR-0058 accepted — Loop Engineering integration framework, Token Budget Protocol v2, three-phase roadmap (Foundation → Automation → Deep Integration). Added §3.0 (Loop Engineering Operational Framework) with Phase 1 implementation plan. Updated §5 (ADR Index) — ADR-0007 superseded by ADR-0058, added ADR-0055/0056/0057/0058 entries. Simplified §9 (Token Optimization Strategy) to reference ADR-0058. Updated ADR index in `docs/adr/README.md`.
+- **v1.25.0 (2026-07-22):** ADR-0060 implemented — Loop-Engineering Integration for Workspace Management complete. Added `workspace.py loop` subcommand (list, enable, disable, run), `workspace.py cron` subcommand (install, remove, list), `workspace.py audit/cost/sync` commands. Created `workspace-loop-management` skill. Updated §3.0 (Loop Engineering Operational Framework) with implementation status. All three phases complete: Phase 1 (loop-init integration), Phase 2 (enable/disable/run + cron), Phase 3 (audit/cost/sync).
+- **v1.24.0 (2026-07-22):** ADR-0060 accepted — Loop-Engineering Integration for Workspace Management. Updated §3.0 (Loop Engineering Operational Framework) to reference ADR-0060 instead of ADR-0058. Updated §5 (ADR Index) — replaced ADR-0058 with ADR-0060. Updated §9 (Token Optimization Strategy) to reference ADR-0060. ADR-0060 supersedes archived ADR-0058 and ADR-0059.
+- **v1.23.0 (2026-07-22):** Loop Engineering Phase 2 completion. Created `scripts/loop_runner.py` — pure Python L1 loop engine replacing `opencode run`. Added Discord webhook notifications (`--webhook` flag). ADR-0059 accepted — workspace.py rewritten with 10 subcommands, YAML registry (config/workspaces.yaml), copy mode default. ADR-0007 and `.opencode/memory/` references cleaned from all active operational files.
+- **v1.22.0 (2026-07-18):** ADR-0057 completion — removed deprecated file-based memory references from design doc. Updated §3.6 (Scribes), §6.1 (CLOSED state), §6.3 (Reopening), §6.4 (Commit Protection), §7.2 (Previous systems note corrected), §7.5 (Session Context Compression rewritten to reflect opencode-mem auto-capture), §7.7 (Prospective Memory updated to use `add_memory`/`search_memories`), §9 (Token Optimization table), §10 (File Layout — removed `commands/`, `graphify-knowledge-flow`, `resume` skill). Removed checkpoint/compression protocol references. See ADR-0057 for full migration details.
+- **v1.22.0 (2026-07-21):** ADR-0058 accepted — Loop Engineering integration framework, Token Budget Protocol v2, three-phase roadmap (Foundation → Automation → Deep Integration). Added §3.0 (Loop Engineering Operational Framework) with Phase 1 implementation plan. Updated §5 (ADR Index) — added ADR-0055/0056/0057/0058 entries. Simplified §9 (Token Optimization Strategy) to reference ADR-0058. Updated ADR index in `docs/adr/README.md`.
 - **v1.21.0 (2026-07-14):** ADR-0054 completion — replaced all remaining OpenCode RAG references with Graphify across all documentation. Created `graphify-knowledge-flow` skill to replace `opencode-rag-knowledge-flow`. Updated AGENTS.md, design doc §7.2/§7.4/§10, skills README, root README, ADR-0050, ADR-0051, and config/agents.yaml. Graphify is now the sole documented code retrieval method; platform-level OpenCode RAG primitives (search_semantic, find_usages, get_file_skeleton, describe_image) are explicitly noted as not part of KodeHold's workflow.
 - **v1.20.0 (2026-07-14):** ADR-0054: OpenCode RAG → Graphify migration. Replaced standalone `opencode-rag mcp` server with Graphify knowledge graph as the sole code retrieval mechanism. Graphify handles all code retrieval; built-in OpenCode RAG tools are platform-level primitives, not part of KodeHold's documented workflow. Updated Section 5 (ADR Index) and Section 7.2 (Persistent Memory & Knowledge Retrieval) with Graphify as sole retrieval layer. References ADR-0054.
 - **v1.19.0 (2026-07-09):** Updated Section 8.1 (Bring Your Own Model) to document hybrid embedding strategy: sentence-transformers on CPU for embeddings (bge-m3), Ollama for LLM inference (qwen3.5:9b). Replaces previous vLLM dual-instance plan. References ADR-0053 (Hybrid Embedding Strategy — sentence-transformers + Ollama).
 - **v1.18.0 (2026-07-02):** ADR-0052 promoted from Proposed → Accepted. Updated ADR-0019 superseded-by reference from "agentmemory" to "ADR-0052". Updated ADR README index with ADR-0052 Accepted entry.
 - **v1.17.0 (2026-07-02):** Registered ADR-0052 (Structured Durable Execution, Proposed) — formal YAML frontmatter checkpoint schema and auto-checkpoint on every delegation. Combines issues #59 (checkpoint format) and #35 (durable execution). Updated Section 7.5 to note ADR-0052 supersedes ADR-0019's compression protocol. Added ADR-0052 to ADR index.
 - **v1.16.0 (2026-07-01):** ADR-0051 integration — replaced Section 7.2 (Persistent Memory & Knowledge Retrieval) with opencode-mem as persistent memory backend and OpenCode RAG for code/doc search. Added ADR-0051 to ADR index. ADR-0050 §5 (File-Based Persistent Storage) superseded. See ADR-0051 for full rationale and configuration.
-- **v1.15.2 (2026-06-28):** ADR-0050 implementation — replaced Section 7.2 (Agentmemory → Persistent Memory & Knowledge Retrieval), removed Project Slug Migration subsection, updated all remaining agentmemory references throughout design doc to reflect file-based `.opencode/memory/` storage and OpenCode RAG tools. See ADR-0050 for full migration mapping.
+- **v1.15.2 (2026-06-28):** ADR-0050 implementation — replaced Section 7.2 (Agentmemory → Persistent Memory & Knowledge Retrieval), removed Project Slug Migration subsection, updated all remaining agentmemory references throughout design doc to reflect file-based memory storage and OpenCode RAG tools. See ADR-0050 for full migration mapping.
 - **v1.15.1 (2026-06-27):** ADR-0050 promoted from Proposed → Accepted after Reviewers approval. Second opinion skipped per user request. ADR status updated, `.design_reviewed` marker created.
 - **v1.15.0 (2026-06-27):** Registered ADR-0050 (Agentmemory → OpenCode RAG Migration, Proposed) — replaces agentmemory dependency with OpenCode's built-in RAG tools (search_semantic, find_usages, get_file_skeleton, describe_image). Updates Section 5 (ADR Index) and Section 7.4 (Skills table). See ADR-0050 for full migration plan.
 - **v1.14.0 (2026-06-19):** Added ADR-0049 (Lazy Senior Dev Philosophy, Proposed) — adopts Ponytail's "The Ladder" as KodeHold's coding philosophy. Principle #9 added to design doc. Integration points: engineers.md (workflow step 2c), reviewers.md (checklist items), director.md (delegation reference).

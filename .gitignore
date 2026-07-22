@@ -19,3 +19,6 @@ graphify-out/
 
 # opencode-rag workspace symlink (external project)
 workspaces/opencode-rag
+
+# Loop webhook secret
+config/loop-webhook.txt

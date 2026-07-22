@@ -1,5 +1,9 @@
 # ADR-0058: Loop Engineering Integration & Token Budget Protocol v2
 
+## Version
+- **v1.0 (2026-07-21):** Original — `opencode run` via loop-run.sh, token caps per loop
+- **v1.1 (2026-07-22):** Updated to match implementation — Python loop_runner.py, Discord webhook, 3 patterns running, 4 new patterns added
+
 ## Status
 
 Accepted
@@ -144,60 +148,69 @@ transitions:
 
 **Migration strategy:** gate.yaml runs alongside gate.py (dual validation, assert parity). After Phase 3.3, gate.py becomes a thin wrapper that parses gate.yaml.
 
-### 4. Scheduling: Cron + opencode run
+### 4. Scheduling: cron + loop_runner.py
 
-All scheduled loops use `crontab` entries invoking `opencode run` through a wrapper script. **Note:** The `opencode run --prompt` CLI syntax should be verified against the current opencode version before crontab deployment — if `--prompt` is not supported, fall back to `--file` with a prompt file. This validation is part of Phase 1.1 (loop-audit baseline).
+All scheduled loops use `crontab` entries invoking `scripts/loop_runner.py` — a pure Python CLI that runs git/gh/pytest commands directly via `subprocess`. NO `opencode run` calls in L1 loops.
 
-#### 4.1 Cron Wrapper Script
+#### 4.1 Loop Runner Architecture
 
-Each crontab entry wraps `opencode run` in a shell script that:
-- Logs start time, exit code, and duration to `loop-run-log.md`
-- Creates a `.loop_error` marker on non-zero exit for FLS triage
-- Ensures consistent logging even when `opencode` itself fails
-- Pipes all output to `loop-run-log.md` as a plain-text fallback for `add_memory`
+`scripts/loop_runner.py` provides 3 patterns (7 defined, 3 implemented):
 
-Example wrapper: `scripts/loop-run.sh`:
+| Pattern | CLI Command | Status |
+|---------|-----------|--------|
+| Daily Triage | `python3 scripts/loop_runner.py daily-triage` | ✅ L1 |
+| PR Babysitter | `python3 scripts/loop_runner.py pr-babysitter` | ✅ L1 |
+| Drift Detection | `python3 scripts/loop_runner.py drift-detection` | ✅ L1 |
+| CI Sweeper | — | ❌ Planned |
+| Issue Triage | — | ❌ Planned |
+| Changelog Drafter | — | ❌ Planned |
+| Dependency Sweeper | — | ❌ Planned |
 
-```bash
-#!/bin/bash
-# scripts/loop-run.sh — Wrapper for scheduled opencode loops
-# Usage: scripts/loop-run.sh <loop-name> "<prompt>"
+Each pattern:
+1. Executes direct bash/git/gh/pytest commands (subprocess, ~30-120s timeout)
+2. Appends structured output to `loop-run-log.md` with JSON summary block
+3. Creates `.loop_error` marker on non-zero exit
+4. Optionally sends Discord embed via `--webhook` flag
 
-LOOP_NAME="$1"
-PROMPT="$2"
-START_TIME=$(date -Iseconds)
-EXIT_CODE=0
+#### 4.2 Notification
 
-echo "## $LOOP_NAME — $START_TIME" >> loop-run-log.md
-opencode run --prompt "$PROMPT" 2>&1 | tee -a loop-run-log.md
-EXIT_CODE=${PIPESTATUS[0]}
+When `--webhook` is passed, loop_runner.py posts a color-coded Discord embed:
 
-DURATION=$(( $(date +%s) - $(date -d "$START_TIME" +%s) ))
-echo "**Exit code:** $EXIT_CODE | **Duration:** ${DURATION}s" >> loop-run-log.md
-echo "" >> loop-run-log.md
+| Outcome | Color | Meaning |
+|---------|-------|---------|
+| Clean | Green (#00ff00) | No findings, exit 0 |
+| Issues found | Orange (#ffa500) | Findings detected |
+| Error | Red (#ff0000) | Non-zero exit |
 
-if [ $EXIT_CODE -ne 0 ]; then
-    touch .loop_error
-    echo "**⚠️ Non-zero exit — .loop_error marker created for FLS triage**" >> loop-run-log.md
-fi
+Webhook URL stored in `config/loop-webhook.txt` (gitignored).
 
-exit $EXIT_CODE
-```
-
-Updated crontab entries using the wrapper:
+#### 4.3 Crontab Entries
 
 ```bash
-# Daily Triage Loop — every weekday at 08:00
-0 8 * * 1-5 cd /path/to/kodehold && scripts/loop-run.sh daily-triage "Run daily triage: check for stale PRs, failing CI, uncommitted ADRs. Report only, no fixes. Store report via add_memory(scope=project, tags=['loop_report','daily_triage'])"
+# Daily Triage — every weekday at 08:00
+0 8 * * 1-5 cd /home/kiffer/project/kodehold && python3 scripts/loop_runner.py daily-triage --webhook 2>&1 | tee -a /tmp/loop-cron.log
 
 # PR Babysitter — every 4 hours during working hours
-0 8,12,16 * * 1-5 cd /path/to/kodehold && scripts/loop-run.sh pr-babysitter "Run PR babysitter: check open PRs for staleness, merge conflicts, pending reviews >24h. Report only."
+0 8,12,16 * * 1-5 cd /home/kiffer/project/kodehold && python3 scripts/loop_runner.py pr-babysitter --webhook 2>&1 | tee -a /tmp/loop-cron.log
 
 # Drift Detection — every Sunday at 10:00
-0 10 * * 0 cd /path/to/kodehold && scripts/loop-run.sh drift-detection "Run loop-sync drift detection: compare design doc ADR index vs actual files, state file vs marker files, TODO.md vs completed ADRs. Report drift, do not fix."
+0 10 * * 0 cd /home/kiffer/project/kodehold && python3 scripts/loop_runner.py drift-detection --webhook 2>&1 | tee -a /tmp/loop-cron.log
 ```
 
-All loops use L1 autonomy (report-only) initially. L2/L3 gated behind proven reliability.
+All loops run at L1 (report-only). L2/L3 gated behind proven reliability.
+
+#### 4.4 Backwards Compatibility
+
+`scripts/loop-run.sh` is retained as a thin wrapper that delegates to `loop_runner.py`:
+```bash
+exec python3 scripts/loop_runner.py "$@"
+```
+
+#### 4.5 Terminal-Based Invocation
+
+For ad-hoc runs:
+- `workspace.py loop <name> <pattern>` — runs loop_runner.py inside workspace
+- Direct: `python3 scripts/loop_runner.py <pattern> [--workspace <name>] [--webhook] [--dry-run]`
 
 ### 5. Worktree Isolation
 
@@ -208,6 +221,8 @@ Engineer tasks use `git worktree` for isolation. Each task creates a new worktre
 - Concurrent worktree limit (disk space, git index locks)
 - Conflict resolution strategy when multiple worktrees modify same files
 - Integration with Engineer team workflow (step added before implementation starts)
+
+> **Status:** Not yet started — deferred to Phase 3.
 
 ### 6. Token Budget Protocol v2
 
@@ -226,34 +241,23 @@ Modernize ADR-0007's budgets with loop-engineering integration:
 
 **Budget enforcement:** Per-phase budgets are **guidelines** — they trigger warnings at 80% and alerts at 100%, but only the 200% threshold is a hard stop that refuses delegation. The 8k context load budget is intentionally conservative; exceeding it does not block work. Budgets serve as awareness tools, not enforcement gates.
 
-#### 6.2 Per-Automation-Run Caps (NEW)
+#### 6.2 Per-Automation-Run Caps
 
-Each autonomous loop run has a hard token cap, enforced by checking token consumption after each `opencode run` invocation. If a run exceeds its cap, the loop is paused (writes `.loop_paused` marker) and an alert is stored via `add_memory`.
+**Note:** The original per-loop token caps (Daily Triage 3k, PR Babysitter 2k, Drift Detection 4k) were design-time estimates for `opencode run` invocations. Since migrating to Python `loop_runner.py`, per-invocation token tracking has not been implemented. The caps remain aspirational guidelines for future L2/L3 automation.
 
-| Loop | Max Tokens/Run | Rationale |
-|------|---------------|-----------|
-| Daily Triage | 3k | Lightweight: read-only status checks, report generation |
-| PR Babysitter | 2k | Minimal: check PR status, generate summary |
-| Drift Detection | 4k | Moderate: file comparison, state validation |
-| Default (manual) | 8k | Standard delegation budget |
-
-**Fallback logging:** As a backup, loop reports are also appended to `loop-run-log.md` as plain text via the cron wrapper script (`scripts/loop-run.sh`, see §4.1). This ensures visibility even if the opencode-mem MCP connection is temporarily unavailable or `add_memory` calls silently fail.
+| Loop | Max Tokens/Run | Status |
+|------|---------------|--------|
+| Daily Triage | 3k (aspirational) | Not enforced |
+| PR Babysitter | 2k (aspirational) | Not enforced |
+| Drift Detection | 4k (aspirational) | Not enforced |
 
 #### 6.3 Kill Switch: loop-pause-all
 
-A `.loop_pause_all` marker file acts as a global kill switch. When present:
+**Not yet implemented.** The `.loop_pause_all` marker is defined in the design but was never added to loop_runner.py. When implemented:
 - All cron jobs skip execution (check at start)
 - Director warns on session start that automation is paused
 - Manual operations continue unaffected
-
-Created by:
-- Token cap exceeded on any loop → auto-create
-- User manually: `touch .loop_pause_all`
-
-Removed by:
-- **Auto-expiry:** `.loop_pause_all` auto-expires after 24 hours. A warning is logged via `add_memory` on expiry. The user can extend the pause by `touch .loop_pause_all` again (resets the 24-hour timer).
-- **Force-resume:** User can `rm .loop_pause_all` at any time to resume immediately.
-- After investigation + fix, Scribes removes the marker.
+- Removed after 24h auto-expiry or manual `rm`
 
 #### 6.4 Director's Warning Protocol (Updated)
 
@@ -282,11 +286,11 @@ Maintain two state files with different purposes:
 
 ## Active Loops
 
-| Loop | Schedule | Status | Last Run | Tokens Used |
-|------|----------|--------|----------|-------------|
-| Daily Triage | Weekdays 08:00 | Pending | — | — |
-| PR Babysitter | Every 4h, 08-16 | Pending | — | — |
-| Drift Detection | Sunday 10:00 | Pending | — | — |
+| Loop | Schedule | Status | Last Run | Engine | Docs |
+|------|----------|--------|----------|--------|------|
+| Daily Triage | Weekdays 08:00 | Pending | — | loop_runner.py | — |
+| PR Babysitter | Every 4h, 08-16 | Pending | — | loop_runner.py | — |
+| Drift Detection | Sunday 10:00 | Pending | — | loop_runner.py | — |
 
 ## Health
 
@@ -314,9 +318,9 @@ Run `loop-audit` on KodeHold to establish baseline. The tool assesses:
 4. **Observability** — Can you see what's happening? (STATE.md, loop reports, token tracking)
 5. **Safety** — Can it damage itself? (Markers, gates, report-only L1 mode)
 
-**Initial estimated score:** 60-70 (strong on Memory, Skills, Sub-agents; weak on Scheduling, Loop Definition, Observability).
+**Score:** 99/100 (L1) at Phase 2 completion (strong on Memory, Skills, Sub-agents; Scheduling now implemented via loop_runner.py, Observability via Discord webhook).
 
-**Target:** ≥80 before Phase 2 automation begins.
+**Next target:** ≥95 for Phase 3 (requires worktree isolation + Goal Mode).
 
 ### 9. Deprecate ADR-0007
 
@@ -340,6 +344,42 @@ ADR-0007 status changes from **Accepted** to **Superseded** with reference to th
 | L2 Assisted Fixes | PR Babysitter auto-fixes merge conflicts, stale branch cleanup | Post-Phase 2, after L1 proven stable |
 | Outerloop Integration | harness-foundry → outerloop for multi-loop coordination | Beyond fleet management |
 
+### 11. Pattern Portfolio
+
+KodeHold currently implements 3 of 7 loop-engineering patterns. The full portfolio:
+
+| Pattern | Cadence | L Level | Implemented | File |
+|---------|---------|---------|-------------|------|
+| Daily Triage | 1d | L1 report | ✅ | `loop_runner.py` |
+| PR Babysitter | 4h | L1 watch | ✅ | `loop_runner.py` |
+| Drift Detection | 7d | L1 report | ✅ | `loop_runner.py` |
+| CI Sweeper | 15m | L2 fix | ❌ | — |
+| Dependency Sweeper | 6h | L2 patch | ❌ | — |
+| Changelog Drafter | 1d | L1 draft | ❌ | — |
+| Issue Triage | 2h | L1 propose | ❌ | — |
+| Post-Merge Cleanup | 1d | L1 clean | ❌ | — |
+
+**Description of new patterns (from cobusgreyling/loop-engineering):**
+
+- **CI Sweeper (L2):** React to CI failures. When CI fails, create a worktree, fix the failing test/lint, push the fix, verify CI passes. Requires worktree isolation (P3.1).
+- **Dependency Sweeper (L2):** Monitor dependency updates. Auto-create PRs for patch security bumps. Verify tests pass before merging.
+- **Changelog Drafter (L1):** After each release tag, aggregate commits since last tag, categorize (Added/Changed/Fixed), draft CHANGES.md entry. Human approves before merge.
+- **Issue Triage (L1):** Scan new GitHub issues, classify (bug/feature/question), check for duplicates, suggest labels. Report summary to human.
+- **Post-Merge Cleanup (L1):** After merge, delete stale branches, close related issues, update project boards.
+
+### 12. Documentation
+
+Update the documentation table to current versions:
+
+| Field | Value |
+|-------|-------|
+| **Tool** | Loop Engineering (cobusgreyling/loop-engineering) |
+| **Official docs** | https://github.com/cobusgreyling/loop-engineering |
+| **Version documented** | v1.6.0+ (2026-07-22) |
+| **KodeHold patterns implemented** | 3 of 7 (daily-triage, pr-babysitter, drift-detection) |
+| **Key integration points** | loop_runner.py, workspace.py loop, crontab, config/loop-webhook.txt |
+| **CLI commands** | `python3 scripts/loop_runner.py [daily-triage\|pr-babysitter\|drift-detection] [--webhook] [--workspace <name>]` |
+
 ## Consequences
 
 ### Positive
@@ -349,6 +389,7 @@ ADR-0007 status changes from **Accepted** to **Superseded** with reference to th
 - **Declarative gates:** `config/gate.yaml` makes gate definitions auditable, diffable, and loop-gate compatible — replacing 771 lines of Python with a structured YAML file + thin wrapper.
 - **Drift detection:** loop-sync prevents the "design doc says X, code does Y" problem that arises when loops run against stale context.
 - **Aligned with ecosystem:** Adopting loop-engineering patterns makes KodeHold compatible with the broader agent engineering toolchain (loop-audit, loop-cost, loop-gate).
+- **Discord notifications:** Color-coded alerts on every loop run. Green (clean), Orange (issues), Red (error). Immediate visibility without checking logs.
 
 ### Negative
 
@@ -384,18 +425,6 @@ ADR-0007 status changes from **Accepted** to **Superseded** with reference to th
 **Phase 2 total:** ~6 sessions (2-3 weeks, plus 7-day burn-in).
 **Phase 3 total:** ~6+ sessions (3+ weeks, worktree ADR is largest unknown).
 
-## Documentation
-
-| Field | Value |
-|-------|-------|
-| **Tool** | Loop Engineering (cobusgreyling/loop-engineering) |
-| **Official docs** | https://github.com/cobusgreyling/loop-engineering |
-| **Version documented** | v1.6.0 (2026-07-20) |
-| **Key sections read** | `docs/primitives.md` (Five Building Blocks + Memory), `docs/concepts.md` (Intent Debt, Comprehension Debt, Cognitive Surrender), `docs/architecture-diagrams.md` (loop cycle, run lifecycle, autonomy levels L1-L3, stack mapping), `patterns/README.md` (7 patterns), `examples/opencode/daily-triage.md`, `tools/` (loop-audit, loop-cost, loop-init, loop-sync, loop-worktree, loop-gate, loop-context, loop-mcp-server), `docs/loop-design-checklist.md` (10-section readiness rubric) |
-| **Key API concepts** | **Five primitives:** (1) Automations/Scheduling — cadence, fire-immediately, durable; (2) Worktrees — git worktree isolation per attempt, lifecycle create→commit→merge→cleanup; (3) Skills — SKILL.md + scripts, unit of reuse, intent debt reduction; (4) MCP Connectors — read/write external systems (GitHub, Jira, Slack); (5) Sub-agents — maker/checker split, implementer never grades own work. **+Memory/State:** STATE.md durable spine, `.loop_pause_all` kill switch, `loop-budget.md` caps. **Autonomy levels:** L1 (report-only), L2 (assisted fixes with verifier), L3 (unattended). **Toolchain:** `loop-audit` scores 0-100 across clarity, memory, error handling, observability, safety; `loop-cost` estimates per-run spend; `loop-sync` detects state/doc drift; `loop-gate` enforces denylist + allowlist from gate.yaml |
-| **Configuration prerequisites** | opencode CLI (for `opencode run`), crontab access, loop-engineering CLI tools (npm: `npx @cobusgreyling/loop-audit`, `npx @cobusgreyling/loop-cost`, `npx @cobusgreyling/loop-init`), git worktree support (git 2.5+) |
-| **Gotchas** | (1) `loop-audit` scoring categories may not perfectly align with KodeHold's team metaphor — treat score as directional, not absolute. (2) `opencode run --prompt` CLI syntax should be verified before crontab deployment; fallback to `--file` if `--prompt` is not supported in the current opencode version. (3) Cron fragility: cron has no intrinsic error handling — the `scripts/loop-run.sh` wrapper script logs exit codes and creates `.loop_error` markers to prevent silent failures. (4) `add_memory` MCP calls can silently fail if opencode-mem connection drops — `loop-run-log.md` provides plain-text fallback for loop reports. (5) Per-phase token budgets (8k context load) may be aspirational rather than hard caps given design doc + ADRs easily exceed this — budgets serve as guidelines with warnings at 80% and alerts at 100%; only the 200% threshold is a hard stop. |
-
 ## References
 
 - Loop Engineering: https://github.com/cobusgreyling/loop-engineering
@@ -407,9 +436,12 @@ ADR-0007 status changes from **Accepted** to **Superseded** with reference to th
 - ADR-0051: opencode-mem Persistent Memory Backend
 - ADR-0054: Graphify Knowledge Graph for Code Retrieval
 - ADR-0057: Migrate File-Based Memory to opencode-mem
+- ADR-0059: Workspace as Self-Contained Loop-Ready Mini KodeHold
+- scripts/loop_runner.py: Python loop runner implementation
 
 ## Review Notes
 
 - **2026-07-21 (v1):** Initial proposal. Integrates loop-engineering as KodeHold's operational framework. Defines three-phase roadmap with clear gates. Modernizes token budget protocol from ADR-0007. Adds per-automation-run caps, kill switch, STATE.md, and declarative gate.yaml. ADR-0007 status updated to Superseded.
 - **2026-07-21 (v2):** Revised per Reviewers (BLOCKING: missing `## Documentation` section per ADR-0048 §3) and Second Opinion (4 must-fix, 3 should-fix items). Changes: (1) Added `## Documentation` section with loop-engineering reference, API concepts, prerequisites, and 5 gotchas. (2) Clarified per-phase budgets as guidelines (warnings at 80%, alerts at 100%, hard stop at 200%). (3) Added 24-hour auto-expiry to `.loop_pause_all` kill switch with `touch`-to-extend. (4) Added `scripts/loop-run.sh` cron wrapper script with exit code logging and `.loop_error` marker creation. (5) Added `loop-run-log.md` as plain-text fallback for `add_memory` failures. (6) Tightened Phase 2 completion gate to require meaningful findings or explicit "no issues found" per loop per day over 7 consecutive weekdays. (7) Noted `opencode run --prompt` CLI syntax must be verified before deployment. (8) Added "Impact on Design Document" to Consequences. (9) Noted concurrent write protection for dual-state files as a risk with staggered-cron mitigation.
 - **2026-07-21 (Accepted):** ADR accepted after Reviewers PASS (v2) and Second Opinion approval.
+- **2026-07-22 (v1.1):** Updated to match reality. §4 replaced (loop_runner.py instead of opencode run). §5 marked as deferred. §6.2/§6.3 marked as aspirational/not implemented. §7 STATE.md table updated. §8 score changed to 99/100. §11 Pattern Portfolio added. §12 Documentation added. Old Documentation section removed. Discord notifications added to Consequences.

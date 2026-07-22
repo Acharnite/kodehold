@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.23.0 — 2026-07-22
+
+### Added
+- **scripts/loop_runner.py** — Pure Python L1 loop engine replacing `loop-run.sh` (opencode run). 3 patterns: daily-triage, pr-babysitter, drift-detection. Runs git/gh/pytest directly via subprocess.
+- **Discord webhook notifications** — `--webhook` flag on loop_runner.py sends color-coded embeds (green=clean, orange=issues, red=error). Webhook URL stored in `config/loop-webhook.txt` (gitignored).
+- **ADR-0059: Workspace as Mini-KodeHold** — Accepted. workspace.py rewritten with 10 commands (init, adopt, list, state, loop, gate, deploy-ready, migrate, deinit, ensure-git). Copy mode default, `--link` for legacy symlinks. YAML registry in `config/workspaces.yaml`.
+
+### Changed
+- **Loop architecture** — `opencode run` eliminated from L1 loops. All loops are pure Python via `loop_runner.py`.
+- **Crontab** — 3 loop entries updated to `python3 scripts/loop_runner.py <pattern> --webhook`.
+- **ADR-0007 deprecation** — All references to ADR-0007 removed from active operational files (design doc, TODO.md, CHANGES.md).
+- **`.opencode/memory/` deprecation** — All references to file-based memory removed from active operational files.
+
+### Removed
+- `scripts/loop-run.sh` — replaced by `scripts/loop_runner.py` (backwards-compat wrapper retained).
 
 ## 1.22.0 — 2026-07-14
 
@@ -480,7 +495,6 @@
   - ADR-0004: ICM and RTK integration strategy
   - ADR-0005: LLM support with Ollama and light mode (32k context)
   - ADR-0006: Second opinion protocol for cross-model validation
-  - ADR-0007: Token optimization strategy (English-only, tiered loading, budgets)
   - ADR-0008: Project lifecycle with reopen and archive protocol
 - ADR index (`docs/adr/README.md`)
 - `.gitignore` excluding `.icm/` directory

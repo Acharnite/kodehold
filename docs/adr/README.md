@@ -41,16 +41,15 @@ Each ADR follows the Nygard format: **Status | Context | Decision | Consequences
 | [ADR-0052](ADR-0052-structured-durable-execution.md) | Structured Durable Execution — Formal Checkpoint Schema and Auto-Checkpoint | Accepted | 2026-07-02 |
 | [ADR-0053](ADR-0053-replace-ollama-with-vllm.md) | Hybrid Embedding Strategy — sentence-transformers + Ollama | Accepted | 2026-07-09 |
 | [ADR-0054](ADR-0054-replace-opencode-rag-with-graphify.md) | Replace opencode-rag with Graphify Knowledge Graph | Accepted | 2026-07-14 |
-| [ADR-0058](ADR-0058-loop-engineering-integration.md) | Loop Engineering Integration & Token Budget Protocol v2 | Accepted | 2026-07-21 |
-| [ADR-0059](ADR-0059-workspace-as-mini-kodehold.md) | Workspace as Self-Contained Loop-Ready Mini KodeHold | Accepted | 2026-07-22 |
 | [ADR-0055](ADR-0055-kodehold-improvements.md) | KodeHold Improvement Opportunities | Accepted | 2026-07-21 |
 | [ADR-0056](ADR-0056-agent-config-cleanup.md) | Agent Configuration Cleanup | Accepted | 2026-07-21 |
 | [ADR-0057](ADR-0057-migrate-file-memory-to-opencode-mem.md) | Migrate File-Based Memory to opencode-mem | Accepted | 2026-07-21 |
+| [ADR-0060](ADR-0060-loop-engineering-integration.md) | Loop-Engineering Integration for Workspace Management | Accepted | 2026-07-22 |
 
-**38 Accepted** — total 38 active ADRs.
+**37 Accepted** — total 37 active ADRs.
 
 ## Inactive ADRs
 
-21 ADRs have been moved to [inactive/](./inactive/) as they are superseded,
-deprecated, or archived (ICM/agentmemory era designs). See [inactive/README.md](./inactive/README.md)
+23 ADRs have been moved to [inactive/](./inactive/) as they are superseded,
+deprecated, or archived (ICM/agentmemory era designs, loop-engineering rollback). See [inactive/README.md](./inactive/README.md)
 for the full index with reasons.

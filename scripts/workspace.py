@@ -2,18 +2,34 @@
 """KodeHold Workspace Manager — create, list, and manage project workspaces.
 
 Usage:
-    python3 scripts/workspace.py init <name> [--no-git]
-    python3 scripts/workspace.py adopt <name> <path> [--link] [--no-git]
-    python3 scripts/workspace.py list [--json] [--loops]
+    # Workspace management
+    python3 scripts/workspace.py init <name>
+    python3 scripts/workspace.py adopt <name> <path>
+    python3 scripts/workspace.py list
     python3 scripts/workspace.py state <name>
-    python3 scripts/workspace.py loop <name> <pattern> [--dry-run]
-    python3 scripts/workspace.py gate <name> <transition> [--validate-only]
+    python3 scripts/workspace.py gate <name> <transition>
     python3 scripts/workspace.py deploy-ready <name>
-    python3 scripts/workspace.py migrate [<name>|--all]
-    python3 scripts/workspace.py deinit <name> [--force]
     python3 scripts/workspace.py ensure-git <name>
 
-Registry migrated from workspaces/.catalog (JSON) to config/workspaces.yaml (YAML).
+    # Loop management (ADR-0060)
+    python3 scripts/workspace.py loop <name> list
+    python3 scripts/workspace.py loop <name> enable <pattern>
+    python3 scripts/workspace.py loop <name> disable <pattern>
+    python3 scripts/workspace.py loop <name> run <pattern>
+
+    # Cron management
+    python3 scripts/workspace.py cron install
+    python3 scripts/workspace.py cron remove
+    python3 scripts/workspace.py cron list
+
+    # Monitoring
+    python3 scripts/workspace.py audit <name>
+    python3 scripts/workspace.py cost <name> <pattern>
+    python3 scripts/workspace.py sync <name>
+
+Supported patterns:
+    daily-triage, pr-babysitter, ci-sweeper, dependency-sweeper,
+    changelog-drafter, post-merge-cleanup, issue-triage
 """
 
 from __future__ import annotations
@@ -22,13 +38,10 @@ import argparse
 import json
 import os
 import re
-import shutil
 import subprocess
 import sys
 from datetime import date
 from pathlib import Path
-
-import yaml
 
 # Ensure project root is in sys.path
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -44,11 +57,578 @@ from scripts.lib.output import (  # noqa: E402
 
 WORKSPACE_ROOT = "workspaces"
 CATALOG = f"{WORKSPACE_ROOT}/.catalog"
-REGISTRY = "config/workspaces.yaml"
 GATE_SCRIPT = "scripts/gate.py"
 
 
-# ── Helpers ───────────────────────────────────────────────────────────────
+# ── Loop Engineering Integration ──────────────────────────────────────────
+
+
+def run_loop_init(ws_dir: str, pattern: str = "daily-triage") -> bool:
+    """Run loop-init in workspace to scaffold loop-engineering files.
+    
+    Returns True on success, False on failure.
+    """
+    try:
+        result = subprocess.run(
+            [
+                "npx",
+                "@cobusgreyling/loop-init",
+                ".",
+                "--pattern", pattern,
+                "--tool", "opencode",
+            ],
+            cwd=ws_dir,
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+        if result.returncode == 0:
+            info(f"Loop-engineering files scaffolded (pattern: {pattern})")
+            return True
+        else:
+            warn(f"loop-init failed: {result.stderr[:200]}")
+            return False
+    except subprocess.TimeoutExpired:
+        warn("loop-init timed out (60s) — skipping loop setup")
+        return False
+    except FileNotFoundError:
+        warn("npx not found — skipping loop setup (install Node.js)")
+        return False
+    except OSError as e:
+        warn(f"loop-init error: {e}")
+        return False
+
+
+def ws_loop_list(name: str) -> None:
+    """List active loops for a workspace."""
+    ws_dir = Path(WORKSPACE_ROOT) / name
+    if not ws_dir.is_dir():
+        fail_msg(f"Workspace '{name}' not found")
+        sys.exit(1)
+
+    # Check for loop-engineering files
+    loop_md = ws_dir / "LOOP.md"
+    state_md = ws_dir / "STATE.md"
+    
+    if not loop_md.is_file():
+        info(f"No LOOP.md found in '{name}' — run 'workspace.py init' or 'workspace.py adopt' to scaffold loop files")
+        return
+    
+    print(f"\n━━━ Loops for {name} ━━━\n")
+    
+    # Parse LOOP.md for active loops
+    content = loop_md.read_text()
+    in_table = False
+    for line in content.splitlines():
+        if "| Pattern" in line and "Cadence" in line:
+            in_table = True
+            print(f"  {line}")
+            continue
+        if in_table and line.startswith("|"):
+            print(f"  {line}")
+        elif in_table and not line.startswith("|"):
+            in_table = False
+    
+    if state_md.is_file():
+        state_content = state_md.read_text()
+        last_run = "never"
+        for line in state_content.splitlines():
+            if line.startswith("Last run:"):
+                last_run = line.split(":", 1)[1].strip()
+                break
+        print(f"\n  Last run: {last_run}")
+    
+    print()
+
+
+def ws_loop_enable(name: str, pattern: str) -> None:
+    """Enable a loop pattern for a workspace."""
+    ws_dir = Path(WORKSPACE_ROOT) / name
+    if not ws_dir.is_dir():
+        fail_msg(f"Workspace '{name}' not found")
+        sys.exit(1)
+
+    loop_md = ws_dir / "LOOP.md"
+    if not loop_md.is_file():
+        fail_msg(f"No LOOP.md found in '{name}' — run 'workspace.py init' or 'workspace.py adopt' first")
+        sys.exit(1)
+
+    # Valid patterns from loop-engineering
+    valid_patterns = [
+        "daily-triage",
+        "pr-babysitter",
+        "ci-sweeper",
+        "dependency-sweeper",
+        "changelog-drafter",
+        "post-merge-cleanup",
+        "issue-triage",
+    ]
+
+    if pattern not in valid_patterns:
+        fail_msg(f"Invalid pattern '{pattern}' — valid patterns: {', '.join(valid_patterns)}")
+        sys.exit(1)
+
+    content = loop_md.read_text()
+    
+    # Check if pattern already enabled
+    if f"| {pattern.replace('-', ' ').title()}" in content or f"| {pattern}" in content:
+        info(f"Pattern '{pattern}' already enabled for '{name}'")
+        return
+
+    # Add pattern to the table
+    # Find the table and add the pattern
+    lines = content.splitlines()
+    new_lines = []
+    table_found = False
+    pattern_added = False
+    
+    for line in lines:
+        new_lines.append(line)
+        if "| Pattern" in line and "Cadence" in line:
+            table_found = True
+        elif table_found and line.startswith("|") and not pattern_added:
+            # Check if this is the last row in the table (empty or placeholder)
+            if "_(none configured)_" in line:
+                # Replace the placeholder row
+                new_lines[-1] = f"| {pattern.replace('-', ' ').title()} | 1d | L1 report-only | `opencode run \"Run {pattern}\" --agent {pattern}` via cron/systemd |"
+                pattern_added = True
+
+    if not pattern_added:
+        # Find the end of the table and add there
+        for i, line in enumerate(lines):
+            if "| Pattern" in line and "Cadence" in line:
+                # Find the next empty line after the table
+                for j in range(i + 1, len(lines)):
+                    if not lines[j].startswith("|"):
+                        # Insert before this line
+                        new_lines.insert(j, f"| {pattern.replace('-', ' ').title()} | 1d | L1 report-only | `opencode run \"Run {pattern}\" --agent {pattern}` via cron/systemd |")
+                        pattern_added = True
+                        break
+                break
+
+    if pattern_added:
+        loop_md.write_text("\n".join(new_lines))
+        pass_msg(f"Enabled pattern '{pattern}' for '{name}'")
+    else:
+        warn(f"Could not add pattern '{pattern}' to LOOP.md — manual edit required")
+
+
+def ws_loop_disable(name: str, pattern: str) -> None:
+    """Disable a loop pattern for a workspace."""
+    ws_dir = Path(WORKSPACE_ROOT) / name
+    if not ws_dir.is_dir():
+        fail_msg(f"Workspace '{name}' not found")
+        sys.exit(1)
+
+    loop_md = ws_dir / "LOOP.md"
+    if not loop_md.is_file():
+        fail_msg(f"No LOOP.md found in '{name}'")
+        sys.exit(1)
+
+    content = loop_md.read_text()
+    lines = content.splitlines()
+    new_lines = []
+    removed = False
+    
+    pattern_title = pattern.replace('-', ' ').title()
+    
+    for line in lines:
+        # Skip the line containing the pattern
+        if f"| {pattern_title}" in line or f"| {pattern}" in line:
+            removed = True
+            continue
+        new_lines.append(line)
+
+    if removed:
+        # Check if table is now empty, add placeholder if needed
+        in_table = False
+        has_rows = False
+        for line in new_lines:
+            if "| Pattern" in line and "Cadence" in line:
+                in_table = True
+            elif in_table and line.startswith("|"):
+                has_rows = True
+            elif in_table and not line.startswith("|"):
+                break
+        
+        if in_table and not has_rows:
+            # Add placeholder row
+            for i, line in enumerate(new_lines):
+                if "| Cadence" in line and "Status" in line:
+                    new_lines.insert(i + 1, "| _(none configured)_ | — | L1 report-only | — |")
+                    break
+        
+        loop_md.write_text("\n".join(new_lines))
+        pass_msg(f"Disabled pattern '{pattern}' for '{name}'")
+    else:
+        info(f"Pattern '{pattern}' not found in '{name}'")
+
+
+def ws_loop_run(name: str, pattern: str) -> None:
+    """Run a loop pattern manually for a workspace."""
+    ws_dir = Path(WORKSPACE_ROOT) / name
+    if not ws_dir.is_dir():
+        fail_msg(f"Workspace '{name}' not found")
+        sys.exit(1)
+
+    loop_md = ws_dir / "LOOP.md"
+    if not loop_md.is_file():
+        fail_msg(f"No LOOP.md found in '{name}' — run 'workspace.py init' or 'workspace.py adopt' first")
+        sys.exit(1)
+
+    # Valid patterns
+    valid_patterns = [
+        "daily-triage",
+        "pr-babysitter",
+        "ci-sweeper",
+        "dependency-sweeper",
+        "changelog-drafter",
+        "post-merge-cleanup",
+        "issue-triage",
+    ]
+
+    if pattern not in valid_patterns:
+        fail_msg(f"Invalid pattern '{pattern}' — valid patterns: {', '.join(valid_patterns)}")
+        sys.exit(1)
+
+    # Map pattern to agent name
+    agent_map = {
+        "daily-triage": "loop-triage",
+        "pr-babysitter": "pr-babysitter",
+        "ci-sweeper": "ci-triage",
+        "dependency-sweeper": "dependency-triage",
+        "changelog-drafter": "changelog-scan",
+        "post-merge-cleanup": "post-merge-scan",
+        "issue-triage": "issue-triage",
+    }
+
+    agent = agent_map.get(pattern, "loop-triage")
+
+    # Build the opencode run command
+    prompts = {
+        "daily-triage": "Run loop-triage. Read STATE.md first. Update High Priority and Watch List. No auto-fix in week one.",
+        "pr-babysitter": "Run pr-babysitter. Read pr-babysitter-state.md. Watch open PRs. No code changes.",
+        "ci-sweeper": "Run ci-triage. Read ci-sweeper-state.md. Classify CI failures. No auto-fix.",
+        "dependency-sweeper": "Run dependency-triage. Read dependency-sweeper-state.md. Scan for outdated deps. No auto-fix.",
+        "changelog-drafter": "Run changelog-scan. Read changelog-drafter-state.md. Scan merges. Draft release notes.",
+        "post-merge-cleanup": "Run post-merge-scan. Read post-merge-state.md. Scan recent merges. Propose cleanup.",
+        "issue-triage": "Run issue-triage. Read issue-triage-state.md. Scan open issues. Propose labels.",
+    }
+
+    prompt = prompts.get(pattern, f"Run {pattern}")
+
+    info(f"Running {pattern} for workspace '{name}'...")
+    info(f"Directory: {ws_dir}")
+    info(f"Agent: {agent}")
+    info(f"Prompt: {prompt}")
+
+    # Run opencode
+    try:
+        result = subprocess.run(
+            [
+                "opencode",
+                "run",
+                prompt,
+                "--agent", agent,
+            ],
+            cwd=str(ws_dir),
+            capture_output=False,
+            timeout=300,
+        )
+        if result.returncode == 0:
+            pass_msg(f"Loop '{pattern}' completed for '{name}'")
+        else:
+            fail_msg(f"Loop '{pattern}' exited with code {result.returncode}")
+            sys.exit(1)
+    except subprocess.TimeoutExpired:
+        fail_msg(f"Loop '{pattern}' timed out (300s)")
+        sys.exit(1)
+    except FileNotFoundError:
+        fail_msg("opencode not found — install opencode CLI")
+        sys.exit(1)
+    except OSError as e:
+        fail_msg(f"Error running loop: {e}")
+        sys.exit(1)
+
+
+# ── Cron Management ──────────────────────────────────────────────────────
+
+
+def _get_crontab_path() -> Path:
+    """Get path to kodehold crontab file."""
+    return _PROJECT_ROOT / "config" / "crontab.kodehold"
+
+
+def _read_crontab() -> str:
+    """Read the kodehold crontab file."""
+    crontab_path = _get_crontab_path()
+    if crontab_path.is_file():
+        return crontab_path.read_text()
+    return ""
+
+
+def _write_crontab(content: str) -> None:
+    """Write the kodehold crontab file."""
+    crontab_path = _get_crontab_path()
+    crontab_path.parent.mkdir(parents=True, exist_ok=True)
+    crontab_path.write_text(content)
+
+
+def _generate_cron_entry(ws_name: str, pattern: str, schedule: str) -> str:
+    """Generate a crontab entry for a workspace loop."""
+    ws_dir = (_PROJECT_ROOT / WORKSPACE_ROOT / ws_name).resolve()
+    
+    # Map pattern to agent and prompt
+    agent_map = {
+        "daily-triage": ("loop-triage", "Run loop-triage. Read STATE.md first. Update High Priority and Watch List. No auto-fix in week one."),
+        "pr-babysitter": ("pr-babysitter", "Run pr-babysitter. Read pr-babysitter-state.md. Watch open PRs. No code changes."),
+        "ci-sweeper": ("ci-triage", "Run ci-triage. Read ci-sweeper-state.md. Classify CI failures. No auto-fix."),
+        "dependency-sweeper": ("dependency-triage", "Run dependency-triage. Read dependency-sweeper-state.md. Scan for outdated deps. No auto-fix."),
+        "changelog-drafter": ("changelog-scan", "Run changelog-scan. Read changelog-drafter-state.md. Scan merges. Draft release notes."),
+        "post-merge-cleanup": ("post-merge-scan", "Run post-merge-scan. Read post-merge-state.md. Scan recent merges. Propose cleanup."),
+        "issue-triage": ("issue-triage", "Run issue-triage. Read issue-triage-state.md. Scan open issues. Propose labels."),
+    }
+    
+    agent, prompt = agent_map.get(pattern, ("loop-triage", f"Run {pattern}"))
+    
+    # Path to discord-notify.py
+    discord_script = (_PROJECT_ROOT / "scripts" / "discord-notify.py").resolve()
+    
+    # Build the command with Discord notification and findings extraction
+    cmd = f"""# {pattern} for {ws_name} — {schedule}
+{schedule} cd {ws_dir} && START_TIME=$(date +%s) && opencode run "{prompt}" --agent {agent} 2>&1 | tee /tmp/loop-{ws_name}.log && END_TIME=$(date +%s) && DURATION=$((END_TIME - START_TIME)) && python3 {discord_script} {ws_name} {pattern} "Loop completed" $DURATION /tmp/loop-{ws_name}.log"""
+    
+    return cmd
+
+
+def ws_cron_install() -> None:
+    """Install crontab entries for all workspaces with enabled loops."""
+    catalog = ensure_catalog()
+    
+    if not catalog:
+        info("No workspaces found")
+        return
+    
+    cron_entries = []
+    cron_entries.append("# ── KodeHold Loop Engineering — Auto-generated crontab ──")
+    cron_entries.append("# Generated by: workspace.py cron install")
+    cron_entries.append("# Manual edits will be overwritten on next install")
+    cron_entries.append("")
+    
+    installed_count = 0
+    
+    for ws_name, meta in sorted(catalog.items()):
+        ws_dir = Path(WORKSPACE_ROOT) / ws_name
+        loop_md = ws_dir / "LOOP.md"
+        
+        if not loop_md.is_file():
+            continue
+        
+        # Parse LOOP.md for enabled patterns
+        content = loop_md.read_text()
+        patterns = []
+        
+        for line in content.splitlines():
+            if line.startswith("|") and "L1" in line:
+                # Extract pattern name from the table row
+                parts = [p.strip() for p in line.split("|") if p.strip()]
+                if parts:
+                    pattern_name = parts[0].lower().replace(" ", "-")
+                    # Skip placeholder rows
+                    if "none" not in pattern_name and "configured" not in pattern_name:
+                        patterns.append(pattern_name)
+        
+        if not patterns:
+            continue
+        
+        cron_entries.append(f"# ── {ws_name} ──")
+        
+        for i, pattern in enumerate(patterns):
+            # Stagger schedules to avoid conflicts
+            if pattern == "daily-triage":
+                schedule = f"{8 + (installed_count % 4)} * * * *"
+            elif pattern == "pr-babysitter":
+                schedule = f"0 8,12,16 * * 1-5"
+            elif pattern == "issue-triage":
+                schedule = f"0 */2 * * *"
+            else:
+                schedule = f"0 {8 + (installed_count % 4)} * * *"
+            
+            cron_entries.append(_generate_cron_entry(ws_name, pattern, schedule))
+            installed_count += 1
+        
+        cron_entries.append("")
+    
+    if installed_count == 0:
+        info("No loops enabled in any workspace")
+        return
+    
+    # Write crontab
+    _write_crontab("\n".join(cron_entries))
+    pass_msg(f"Installed {installed_count} crontab entries for {len(catalog)} workspaces")
+    info(f"Crontab file: {_get_crontab_path()}")
+    info("To activate: crontab < {_get_crontab_path()}")
+
+
+def ws_cron_remove() -> None:
+    """Remove kodehold crontab entries."""
+    crontab_path = _get_crontab_path()
+    if crontab_path.is_file():
+        crontab_path.unlink()
+        pass_msg("Removed kodehold crontab file")
+    else:
+        info("No kodehold crontab file found")
+
+
+def ws_cron_list() -> None:
+    """Show current crontab entries."""
+    crontab_path = _get_crontab_path()
+    if crontab_path.is_file():
+        print(f"\n━━━ KodeHold Crontab ━━━\n")
+        print(crontab_path.read_text())
+        print(f"\nFile: {crontab_path}")
+    else:
+        info("No kodehold crontab file found")
+        info("Run 'workspace.py cron install' to generate")
+
+
+# ── Monitoring Commands ──────────────────────────────────────────────────
+
+
+def ws_audit(name: str) -> None:
+    """Run loop-audit in a workspace to check loop readiness."""
+    ws_dir = Path(WORKSPACE_ROOT) / name
+    if not ws_dir.is_dir():
+        fail_msg(f"Workspace '{name}' not found")
+        sys.exit(1)
+
+    loop_md = ws_dir / "LOOP.md"
+    if not loop_md.is_file():
+        fail_msg(f"No LOOP.md found in '{name}' — run 'workspace.py init' or 'workspace.py adopt' first")
+        sys.exit(1)
+
+    info(f"Running loop-audit for workspace '{name}'...")
+    info(f"Directory: {ws_dir}")
+
+    try:
+        result = subprocess.run(
+            [
+                "npx",
+                "@cobusgreyling/loop-audit",
+                ".",
+                "--suggest",
+            ],
+            cwd=str(ws_dir),
+            capture_output=False,
+            timeout=120,
+        )
+        if result.returncode == 0:
+            pass_msg(f"Loop-audit completed for '{name}'")
+        else:
+            warn(f"Loop-audit exited with code {result.returncode}")
+    except subprocess.TimeoutExpired:
+        fail_msg("loop-audit timed out (120s)")
+        sys.exit(1)
+    except FileNotFoundError:
+        fail_msg("npx not found — install Node.js")
+        sys.exit(1)
+    except OSError as e:
+        fail_msg(f"Error running loop-audit: {e}")
+        sys.exit(1)
+
+
+def ws_cost(name: str, pattern: str) -> None:
+    """Estimate token cost for a loop pattern in a workspace."""
+    ws_dir = Path(WORKSPACE_ROOT) / name
+    if not ws_dir.is_dir():
+        fail_msg(f"Workspace '{name}' not found")
+        sys.exit(1)
+
+    # Valid patterns
+    valid_patterns = [
+        "daily-triage",
+        "pr-babysitter",
+        "ci-sweeper",
+        "dependency-sweeper",
+        "changelog-drafter",
+        "post-merge-cleanup",
+        "issue-triage",
+    ]
+
+    if pattern not in valid_patterns:
+        fail_msg(f"Invalid pattern '{pattern}' — valid patterns: {', '.join(valid_patterns)}")
+        sys.exit(1)
+
+    info(f"Estimating token cost for pattern '{pattern}' in workspace '{name}'...")
+
+    try:
+        result = subprocess.run(
+            [
+                "npx",
+                "@cobusgreyling/loop-cost",
+                "--pattern", pattern,
+                "--level", "L1",
+            ],
+            cwd=str(ws_dir),
+            capture_output=False,
+            timeout=60,
+        )
+        if result.returncode == 0:
+            pass_msg(f"Cost estimation completed for '{pattern}'")
+        else:
+            warn(f"Loop-cost exited with code {result.returncode}")
+    except subprocess.TimeoutExpired:
+        fail_msg("loop-cost timed out (60s)")
+        sys.exit(1)
+    except FileNotFoundError:
+        fail_msg("npx not found — install Node.js")
+        sys.exit(1)
+    except OSError as e:
+        fail_msg(f"Error running loop-cost: {e}")
+        sys.exit(1)
+
+
+def ws_sync(name: str) -> None:
+    """Check drift between STATE.md and LOOP.md in a workspace."""
+    ws_dir = Path(WORKSPACE_ROOT) / name
+    if not ws_dir.is_dir():
+        fail_msg(f"Workspace '{name}' not found")
+        sys.exit(1)
+
+    loop_md = ws_dir / "LOOP.md"
+    state_md = ws_dir / "STATE.md"
+    
+    if not loop_md.is_file():
+        fail_msg(f"No LOOP.md found in '{name}' — run 'workspace.py init' or 'workspace.py adopt' first")
+        sys.exit(1)
+
+    info(f"Running loop-sync for workspace '{name}'...")
+    info(f"Directory: {ws_dir}")
+
+    try:
+        result = subprocess.run(
+            [
+                "npx",
+                "@cobusgreyling/loop-sync",
+                ".",
+            ],
+            cwd=str(ws_dir),
+            capture_output=False,
+            timeout=60,
+        )
+        if result.returncode == 0:
+            pass_msg(f"Loop-sync completed for '{name}'")
+        else:
+            warn(f"Loop-sync exited with code {result.returncode}")
+    except subprocess.TimeoutExpired:
+        fail_msg("loop-sync timed out (60s)")
+        sys.exit(1)
+    except FileNotFoundError:
+        fail_msg("npx not found — install Node.js")
+        sys.exit(1)
+    except OSError as e:
+        fail_msg(f"Error running loop-sync: {e}")
+        sys.exit(1)
 
 
 def validate_slug(slug: str) -> bool:
@@ -56,118 +636,8 @@ def validate_slug(slug: str) -> bool:
     return bool(re.match(r"^[a-z][a-z0-9-]{0,49}$", slug))
 
 
-# ── Registry (YAML) ───────────────────────────────────────────────────────
-
-
-def _resolve_workspace_real_path(name: str) -> str:
-    """Resolve the real filesystem path for a workspace directory."""
-    ws_dir = Path(WORKSPACE_ROOT) / name
-    if ws_dir.is_symlink():
-        return str(ws_dir.resolve())
-    if ws_dir.is_dir():
-        return str(ws_dir.resolve())
-    return ""
-
-
-def ensure_registry() -> dict:
-    """Load registry from config/workspaces.yaml, migrating from .catalog if needed."""
-    reg_path = Path(REGISTRY)
-    catalog_path = Path(CATALOG)
-
-    # If registry doesn't exist or is empty, try migration
-    if not reg_path.is_file() or reg_path.stat().st_size == 0:
-        if catalog_path.is_file():
-            return _migrate_catalog_to_registry()
-
-        reg_path.parent.mkdir(parents=True, exist_ok=True)
-        reg_path.write_text("workspaces: {}\n")
-        return {"workspaces": {}}
-
-    with open(reg_path) as f:
-        data = yaml.safe_load(f) or {}
-    if "workspaces" not in data:
-        data["workspaces"] = {}
-    return data
-
-
-def _migrate_catalog_to_registry() -> dict:
-    """Migrate .catalog JSON entries to config/workspaces.yaml."""
-    catalog_path = Path(CATALOG)
-    reg_path = Path(REGISTRY)
-
-    try:
-        catalog = json.loads(catalog_path.read_text())
-    except (json.JSONDecodeError, OSError):
-        catalog = {}
-
-    reg_path.parent.mkdir(parents=True, exist_ok=True)
-
-    workspaces: dict[str, dict] = {}
-    for name, entry in catalog.items():
-        real_path = entry.get("real_path", "")
-        if not real_path:
-            real_path = _resolve_workspace_real_path(name)
-        ws_dir = Path(WORKSPACE_ROOT) / name
-        state_str = "INIT"
-        state_file = ws_dir / ".kodehold-state"
-        if state_file.is_file():
-            for line in state_file.read_text().splitlines():
-                if line.startswith("STATE="):
-                    state_str = line.split("=", 1)[1]
-                    break
-
-        ws_entry: dict = {
-            "created": entry.get("created", date.today().isoformat()),
-            "origin": "legacy",
-            "state": state_str,
-            "real_path": real_path,
-            "loops": {
-                "enabled": [],
-                "last_run": None,
-                "run_count": 0,
-            },
-        }
-
-        # Preserve adopt origin if explicitly marked
-        if entry.get("origin") == "adopted":
-            ws_entry["origin"] = "adopted"
-            ws_entry["adopt"] = {"original_path": entry.get("real_path") or ""}
-
-        workspaces[name] = ws_entry
-
-    data = {"workspaces": workspaces}
-    with open(reg_path, "w") as f:
-        yaml.dump(data, f, default_flow_style=False)
-
-    count = len(workspaces)
-    info(f"Migrated {count} workspaces from .catalog to {REGISTRY}")
-    warn("workspaces/.catalog is deprecated — use config/workspaces.yaml instead")
-
-    return data
-
-
-def registry_write(data: dict) -> None:
-    """Write registry data to config/workspaces.yaml."""
-    Path(REGISTRY).parent.mkdir(parents=True, exist_ok=True)
-    # Sort keys for consistent output
-    if "workspaces" in data:
-        data["workspaces"] = dict(sorted(data["workspaces"].items()))
-    with open(REGISTRY, "w") as f:
-        yaml.dump(data, f, default_flow_style=False, sort_keys=False)
-
-
-def _legacy_catalog_warn() -> None:
-    """Warn if .catalog is still being used."""
-    if Path(CATALOG).is_file():
-        warn("workspaces/.catalog is deprecated — use config/workspaces.yaml instead")
-
-
-# ── Legacy catalog compatibility (for adopt --link reads) ─────────────────
-
-
 def ensure_catalog() -> dict:
-    """Legacy: ensure .catalog exists and return contents (deprecated)."""
-    _legacy_catalog_warn()
+    """Ensure the catalog file exists and return its contents."""
     cat_path = Path(CATALOG)
     if not cat_path.is_file():
         cat_path.parent.mkdir(parents=True, exist_ok=True)
@@ -180,12 +650,8 @@ def ensure_catalog() -> dict:
 
 
 def catalog_write(data: dict) -> None:
-    """Legacy: write .catalog (deprecated)."""
-    _legacy_catalog_warn()
+    """Write catalog data."""
     Path(CATALOG).write_text(json.dumps(data, indent=2))
-
-
-# ── Git helpers ───────────────────────────────────────────────────────────
 
 
 def prompt_remote(ws_dir: str, label: str = "Workspace") -> None:
@@ -221,21 +687,7 @@ def git_init(ws_dir: str, commit_msg: str = "Initial commit") -> bool:
         return False
 
 
-def _git_init_ws(ws_dir: str, name: str, commit_msg: str = "Initial commit") -> None:
-    """Init git in workspace and prompt for remote."""
-    if git_init(ws_dir, commit_msg):
-        pass_msg(f"Git repository initialized at {ws_dir}")
-    else:
-        warn("git not found — workspace will not have version control")
-        prompt_remote(ws_dir, name)
-        return
-    prompt_remote(ws_dir, name)
-
-
-# ── Language detection ────────────────────────────────────────────────────
-
-
-def detect_project_lang(ws_dir: str) -> tuple[str, str, str, int]:
+def detect_project_lang(ws_dir: str) -> tuple[str, str, str, str]:
     """Detect language, test framework, and build system for a project."""
     lang = "Unknown"
     test_framework = ""
@@ -296,127 +748,10 @@ def detect_project_lang(ws_dir: str) -> tuple[str, str, str, int]:
     return lang, test_framework, build_system, commit_count
 
 
-# ── Loop file templates ───────────────────────────────────────────────────
-
-
-def _loop_template(name: str) -> str:
-    return f"""# Loop Configuration — {name}
-
-## Active Loops
-
-| Pattern | Cadence | Status | Command |
-|---------|---------|--------|---------|
-| _(none configured)_ | — | L1 report-only | — |
-
-## Human Gates
-
-- No auto-fix until L2 checklist complete.
-- All code changes require human approval.
-
-## Budget
-
-- See loop-budget.md for caps.
-
-## Links
-
-- [STATE.md](STATE.md)
-- [Constraints](loop-constraints.md)
-- [Budget](loop-budget.md)
-"""
-
-
-def _state_md_template(name: str) -> str:
-    return f"""# Loop State — {name}
-
-**Last run:** never
-
-## High Priority
-
-_(none)_
-
-## Watch List
-
-_(none)_
-
-## Recent Noise
-
-_(none)_
-
----
-
-Run log: ./loop-run-log.md
-"""
-
-
-def _budget_template(name: str) -> str:
-    return f"""# Loop Budget — {name}
-
-## Daily limits
-
-| Loop | Max runs/day | Max tokens/day | Max sub-agent spawns/run |
-|------|--------------|----------------|--------------------------|
-| _(default)_ | 1 | 50k | 0 (L1) |
-
-## Kill switch
-
-- Create `.loop_pause_all` in workspace root to stop all loops.
-"""
-
-
-def _constraints_template(name: str) -> str:
-    return f"""# Loop Constraints — {name}
-
-## Push & Merge
-- Never push without human approval.
-
-## Protected Paths
-- Never edit .env, .env.*, auth/, secrets/, credentials/
-
-## Code
-- Always run tests before proposing a fix.
-- Max 3 fix attempts per item; escalate after.
-
-## Budget
-- If `.loop_pause_all` exists, exit immediately.
-"""
-
-
-def _loop_scaffolding(ws_dir: Path, name: str) -> None:
-    """Add loop scaffolding files to a workspace (no overwrite)."""
-    scaffolding = {
-        "LOOP.md": _loop_template(name),
-        "STATE.md": _state_md_template(name),
-        "loop-budget.md": _budget_template(name),
-        "loop-constraints.md": _constraints_template(name),
-    }
-    for filename, content in scaffolding.items():
-        filepath = ws_dir / filename
-        if not filepath.is_file():
-            filepath.write_text(content)
-            info(f"Created: {filename}")
-
-
-def _write_kodehold_state(ws_dir: Path, state: str, loop_ready: bool, adopted: bool) -> None:
-    """Write .kodehold-state file."""
-    today = date.today().isoformat()
-    content = f"""# KodeHold Lifecycle State
-# Valid states: INIT, ACTIVE, REVIEW, CLOSED, REOPEN
-STATE={state}
-LOOP_READY={'true' if loop_ready else 'false'}
-ADOPTED={'true' if adopted else 'false'}
-LAST_UPDATED={today}
-DESIGN_DOC_APPROVED=false
-ADRS_COMPLETE=false
-TESTS_PASSING=false
-CODE_REVIEWED=false
-"""
-    (ws_dir / ".kodehold-state").write_text(content)
-
-
 # ── Workspace commands ────────────────────────────────────────────────────
 
 
-def ws_init(name: str, no_git: bool = False) -> None:
+def ws_init(name: str) -> None:
     """Create a new project workspace from scratch."""
     ws_dir = Path(WORKSPACE_ROOT) / name
 
@@ -433,54 +768,77 @@ def ws_init(name: str, no_git: bool = False) -> None:
     info(f"Creating workspace: {name}")
 
     # Create directory structure
-    for sub in ("docs/design", "docs/adr", "src", "tests"):
+    for sub in ("docs/design", "docs/adr", "docs/decisions", "src", "tests"):
         (ws_dir / sub).mkdir(parents=True, exist_ok=True)
 
-    # Design doc template (simpler per spec)
     today = date.today().isoformat()
-    design_doc = f"# Design Doc — {name}\n\n## Status\n\n**Active**\n"
+
+    # Design doc template
+    design_doc = f"""# {name} — Design Document
+**Version:** 0.1
+**Status:** Draft
+**Design Authority:** Architects
+**Last Reviewed:** {today}
+
+## 1. Purpose & Scope
+## 2. Requirements
+## 3. Architecture Overview
+## 4. Component Design
+## 5. Data Model
+## 6. API Design
+## 7. Implementation Plan
+## 8. Testing Strategy
+## 9. ADR Index
+## 10. Open Questions
+## 11. Changelog
+"""
     (ws_dir / "docs/design" / "README.md").write_text(design_doc)
 
     # ADR index
     adr_index = f"""# ADR Index — {name}
 
-| ID | Title | Status |
-|----|-------|--------|
+| ADR | Title | Status |
+|-----|-------|--------|
 """
     (ws_dir / "docs/adr" / "README.md").write_text(adr_index)
 
     # State file
-    _write_kodehold_state(ws_dir, "INIT", loop_ready=False, adopted=False)
+    state = f"""# KodeHold Lifecycle State
+# Valid states: INIT, ACTIVE, REVIEW, CLOSED, REOPEN
+STATE=INIT
+LAST_UPDATED={today}
+DESIGN_DOC_APPROVED=false
+ADRS_COMPLETE=false
+TESTS_PASSING=false
+CODE_REVIEWED=false
+"""
+    (ws_dir / ".kodehold-state").write_text(state)
 
     # .gitignore
     (ws_dir / ".gitignore").write_text("*.pyc\n__pycache__/\n.venv/\n")
 
-    # Loop scaffolding
-    _loop_scaffolding(ws_dir, name)
-
     # Git init
-    if not no_git:
-        _git_init_ws(str(ws_dir), name, "Initial commit")
+    if git_init(str(ws_dir), "Initial commit"):
+        pass_msg(f"Git repository initialized at {ws_dir}")
+    else:
+        warn("git not found — workspace will not have version control")
+        prompt_remote(str(ws_dir), name)
+        return
 
-    # Register in YAML registry
-    registry = ensure_registry()
-    registry["workspaces"][name] = {
-        "created": today,
-        "origin": "init",
-        "state": "INIT",
-        "real_path": str(ws_dir.resolve()),
-        "loops": {
-            "enabled": [],
-            "last_run": None,
-            "run_count": 0,
-        },
-    }
-    registry_write(registry)
+    prompt_remote(str(ws_dir), name)
+
+    # Scaffold loop-engineering files
+    run_loop_init(str(ws_dir))
+
+    # Register in catalog
+    catalog = ensure_catalog()
+    catalog[name] = {"created": today, "project": name}
+    catalog_write(catalog)
 
     pass_msg(f"Workspace '{name}' created at {ws_dir}")
 
 
-def ws_adopt(name: str, target_path: str, link: bool = False, no_git: bool = False) -> None:
+def ws_adopt(name: str, target_path: str) -> None:
     """Adopt an existing project into a workspace."""
     ws_dir = Path(WORKSPACE_ROOT) / name
 
@@ -500,113 +858,36 @@ def ws_adopt(name: str, target_path: str, link: bool = False, no_git: bool = Fal
         sys.exit(1)
 
     target_resolved = target.resolve()
+
+    info(f"Adopting existing project: {target_resolved} → {ws_dir}")
+
+    # Create symlink
+    ws_dir.parent.mkdir(parents=True, exist_ok=True)
+    ws_dir.symlink_to(target_resolved)
+
+    # Create KodeHold artifacts inside the adopted project
+    (ws_dir / "docs/design").mkdir(parents=True, exist_ok=True)
+    (ws_dir / "docs/adr").mkdir(parents=True, exist_ok=True)
+
     today = date.today().isoformat()
 
-    if link:
-        # --link mode: create symlink (preserves old behavior)
-        info(f"Adopting with symlink: {target_resolved} → {ws_dir}")
-        ws_dir.parent.mkdir(parents=True, exist_ok=True)
-        ws_dir.symlink_to(target_resolved)
+    # State file with ADOPTED flag
+    state = f"""# KodeHold Lifecycle State — Adopted Project
+# Valid states: INIT, ACTIVE, REVIEW, CLOSED, REOPEN
+STATE=INIT
+ADOPTED=true
+LAST_UPDATED={today}
+DESIGN_DOC_APPROVED=false
+ADRS_COMPLETE=false
+TESTS_PASSING=false
+CODE_REVIEWED=false
+"""
+    (ws_dir / ".kodehold-state").write_text(state)
 
-        # Create docs dirs inside linked project
-        (ws_dir / "docs/design").mkdir(parents=True, exist_ok=True)
-        (ws_dir / "docs/adr").mkdir(parents=True, exist_ok=True)
+    # Detect project info
+    lang, test_framework, build_system, commit_count = detect_project_lang(str(ws_dir))
 
-        # State file
-        _write_kodehold_state(ws_dir, "ACTIVE", loop_ready=True, adopted=True)
-
-        # Detect project info
-        lang, test_framework, build_system, commit_count = detect_project_lang(str(ws_dir))
-
-        # Design doc template
-        _write_adopt_design_doc(ws_dir, name, target_resolved, today, lang, test_framework,
-                                build_system, commit_count)
-
-        # ADR index
-        _write_adopt_adr_index(ws_dir, name)
-
-        # Loop scaffolding
-        _loop_scaffolding(ws_dir, name)
-
-        info(f"Project scan complete: {lang}, {commit_count} commits")
-
-        # Git
-        if not no_git:
-            if not (ws_dir / ".git").is_dir():
-                _git_init_ws(str(ws_dir), name, "Initial commit — adopted by KodeHold")
-            else:
-                _prompt_remote_if_missing(str(ws_dir), name)
-    else:
-        # Default (copy) mode
-        info(f"Adopting project (copy): {target_resolved} → {ws_dir}")
-        ws_dir.parent.mkdir(parents=True, exist_ok=True)
-
-        def _ignore_git(src: str, names: list[str]) -> list[str]:
-            return [n for n in names if n == ".git"]
-
-        shutil.copytree(
-            str(target_resolved), str(ws_dir),
-            symlinks=False,
-            ignore=_ignore_git,
-            ignore_dangling_symlinks=True,
-        )
-
-        # Create docs dirs
-        (ws_dir / "docs/design").mkdir(parents=True, exist_ok=True)
-        (ws_dir / "docs/adr").mkdir(parents=True, exist_ok=True)
-
-        # State file
-        _write_kodehold_state(ws_dir, "ACTIVE", loop_ready=True, adopted=True)
-
-        # Detect project info
-        lang, test_framework, build_system, commit_count = detect_project_lang(str(ws_dir))
-
-        # Design doc template
-        _write_adopt_design_doc(ws_dir, name, target_resolved, today, lang, test_framework,
-                                build_system, commit_count)
-
-        # ADR index
-        _write_adopt_adr_index(ws_dir, name)
-
-        # Loop scaffolding
-        _loop_scaffolding(ws_dir, name)
-
-        info(f"Project scan complete: {lang}, {commit_count} commits")
-
-        # Git
-        if not no_git:
-            _git_init_ws(str(ws_dir), name, "Initial commit — adopted by KodeHold")
-
-    # Register in YAML registry
-    registry = ensure_registry()
-    registry["workspaces"][name] = {
-        "created": today,
-        "origin": "adopted",
-        "state": "ACTIVE",
-        "real_path": str(ws_dir.resolve()),
-        "loops": {
-            "enabled": [],
-            "last_run": None,
-            "run_count": 0,
-        },
-        "adopt": {
-            "original_path": str(target_resolved),
-        },
-    }
-    registry_write(registry)
-
-    pass_msg(f"Adopted '{name}' from {target_resolved}")
-    info("Next steps:")
-    info("  1. Read design doc at {}docs/design/README.md".format(str(ws_dir)))
-    info("  2. Fill in Purpose, Architecture, Components sections")
-    info("  3. Run: python3 scripts/workspace.py gate {} INIT_TO_ACTIVE".format(name))
-    info("  Note: Adopted projects get relaxed gates — design doc fill-in is the priority")
-
-
-def _write_adopt_design_doc(ws_dir: Path, name: str, target_resolved: Path,
-                            today: str, lang: str, test_framework: str,
-                            build_system: str, commit_count: int) -> None:
-    """Write design doc for adopted project."""
+    # Design doc template
     design_doc = f"""# {name} — Design Document
 **Version:** 0.1
 **Status:** Draft
@@ -660,9 +941,7 @@ _What needs to be understood about the codebase._
 """
     (ws_dir / "docs/design" / "README.md").write_text(design_doc)
 
-
-def _write_adopt_adr_index(ws_dir: Path, name: str) -> None:
-    """Write ADR index for adopted project."""
+    # ADR index
     adr_index = f"""# ADR Index — {name} (Adopted Project)
 
 | ADR | Title | Status |
@@ -670,27 +949,50 @@ def _write_adopt_adr_index(ws_dir: Path, name: str) -> None:
 """
     (ws_dir / "docs/adr" / "README.md").write_text(adr_index)
 
+    info(f"Project scan complete: {lang}, {commit_count} commits")
 
-def _prompt_remote_if_missing(ws_dir: str, name: str) -> None:
-    """Prompt for remote if no remote configured."""
-    result = subprocess.run(
-        ["git", "-C", str(ws_dir), "remote", "-v"],
-        capture_output=True,
-        text=True,
-    )
-    if not result.stdout.strip():
-        prompt_remote(str(ws_dir), name)
+    # Ensure git
+    if not (ws_dir / ".git").is_dir():
+        if git_init(str(ws_dir), "Initial commit — adopted by KodeHold"):
+            pass_msg(f"Git repository initialized at {ws_dir}")
+            prompt_remote(str(ws_dir), name)
+        else:
+            warn("git init failed — adopted project will not have version control")
+    else:
+        # Still prompt for remote if none exists
+        result = subprocess.run(
+            ["git", "-C", str(ws_dir), "remote", "-v"],
+            capture_output=True,
+            text=True,
+        )
+        if not result.stdout.strip():
+            prompt_remote(str(ws_dir), name)
+
+    # Scaffold loop-engineering files
+    run_loop_init(str(ws_dir))
+
+    # Register in catalog
+    catalog = ensure_catalog()
+    catalog[name] = {
+        "created": today,
+        "project": name,
+        "origin": "adopted",
+        "real_path": str(target_resolved),
+    }
+    catalog_write(catalog)
+
+    pass_msg(f"Adopted '{name}' from {target_resolved}")
+    info("Next steps:")
+    info("  1. Read design doc at {}docs/design/README.md".format(str(ws_dir)))
+    info("  2. Fill in Purpose, Architecture, Components sections")
+    info("  3. Run: python3 scripts/workspace.py gate {} INIT_TO_ACTIVE".format(name))
+    info("  Note: Adopted projects get relaxed gates — design doc fill-in is the priority")
 
 
-def ws_list(json_output: bool = False, loops: bool = False) -> None:
+def ws_list() -> None:
     """List all workspaces."""
-    registry = ensure_registry()
-    workspaces = registry.get("workspaces", {})
-    count = len(workspaces)
-
-    if json_output:
-        print(json.dumps(registry, indent=2))
-        return
+    catalog = ensure_catalog()
+    count = len(catalog)
 
     print()
     print(f"━━━ Workspaces ({count}) ━━━")
@@ -701,14 +1003,10 @@ def ws_list(json_output: bool = False, loops: bool = False) -> None:
         print()
         return
 
-    if loops:
-        header = f"  {'NAME':<20} {'STATE':<12} {'LOOPS':<8} {'LAST RUN':<14} {'UPDATED':<14} PATH"
-    else:
-        header = f"  {'NAME':<20} {'STATE':<12} {'UPDATED':<14} PATH"
-    print(f"  {header}")
-    print(f"  {'─' * (86 if loops else 75)}")
+    print(f"  {'NAME':<20} {'STATE':<12} {'UPDATED':<14} PATH")
+    print(f"  {'─' * 75}")
 
-    for name, meta in sorted(workspaces.items()):
+    for name, meta in sorted(catalog.items()):
         created = meta.get("created", "N/A")
         ws_dir = Path(WORKSPACE_ROOT) / name
 
@@ -721,17 +1019,10 @@ def ws_list(json_output: bool = False, loops: bool = False) -> None:
                     state = line.split("=", 1)[1]
                     break
 
-        ws_path = str(ws_dir)
-        if not ws_dir.is_dir() and not ws_dir.is_symlink():
-            ws_path = "MISSING"
-
-        if loops:
-            loop_info = meta.get("loops", {})
-            loop_count = loop_info.get("run_count", 0)
-            last_run = loop_info.get("last_run") or "—"
-            print(f"  {name:<20} {state:<12} {str(loop_count):<8} {str(last_run):<14} {created:<14} {ws_path}")
+        if ws_dir.is_dir():
+            print(f"  {name:<20} {state:<12} {created:<14} {ws_dir}")
         else:
-            print(f"  {name:<20} {state:<12} {created:<14} {ws_path}")
+            print(f"  {name:<20} {state:<12} {created:<14} MISSING")
 
     print()
 
@@ -750,166 +1041,7 @@ def ws_state(name: str) -> None:
         info("No .kodehold-state found — workspace not initialized with lifecycle")
 
 
-def ws_loop(name: str, pattern: str, dry_run: bool = False) -> None:
-    """Run a loop pattern against a workspace."""
-    ws_dir = Path(WORKSPACE_ROOT) / name
-
-    if not ws_dir.is_dir():
-        fail_msg(f"Workspace '{name}' not found at {ws_dir}")
-        sys.exit(1)
-
-    if not (ws_dir / ".kodehold-state").is_file():
-        fail_msg(f"Workspace '{name}' has no .kodehold-state — run migrate first")
-        sys.exit(1)
-
-    loop_file = ws_dir / "LOOP.md"
-    if not loop_file.is_file():
-        fail_msg(f"Workspace '{name}' has no LOOP.md — run migrate first")
-        sys.exit(1)
-
-    info(f"Running loop pattern '{pattern}' against workspace '{name}'")
-
-    loop_script = _PROJECT_ROOT / "scripts/loop-run.sh"
-    if not loop_script.is_file():
-        fail_msg("scripts/loop-run.sh not found — required for loop execution")
-        sys.exit(1)
-
-    if dry_run:
-        info(f"[DRY RUN] Would run: {loop_script} '{pattern}' in {ws_dir}")
-        return
-
-    # Run the loop
-    result = subprocess.run(
-        [str(loop_script), pattern, f"Run {pattern} against workspace {name}"],
-        cwd=str(ws_dir),
-    )
-
-    # Update registry
-    registry = ensure_registry()
-    ws_entry = registry["workspaces"].get(name, {})
-    loops_data = ws_entry.get("loops", {})
-    enabled = loops_data.get("enabled", [])
-    if pattern not in enabled:
-        enabled.append(pattern)
-    loops_data["enabled"] = enabled
-    loops_data["last_run"] = date.today().isoformat()
-    loops_data["run_count"] = loops_data.get("run_count", 0) + 1
-    ws_entry["loops"] = loops_data
-    registry["workspaces"][name] = ws_entry
-    registry_write(registry)
-
-    if result.returncode == 0:
-        pass_msg(f"Loop '{pattern}' completed for '{name}'")
-    else:
-        fail_msg(f"Loop '{pattern}' exited with code {result.returncode} for '{name}'")
-        sys.exit(result.returncode)
-
-
-def ws_migrate(name: str) -> None:
-    """Add loop scaffolding + registry entry to an existing workspace."""
-    ws_dir = Path(WORKSPACE_ROOT) / name
-
-    if not ws_dir.is_dir() and not ws_dir.is_symlink():
-        fail_msg(f"Workspace '{name}' not found at {ws_dir}")
-        sys.exit(1)
-
-    # Add loop scaffolding
-    _loop_scaffolding(ws_dir, name)
-
-    # Update .kodehold-state to add LOOP_READY
-    state_file = ws_dir / ".kodehold-state"
-    if state_file.is_file():
-        text = state_file.read_text()
-        if "LOOP_READY" not in text:
-            text = text.replace("LAST_UPDATED=", "LOOP_READY=false\nLAST_UPDATED=")
-        if "ADOPTED" not in text:
-            text = text.replace("LAST_UPDATED=", "ADOPTED=false\nLAST_UPDATED=")
-        text = re.sub(
-            r"^LAST_UPDATED=.*",
-            f"LAST_UPDATED={date.today().isoformat()}",
-            text,
-            flags=re.MULTILINE,
-        )
-        state_file.write_text(text)
-        info(f"Updated .kodehold-state for '{name}'")
-
-    # Register/update in YAML registry
-    registry = ensure_registry()
-    ws_entry = registry["workspaces"].get(name, {})
-
-    if not ws_entry:
-        # Read state from .kodehold-state
-        state_str = "INIT"
-        if state_file.is_file():
-            for line in state_file.read_text().splitlines():
-                if line.startswith("STATE="):
-                    state_str = line.split("=", 1)[1]
-                    break
-
-        ws_entry = {
-            "created": date.today().isoformat(),
-            "origin": "legacy",
-            "state": state_str,
-            "real_path": _resolve_workspace_real_path(name),
-            "loops": {
-                "enabled": [],
-                "last_run": None,
-                "run_count": 0,
-            },
-        }
-        registry["workspaces"][name] = ws_entry
-        info(f"Registered '{name}' in {REGISTRY}")
-    else:
-        ws_entry["real_path"] = _resolve_workspace_real_path(name)
-        registry["workspaces"][name] = ws_entry
-
-    registry_write(registry)
-    pass_msg(f"Migrated '{name}'")
-
-
-def ws_migrate_all() -> None:
-    """Migrate all workspaces + orphaned .catalog entries."""
-    registry = ensure_registry()
-    migrated_dirs = set()
-
-    # Migrate all directories in workspaces/
-    ws_root = Path(WORKSPACE_ROOT)
-    if ws_root.is_dir():
-        for entry in sorted(ws_root.iterdir()):
-            if entry.is_dir() or entry.is_symlink():
-                if entry.name.startswith("."):
-                    continue
-                ws_migrate(entry.name)
-                migrated_dirs.add(entry.name)
-
-    # Also handle orphaned .catalog entries (no dir exists)
-    catalog_path = Path(CATALOG)
-    if catalog_path.is_file():
-        try:
-            catalog = json.loads(catalog_path.read_text())
-        except (json.JSONDecodeError, OSError):
-            catalog = {}
-        for name, entry in catalog.items():
-            if name not in migrated_dirs:
-                ws_entry = {
-                    "created": entry.get("created", date.today().isoformat()),
-                    "origin": "legacy",
-                    "state": "INIT",
-                    "real_path": entry.get("real_path", ""),
-                    "loops": {
-                        "enabled": [],
-                        "last_run": None,
-                        "run_count": 0,
-                    },
-                }
-                registry["workspaces"][name] = ws_entry
-                info(f"Registered orphaned .catalog entry '{name}'")
-
-    registry_write(registry)
-    pass_msg("All workspaces migrated")
-
-
-def ws_transition(name: str, transition: str, validate_only: bool = False) -> None:
+def ws_transition(name: str, transition: str) -> None:
     """Run a gate transition on a workspace."""
     ws_dir = (Path(WORKSPACE_ROOT) / name).resolve()
 
@@ -920,10 +1052,9 @@ def ws_transition(name: str, transition: str, validate_only: bool = False) -> No
     # Run gate via subprocess
     gate = Path(GATE_SCRIPT).resolve()
     if gate.is_file():
-        cmd = [sys.executable, str(gate), "--project-path", str(ws_dir), "--transition", transition]
-        if validate_only:
-            cmd.append("--validate-only")
-        result = subprocess.run(cmd)
+        result = subprocess.run(
+            [sys.executable, str(gate), "--project-path", str(ws_dir), "--transition", transition],
+        )
         if result.returncode == 0:
             pass_msg(f"Gate {transition} passed for '{name}'")
         else:
@@ -955,12 +1086,6 @@ def ws_transition(name: str, transition: str, validate_only: bool = False) -> No
         )
         state_file.write_text(text)
 
-    # Also update registry
-    registry = ensure_registry()
-    if name in registry["workspaces"]:
-        registry["workspaces"][name]["state"] = next_state
-        registry_write(registry)
-
     pass_msg(f"Transitioned '{name}' to {next_state}")
 
 
@@ -987,38 +1112,6 @@ def ws_deploy_ready(name: str) -> None:
         sys.exit(1)
 
 
-def ws_deinit(name: str, force: bool = False) -> None:
-    """Remove a workspace completely."""
-    ws_dir = Path(WORKSPACE_ROOT) / name
-
-    if not ws_dir.is_dir() and not ws_dir.is_symlink():
-        fail_msg(f"Workspace '{name}' not found at {ws_dir}")
-        sys.exit(1)
-
-    if not force:
-        response = input(f"Remove workspace '{name}'? This will delete all files. [y/N] ").strip()
-        if response.lower() != "y":
-            info("Aborted")
-            return
-
-    # Remove symlink marker if present
-    loop_state = ws_dir.parent / f".kodehold-loop-state-{name}"
-    if loop_state.is_file():
-        loop_state.unlink()
-
-    # Remove workspace directory/symlink
-    shutil.rmtree(str(ws_dir), ignore_errors=True)
-    if ws_dir.is_symlink():
-        ws_dir.unlink()
-
-    # Remove from registry
-    registry = ensure_registry()
-    registry["workspaces"].pop(name, None)
-    registry_write(registry)
-
-    pass_msg(f"Workspace '{name}' removed")
-
-
 def ws_ensure_git(name: str) -> None:
     """Initialize git repo for an existing workspace (backfill)."""
     ws_dir = Path(WORKSPACE_ROOT) / name
@@ -1034,7 +1127,7 @@ def ws_ensure_git(name: str) -> None:
         pass_msg(f"Git repository initialized for '{name}'")
         prompt_remote(str(ws_dir), name)
     else:
-        warn(f"git not available — cannot initialize '{name}'")
+        warn("git not available — cannot initialize '{name}'")
         sys.exit(1)
 
 
@@ -1053,62 +1146,90 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
-    # init
     init_p = sub.add_parser("init", help="Create a new project workspace from scratch")
     init_p.add_argument("name", help="Workspace slug (e.g. my-project)")
-    init_p.add_argument("--no-git", action="store_true", help="Skip git initialization")
 
-    # adopt
-    adopt_p = sub.add_parser("adopt", help="Adopt an existing project (copy or symlink + KodeHold bootstrap)")
+    adopt_p = sub.add_parser("adopt", help="Adopt an existing project (symlink + KodeHold bootstrap)")
     adopt_p.add_argument("name", help="Workspace slug")
     adopt_p.add_argument("path", help="Path to existing project directory")
-    adopt_p.add_argument("--link", action="store_true", help="Create symlink instead of copy")
-    adopt_p.add_argument("--no-git", action="store_true", help="Skip git initialization")
 
-    # list
-    list_p = sub.add_parser("list", help="List all workspaces")
-    list_p.add_argument("--json", action="store_true", help="Output as JSON")
-    list_p.add_argument("--loops", action="store_true", help="Include loop info columns")
+    sub.add_parser("list", help="List all workspaces")
 
-    # state
     state_p = sub.add_parser("state", help="Show lifecycle state of a workspace")
     state_p.add_argument("name", help="Workspace name")
 
-    # loop
-    loop_p = sub.add_parser("loop", help="Run a loop pattern against a workspace")
-    loop_p.add_argument("name", help="Workspace name")
-    loop_p.add_argument("pattern", help="Loop pattern to run")
-    loop_p.add_argument("--dry-run", action="store_true", help="Print what would happen without running")
-
-    # gate
     gate_p = sub.add_parser("gate", help="Run a gate transition on a workspace")
     gate_p.add_argument("name", help="Workspace name")
     gate_p.add_argument("transition", help="Transition (e.g. INIT_TO_ACTIVE)")
-    gate_p.add_argument("--validate-only", action="store_true", help="Only validate, do not transition")
 
-    # deploy-ready
-    sub.add_parser("deploy-ready", help="Check if workspace is ready to deploy").add_argument(
-        "name", help="Workspace name"
-    )
+    deploy_p = sub.add_parser("deploy-ready", help="Check if workspace is ready to deploy")
+    deploy_p.add_argument("name", help="Workspace name")
 
-    # migrate
-    migrate_p = sub.add_parser("migrate", help="Add loop scaffolding and registry entry to workspace(s)")
-    migrate_p.add_argument("target", nargs="?", default=None,
-                           help="Workspace name (omit with --all for all workspaces)")
-    migrate_p.add_argument("--all", action="store_true", dest="migrate_all",
-                           help="Migrate all existing workspaces")
+    git_p = sub.add_parser("ensure-git", help="Initialize git repo for an existing workspace (backfill)")
+    git_p.add_argument("name", help="Workspace name")
 
-    # deinit
-    deinit_p = sub.add_parser("deinit", help="Remove a workspace completely")
-    deinit_p.add_argument("name", help="Workspace name")
-    deinit_p.add_argument("--force", action="store_true", help="Skip confirmation prompt")
+    # Loop subcommand group
+    loop_p = sub.add_parser("loop", help="Manage loops in a workspace")
+    loop_p.add_argument("name", help="Workspace name")
+    loop_sub = loop_p.add_subparsers(dest="loop_command", required=True)
+    loop_sub.add_parser("list", help="List active loops in a workspace")
+    
+    enable_p = loop_sub.add_parser("enable", help="Enable a loop pattern")
+    enable_p.add_argument("pattern", help="Pattern to enable (e.g. daily-triage)")
+    
+    disable_p = loop_sub.add_parser("disable", help="Disable a loop pattern")
+    disable_p.add_argument("pattern", help="Pattern to disable (e.g. daily-triage)")
+    
+    run_p = loop_sub.add_parser("run", help="Run a loop pattern manually")
+    run_p.add_argument("pattern", help="Pattern to run (e.g. daily-triage)")
 
-    # ensure-git
-    sub.add_parser("ensure-git", help="Initialize git repo for an existing workspace (backfill)").add_argument(
-        "name", help="Workspace name"
-    )
+    # Cron subcommand group
+    cron_p = sub.add_parser("cron", help="Manage crontab entries for workspace loops")
+    cron_sub = cron_p.add_subparsers(dest="cron_command", required=True)
+    cron_sub.add_parser("install", help="Install crontab entries for all workspaces")
+    cron_sub.add_parser("remove", help="Remove kodehold crontab entries")
+    cron_sub.add_parser("list", help="Show current crontab entries")
+
+    # Monitoring subcommand group
+    audit_p = sub.add_parser("audit", help="Run loop-audit in a workspace")
+    audit_p.add_argument("name", help="Workspace name")
+
+    cost_p = sub.add_parser("cost", help="Estimate token cost for a loop pattern")
+    cost_p.add_argument("name", help="Workspace name")
+    cost_p.add_argument("pattern", help="Pattern to estimate (e.g. daily-triage)")
+
+    sync_p = sub.add_parser("sync", help="Check drift between STATE.md and LOOP.md")
+    sync_p.add_argument("name", help="Workspace name")
 
     return parser
+
+
+def _dispatch_loop(args: argparse.Namespace) -> None:
+    """Dispatch loop subcommands."""
+    if args.loop_command == "list":
+        ws_loop_list(args.name)
+    elif args.loop_command == "enable":
+        ws_loop_enable(args.name, args.pattern)
+    elif args.loop_command == "disable":
+        ws_loop_disable(args.name, args.pattern)
+    elif args.loop_command == "run":
+        ws_loop_run(args.name, args.pattern)
+    else:
+        fail_msg(f"Unknown loop command: {args.loop_command}")
+        sys.exit(1)
+
+
+def _dispatch_cron(args: argparse.Namespace) -> None:
+    """Dispatch cron subcommands."""
+    if args.cron_command == "install":
+        ws_cron_install()
+    elif args.cron_command == "remove":
+        ws_cron_remove()
+    elif args.cron_command == "list":
+        ws_cron_list()
+    else:
+        fail_msg(f"Unknown cron command: {args.cron_command}")
+        sys.exit(1)
 
 
 def main() -> None:
@@ -1119,31 +1240,21 @@ def main() -> None:
     # Change to project root
     os.chdir(str(_PROJECT_ROOT))
 
-    if args.command == "migrate":
-        _migrate_dispatch(args)()
-    else:
-        dispatch = {
-            "init": lambda: ws_init(args.name, no_git=args.no_git),
-            "adopt": lambda: ws_adopt(args.name, args.path, link=args.link, no_git=args.no_git),
-            "list": lambda: ws_list(json_output=args.json, loops=args.loops),
-            "state": lambda: ws_state(args.name),
-            "loop": lambda: ws_loop(args.name, args.pattern, dry_run=args.dry_run),
-            "gate": lambda: ws_transition(args.name, args.transition, validate_only=args.validate_only),
-            "deploy-ready": lambda: ws_deploy_ready(args.name),
-            "deinit": lambda: ws_deinit(args.name, force=args.force),
-            "ensure-git": lambda: ws_ensure_git(args.name),
-        }
-        dispatch[args.command]()
-
-
-def _migrate_dispatch(args: argparse.Namespace):
-    """Dispatch for migrate subcommand (name or --all)."""
-    if args.migrate_all:
-        return ws_migrate_all
-    if args.target:
-        return lambda: ws_migrate(args.target)
-    # No target and no --all: show help
-    return lambda: sys.exit("Usage: workspace.py migrate <name> or workspace.py migrate --all")
+    dispatch = {
+        "init": lambda: ws_init(args.name),
+        "adopt": lambda: ws_adopt(args.name, args.path),
+        "list": lambda: ws_list(),
+        "state": lambda: ws_state(args.name),
+        "gate": lambda: ws_transition(args.name, args.transition),
+        "deploy-ready": lambda: ws_deploy_ready(args.name),
+        "ensure-git": lambda: ws_ensure_git(args.name),
+        "loop": lambda: _dispatch_loop(args),
+        "cron": lambda: _dispatch_cron(args),
+        "audit": lambda: ws_audit(args.name),
+        "cost": lambda: ws_cost(args.name, args.pattern),
+        "sync": lambda: ws_sync(args.name),
+    }
+    dispatch[args.command]()
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 1.23.0 | 2026-07-22 | Loop Engineering Phase 2 completion — Python loop_runner.py replaces loop-run.sh, Discord webhook notifications, ADR-0059 accepted (Workspace as Mini-KodeHold), workspace.py rewrite with YAML registry, ADR-0007 and .opencode/memory/ references cleaned. |
 | 1.22.0 | 2026-07-14 | Removed all `.sh` scripts — 9 bash scripts deleted (gate.sh, workspace.sh, ship.sh, benchmark.sh, sync-agent-config.sh, validate-config.sh, token-usage.sh, detect-test-framework.sh, output.sh). All references updated to `.py` equivalents. |
 | 1.21.0 | 2026-07-14 | ADR-0054 completion: Replaced all remaining OpenCode RAG references with Graphify across documentation. Created graphify-knowledge-flow skill. Updated AGENTS.md, design doc, skills README, root README, ADR-0050, ADR-0051, config/agents.yaml, director.md, TODO.md. Graphify is the sole documented code retrieval method. |
 | 1.20.0 | 2026-07-14 | ADR-0054: OpenCode RAG → Graphify migration. Replaced opencode-rag MCP server with Graphify knowledge graph as the sole code retrieval mechanism. Removed all "fallback" language — built-in tools are platform-level primitives, not part of KodeHold's documented workflow. |
@@ -49,6 +50,8 @@
 - **PATCH**: Documentation updates, refinements, bug fixes
 
 ## Current
+
+**1.23.0** — Loop Engineering Phase 2 completion. `scripts/loop_runner.py` (Python) replaces `loop-run.sh` (opencode run). All 3 L1 loops are now pure Python with Discord webhook notifications. ADR-0059 accepted — workspace.py rewritten with 10 subcommands and YAML registry. Deprecated ADR-0007 and `.opencode/memory/` references cleaned from all active files.
 
 **1.22.0** — Removed all `.sh` scripts — 9 bash scripts deleted (gate.sh, workspace.sh, ship.sh, benchmark.sh, sync-agent-config.sh, validate-config.sh, token-usage.sh, detect-test-framework.sh, output.sh). All references across 10 files updated to `.py` equivalents with `python3` prefix.
 

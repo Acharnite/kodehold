@@ -9,7 +9,7 @@
   - [x] Phase 4: Update AGENTS.md instructions
   - [x] Phase 5: Update opencode-rag-knowledge-flow skill (replaced by graphify-knowledge-flow)
   - [x] Phase 6: Update agent files (director.md + team agents)
-  - [ ] Phase 7: Final verification (in progress)
+  - [x] Phase 7: Final verification (completed)
 
 - [x] **Issue #34: YAML-Based Agent & Task Configuration (ADR-0037)** — Phase 1-4 complete:
   - [x] `config/agents.yaml` — all 8 agents defined with name, role, model, and delegations
@@ -159,7 +159,7 @@ _This section is maintained by Scribes. Active deferred/recurring tasks are trac
 
 ## ADR-0050: Agentmemory → OpenCode RAG Migration
 
-> **Status:** Implementation complete (2026-06-28). The agentmemory daemon and npm package have been fully removed. Pre-task knowledge retrieval now uses OpenCode's built-in RAG tools (`search_semantic`, `find_usages`, `get_file_skeleton`, `describe_image`) and file-based `.opencode/memory/` storage.
+> **Status:** Implementation complete (2026-06-28). The agentmemory daemon and npm package have been fully removed. Pre-task knowledge retrieval now uses OpenCode's built-in RAG tools (`search_semantic`, `find_usages`, `get_file_skeleton`, `describe_image`) and opencode-mem.
 
 - [x] ADR-0050 written and Accepted
 - [x] Design doc updated (Section 7.2, Section 10, ADR index, Changelog)
@@ -167,5 +167,5 @@ _This section is maintained by Scribes. Active deferred/recurring tasks are trac
 - [x] `opencode-rag-knowledge-flow` skill updated with full tool references
 - [x] Scripts and CI cleaned of agentmemory references
 - [x] All agent definitions and configs updated
-- [x] Memory files migrated to `.opencode/memory/` structure (later migrated to opencode-mem per ADR-0057)
+- [x] Memory system migrated to opencode-mem per ADR-0057
 - [x] Remaining agentmemory references in non-ADR, non-design files cleaned up (this batch)
