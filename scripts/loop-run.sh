@@ -8,7 +8,7 @@ START_TIME=$(date -Iseconds)
 EXIT_CODE=0
 
 echo "## $LOOP_NAME — $START_TIME" >> loop-run-log.md
-opencode run "$PROMPT" 2>&1 | tee -a loop-run-log.md
+opencode run --model "opencode-go/deepseek-v4-flash" "$PROMPT" 2>&1 | tee -a loop-run-log.md
 EXIT_CODE=${PIPESTATUS[0]}
 
 DURATION=$(( $(date +%s) - $(date -d "$START_TIME" +%s) ))
