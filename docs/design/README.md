@@ -212,7 +212,7 @@ Each design document follows this structure:
 | Before REVIEW→CLOSED | Team Meeting (ADR-0011) | All 6 teams — collective review | — |
 | Before CLOSED→REOPEN | Impact Assessment | Architects assess scope | `.impact_analysis_done` |
 
-Reviewers serve as **gatekeepers** for lifecycle transitions (ADR-0017). Before the Director runs `gate.sh --transition`, Reviewers validate that all transition requirements are met via `gate.sh --validate-only`. This ensures independent quality validation — the Director orchestrates, Reviewers validate.
+Reviewers serve as **gatekeepers** for lifecycle transitions (ADR-0017). Before the Director runs `gate.py --transition`, Reviewers validate that all transition requirements are met via `gate.py --validate-only`. This ensures independent quality validation — the Director orchestrates, Reviewers validate.
 
 See ADR-0016 for the full specification of early review gates in ACTIVE phase.
 See ADR-0017 for the full specification of Reviewers as gatekeeper and mandatory second opinion.
@@ -222,10 +222,10 @@ For automation/CI, INIT→ACTIVE confirmation can be bypassed with `--yes` or
 gate fully passes.
 
 > **Note:** `--yes` must be the **first flag** for proper argument passthrough.
-> Example: `bash scripts/gate.sh --yes --validate-only ACTIVE_TO_REVIEW` works,
-> but `bash scripts/gate.sh --validate-only --yes ACTIVE_TO_REVIEW` does not.
+> Example: `bash scripts/gate.py --yes --validate-only ACTIVE_TO_REVIEW` works,
+> but `bash scripts/gate.py --validate-only --yes ACTIVE_TO_REVIEW` does not.
 
-> **Reviewer Mode:** When `--reviewer-mode` is used, gate.sh outputs structured results including `GATE_RESULT`, `CHECKS`, `MARKERS_REQUIRED`, `MARKERS_CLEANUP`. The `CHECKS` field lists individual check results (e.g., `design_reviewed:PASS,second_opinion_done:FAIL`). The `MARKERS_REQUIRED` field lists markers that must exist for the transition.
+> **Reviewer Mode:** When `--reviewer-mode` is used, gate.py outputs structured results including `GATE_RESULT`, `CHECKS`, `MARKERS_REQUIRED`, `MARKERS_CLEANUP`. The `CHECKS` field lists individual check results (e.g., `design_reviewed:PASS,second_opinion_done:FAIL`). The `MARKERS_REQUIRED` field lists markers that must exist for the transition.
 
 ---
 
@@ -325,7 +325,7 @@ Markers are deleted by the gate only after a successful transition pass path
 (including INIT→ACTIVE confirmation when interactive). All lifecycle markers
 are queued and cleaned after REVIEW→CLOSED passes.
 
-**Gatekeeper authority:** Reviewers validate transitions before the Director runs gate.sh (ADR-0017). Reviewers run `gate.sh --validate-only` and return PASS/BLOCKED. The Director runs the actual gate only after Reviewers approve.
+**Gatekeeper authority:** Reviewers validate transitions before the Director runs gate.py (ADR-0017). Reviewers run `gate.py --validate-only` and return PASS/BLOCKED. The Director runs the actual gate only after Reviewers approve.
 
 The ACTIVE phase enforces sequential flow: **Architects → Gate 1 → Engineers → Gate 2 → Testers → Gate 3**. Each gate marker must exist before the next team starts work.
 
@@ -431,7 +431,7 @@ On small-context models (Ollama 32K), chat history grows with every delegation r
 
 ### 7.6 Adopted Project Symlinks (ADR-0012)
 
-When KodeHold adopts an existing project, `workspace.sh adopt` creates a **symlink** from `workspaces/<name>/` to the real project directory. This is a symlink, not a copy — the project stays at its original location.
+When KodeHold adopts an existing project, `workspace.py adopt` creates a **symlink** from `workspaces/<name>/` to the real project directory. This is a symlink, not a copy — the project stays at its original location.
 
 **Path behavior:**
 | Operation | Path | Resolves To |
@@ -631,13 +631,13 @@ kodehold/
 ├── scripts/
 │   ├── benchmark.sh               # Performance benchmarks
 │   ├── detect-test-framework.sh   # Non-Python test framework detection (ADR-0047)
-│   ├── gate.sh                    # Lifecycle state transition gate
+│   ├── gate.py                    # Lifecycle state transition gate
 │   ├── lib/                       # Script helper library
 │   ├── migrations/                # Data/config migration scripts
-│   ├── ship.sh                    # Shipping gate checklist automation
+│   ├── ship.py                    # Shipping gate checklist automation
 │   ├── sync-agent-config.sh       # Syncs frontmatter between .md and agents.yaml
 │   ├── validate-config.sh         # Validates config/agents.yaml against schema
-│   └── workspace.sh               # Workspace management (init, adopt)
+│   └── workspace.py               # Workspace management (init, adopt)
 ├── tests/
 │   ├── run.sh                     # Test suite runner
 │   ├── smoke/                     # Script functionality tests
@@ -675,7 +675,7 @@ kodehold/
 - **v1.13.3 (2026-06-14):** Implemented ADR-0046 — auto git-init for workspace init and adopt. `ws_init()` now creates git repo, `ws_adopt()` creates git repo if missing, new `ensure-git` subcommand for backfill. Both deepresearch and pai-model-router workspaces backfilled.
 - **v1.13.2 (2026-06-14):** Implemented ADR-0048 — Mandatory Tool Documentation Review Before Implementation. Updated all 5 team agents (architects, engineers, testers, reviewers, fls) with documentation-reading workflow steps. ADR-0048 promoted from Proposed to Accepted.
 - **v1.13.1 (2026-06-13):** Added ADR-0047 (Universal Test Execution Standard, Accepted). Defines three test modes (quick/full/smoke), venv discovery chain, symlink handling, non-Python framework detection script, and agent file integrations. All 4 agent files updated to reference the standard.
-- **v1.13.0 (2026-06-13):** Added ADR-0046 (Automatic Git Repository Initialization for Workspace Management, Proposed) to ADR Index table. The ADR specifies that `workspace.sh init` and `workspace.sh adopt` should automatically initialize git repositories when none exist.
+- **v1.13.0 (2026-06-13):** Added ADR-0046 (Automatic Git Repository Initialization for Workspace Management, Proposed) to ADR Index table. The ADR specifies that `workspace.py init` and `workspace.py adopt` should automatically initialize git repositories when none exist.
 - **v1.12.9 (2026-06-06):** ADR-0045 promoted from Proposed → Accepted after Reviewers approval. Patch mem::remember to create KV.relations entry on supersede.
 - **v1.12.8 (2026-06-06):** Viewer: Added 'Memory Types' tab showing all semantic facts and procedural memories with search/filter. Dashboard cards now link to full view when >5 items exist.
 - **v1.12.7 (2026-06-06):** Archive detection tested — 25 unit tests added in `test/archive-detection.test.ts` covering happy path (archive detection fires `/session/end`), negative case (no `time.archived` → no action), and edge cases (missing session ID, null info, malformed time object). All tests pass. ADR-0044 Compliance table updated with unit test verification.
