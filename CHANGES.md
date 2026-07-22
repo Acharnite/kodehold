@@ -14,13 +14,10 @@
 ## 1.23.0 — 2026-07-22
 
 ### Added
-- **scripts/loop_runner.py** — Pure Python L1 loop engine replacing `loop-run.sh` (opencode run). 3 patterns: daily-triage, pr-babysitter, drift-detection. Runs git/gh/pytest directly via subprocess.
-- **Discord webhook notifications** — `--webhook` flag on loop_runner.py sends color-coded embeds (green=clean, orange=issues, red=error). Webhook URL stored in `config/loop-webhook.txt` (gitignored).
+- **Discord webhook notifications** — `scripts/discord-notify.py` sends color-coded embeds (green=clean, orange=issues, red=error) to Discord webhook after loop runs.
 - **ADR-0059: Workspace as Mini-KodeHold** — Accepted. workspace.py rewritten with 10 commands (init, adopt, list, state, loop, gate, deploy-ready, migrate, deinit, ensure-git). Copy mode default, `--link` for legacy symlinks. YAML registry in `config/workspaces.yaml`.
 
 ### Changed
-- **Loop architecture** — `opencode run` eliminated from L1 loops. All loops are pure Python via `loop_runner.py`.
-- **Crontab** — 3 loop entries updated to `python3 scripts/loop_runner.py <pattern> --webhook`.
 - **ADR-0007 deprecation** — All references to ADR-0007 removed from active operational files (design doc, TODO.md, CHANGES.md).
 - **`.opencode/memory/` deprecation** — All references to file-based memory removed from active operational files.
 
