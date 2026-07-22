@@ -77,9 +77,8 @@ def test_init_rejects_duplicate(project_root: Path, tmp_path: Path) -> None:
 # Test 4: adopt creates symlink with ADOPTED=true
 # ===================================================================
 
-@pytest.mark.skipif(os.name == "nt", reason="Symlinks require admin on Windows")
-def test_adopt_creates_symlink(project_root: Path, tmp_path: Path) -> None:
-    """workspace.py adopt must create a symlink with ADOPTED=true."""
+def test_adopt_copies_project(project_root: Path, tmp_path: Path) -> None:
+    """workspace.py adopt must copy project files by default (ADR-0059)."""
     setup_workspace_root(tmp_path, project_root)
 
     # Create a real project to adopt
@@ -94,8 +93,35 @@ def test_adopt_creates_symlink(project_root: Path, tmp_path: Path) -> None:
     ws = tmp_path / "workspaces" / "my-adopted"
 
     assert result.returncode == 0
-    assert ws.is_symlink(), "adopt: symlink not created"
+    assert ws.is_dir(), "adopt: directory not created"
+    assert not ws.is_symlink(), "adopt: default must copy, not symlink"
     assert (ws / ".kodehold-state").is_file(), "adopt: .kodehold-state not created"
+    state_content = (ws / ".kodehold-state").read_text()
+    assert "ADOPTED=true" in state_content, "ADOPTED=true missing from state"
+    assert (ws / "package.json").is_file(), "adopt: copied files missing"
+    assert "JavaScript" in result.stdout or "TypeScript" in result.stdout, \
+        "Language detection failed"
+
+
+@pytest.mark.skipif(os.name == "nt", reason="Symlinks require admin on Windows")
+def test_adopt_link_creates_symlink(project_root: Path, tmp_path: Path) -> None:
+    """workspace.py adopt --link must create a symlink with ADOPTED=true."""
+    setup_workspace_root(tmp_path, project_root)
+
+    # Create a real project to adopt
+    target = tmp_path / "adopt-source"
+    target.mkdir()
+    (target / "package.json").write_text('{"name":"test-project"}')
+
+    result = run_script(
+        tmp_path / "scripts/workspace.py", "adopt", "my-adopted", str(target), "--link",
+        cwd=tmp_path, input_text="\n",
+    )
+    ws = tmp_path / "workspaces" / "my-adopted"
+
+    assert result.returncode == 0
+    assert ws.is_symlink(), "adopt --link: symlink not created"
+    assert (ws / ".kodehold-state").is_file(), "adopt --link: .kodehold-state not created"
     state_content = (ws / ".kodehold-state").read_text()
     assert "ADOPTED=true" in state_content, "ADOPTED=true missing from state"
     assert "JavaScript" in result.stdout or "TypeScript" in result.stdout, \
